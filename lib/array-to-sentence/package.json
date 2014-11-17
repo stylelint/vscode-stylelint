@@ -1,0 +1,50 @@
+{
+  "name": "array-to-sentence",
+  "version": "0.0.0",
+  "description": "Join all elements of an array and create a human-readable string",
+  "repository": "shinnn/array-to-sentence",
+  "scripts": {
+    "pretest": "eslint *.js & jscs *.js",
+    "test": "node test.js | tap-spec",
+    "coverage": "istanbul cover test.js",
+    "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/shinnn/array-to-sentence/blob/master/LICENSE"
+    }
+  ],
+  "main": "array-to-sentence-cjs.js",
+  "files": [
+    "array-to-sentence-cjs.js",
+    "LICENSE"
+  ],
+  "keywords": [
+    "to-sentence",
+    "sentence",
+    "array",
+    "join",
+    "human",
+    "readable",
+    "string",
+    "separator",
+    "comma",
+    "and",
+    "browser",
+    "client-side"
+  ],
+  "devDependencies": {
+    "eslint": "^0.9.2",
+    "istanbul": "^0.3.2",
+    "istanbul-coveralls": "^1.0.1",
+    "jscs": "^1.7.3",
+    "require-bower-files": "^1.0.0",
+    "tap-spec": "^1.0.1",
+    "tape": "^3.0.3"
+  },
+  "jscsConfig": {
+    "preset": "google",
+    "maximumLineLength": 98
+  }
+}

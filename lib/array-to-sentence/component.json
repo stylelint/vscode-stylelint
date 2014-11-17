@@ -1,0 +1,23 @@
+{
+  "name": "array-to-sentence",
+  "version": "1.0.0",
+  "description": "Join all elements of an array and create a human-readable string",
+  "keywords": [
+    "to-sentence",
+    "sentence",
+    "array",
+    "join",
+    "human",
+    "readable",
+    "string",
+    "separator",
+    "comma",
+    "and"
+  ],
+  "repository": "shinnn/array-to-sentence",
+  "main": "array-to-sentence-cjs.js",
+  "scripts": [
+    "array-to-sentence-cjs.js"
+  ],
+  "license": "MIT"
+}

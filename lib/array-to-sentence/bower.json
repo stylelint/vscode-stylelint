@@ -1,0 +1,38 @@
+{
+  "name": "array-to-sentence",
+  "description": "Join all elements of an array and create a human-readable string",
+  "keywords": [
+    "to-sentence",
+    "sentence",
+    "array",
+    "join",
+    "human",
+    "readable",
+    "string",
+    "separator",
+    "comma",
+    "and"
+  ],
+  "main": "./array-to-sentence.js",
+  "homepage": "https://github.com/shinnn/array-to-sentence",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shinnn/array-to-sentence.git"
+  },
+  "authors": [
+    {
+      "name": "Shinnosuke Watanabe",
+      "url": "https://github.com/shinnn"
+    }
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "coverage",
+    "node_modules",
+    "test.js",
+    "array-to-sentence-cjs.js",
+    "package.json",
+    "component.json"
+  ]
+}
