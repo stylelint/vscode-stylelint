@@ -9,7 +9,7 @@
 Join all elements of an array and create a human-readable string
 
 ```javascript
-arrayToSentence(['foo', 'bar', 'baz', 'qux']) //=> 'foo, bar, baz and qux';
+arrayToSentence(['foo', 'bar', 'baz', 'qux']); //=> 'foo, bar, baz and qux'
 ```
 
 ## Installation
@@ -48,7 +48,7 @@ Return: `Array`
 
 It joins all elements of an array, and returns a string in the form `A, B, ... and X`.
 
-*Note that it doesn't supports [serial comma](http://wikipedia.org/wiki/Serial_comma).*
+*Note that it doesn't support [serial comma](http://wikipedia.org/wiki/Serial_comma).*
 
 ```javascript
 arrayToSentence(['one', 'two', 3]); //=> 'one, two and 3'
