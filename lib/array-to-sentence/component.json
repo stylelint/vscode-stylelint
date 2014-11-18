@@ -1,6 +1,6 @@
 {
   "name": "array-to-sentence",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Join all elements of an array and create a human-readable string",
   "keywords": [
     "to-sentence",
