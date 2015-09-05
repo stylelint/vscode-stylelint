@@ -13,26 +13,22 @@
     "comma",
     "and"
   ],
-  "main": "./array-to-sentence.js",
+  "main": "browser.js",
+  "moduleType": "globals",
   "homepage": "https://github.com/shinnn/array-to-sentence",
   "repository": {
     "type": "git",
     "url": "git://github.com/shinnn/array-to-sentence.git"
   },
   "authors": [
-    {
-      "name": "Shinnosuke Watanabe",
-      "url": "https://github.com/shinnn"
-    }
+    "Shinnosuke Watanabe (https://github.com/shinnn)"
   ],
   "license": "MIT",
   "ignore": [
     "**/.*",
+    "*.js",
+    "*.json",
     "coverage",
-    "node_modules",
-    "test.js",
-    "array-to-sentence-cjs.js",
-    "package.json",
-    "component.json"
+    "node_modules"
   ]
 }

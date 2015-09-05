@@ -1,7 +1,7 @@
 # array-to-sentence
 
-[![NPM version](https://badge.fury.io/js/array-to-sentence.svg)](https://www.npmjs.org/package/array-to-sentence)
-[![Bower version](https://badge.fury.io/bo/array-to-sentence.svg)](https://github.com/shinnn/array-to-sentence/releases)
+[![NPM version](https://img.shields.io/npm/v/array-to-sentence.svg)](https://www.npmjs.com/package/array-to-sentence)
+[![Bower version](https://img.shields.io/bower/v/array-to-sentence.svg)](https://github.com/shinnn/array-to-sentence/releases)
 [![Build Status](https://travis-ci.org/shinnn/array-to-sentence.svg?branch=master)](https://travis-ci.org/shinnn/array-to-sentence)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-sentence.svg)](https://coveralls.io/r/shinnn/array-to-sentence)
 [![devDependency Status](https://david-dm.org/shinnn/array-to-sentence/dev-status.svg)](https://david-dm.org/shinnn/array-to-sentence#info=devDependencies)
@@ -16,27 +16,21 @@ arrayToSentence(['foo', 'bar', 'baz', 'qux']); //=> 'foo, bar, baz and qux'
 
 ### Package managers
 
-#### [npm](https://www.npmjs.org/)
+#### [npm](https://www.npmjs.com/)
 
-```sh
+```
 npm install array-to-sentence
 ```
 
 #### [bower](http://bower.io/)
 
-```sh
-bower install array-to-sentence
 ```
-
-#### [Duo](http://duojs.org/)
-
-```javascript
-var arrayToSentence = require('shinnn/array-to-sentence');
+bower install array-to-sentence
 ```
 
 ### Standalone
 
-[Download the script file directly.](https://raw.githubusercontent.com/shinnn/array-to-sentence/master/array-to-sentence.js)
+[Download the script file directly.](https://raw.githubusercontent.com/shinnn/array-to-sentence/master/browser.js)
 
 ## API
 
@@ -93,6 +87,6 @@ For designing API, I used `.toSentence()` method of [underscore.string](https://
 
 ## License
 
-Copyright (c) 2014 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2014 - 2015 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
