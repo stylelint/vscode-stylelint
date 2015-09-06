@@ -5,8 +5,8 @@
   "repository": "shinnn/array-to-sentence",
   "scripts": {
     "pretest": "eslint --config @shinnn browser.js index.js test.js",
-    "test": "node test.js",
-    "coverage": "istanbul cover test.js"
+    "test": "node --strong_mode --throw-deprecation --track-heap-objects test.js",
+    "coverage": "node --strong_mode node_modules/.bin/istanbul cover test.js"
   },
   "license": "MIT",
   "files": [
