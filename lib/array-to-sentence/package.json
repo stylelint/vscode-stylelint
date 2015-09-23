@@ -1,6 +1,6 @@
 {
   "name": "array-to-sentence",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Join all elements of an array and create a human-readable string",
   "repository": "shinnn/array-to-sentence",
   "scripts": {
@@ -27,9 +27,9 @@
     "client-side"
   ],
   "devDependencies": {
-    "@shinnn/eslint-config": "^1.1.0",
-    "eslint": "^1.6.0",
-    "istanbul": "^0.3.22",
-    "tape": "^4.2.1"
+    "@shinnn/eslint-config": "^1.2.0",
+    "eslint": "^1.7.3",
+    "istanbul": "^0.4.0",
+    "tape": "^4.2.2"
   }
 }
