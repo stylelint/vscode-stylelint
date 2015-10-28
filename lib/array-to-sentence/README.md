@@ -3,7 +3,7 @@
 [![NPM version](https://img.shields.io/npm/v/array-to-sentence.svg)](https://www.npmjs.com/package/array-to-sentence)
 [![Bower version](https://img.shields.io/bower/v/array-to-sentence.svg)](https://github.com/shinnn/array-to-sentence/releases)
 [![Build Status](https://travis-ci.org/shinnn/array-to-sentence.svg?branch=master)](https://travis-ci.org/shinnn/array-to-sentence)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-sentence.svg)](https://coveralls.io/r/shinnn/array-to-sentence)
+[![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-sentence.svg)](https://coveralls.io/github/shinnn/array-to-sentence)
 [![devDependency Status](https://david-dm.org/shinnn/array-to-sentence/dev-status.svg)](https://david-dm.org/shinnn/array-to-sentence#info=devDependencies)
 
 Join all elements of an array and create a human-readable string
@@ -38,11 +38,9 @@ bower install array-to-sentence
 
 *array*: `Array` of any values  
 *options*: `Object`  
-Return: `Array`
+Return: `String`
 
 It joins all elements of an array, and returns a string in the form `A, B, ... and X`.
-
-*Note that it doesn't support [serial comma](http://wikipedia.org/wiki/Serial_comma).*
 
 ```javascript
 arrayToSentence(['one', 'two', 3]); //=> 'one, two and 3'
