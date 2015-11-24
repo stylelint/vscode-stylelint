@@ -1,0 +1,63 @@
+{
+  "name": "stylelint",
+  "version": "0.1.0",
+  "displayName": "stylelint",
+  "description": "Modern CSS/SCSS linter",
+  "publisher": "shinnn",
+  "repository": "https://github.com/shinnn/vscode-stylelint",
+  "homepage": "https://github.com/shinnn/vscode-stylelint#readme",
+  "bugs": "https://github.com/shinnn/vscode-stylelint/issues",
+  "license": "MIT",
+  "icon": "media/icon.svg",
+  "galleryBanner": {
+    "color": "#32CD32",
+    "theme": "light"
+  },
+  "engines": {
+    "vscode": "^0.10.1"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "activationEvents": [
+    "onLanguage:css",
+    "onLanguage:sass"
+  ],
+  "main": "extension.js",
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "stylelint configuration options",
+      "properties": {
+        "stylelint.enable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Control whether stylelint is enabled for CSS/SCSS files or not."
+        },
+        "stylelint.config": {
+          "type": "object",
+          "default": null,
+          "description": "A stylelint configuration object."
+        },
+        "stylelint.configOverrides": {
+          "type": "object",
+          "default": null,
+          "description": "A partial stylelint config whose properties override the existing ones."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "test": "eslint --config @shinnn/node --fix extension.js server.js"
+  },
+  "dependencies": {
+    "stylelint-vscode": "^1.0.0",
+    "vscode-languageclient": "0.10.7",
+    "vscode-languageserver": "0.10.6"
+  },
+  "devDependencies": {
+    "@shinnn/eslint-config-node": "^1.0.1",
+    "eslint": "^1.10.1",
+    "vscode": "^0.10.6"
+  }
+}

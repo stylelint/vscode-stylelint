@@ -1,0 +1,8 @@
+.editorconfig
+.gitignore
+.vscode/**
+*.css
+*.png
+*.scss
+media/*.ai
+test
