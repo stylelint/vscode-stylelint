@@ -37,13 +37,13 @@
   ],
   "dependencies": {
     "array-to-error": "^1.0.0",
-    "stylelint": "^2.3.4",
-    "vscode-languageserver": "^0.10.6"
+    "stylelint": "^3.1.4",
+    "vscode-languageserver": "^1.1.1"
   },
   "devDependencies": {
     "@shinnn/eslint-config-node": "^1.0.1",
-    "eslint": "^1.10.1",
-    "istanbul": "^0.4.0",
+    "eslint": "^1.10.3",
+    "istanbul": "^0.4.1",
     "tape": "^4.2.2"
   }
 }

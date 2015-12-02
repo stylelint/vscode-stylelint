@@ -21,8 +21,8 @@ stylelintVSCode({
   code,
   config: {
     rules: {
-      'number-leading-zero': [2, 'always'],
-      'color-no-named': 1
+      'number-leading-zero': 'always',
+      'color-no-named': {warn: true}
     }
   }
 }).then(diagnostics => {
@@ -92,12 +92,7 @@ It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/24f
 const stylelintVSCode = require('stylelint-vscode');
 
 stylelintVSCode({
-  code: '{foo}',
-  config: {
-    rules: {
-      indentation: [2, 'tab']
-    }
-  }
+  code: '{foo}'
 }).then(diagnostics => {
   diagnostics;
   /* =>
@@ -123,7 +118,7 @@ stylelintVSCode({
   config: {
     rules: {
       indentation: 2,
-      'function-comma-space-before': [1, 'foo']
+      'function-comma-space-before': 'foo'
     }
   }
 }).catch(err => {
