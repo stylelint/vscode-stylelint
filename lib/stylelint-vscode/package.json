@@ -1,12 +1,12 @@
 {
   "name": "stylelint-vscode",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "stylelint wrapper to easily integrate with Visual Studio Code",
-  "repository": "shinnn/npm-cli-path",
+  "repository": "shinnn/stylelint-vscode",
   "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
   "scripts": {
     "pretest": "eslint --fix --config @shinnn/node index.js test.js",
-    "test": "node --strong_mode --harmony_destructuring test.js",
+    "test": "node --strong_mode --harmony_destructuring --throw-deprecation --track-heap-objects test.js",
     "coverage": "node --strong_mode --harmony_destructuring node_modules/.bin/istanbul cover test.js"
   },
   "license": "MIT",
