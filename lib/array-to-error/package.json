@@ -30,13 +30,13 @@
     "array-to-sentence": "^1.0.1"
   },
   "devDependencies": {
-    "@shinnn/eslint-config": "^1.1.0",
-    "bower": "^1.5.3",
-    "eslint": "^1.6.0",
-    "istanbul": "^0.3.22",
+    "@shinnn/eslint-config": "^1.4.0",
+    "bower": "^1.7.7",
+    "eslint": "^1.10.3",
+    "istanbul": "^0.4.2",
     "istanbul-coveralls": "^1.0.3",
     "require-bower-files": "^3.0.0",
-    "tap-spec": "^4.1.0",
-    "tape": "^4.2.1"
+    "tap-spec": "^4.1.1",
+    "tape": "^4.4.0"
   }
 }
