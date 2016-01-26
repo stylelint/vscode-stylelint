@@ -87,6 +87,8 @@ It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/24f
 * It converts [CSS syntax error](https://github.com/postcss/postcss/blob/77d80ef830f5e822e8fdc1aaed0a98f51ffb8cc5/lib/css-syntax-error.es6#L5) to an array of one `Diagnostic` instance.
 * It will be *rejected* (not resolved) when it takes invalid configs.
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
+* It suppresses `No configuration found` error.
+  * Doing nothing when there is no config configuration is a common behavior of editor plugins.
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
@@ -140,6 +142,6 @@ stylelintVSCode({
 
 ## License
 
-Copyright (c) 2015 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2015 - 2016 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
