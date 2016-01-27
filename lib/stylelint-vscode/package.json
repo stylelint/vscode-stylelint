@@ -5,9 +5,9 @@
   "repository": "shinnn/stylelint-vscode",
   "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
   "scripts": {
-    "pretest": "eslint --fix --config @shinnn/node index.js test.js",
-    "test": "node --strong_mode --harmony_destructuring --throw-deprecation --track-heap-objects test.js",
-    "coverage": "node --strong_mode --harmony_destructuring node_modules/.bin/istanbul cover test.js"
+    "pretest": "eslint --fix --config @shinnn/node index.js test/",
+    "test": "node --strong_mode --harmony_destructuring --throw-deprecation --track-heap-objects test/test.js",
+    "coverage": "node --strong_mode --harmony_destructuring node_modules/.bin/istanbul cover test/test.js"
   },
   "license": "MIT",
   "files": [
