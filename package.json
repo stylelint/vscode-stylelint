@@ -36,12 +36,12 @@
         },
         "stylelint.config": {
           "type": "object",
-          "default": {},
+          "default": null,
           "description": "A stylelint configuration object."
         },
         "stylelint.configOverrides": {
           "type": "object",
-          "default": {},
+          "default": null,
           "description": "A partial stylelint config whose properties override the existing ones."
         }
       }

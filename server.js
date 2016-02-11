@@ -36,7 +36,9 @@ function validateAll() {
 }
 
 connection.onInitialize(params => {
-  configBasedir = params.rootPath;
+  if (params.rootPath) {
+    configBasedir = params.rootPath;
+  }
 
   validateAll();
 
@@ -48,8 +50,8 @@ connection.onInitialize(params => {
 });
 connection.onDidChangeConfiguration(params => {
   const settings = params.settings;
-  config = settings.stylelint.config || {};
-  configOverrides = settings.stylelint.configOverrides || {};
+  config = settings.stylelint.config;
+  configOverrides = settings.stylelint.configOverrides;
 
   validateAll();
 });
