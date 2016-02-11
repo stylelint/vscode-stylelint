@@ -35,19 +35,19 @@ Default: `false`
 
 Control whether [stylelint](https://github.com/stylelint/stylelint/) is enabled for CSS/SCSS files or not.
 
-#### stylelint.config
-
-Type: `Object`  
-Default: `null`
-
-Will be directly passed to [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option.
-
 #### stylelint.configOverrides
 
 Type: `Object`  
 Default: `null`
 
 Will be directly passed to [`configOverrides`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#configoverrides) option.
+
+#### stylelint.config
+
+Type: `Object`  
+Default: `null`
+
+Will be directly passed to [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that if you set `config` option, this plugin ignores all the stylelint configuration files.
 
 ## License
 
