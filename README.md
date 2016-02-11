@@ -26,7 +26,7 @@ Enable the linter in the VS Code [settings](https://code.visualstudio.com/docs/c
 
 ### Configurations
 
-*In addition to the VS Code settings mentioned below, you can set the config by adding [stylelint configuration files](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/configuration.md#configuration) to the workspace directory or its ancestor ones.*
+*In addition to the VS Code settings mentioned below, you can set the config by adding [stylelint configuration files](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/configuration.md#configuration) to the workspace directory.*
 
 #### stylelint.enable
 
@@ -51,6 +51,6 @@ Will be directly passed to [`configOverrides`](https://github.com/stylelint/styl
 
 ## License
 
-Copyright (c) 2015 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2015 - 2016 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
