@@ -27,7 +27,13 @@ function validate(document) {
       return;
     }
 
-    connection.window.showErrorMessage('stylelint: ' + err.message);
+    // https://github.com/stylelint/stylelint/blob/4.2.0/src/utils/configurationError.js#L3
+    if (err.code === 78) {
+      connection.window.showErrorMessage('stylelint: ' + err.message);
+      return;
+    }
+
+    connection.window.showErrorMessage(err.stack.replace(/\n/g, ' '));
   });
 }
 
