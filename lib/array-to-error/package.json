@@ -32,9 +32,9 @@
     "array-to-sentence": "^1.0.1"
   },
   "devDependencies": {
-    "@shinnn/eslint-config": "^1.4.0",
+    "@shinnn/eslint-config": "^2.0.1",
     "bower": "^1.7.7",
-    "eslint": "^1.10.3",
+    "eslint": "^2.1.0",
     "istanbul": "^0.4.2",
     "istanbul-coveralls": "^1.0.3",
     "require-bower-files": "^3.0.0",
