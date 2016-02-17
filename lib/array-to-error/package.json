@@ -5,14 +5,16 @@
   "repository": "shinnn/array-to-error",
   "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
   "scripts": {
-    "pretest": "bower install --production && eslint --config @shinnn index.js test.js",
+    "pretest": "bower install --production && eslint --config @shinnn index.js index.jsnext.js test.js",
     "test": "node --strong_mode --throw-deprecation --track-heap-objects test.js | tap-spec",
     "coverage": "istanbul cover -x=bower_components/array-to-sentence/* test.js",
     "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls"
   },
   "license": "MIT",
+  "jsnext:main": "index.jsnext.js",
   "files": [
-    "index.js"
+    "index.js",
+    "index.jsnext.js"
   ],
   "keywords": [
     "err",
@@ -36,6 +38,8 @@
     "istanbul": "^0.4.2",
     "istanbul-coveralls": "^1.0.3",
     "require-bower-files": "^3.0.0",
+    "require-from-string": "^1.1.0",
+    "rollup-plugin-node-resolve": "^1.4.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0"
   }
