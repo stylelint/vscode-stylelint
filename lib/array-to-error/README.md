@@ -6,7 +6,7 @@
 [![Dependency Status](https://david-dm.org/shinnn/array-to-error.svg)](https://david-dm.org/shinnn/array-to-error)
 [![Dependency Status](https://david-dm.org/shinnn/array-to-error.svg)](https://david-dm.org/shinnn/array-to-error)
 
-Create an error instance from an array of error messages
+Create an error from an array of error messages
 
 ```javascript
 const arrayToError = require('array-to-error');
@@ -51,6 +51,6 @@ error.constructor; //=> TypeError
 
 ## License
 
-Copyright (c) 2015 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2015 - 2016 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
