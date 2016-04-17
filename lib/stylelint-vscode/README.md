@@ -22,7 +22,7 @@ stylelintVSCode({
   config: {
     rules: {
       'number-leading-zero': 'always',
-      'color-no-named': {warn: true}
+      'color-named': ['never', {severity: 'warning'}]
     }
   }
 }).then(diagnostics => {
@@ -81,14 +81,13 @@ const stylelintVSCode = require('stylelint-vscode');
 *options*: `Object` (directly passed to [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#the-stylelint-node-api))  
 Return: [`Promise`](http://www.ecma-international.org/ecma-262/6.0/#sec-promise-constructor) instance
 
-It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/24f237bdefd3759ebd222f6cfa808b60b213b554/src/standalone.js#L9), except for:
+It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/893d050a24b47547fdf96c608f443f1f200eefa1/src/standalone.js#L16), except for:
 
 * It will be resolved with an array of [VS Code](https://github.com/Microsoft/vscode-extension-vscode)'s [`Diagnostic`](https://github.com/Microsoft/vscode-extension-vscode/blob/0.10.6/vscode.d.ts#L2220) instances.
-* It converts [CSS syntax error](https://github.com/postcss/postcss/blob/77d80ef830f5e822e8fdc1aaed0a98f51ffb8cc5/lib/css-syntax-error.es6#L5) to an array of one `Diagnostic` instance.
 * It will be *rejected* (not resolved) when it takes invalid configs.
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
 * It suppresses `No configuration found` error.
-  * Doing nothing when there is no config configuration is a common behavior of editor plugins.
+  * Doing nothing when there is no configuration is a common behavior of editor plugins.
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
