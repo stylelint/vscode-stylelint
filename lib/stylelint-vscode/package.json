@@ -6,8 +6,8 @@
   "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
   "scripts": {
     "pretest": "eslint --fix --config @shinnn/node index.js test/",
-    "test": "node --strong_mode --harmony_destructuring --throw-deprecation --track-heap-objects test/test.js | tap-spec",
-    "coverage": "node --strong_mode --harmony_destructuring node_modules/.bin/istanbul cover test/test.js"
+    "test": "node --strong_mode --throw-deprecation --track-heap-objects test/test.js | tap-spec",
+    "coverage": "node --strong_mode node_modules/.bin/istanbul cover test/test.js"
   },
   "license": "MIT",
   "files": [
