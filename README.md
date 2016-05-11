@@ -31,7 +31,7 @@ Enable the linter in the VS Code [settings](https://code.visualstudio.com/docs/c
 #### stylelint.enable
 
 Type: `Boolean`  
-Default: `false`
+Default: `true`
 
 Control whether [stylelint](https://github.com/stylelint/stylelint/) is enabled for CSS/SCSS files or not.
 

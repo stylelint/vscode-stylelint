@@ -31,7 +31,7 @@
       "properties": {
         "stylelint.enable": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Control whether stylelint is enabled for CSS/SCSS files or not."
         },
         "stylelint.config": {
