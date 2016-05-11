@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -748,16 +748,9 @@
       }
     },
     "stylehacks": {
-      "version": "2.3.0",
+      "version": "2.3.1",
       "from": "stylehacks@>=2.3.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/stylehacks/-/stylehacks-2.3.0.tgz",
-      "dependencies": {
-        "postcss-selector-parser": {
-          "version": "1.3.3",
-          "from": "postcss-selector-parser@>=1.3.2 <2.0.0",
-          "resolved": "https://registry.npmjs.org/postcss-selector-parser/-/postcss-selector-parser-1.3.3.tgz"
-        }
-      }
+      "resolved": "https://registry.npmjs.org/stylehacks/-/stylehacks-2.3.1.tgz"
     },
     "stylelint": {
       "version": "6.3.3",
