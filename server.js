@@ -12,13 +12,18 @@ let configOverrides;
 const connection = langServer.createConnection(process.stdin, process.stdout);
 const documents = new langServer.TextDocuments();
 
+const syntaxConfig = {
+  '.scss': 'scss',
+  '.less': 'less'
+};
+
 function validate(document) {
   return stylelintVSCode({
     code: document.getText(),
     config,
     configOverrides,
     configBasedir,
-    syntax: path.extname(String(document.uri)).toLowerCase() === '.scss' ? 'scss' : null
+    syntax: syntaxConfig[path.extname(String(document.uri)).toLowerCase()]
   }).then(diagnostics => {
     connection.sendDiagnostics({uri: document.uri, diagnostics});
   }).catch(err => {
