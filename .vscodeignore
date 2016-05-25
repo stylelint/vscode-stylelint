@@ -4,5 +4,6 @@
 *.css
 *.png
 *.scss
+*.less
 media/*.ai
 test

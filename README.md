@@ -3,7 +3,7 @@
 [![Dependency Status](https://david-dm.org/shinnn/vscode-stylelint.svg)](https://david-dm.org/shinnn/vscode-stylelint)
 [![devDependency Status](https://david-dm.org/shinnn/vscode-stylelint/dev-status.svg)](https://david-dm.org/shinnn/vscode-stylelint#info=devDependencies)
 
-A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#syntax) with [stylelint](http://stylelint.io/)
+A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#syntax)/[Less](http://lesscss.org/) with [stylelint](http://stylelint.io/)
 
 ![screenshot](screenshot.png)
 
@@ -33,7 +33,7 @@ Enable the linter in the VS Code [settings](https://code.visualstudio.com/docs/c
 Type: `Boolean`  
 Default: `true`
 
-Control whether [stylelint](https://github.com/stylelint/stylelint/) is enabled for CSS/SCSS files or not.
+Control whether [stylelint](https://github.com/stylelint/stylelint/) is enabled for CSS/SCSS/Less files or not.
 
 #### stylelint.configOverrides
 

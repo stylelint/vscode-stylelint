@@ -2,7 +2,7 @@
   "name": "stylelint",
   "version": "0.8.3",
   "displayName": "stylelint",
-  "description": "Modern CSS/SCSS linter",
+  "description": "Modern CSS/SCSS/Less linter",
   "publisher": "shinnn",
   "repository": "https://github.com/shinnn/vscode-stylelint",
   "homepage": "https://github.com/shinnn/vscode-stylelint#readme",
@@ -21,7 +21,8 @@
   ],
   "activationEvents": [
     "onLanguage:css",
-    "onLanguage:sass"
+    "onLanguage:sass",
+    "onLanguage:less"
   ],
   "main": "extension.js",
   "contributes": {
@@ -32,7 +33,7 @@
         "stylelint.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Control whether stylelint is enabled for CSS/SCSS files or not."
+          "description": "Control whether stylelint is enabled for CSS/SCSS/Less files or not."
         },
         "stylelint.config": {
           "type": "object",
