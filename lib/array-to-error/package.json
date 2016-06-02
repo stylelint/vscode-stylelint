@@ -32,14 +32,14 @@
     "array-to-sentence": "^1.0.1"
   },
   "devDependencies": {
-    "@shinnn/eslint-config": "^2.0.1",
-    "bower": "^1.7.7",
-    "eslint": "^2.1.0",
-    "istanbul": "^0.4.2",
+    "@shinnn/eslint-config": "^2.3.0",
+    "bower": "^1.7.9",
+    "eslint": "^2.11.1",
+    "istanbul": "^0.4.3",
     "istanbul-coveralls": "^1.0.3",
     "require-bower-files": "^3.0.0",
-    "require-from-string": "^1.1.0",
-    "rollup": "^0.25.4",
+    "require-from-string": "^1.2.0",
+    "rollup": "^0.26.3",
     "rollup-plugin-node-resolve": "^1.5.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.5.1"
