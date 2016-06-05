@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -29,7 +29,7 @@
     },
     "array-find-index": {
       "version": "1.0.1",
-      "from": "array-find-index@>=1.0.0 <2.0.0",
+      "from": "array-find-index@>=1.0.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/array-find-index/-/array-find-index-1.0.1.tgz"
     },
     "array-to-error": {
@@ -40,7 +40,7 @@
     "array-to-sentence": {
       "version": "1.0.4",
       "from": "array-to-sentence@>=1.0.1 <2.0.0",
-      "resolved": "https://registry.npmjs.org/array-to-sentence/-/array-to-sentence-1.0.4.tgz"
+      "resolved": "http://registry.npmjs.org/array-to-sentence/-/array-to-sentence-1.0.4.tgz"
     },
     "array-union": {
       "version": "1.0.1",
@@ -103,9 +103,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000471",
+      "version": "1.0.30000472",
       "from": "caniuse-db@>=1.0.30000444 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000471.tgz"
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000472.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -173,6 +173,11 @@
       "version": "1.0.1",
       "from": "css-tokenize@>=1.0.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/css-tokenize/-/css-tokenize-1.0.1.tgz"
+    },
+    "currently-unhandled": {
+      "version": "0.4.1",
+      "from": "currently-unhandled@>=0.4.1 <0.5.0",
+      "resolved": "https://registry.npmjs.org/currently-unhandled/-/currently-unhandled-0.4.1.tgz"
     },
     "decamelize": {
       "version": "1.2.0",
@@ -461,9 +466,9 @@
       "resolved": "https://registry.npmjs.org/log-symbols/-/log-symbols-1.0.2.tgz"
     },
     "loud-rejection": {
-      "version": "1.3.0",
+      "version": "1.4.1",
       "from": "loud-rejection@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/loud-rejection/-/loud-rejection-1.3.0.tgz"
+      "resolved": "https://registry.npmjs.org/loud-rejection/-/loud-rejection-1.4.1.tgz"
     },
     "map-obj": {
       "version": "1.0.1",
