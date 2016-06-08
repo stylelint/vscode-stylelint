@@ -7,8 +7,7 @@
   "scripts": {
     "pretest": "bower install --production && eslint --config @shinnn --ignore-path .gitignore .",
     "test": "node --strong_mode --throw-deprecation --track-heap-objects test.js | tap-spec",
-    "coverage": "istanbul cover -x=bower_components/array-to-sentence/* test.js",
-    "coveralls": "${npm_package_scripts_coverage} && istanbul-coveralls"
+    "coverage": "istanbul cover -x=bower_components/array-to-sentence/* test.js"
   },
   "license": "MIT",
   "jsnext:main": "index.jsnext.js",
@@ -36,7 +35,6 @@
     "bower": "^1.7.9",
     "eslint": "^2.11.1",
     "istanbul": "^0.4.3",
-    "istanbul-coveralls": "^1.0.3",
     "require-bower-files": "^3.0.0",
     "require-from-string": "^1.2.0",
     "rollup": "^0.28.0",
