@@ -18,11 +18,21 @@ error.reasons; //=> ['tranling comma on line 1', 'unexpected "(" on line 2']
 
 ## Installation
 
-[Use npm.](https://docs.npmjs.com/cli/install)
+#### [npm](https://www.npmjs.com/)
 
 ```
 npm install array-to-error
 ```
+
+#### [Bower](http://bower.io/)
+
+```
+bower install array-to-error
+```
+
+### Standalone
+
+[Download the script file directly.](https://raw.githubusercontent.com/shinnn/array-to-error/master/browser.js)
 
 ## API
 
