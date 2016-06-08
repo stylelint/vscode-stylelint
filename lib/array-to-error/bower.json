@@ -24,7 +24,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "array-to-sentence": "~1.0.1"
+    "array-to-sentence": "^1.0.4"
   },
   "ignore": [
     "**/.*",
