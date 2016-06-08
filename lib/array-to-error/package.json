@@ -1,6 +1,6 @@
 {
   "name": "array-to-error",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Create an error from an array of error messages",
   "repository": "shinnn/array-to-error",
   "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
