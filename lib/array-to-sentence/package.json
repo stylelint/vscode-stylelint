@@ -9,8 +9,10 @@
     "coverage": "node --strong_mode node_modules/.bin/istanbul cover test.js"
   },
   "license": "MIT",
+  "jsnext:main": "index.jsnext.js",
   "files": [
-    "index.js"
+    "index.js",
+    "index.jsnext.js"
   ],
   "keywords": [
     "to-sentence",
@@ -27,9 +29,11 @@
     "client-side"
   ],
   "devDependencies": {
-    "@shinnn/eslint-config": "^2.2.0",
-    "eslint": "^2.10.2",
+    "@shinnn/eslint-config": "^2.3.0",
+    "eslint": "^2.12.0",
     "istanbul": "^0.4.3",
+    "require-from-string": "^1.2.0",
+    "rollup": "^0.31.2",
     "tape": "^4.5.1"
   }
 }
