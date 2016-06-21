@@ -52,9 +52,9 @@
     "test": "eslint --config @shinnn/node --fix extension.js server.js"
   },
   "dependencies": {
-    "stylelint-vscode": "^4.1.0",
-    "vscode-languageclient": "^2.1.0",
-    "vscode-languageserver": "^2.1.2"
+    "stylelint-vscode": "^4.1.1",
+    "vscode-languageclient": "^2.3.0",
+    "vscode-languageserver": "^2.2.1"
   },
   "devDependencies": {
     "@shinnn/eslint-config-node": "^2.0.0",
