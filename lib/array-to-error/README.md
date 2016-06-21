@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/shinnn/array-to-error.svg?branch=master)](https://travis-ci.org/shinnn/array-to-error)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-error.svg)](https://coveralls.io/github/shinnn/array-to-error?branch=master)
 [![Dependency Status](https://david-dm.org/shinnn/array-to-error.svg)](https://david-dm.org/shinnn/array-to-error)
-[![Dependency Status](https://david-dm.org/shinnn/array-to-error.svg)](https://david-dm.org/shinnn/array-to-error)
+[![devDependency Status](https://david-dm.org/shinnn/array-to-error/dev-status.svg)](https://david-dm.org/shinnn/array-to-error#info=devDependencies)
 
 Create an error from an array of error messages
 
@@ -24,15 +24,11 @@ error.reasons; //=> ['tranling comma on line 1', 'unexpected "(" on line 2']
 npm install array-to-error
 ```
 
-#### [Bower](http://bower.io/)
+#### [Bower](https://bower.io/)
 
 ```
 bower install array-to-error
 ```
-
-### Standalone
-
-[Download the script file directly.](https://raw.githubusercontent.com/shinnn/array-to-error/master/browser.js)
 
 ## API
 
