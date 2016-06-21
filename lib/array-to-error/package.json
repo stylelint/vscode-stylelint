@@ -28,7 +28,7 @@
     "browser"
   ],
   "dependencies": {
-    "array-to-sentence": "^1.0.4"
+    "array-to-sentence": "^1.1.0"
   },
   "devDependencies": {
     "@shinnn/eslint-config": "^2.3.0",
