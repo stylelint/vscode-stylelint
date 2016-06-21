@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "displayName": "stylelint",
   "description": "Modern CSS/SCSS/Less linter",
   "publisher": "shinnn",
