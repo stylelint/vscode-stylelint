@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -103,9 +103,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000486",
+      "version": "1.0.30000488",
       "from": "caniuse-db@>=1.0.30000444 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000486.tgz"
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000488.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -676,9 +676,9 @@
       "resolved": "https://registry.npmjs.org/resolve-from/-/resolve-from-2.0.0.tgz"
     },
     "semver": {
-      "version": "5.1.0",
+      "version": "5.1.1",
       "from": "semver@>=2.0.0 <3.0.0||>=3.0.0 <4.0.0||>=4.0.0 <5.0.0||>=5.0.0 <6.0.0",
-      "resolved": "https://registry.npmjs.org/semver/-/semver-5.1.0.tgz"
+      "resolved": "https://registry.npmjs.org/semver/-/semver-5.1.1.tgz"
     },
     "signal-exit": {
       "version": "3.0.0",
@@ -773,9 +773,9 @@
       "resolved": "https://registry.npmjs.org/stylehacks/-/stylehacks-2.3.1.tgz"
     },
     "stylelint": {
-      "version": "6.7.0",
+      "version": "6.7.1",
       "from": "stylelint@>=6.0.3 <7.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-6.7.0.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-6.7.1.tgz"
     },
     "stylelint-vscode": {
       "version": "4.1.1",
