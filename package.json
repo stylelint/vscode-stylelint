@@ -36,12 +36,18 @@
           "description": "Control whether stylelint is enabled for CSS/SCSS/Less files or not."
         },
         "stylelint.config": {
-          "type": "object",
+          "type": [
+            "object",
+            "null"
+          ],
           "default": null,
           "description": "A stylelint configuration object."
         },
         "stylelint.configOverrides": {
-          "type": "object",
+          "type": [
+            "object",
+            "null"
+          ],
           "default": null,
           "description": "A partial stylelint config whose properties override the existing ones."
         }
