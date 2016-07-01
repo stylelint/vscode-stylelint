@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.10.2",
+  "version": "0.10.3",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -676,9 +676,9 @@
       "resolved": "https://registry.npmjs.org/resolve-from/-/resolve-from-2.0.0.tgz"
     },
     "semver": {
-      "version": "5.1.1",
+      "version": "5.2.0",
       "from": "semver@>=2.0.0 <3.0.0||>=3.0.0 <4.0.0||>=4.0.0 <5.0.0||>=5.0.0 <6.0.0",
-      "resolved": "https://registry.npmjs.org/semver/-/semver-5.1.1.tgz"
+      "resolved": "https://registry.npmjs.org/semver/-/semver-5.2.0.tgz"
     },
     "signal-exit": {
       "version": "3.0.0",
@@ -773,9 +773,9 @@
       "resolved": "https://registry.npmjs.org/stylehacks/-/stylehacks-2.3.1.tgz"
     },
     "stylelint": {
-      "version": "6.7.1",
+      "version": "6.8.0",
       "from": "stylelint@>=6.0.3 <7.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-6.7.1.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-6.8.0.tgz"
     },
     "stylelint-vscode": {
       "version": "4.1.1",
