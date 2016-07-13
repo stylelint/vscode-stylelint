@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.11.3",
+  "version": "0.12.0",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -103,9 +103,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000505",
+      "version": "1.0.30000506",
       "from": "caniuse-db@>=1.0.30000488 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000505.tgz"
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000506.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -185,15 +185,10 @@
       "resolved": "https://registry.npmjs.org/decamelize/-/decamelize-1.2.0.tgz"
     },
     "doiuse": {
-      "version": "2.3.0",
+      "version": "2.4.1",
       "from": "doiuse@>=2.3.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/doiuse/-/doiuse-2.3.0.tgz",
+      "resolved": "https://registry.npmjs.org/doiuse/-/doiuse-2.4.1.tgz",
       "dependencies": {
-        "lodash": {
-          "version": "3.10.1",
-          "from": "lodash@>=3.5.0 <4.0.0",
-          "resolved": "https://registry.npmjs.org/lodash/-/lodash-3.10.1.tgz"
-        },
         "source-map": {
           "version": "0.4.4",
           "from": "source-map@>=0.4.2 <0.5.0",
@@ -596,9 +591,9 @@
       "resolved": "https://registry.npmjs.org/plur/-/plur-2.1.2.tgz"
     },
     "postcss": {
-      "version": "5.0.21",
+      "version": "5.1.0",
       "from": "postcss@>=5.0.20 <6.0.0",
-      "resolved": "https://registry.npmjs.org/postcss/-/postcss-5.0.21.tgz"
+      "resolved": "https://registry.npmjs.org/postcss/-/postcss-5.1.0.tgz"
     },
     "postcss-less": {
       "version": "0.14.0",
@@ -692,7 +687,7 @@
     },
     "source-map": {
       "version": "0.5.6",
-      "from": "source-map@>=0.5.5 <0.6.0",
+      "from": "source-map@>=0.5.6 <0.6.0",
       "resolved": "https://registry.npmjs.org/source-map/-/source-map-0.5.6.tgz"
     },
     "spdx-correct": {
