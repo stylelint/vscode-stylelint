@@ -19,6 +19,16 @@
   "categories": [
     "Linters"
   ],
+  "keywords": [
+    "lint",
+    "style",
+    "stylelint",
+    "css",
+    "less",
+    "scss",
+    "format",
+    "check"
+  ],
   "activationEvents": [
     "onLanguage:css",
     "onLanguage:scss",
