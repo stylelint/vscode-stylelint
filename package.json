@@ -24,9 +24,6 @@
     "style",
     "stylelint",
     "css",
-    "less",
-    "scss",
-    "format",
     "check"
   ],
   "activationEvents": [
