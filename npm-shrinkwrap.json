@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.12.2",
+  "version": "0.13.0",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -63,9 +63,9 @@
       "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.3.7.tgz"
     },
     "balanced-match": {
-      "version": "0.4.1",
+      "version": "0.4.2",
       "from": "balanced-match@>=0.4.0 <0.5.0",
-      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.4.1.tgz"
+      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-0.4.2.tgz"
     },
     "bluebird": {
       "version": "3.4.1",
@@ -73,9 +73,9 @@
       "resolved": "https://registry.npmjs.org/bluebird/-/bluebird-3.4.1.tgz"
     },
     "brace-expansion": {
-      "version": "1.1.5",
+      "version": "1.1.6",
       "from": "brace-expansion@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.5.tgz"
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.6.tgz"
     },
     "browserslist": {
       "version": "1.3.5",
@@ -567,9 +567,9 @@
       "resolved": "https://registry.npmjs.org/postcss-resolve-nested-selector/-/postcss-resolve-nested-selector-0.1.1.tgz"
     },
     "postcss-scss": {
-      "version": "0.1.8",
+      "version": "0.1.9",
       "from": "postcss-scss@>=0.1.3 <0.2.0",
-      "resolved": "https://registry.npmjs.org/postcss-scss/-/postcss-scss-0.1.8.tgz"
+      "resolved": "https://registry.npmjs.org/postcss-scss/-/postcss-scss-0.1.9.tgz"
     },
     "postcss-selector-parser": {
       "version": "2.1.1",
@@ -724,9 +724,9 @@
       "resolved": "https://registry.npmjs.org/stylehacks/-/stylehacks-2.3.1.tgz"
     },
     "stylelint": {
-      "version": "7.0.2",
+      "version": "7.0.3",
       "from": "stylelint@>=7.0.2 <8.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.0.2.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.0.3.tgz"
     },
     "stylelint-vscode": {
       "version": "5.0.0",
