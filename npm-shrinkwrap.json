@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.13.2",
+  "version": "0.13.3",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -58,9 +58,9 @@
       "resolved": "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz"
     },
     "autoprefixer": {
-      "version": "6.3.7",
+      "version": "6.4.0",
       "from": "autoprefixer@>=6.0.0 <7.0.0",
-      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.3.7.tgz"
+      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.4.0.tgz"
     },
     "balanced-match": {
       "version": "0.4.2",
@@ -79,7 +79,7 @@
     },
     "browserslist": {
       "version": "1.3.5",
-      "from": "browserslist@>=1.3.4 <1.4.0",
+      "from": "browserslist@>=1.3.5 <1.4.0",
       "resolved": "https://registry.npmjs.org/browserslist/-/browserslist-1.3.5.tgz"
     },
     "builtin-modules": {
@@ -98,9 +98,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000512",
-      "from": "caniuse-db@>=1.0.30000488 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000512.tgz"
+      "version": "1.0.30000517",
+      "from": "caniuse-db@>=1.0.30000515 <2.0.0",
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000517.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -257,9 +257,9 @@
       "resolved": "https://registry.npmjs.org/glob/-/glob-7.0.5.tgz"
     },
     "globby": {
-      "version": "5.0.0",
-      "from": "globby@>=5.0.0 <6.0.0",
-      "resolved": "https://registry.npmjs.org/globby/-/globby-5.0.0.tgz"
+      "version": "6.0.0",
+      "from": "globby@>=6.0.0 <7.0.0",
+      "resolved": "https://registry.npmjs.org/globby/-/globby-6.0.0.tgz"
     },
     "globjoin": {
       "version": "0.1.4",
@@ -556,6 +556,11 @@
       "from": "postcss-less@>=0.14.0 <0.15.0",
       "resolved": "https://registry.npmjs.org/postcss-less/-/postcss-less-0.14.0.tgz"
     },
+    "postcss-media-query-parser": {
+      "version": "0.2.0",
+      "from": "postcss-media-query-parser@>=0.2.0 <0.3.0",
+      "resolved": "https://registry.npmjs.org/postcss-media-query-parser/-/postcss-media-query-parser-0.2.0.tgz"
+    },
     "postcss-reporter": {
       "version": "1.4.1",
       "from": "postcss-reporter@>=1.3.0 <2.0.0",
@@ -724,9 +729,9 @@
       "resolved": "https://registry.npmjs.org/stylehacks/-/stylehacks-2.3.1.tgz"
     },
     "stylelint": {
-      "version": "7.0.3",
+      "version": "7.1.0",
       "from": "stylelint@>=7.0.2 <8.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.0.3.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.1.0.tgz"
     },
     "stylelint-vscode": {
       "version": "5.0.0",
