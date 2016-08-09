@@ -29,11 +29,11 @@
     "client-side"
   ],
   "devDependencies": {
-    "@shinnn/eslint-config": "^2.4.0",
-    "eslint": "^2.13.1",
+    "@shinnn/eslint-config": "^3.0.1",
+    "eslint": "^3.2.2",
     "istanbul": "^0.4.4",
     "require-from-string": "^1.2.0",
-    "rollup": "^0.33.0",
+    "rollup": "^0.34.7",
     "tape": "^4.6.0"
   }
 }
