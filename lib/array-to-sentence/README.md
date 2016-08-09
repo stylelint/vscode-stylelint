@@ -4,7 +4,7 @@
 [![Bower version](https://img.shields.io/bower/v/array-to-sentence.svg)](https://github.com/shinnn/array-to-sentence/releases)
 [![Build Status](https://travis-ci.org/shinnn/array-to-sentence.svg?branch=master)](https://travis-ci.org/shinnn/array-to-sentence)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-sentence.svg)](https://coveralls.io/github/shinnn/array-to-sentence)
-[![devDependency Status](https://david-dm.org/shinnn/array-to-sentence/dev-status.svg)](https://david-dm.org/shinnn/array-to-sentence#info=devDependencies)
+[![devDependencies Status](https://david-dm.org/shinnn/array-to-sentence/dev-status.svg)](https://david-dm.org/shinnn/array-to-sentence?type=dev)
 
 Join all elements of an array and create a human-readable string
 
@@ -22,7 +22,7 @@ arrayToSentence(['foo', 'bar', 'baz', 'qux']); //=> 'foo, bar, baz and qux'
 npm install array-to-sentence
 ```
 
-#### [bower](http://bower.io/)
+#### [bower](https://bower.io/)
 
 ```
 bower install array-to-sentence
@@ -81,10 +81,10 @@ arrayToSentence(['Earth', 'Wind', 'Fire'], {
 
 ## Acknowledgement
 
-For designing API, I used `.toSentence()` method of [underscore.string](https://github.com/epeli/underscore.string) as reference. Thanks, [Esa-Matti Suuronen](https://github.com/epeli) and [the contributors](https://github.com/epeli/underscore.string/graphs/contributors).
+I used [`.toSentence()` method](https://epeli.github.io/underscore.string/#tosentence-array-delimiter-lastdelimiter-gt-string) of [underscore.string](https://github.com/epeli/underscore.string) as reference of API design. Thanks, [Esa-Matti Suuronen](https://github.com/epeli) and [the contributors](https://github.com/epeli/underscore.string/graphs/contributors).
 
 ## License
 
-Copyright (c) 2014 - 2015 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2014 - 2016 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
