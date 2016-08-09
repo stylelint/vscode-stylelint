@@ -37,12 +37,12 @@
   ],
   "dependencies": {
     "array-to-error": "^1.1.1",
-    "stylelint": "^7.0.2",
-    "vscode-languageserver": "^2.1.2"
+    "stylelint": "^7.1.0",
+    "vscode-languageserver": "^2.2.1"
   },
   "devDependencies": {
-    "@shinnn/eslint-config-node": "^2.0.0",
-    "eslint": "^3.0.1",
+    "@shinnn/eslint-config-node": "^3.0.0",
+    "eslint": "^3.2.2",
     "istanbul": "^0.4.4",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.0"
