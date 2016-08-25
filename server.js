@@ -3,6 +3,7 @@
 const path = require('path');
 
 const langServer = require('vscode-languageserver');
+const Files = langServer.Files;
 const stylelintVSCode = require('stylelint-vscode');
 
 let configBasedir;
@@ -20,6 +21,7 @@ const syntaxConfig = {
 function validate(document) {
   return stylelintVSCode({
     code: document.getText(),
+    codeFilename: Files.uriToFilePath(document.uri),
     config,
     configOverrides,
     configBasedir,
