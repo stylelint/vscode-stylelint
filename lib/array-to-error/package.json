@@ -6,7 +6,7 @@
   "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
   "scripts": {
     "pretest": "bower install --production && eslint --fix --config @shinnn --ignore-path .gitignore .",
-    "test": "node --strong_mode --throw-deprecation --track-heap-objects test.js | tap-spec",
+    "test": "node --throw-deprecation --track-heap-objects test.js | tap-spec",
     "coverage": "istanbul cover -x=bower_components/array-to-sentence/* test.js"
   },
   "license": "MIT",
