@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "dependencies": {
     "amdefine": {
       "version": "1.0.0",
@@ -806,14 +806,14 @@
       "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-2.3.2-next.5.tgz"
     },
     "vscode-languageclient": {
-      "version": "2.4.2-next.13",
+      "version": "2.4.2-next.18",
       "from": "vscode-languageclient@>=2.4.2-next.9 <3.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-languageclient/-/vscode-languageclient-2.4.2-next.13.tgz"
+      "resolved": "https://registry.npmjs.org/vscode-languageclient/-/vscode-languageclient-2.4.2-next.18.tgz"
     },
     "vscode-languageserver": {
-      "version": "2.4.0-next.9",
+      "version": "2.4.0-next.11",
       "from": "vscode-languageserver@>=2.4.0-next.9 <3.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-2.4.0-next.9.tgz"
+      "resolved": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-2.4.0-next.11.tgz"
     },
     "vscode-languageserver-types": {
       "version": "1.0.2",
