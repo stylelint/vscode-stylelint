@@ -59,7 +59,13 @@
           "description": "A partial stylelint config whose properties override the existing ones."
         }
       }
-    }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "**/.stylelintrc*",
+        "url": "http://json.schemastore.org/stylelintrc.json"
+      }
+    ]
   },
   "scripts": {
     "test": "eslint --config @shinnn/node --fix extension.js server.js"
