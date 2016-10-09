@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.16.1",
+  "version": "0.17.0",
   "dependencies": {
     "ajv": {
       "version": "4.7.7",
@@ -103,9 +103,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000548",
+      "version": "1.0.30000551",
       "from": "caniuse-db@>=1.0.30000540 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000548.tgz"
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000551.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -763,9 +763,9 @@
       "resolved": "https://registry.npmjs.org/stylehacks/-/stylehacks-2.3.1.tgz"
     },
     "stylelint": {
-      "version": "7.4.0",
+      "version": "7.4.1",
       "from": "stylelint@>=7.1.0 <8.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.4.0.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.4.1.tgz"
     },
     "stylelint-vscode": {
       "version": "5.0.1",
