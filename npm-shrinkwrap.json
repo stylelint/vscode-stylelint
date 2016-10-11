@@ -1,6 +1,6 @@
 {
   "name": "stylelint",
-  "version": "0.17.1",
+  "version": "0.17.2",
   "dependencies": {
     "ajv": {
       "version": "4.7.7",
@@ -764,13 +764,13 @@
     },
     "stylelint": {
       "version": "7.4.2",
-      "from": "stylelint@>=7.1.0 <8.0.0",
+      "from": "stylelint@>=7.4.2 <8.0.0",
       "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.4.2.tgz"
     },
     "stylelint-vscode": {
-      "version": "5.0.1",
+      "version": "5.1.0",
       "from": "stylelint-vscode@>=5.0.0 <6.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint-vscode/-/stylelint-vscode-5.0.1.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint-vscode/-/stylelint-vscode-5.1.0.tgz"
     },
     "sugarss": {
       "version": "0.1.6",
