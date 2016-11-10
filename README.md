@@ -16,11 +16,12 @@ See the [extension installation guide](https://code.visualstudio.com/docs/editor
 
 ## Usage
 
-Enable the linter in the VS Code [settings](https://code.visualstudio.com/docs/customization/userandworkspace).
+Enable the linter in the VS Code [settings](https://code.visualstudio.com/docs/customization/userandworkspace), while disabling the built-in CSS linter:
 
 ```json
 {
-  "stylelint.enable": true
+  "stylelint.enable": true,
+  "css.validate": false
 }
 ```
 
