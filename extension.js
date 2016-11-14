@@ -7,7 +7,7 @@ const LanguageClient = langClient.LanguageClient;
 const SettingMonitor = langClient.SettingMonitor;
 const vscode = require('vscode');
 
-exports.activate = function activateStylelint(context) {
+exports.activate = context => {
   const serverModule = path.join(__dirname, 'server.js');
 
   const client = new LanguageClient('stylelint', {

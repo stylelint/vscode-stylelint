@@ -68,7 +68,7 @@
     ]
   },
   "scripts": {
-    "test": "eslint --config @shinnn/node --fix extension.js server.js"
+    "test": "eslint --fix --format=codeframe extension.js server.js"
   },
   "dependencies": {
     "stylelint-vscode": "^5.1.0",
@@ -77,7 +77,10 @@
   },
   "devDependencies": {
     "@shinnn/eslint-config-node": "^3.0.0",
-    "eslint": "^3.2.0",
+    "eslint": "^3.10.0",
     "vscode": "^1.0.0"
+  },
+  "eslintConfig": {
+    "extends": "@shinnn/node"
   }
 }
