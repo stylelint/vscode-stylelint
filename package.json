@@ -72,7 +72,7 @@
   },
   "dependencies": {
     "stylelint-vscode": "^5.1.0",
-    "vscode-languageclient": "^2.6.1",
+    "vscode-languageclient": "^2.6.2",
     "vscode-languageserver": "^2.6.1"
   },
   "devDependencies": {
