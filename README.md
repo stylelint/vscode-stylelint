@@ -1,5 +1,6 @@
 # vscode-stylelint
 
+[![Build Status](https://travis-ci.org/shinnn/vscode-stylelint.svg?branch=master)](https://travis-ci.org/shinnn/vscode-stylelint)
 [![Dependency Status](https://david-dm.org/shinnn/vscode-stylelint.svg)](https://david-dm.org/shinnn/vscode-stylelint)
 [![devDependency Status](https://david-dm.org/shinnn/vscode-stylelint/dev-status.svg)](https://david-dm.org/shinnn/vscode-stylelint#info=devDependencies)
 
