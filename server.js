@@ -71,6 +71,10 @@ connection.onDidChangeConfiguration(params => {
 connection.onDidChangeWatchedFiles(() => validateAll());
 
 documents.onDidChangeContent(event => validate(event.document));
+documents.onDidClose(event => connection.sendDiagnostics({
+  uri: event.document.uri,
+  diagnostics: []
+}));
 documents.listen(connection);
 
 connection.listen();
