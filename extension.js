@@ -21,7 +21,7 @@ exports.activate = context => {
       }
     }
   }, {
-    documentSelector: ['css', 'less', 'scss'],
+    documentSelector: ['css', 'less', 'postcss', 'scss'],
     synchronize: {
       configurationSection: 'stylelint',
       fileEvents: vscode.workspace.createFileSystemWatcher('**/{.stylelintrc,stylelint.config.js}')
