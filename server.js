@@ -4,7 +4,6 @@ const langServer = require('vscode-languageserver');
 const Files = langServer.Files;
 const stylelintVSCode = require('stylelint-vscode');
 
-let configBasedir;
 let config;
 let configOverrides;
 
@@ -19,7 +18,6 @@ function validate(document) {
     codeFilename: Files.uriToFilePath(document.uri),
     config,
     configOverrides,
-    configBasedir,
     syntax: supportedCustomSyntaxes.has(document.languageId) ? document.languageId : null
   }).then(diagnostics => {
     connection.sendDiagnostics({uri: document.uri, diagnostics});
@@ -43,11 +41,7 @@ function validateAll() {
   return Promise.all(documents.all().map(document => validate(document)));
 }
 
-connection.onInitialize(params => {
-  if (params.rootPath) {
-    configBasedir = params.rootPath;
-  }
-
+connection.onInitialize(() => {
   validateAll();
 
   return {
@@ -57,7 +51,7 @@ connection.onInitialize(params => {
   };
 });
 connection.onDidChangeConfiguration(params => {
-  const settings = params.settings;
+  const {settings} = params;
   config = settings.stylelint.config;
   configOverrides = settings.stylelint.configOverrides;
 
