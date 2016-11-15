@@ -1,7 +1,5 @@
 'use strict';
 
-const path = require('path');
-
 const langServer = require('vscode-languageserver');
 const Files = langServer.Files;
 const stylelintVSCode = require('stylelint-vscode');
@@ -13,10 +11,7 @@ let configOverrides;
 const connection = langServer.createConnection(process.stdin, process.stdout);
 const documents = new langServer.TextDocuments();
 
-const syntaxConfig = {
-  '.scss': 'scss',
-  '.less': 'less'
-};
+const supportedCustomSyntaxes = new Set(['less', 'scss']);
 
 function validate(document) {
   return stylelintVSCode({
@@ -25,7 +20,7 @@ function validate(document) {
     config,
     configOverrides,
     configBasedir,
-    syntax: syntaxConfig[path.extname(String(document.uri)).toLowerCase()]
+    syntax: supportedCustomSyntaxes.has(document.languageId) ? document.languageId : null
   }).then(diagnostics => {
     connection.sendDiagnostics({uri: document.uri, diagnostics});
   }).catch(err => {
