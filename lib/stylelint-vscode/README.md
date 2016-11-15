@@ -30,7 +30,7 @@ stylelintVSCode({
   /* =>
     [
       {
-        message: 'stylelint: Expected a leading zero (number-leading-zero)',
+        message: 'Expected a leading zero (number-leading-zero)',
         severity: 1,
         range: {
           start: {
@@ -41,10 +41,11 @@ stylelintVSCode({
             line: 2,
             character: 14
           }
-        }
+        },
+        source: 'stylelint'
       },
       {
-        message: 'stylelint: Unexpected named color "red" (color-no-named)',
+        message: 'Unexpected named color "red" (color-no-named)',
         severity: 2,
         range: {
           start: {
@@ -55,7 +56,8 @@ stylelintVSCode({
             line: 3,
             character: 9
           }
-        }
+        },
+        source: 'stylelint'
       }
     ]
   */
@@ -98,7 +100,7 @@ stylelintVSCode({
   diagnostics;
   /* =>
     {
-      message: 'stylelint: Unknown word',
+      message: 'Unknown word',
       severity: 1,
       range: {
         start: {
@@ -109,7 +111,8 @@ stylelintVSCode({
           line: 0,
           character: 1
         }
-      }
+      },
+      source: 'stylelint'
     }
   */
 });
