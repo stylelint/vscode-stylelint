@@ -13,13 +13,21 @@ const documents = new langServer.TextDocuments();
 const supportedCustomSyntaxes = new Set(['less', 'scss']);
 
 function validate(document) {
-  return stylelintVSCode({
+  const options = {
     code: document.getText(),
     codeFilename: Files.uriToFilePath(document.uri),
-    config,
-    configOverrides,
     syntax: supportedCustomSyntaxes.has(document.languageId) ? document.languageId : null
-  }).then(diagnostics => {
+  };
+
+  if (config) {
+    options.config = config;
+  }
+
+  if (configOverrides) {
+    options.configOverrides = configOverrides;
+  }
+
+  return stylelintVSCode(options).then(diagnostics => {
     connection.sendDiagnostics({uri: document.uri, diagnostics});
   }).catch(err => {
     if (err.reasons) {
