@@ -37,6 +37,7 @@
   ],
   "dependencies": {
     "array-to-error": "^1.1.1",
+    "is-plain-obj": "^1.1.0",
     "stylelint": "^7.6.0"
   },
   "devDependencies": {
