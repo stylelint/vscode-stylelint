@@ -72,7 +72,7 @@
     "test": "eslint --fix --format=codeframe extension.js server.js"
   },
   "dependencies": {
-    "stylelint-vscode": "^5.2.2",
+    "stylelint-vscode": "^5.2.3",
     "vscode-languageclient": "^2.6.3",
     "vscode-languageserver": "^2.6.2"
   },
