@@ -28,38 +28,23 @@ stylelintVSCode({
 }).then(diagnostics => {
   diagnostics;
   /* =>
-    [
-      {
-        message: 'Expected a leading zero (number-leading-zero)',
-        severity: 1,
-        range: {
-          start: {
-            line: 2,
-            character: 14
-          },
-          end: {
-            line: 2,
-            character: 14
-          }
-        },
-        source: 'stylelint'
+    [{
+      message: 'Expected a leading zero (number-leading-zero)',
+      severity: 1,
+      range: {
+        start: {line: 2, character: 14},
+        end: {line: 2, character: 14}
       },
-      {
-        message: 'Unexpected named color "red" (color-no-named)',
-        severity: 2,
-        range: {
-          start: {
-            line: 3,
-            character: 9
-          },
-          end: {
-            line: 3,
-            character: 9
-          }
-        },
-        source: 'stylelint'
-      }
-    ]
+      source: 'stylelint'
+    }, {
+      message: 'Unexpected named color "red" (color-no-named)',
+      severity: 2,
+      range: {
+        start: {line: 3, character: 9},
+        end: {line: 3, character: 9}
+      },
+      source: 'stylelint'
+    }]
   */
 });
 ```
@@ -90,6 +75,8 @@ It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/893
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
 * It suppresses `No configuration found` error.
   * Doing nothing when there is no configuration is a common behavior of editor plugins.
+* [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) option is required and [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) option is not supported.
+  * Because extension authors can derive file contents via [`TextDocument#getText()`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument) and there is no need to let stylelint read physical files.
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
@@ -99,21 +86,15 @@ stylelintVSCode({
 }).then(diagnostics => {
   diagnostics;
   /* =>
-    {
+    [{
       message: 'Unknown word',
       severity: 1,
       range: {
-        start: {
-          line: 0,
-          character: 1
-        },
-        end: {
-          line: 0,
-          character: 1
-        }
+        start: {line: 0, character: 1},
+        end: {line: 0, character: 1}
       },
       source: 'stylelint'
-    }
+    }]
   */
 });
 
