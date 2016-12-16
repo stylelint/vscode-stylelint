@@ -1,3 +1,4 @@
+dist: trusty
 git:
   depth: 1
 branches:
