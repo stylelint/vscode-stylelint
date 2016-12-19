@@ -1,11 +1,11 @@
 {
   "name": "stylelint",
-  "version": "0.20.3",
+  "version": "0.20.4",
   "dependencies": {
     "ajv": {
-      "version": "4.9.1",
+      "version": "4.10.0",
       "from": "ajv@>=4.7.0 <5.0.0",
-      "resolved": "https://registry.npmjs.org/ajv/-/ajv-4.9.1.tgz"
+      "resolved": "https://registry.npmjs.org/ajv/-/ajv-4.10.0.tgz"
     },
     "ajv-keywords": {
       "version": "1.2.0",
@@ -68,9 +68,9 @@
       "resolved": "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz"
     },
     "autoprefixer": {
-      "version": "6.5.3",
+      "version": "6.5.4",
       "from": "autoprefixer@>=6.0.0 <7.0.0",
-      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.5.3.tgz"
+      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.5.4.tgz"
     },
     "balanced-match": {
       "version": "0.4.2",
@@ -103,9 +103,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000591",
-      "from": "caniuse-db@>=1.0.30000578 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000591.tgz"
+      "version": "1.0.30000600",
+      "from": "caniuse-db@>=1.0.30000597 <2.0.0",
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000600.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -175,7 +175,7 @@
     },
     "cosmiconfig": {
       "version": "2.1.1",
-      "from": "cosmiconfig@>=2.0.0 <3.0.0",
+      "from": "cosmiconfig@>=2.1.1 <3.0.0",
       "resolved": "https://registry.npmjs.org/cosmiconfig/-/cosmiconfig-2.1.1.tgz"
     },
     "css-color-names": {
@@ -436,9 +436,9 @@
       "resolved": "https://registry.npmjs.org/JSONStream/-/JSONStream-0.8.4.tgz"
     },
     "known-css-properties": {
-      "version": "0.0.5",
-      "from": "known-css-properties@>=0.0.5 <0.0.6",
-      "resolved": "https://registry.npmjs.org/known-css-properties/-/known-css-properties-0.0.5.tgz"
+      "version": "0.0.6",
+      "from": "known-css-properties@>=0.0.6 <0.0.7",
+      "resolved": "https://registry.npmjs.org/known-css-properties/-/known-css-properties-0.0.6.tgz"
     },
     "lcid": {
       "version": "1.0.0",
@@ -606,9 +606,9 @@
       "resolved": "https://registry.npmjs.org/postcss-media-query-parser/-/postcss-media-query-parser-0.2.3.tgz"
     },
     "postcss-reporter": {
-      "version": "2.0.0",
-      "from": "postcss-reporter@>=2.0.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/postcss-reporter/-/postcss-reporter-2.0.0.tgz"
+      "version": "3.0.0",
+      "from": "postcss-reporter@>=3.0.0 <4.0.0",
+      "resolved": "https://registry.npmjs.org/postcss-reporter/-/postcss-reporter-3.0.0.tgz"
     },
     "postcss-resolve-nested-selector": {
       "version": "0.1.1",
@@ -782,13 +782,13 @@
       }
     },
     "stylelint": {
-      "version": "7.6.0",
+      "version": "7.7.0",
       "from": "stylelint@>=7.6.0 <8.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.6.0.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.7.0.tgz"
     },
     "stylelint-vscode": {
       "version": "5.2.3",
-      "from": "stylelint-vscode@>=5.2.2 <6.0.0",
+      "from": "stylelint-vscode@>=5.2.3 <6.0.0",
       "resolved": "https://registry.npmjs.org/stylelint-vscode/-/stylelint-vscode-5.2.3.tgz"
     },
     "sugarss": {
@@ -812,9 +812,9 @@
       "resolved": "https://registry.npmjs.org/synesthesia/-/synesthesia-1.0.1.tgz"
     },
     "table": {
-      "version": "3.8.3",
-      "from": "table@>=3.7.8 <4.0.0",
-      "resolved": "https://registry.npmjs.org/table/-/table-3.8.3.tgz"
+      "version": "4.0.1",
+      "from": "table@>=4.0.1 <5.0.0",
+      "resolved": "https://registry.npmjs.org/table/-/table-4.0.1.tgz"
     },
     "text-table": {
       "version": "0.2.0",
