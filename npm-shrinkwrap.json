@@ -1,16 +1,16 @@
 {
   "name": "stylelint",
-  "version": "0.20.4",
+  "version": "0.21.0",
   "dependencies": {
     "ajv": {
-      "version": "4.10.0",
+      "version": "4.10.3",
       "from": "ajv@>=4.7.0 <5.0.0",
-      "resolved": "https://registry.npmjs.org/ajv/-/ajv-4.10.0.tgz"
+      "resolved": "https://registry.npmjs.org/ajv/-/ajv-4.10.3.tgz"
     },
     "ajv-keywords": {
-      "version": "1.2.0",
+      "version": "1.4.1",
       "from": "ajv-keywords@>=1.0.0 <2.0.0",
-      "resolved": "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-1.2.0.tgz"
+      "resolved": "https://registry.npmjs.org/ajv-keywords/-/ajv-keywords-1.4.1.tgz"
     },
     "amdefine": {
       "version": "1.0.1",
@@ -68,9 +68,9 @@
       "resolved": "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz"
     },
     "autoprefixer": {
-      "version": "6.5.4",
+      "version": "6.6.0",
       "from": "autoprefixer@>=6.0.0 <7.0.0",
-      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.5.4.tgz"
+      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.6.0.tgz"
     },
     "balanced-match": {
       "version": "0.4.2",
@@ -83,9 +83,9 @@
       "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.6.tgz"
     },
     "browserslist": {
-      "version": "1.4.0",
-      "from": "browserslist@>=1.4.0 <1.5.0",
-      "resolved": "https://registry.npmjs.org/browserslist/-/browserslist-1.4.0.tgz"
+      "version": "1.5.1",
+      "from": "browserslist@>=1.5.1 <1.6.0",
+      "resolved": "https://registry.npmjs.org/browserslist/-/browserslist-1.5.1.tgz"
     },
     "builtin-modules": {
       "version": "1.1.1",
@@ -103,9 +103,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000600",
-      "from": "caniuse-db@>=1.0.30000597 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000600.tgz"
+      "version": "1.0.30000602",
+      "from": "caniuse-db@>=1.0.30000602 <2.0.0",
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000602.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -456,9 +456,9 @@
       "resolved": "https://registry.npmjs.org/load-json-file/-/load-json-file-1.1.0.tgz"
     },
     "lodash": {
-      "version": "4.17.2",
+      "version": "4.17.3",
       "from": "lodash@>=4.0.0 <5.0.0",
-      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.2.tgz"
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.3.tgz"
     },
     "log-symbols": {
       "version": "1.0.2",
@@ -591,9 +591,9 @@
       "resolved": "https://registry.npmjs.org/plur/-/plur-2.1.2.tgz"
     },
     "postcss": {
-      "version": "5.2.6",
+      "version": "5.2.8",
       "from": "postcss@>=5.0.20 <6.0.0",
-      "resolved": "https://registry.npmjs.org/postcss/-/postcss-5.2.6.tgz"
+      "resolved": "https://registry.npmjs.org/postcss/-/postcss-5.2.8.tgz"
     },
     "postcss-less": {
       "version": "0.14.0",
