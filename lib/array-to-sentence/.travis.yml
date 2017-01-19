@@ -1,3 +1,4 @@
+dist: trusty
 sudo: false
 git:
   depth: 1
@@ -9,5 +10,3 @@ after_script:
   - npm install istanbul-coveralls
   - npm run-script coverage
   - node node_modules/.bin/istanbul-coveralls
-notifications:
-  email: false
