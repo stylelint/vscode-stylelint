@@ -4,7 +4,7 @@
   "description": "Join all elements of an array and create a human-readable string",
   "repository": "shinnn/array-to-sentence",
   "scripts": {
-    "pretest": "eslint --fix --config @shinnn --ignore-path .gitignore .",
+    "pretest": "eslint --fix --format=codeframe --ignore-path .gitignore .",
     "test": "node --throw-deprecation --track-heap-objects test.js",
     "coverage": "istanbul cover test.js"
   },
@@ -29,11 +29,14 @@
     "client-side"
   ],
   "devDependencies": {
-    "@shinnn/eslint-config": "^3.0.1",
-    "eslint": "^3.2.2",
-    "istanbul": "^0.4.4",
-    "require-from-string": "^1.2.0",
-    "rollup": "^0.34.7",
-    "tape": "^4.6.0"
+    "@shinnn/eslint-config": "^3.3.6",
+    "eslint": "^3.13.1",
+    "istanbul": "^0.4.5",
+    "require-from-string": "^1.2.1",
+    "rollup": "^0.41.4",
+    "tape": "^4.6.3"
+  },
+  "eslintConfig": {
+    "extends": "@shinnn"
   }
 }
