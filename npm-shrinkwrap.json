@@ -83,9 +83,9 @@
       "resolved": "https://registry.npmjs.org/arrify/-/arrify-1.0.1.tgz"
     },
     "autoprefixer": {
-      "version": "6.7.0",
+      "version": "6.7.2",
       "from": "autoprefixer@>=6.0.0 <7.0.0",
-      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.7.0.tgz"
+      "resolved": "https://registry.npmjs.org/autoprefixer/-/autoprefixer-6.7.2.tgz"
     },
     "balanced-match": {
       "version": "0.4.2",
@@ -103,9 +103,9 @@
       "resolved": "https://registry.npmjs.org/braces/-/braces-1.8.5.tgz"
     },
     "browserslist": {
-      "version": "1.6.0",
-      "from": "browserslist@>=1.6.0 <1.7.0",
-      "resolved": "https://registry.npmjs.org/browserslist/-/browserslist-1.6.0.tgz"
+      "version": "1.7.1",
+      "from": "browserslist@>=1.7.1 <2.0.0",
+      "resolved": "https://registry.npmjs.org/browserslist/-/browserslist-1.7.1.tgz"
     },
     "builtin-modules": {
       "version": "1.1.1",
@@ -123,9 +123,9 @@
       "resolved": "https://registry.npmjs.org/camelcase-keys/-/camelcase-keys-2.1.0.tgz"
     },
     "caniuse-db": {
-      "version": "1.0.30000615",
-      "from": "caniuse-db@>=1.0.30000613 <2.0.0",
-      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000615.tgz"
+      "version": "1.0.30000619",
+      "from": "caniuse-db@>=1.0.30000618 <2.0.0",
+      "resolved": "https://registry.npmjs.org/caniuse-db/-/caniuse-db-1.0.30000619.tgz"
     },
     "chalk": {
       "version": "1.1.3",
@@ -257,7 +257,7 @@
     },
     "electron-to-chromium": {
       "version": "1.2.1",
-      "from": "electron-to-chromium@>=1.2.0 <2.0.0",
+      "from": "electron-to-chromium@>=1.2.1 <2.0.0",
       "resolved": "https://registry.npmjs.org/electron-to-chromium/-/electron-to-chromium-1.2.1.tgz"
     },
     "error-ex": {
@@ -391,9 +391,9 @@
       "resolved": "https://registry.npmjs.org/html-tags/-/html-tags-1.1.1.tgz"
     },
     "ignore": {
-      "version": "3.2.0",
+      "version": "3.2.2",
       "from": "ignore@>=3.2.0 <4.0.0",
-      "resolved": "https://registry.npmjs.org/ignore/-/ignore-3.2.0.tgz"
+      "resolved": "https://registry.npmjs.org/ignore/-/ignore-3.2.2.tgz"
     },
     "indent-string": {
       "version": "2.1.0",
@@ -959,9 +959,9 @@
       }
     },
     "stylelint": {
-      "version": "7.7.1",
+      "version": "7.8.0",
       "from": "stylelint@>=7.6.0 <8.0.0",
-      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.7.1.tgz"
+      "resolved": "https://registry.npmjs.org/stylelint/-/stylelint-7.8.0.tgz"
     },
     "stylelint-vscode": {
       "version": "5.2.3",
@@ -1031,24 +1031,24 @@
       "resolved": "https://registry.npmjs.org/validate-npm-package-license/-/validate-npm-package-license-3.0.1.tgz"
     },
     "vscode-jsonrpc": {
-      "version": "2.4.0",
-      "from": "vscode-jsonrpc@>=2.4.0 <3.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-2.4.0.tgz"
+      "version": "3.0.4",
+      "from": "vscode-jsonrpc@>=3.0.3 <4.0.0",
+      "resolved": "https://registry.npmjs.org/vscode-jsonrpc/-/vscode-jsonrpc-3.0.4.tgz"
     },
     "vscode-languageclient": {
-      "version": "2.6.3",
-      "from": "vscode-languageclient@>=2.6.3 <3.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-languageclient/-/vscode-languageclient-2.6.3.tgz"
+      "version": "3.0.3",
+      "from": "vscode-languageclient@>=3.0.3 <4.0.0",
+      "resolved": "https://registry.npmjs.org/vscode-languageclient/-/vscode-languageclient-3.0.3.tgz"
     },
     "vscode-languageserver": {
-      "version": "2.6.2",
-      "from": "vscode-languageserver@>=2.6.2 <3.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-2.6.2.tgz"
+      "version": "3.0.4",
+      "from": "vscode-languageserver@>=3.0.4 <4.0.0",
+      "resolved": "https://registry.npmjs.org/vscode-languageserver/-/vscode-languageserver-3.0.4.tgz"
     },
     "vscode-languageserver-types": {
-      "version": "1.0.4",
-      "from": "vscode-languageserver-types@>=1.0.4 <2.0.0",
-      "resolved": "https://registry.npmjs.org/vscode-languageserver-types/-/vscode-languageserver-types-1.0.4.tgz"
+      "version": "3.0.3",
+      "from": "vscode-languageserver-types@>=3.0.3 <4.0.0",
+      "resolved": "https://registry.npmjs.org/vscode-languageserver-types/-/vscode-languageserver-types-3.0.3.tgz"
     },
     "window-size": {
       "version": "0.1.4",
