@@ -13,11 +13,13 @@ const documents = new langServer.TextDocuments();
 const supportedCustomSyntaxes = new Set(['less', 'scss']);
 
 function validate(document) {
-  const options = {
-    code: document.getText(),
-    codeFilename: Files.uriToFilePath(document.uri),
-    syntax: supportedCustomSyntaxes.has(document.languageId) ? document.languageId : null
-  };
+  const options = {code: document.getText()};
+
+  const filePath = Files.uriToFilePath(document.uri);
+
+  if (filePath) {
+    options.codeFilename = filePath;
+  }
 
   if (config) {
     options.config = config;
@@ -25,6 +27,10 @@ function validate(document) {
 
   if (configOverrides) {
     options.configOverrides = configOverrides;
+  }
+
+  if (supportedCustomSyntaxes.has(document.languageId)) {
+    options.syntax = document.languageId;
   }
 
   return stylelintVSCode(options).then(diagnostics => {
