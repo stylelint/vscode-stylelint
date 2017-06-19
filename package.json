@@ -14,7 +14,7 @@
     "theme": "light"
   },
   "engines": {
-    "vscode": "^0.10.1"
+    "vscode": "^1.8.0"
   },
   "categories": [
     "Linters"
