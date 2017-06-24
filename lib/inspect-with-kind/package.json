@@ -1,6 +1,6 @@
 {
   "name": "inspect-with-kind",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "`util.inspect` with additional type information",
   "repository": "shinnn/inspect-with-kind",
   "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
@@ -30,10 +30,10 @@
   },
   "devDependencies": {
     "@shinnn/eslint-config-node": "^4.0.0",
-    "eslint": "^4.0.0",
+    "eslint": "^4.1.1",
     "nyc": "^11.0.2",
     "tape": "^4.6.3",
-    "zen-observable": "^0.5.1"
+    "zen-observable": "^0.5.2"
   },
   "eslintConfig": {
     "extends": "@shinnn/node"
