@@ -52,6 +52,13 @@ Default: `null`
 
 Will be directly passed to [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that if you set `config` option, this plugin ignores all the stylelint configuration files.
 
+#### stylelint.additionalDocumentSelectors
+
+Type: `array`  
+Default: `[]`
+
+A set of document types that you can use to run stylelint against if you are using CSS inside document types like: `javascriptreact`, `typescriptreact` or `vue`.
+
 ## License
 
 Copyright (c) 2015 - 2017 [Shinnosuke Watanabe](https://github.com/shinnn)

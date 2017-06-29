@@ -9,6 +9,8 @@ const vscode = require('vscode');
 
 exports.activate = context => {
   const serverModule = path.join(__dirname, 'server.js');
+  const workspaceConfig = vscode.workspace.getConfiguration('stylelint');
+  const additionalDocuments = workspaceConfig.get('additionalDocumentSelectors');
 
   const client = new LanguageClient('stylelint', {
     run: {
@@ -21,7 +23,7 @@ exports.activate = context => {
       }
     }
   }, {
-    documentSelector: ['css', 'less', 'postcss', 'scss'],
+    documentSelector: ['css', 'less', 'postcss', 'scss', ...additionalDocuments],
     synchronize: {
       configurationSection: 'stylelint',
       fileEvents: vscode.workspace.createFileSystemWatcher('**/{.stylelintrc,stylelint.config.js}')
