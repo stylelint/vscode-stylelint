@@ -1,8 +1,6 @@
 # vscode-stylelint
 
 [![Build Status](https://travis-ci.org/shinnn/vscode-stylelint.svg?branch=master)](https://travis-ci.org/shinnn/vscode-stylelint)
-[![Dependency Status](https://david-dm.org/shinnn/vscode-stylelint.svg)](https://david-dm.org/shinnn/vscode-stylelint)
-[![devDependency Status](https://david-dm.org/shinnn/vscode-stylelint/dev-status.svg)](https://david-dm.org/shinnn/vscode-stylelint#info=devDependencies)
 
 A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](http://sass-lang.com/documentation/file.SASS_REFERENCE.html#syntax)/[Less](http://lesscss.org/) with [stylelint](http://stylelint.io/)
 
@@ -54,10 +52,10 @@ Will be directly passed to [`config`](https://github.com/stylelint/stylelint/blo
 
 #### stylelint.additionalDocumentSelectors
 
-Type: `array`  
+Type: `Array`  
 Default: `[]`
 
-A set of document types that you can use to run stylelint against if you are using CSS inside document types like: `javascriptreact`, `typescriptreact` or `vue`.
+Document types that you can use to run stylelint against if you are using CSS inside document types like: `javascriptreact`, `typescriptreact` or `vue`.
 
 ## License
 
