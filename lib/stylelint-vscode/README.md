@@ -3,8 +3,6 @@
 [![NPM version](https://img.shields.io/npm/v/stylelint-vscode.svg)](https://www.npmjs.com/package/stylelint-vscode)
 [![Build Status](https://travis-ci.org/shinnn/stylelint-vscode.svg?branch=master)](https://travis-ci.org/shinnn/stylelint-vscode)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/stylelint-vscode.svg)](https://coveralls.io/github/shinnn/stylelint-vscode)
-[![Dependency Status](https://david-dm.org/shinnn/stylelint-vscode.svg)](https://david-dm.org/shinnn/stylelint-vscode)
-[![devDependency Status](https://david-dm.org/shinnn/stylelint-vscode/dev-status.svg)](https://david-dm.org/shinnn/stylelint-vscode#info=devDependencies)
 
 [stylelint](https://github.com/stylelint/stylelint) wrapper to easily integrate with [Visual Studio Code](https://code.visualstudio.com/) [language server](https://github.com/Microsoft/vscode-languageserver-node)
 
@@ -125,6 +123,6 @@ stylelintVSCode({
 
 ## License
 
-Copyright (c) 2015 - 2016 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2015 - 2017 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
