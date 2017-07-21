@@ -8,7 +8,7 @@
   "homepage": "https://github.com/shinnn/vscode-stylelint#readme",
   "bugs": "https://github.com/shinnn/vscode-stylelint/issues",
   "license": "MIT",
-  "icon": "media/icon.svg",
+  "icon": "media/icon.png",
   "galleryBanner": {
     "color": "#32CD32",
     "theme": "light"
