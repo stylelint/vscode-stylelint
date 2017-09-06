@@ -86,17 +86,10 @@
   },
   "devDependencies": {
     "@shinnn/eslint-config-node": "^4.0.2",
-    "eslint": "^4.2.0",
-    "vscode": "^1.1.0"
+    "eslint": "^4.6.0",
+    "vscode": "^1.1.5"
   },
   "eslintConfig": {
-    "extends": "@shinnn/node",
-    "settings": {
-      "node": {
-        "allowModules": [
-          "vscode"
-        ]
-      }
-    }
+    "extends": "@shinnn/node"
   }
 }
