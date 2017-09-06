@@ -26,6 +26,7 @@
     "css",
     "check"
   ],
+  "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
   "activationEvents": [
     "onLanguage:css",
     "onLanguage:less",
