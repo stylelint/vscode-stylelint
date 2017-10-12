@@ -83,12 +83,12 @@
   },
   "dependencies": {
     "stylelint-vscode": "^6.0.0",
-    "vscode-languageclient": "^3.4.2",
-    "vscode-languageserver": "^3.4.2"
+    "vscode-languageclient": "^3.4.5",
+    "vscode-languageserver": "^3.4.3"
   },
   "devDependencies": {
     "@shinnn/eslint-config-node": "^4.0.2",
-    "eslint": "^4.7.1",
+    "eslint": "^4.8.0",
     "vscode": "^1.1.5"
   },
   "eslintConfig": {
