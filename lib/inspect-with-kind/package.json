@@ -26,14 +26,14 @@
     "check"
   ],
   "dependencies": {
-    "kind-of": "^5.0.0"
+    "kind-of": "^6.0.0"
   },
   "devDependencies": {
-    "@shinnn/eslint-config-node": "^4.0.0",
-    "eslint": "^4.1.1",
-    "nyc": "^11.0.2",
-    "tape": "^4.6.3",
-    "zen-observable": "^0.5.2"
+    "@shinnn/eslint-config-node": "^4.0.2",
+    "eslint": "^4.8.0",
+    "nyc": "^11.2.1",
+    "tape": "^4.8.0",
+    "zen-observable": "^0.6.0"
   },
   "eslintConfig": {
     "extends": "@shinnn/node"
