@@ -1,18 +1,16 @@
 # inspect-with-kind
 
-[![NPM version](https://img.shields.io/npm/v/inspect-with-kind.svg)](https://www.npmjs.com/package/inspect-with-kind)
+[![npm version](https://img.shields.io/npm/v/inspect-with-kind.svg)](https://www.npmjs.com/package/inspect-with-kind)
 [![Build Status](https://travis-ci.org/shinnn/inspect-with-kind.svg?branch=master)](https://travis-ci.org/shinnn/inspect-with-kind)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/inspect-with-kind.svg)](https://coveralls.io/github/shinnn/inspect-with-kind?branch=master)
 
 [`util.inspect`][util.inspect] with additional type information
 
 ```javascript
-const util = require('util');
-
-util.inspect([1, 2, 3]); //=> '[ 1, 2, 3 ]'
-
+const {inspect} = require('util');
 const inspectWithKind = require('inspect-with-kind');
 
+inspect([1, 2, 3]); //=> '[ 1, 2, 3 ]'
 inspectWithKind([1, 2, 3]); //=> '[ 1, 2, 3 ] (array)'
 ```
 
@@ -34,7 +32,7 @@ const inspectWithKind = require('inspect-with-kind');
 
 *value*: any type  
 *options*: `Object` ([`util.inspect`][util.inspect] options)  
-Return: `String`
+Return: `string`
 
 Almost the same as `util.inspect`, but:
 
@@ -86,8 +84,6 @@ reverse(/true/); // TypeError: Expected a Boolean value, but got /true/ (regexp)
 
 ## License
 
-Copyright (c) 2017 [Shinnosuke Watanabe](https://github.com/shinnn)
-
-Licensed under [the MIT License](./LICENSE).
+[ISC License](./LICENSE) © 2017 Shinnosuke Watanabe
 
 [util.inspect]: https://nodejs.org/api/util.html#util_util_inspect_object_options
