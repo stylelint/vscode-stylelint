@@ -1,41 +1,41 @@
 {
-  "name": "inspect-with-kind",
-  "version": "1.0.3",
-  "description": "`util.inspect` with additional type information",
-  "repository": "shinnn/inspect-with-kind",
-  "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
-  "scripts": {
-    "pretest": "eslint --format=codeframe index.js test.js",
-    "test": "nyc node --throw-deprecation test.js"
-  },
-  "license": "ISC",
-  "files": [
-    "index.js"
-  ],
-  "keywords": [
-    "inspect",
-    "format",
-    "beautify",
-    "clarify",
-    "stringify",
-    "type",
-    "kind",
-    "append",
-    "additional",
-    "info",
-    "check"
-  ],
-  "dependencies": {
-    "kind-of": "^6.0.0"
-  },
-  "devDependencies": {
-    "@shinnn/eslint-config-node": "^4.0.2",
-    "eslint": "^4.9.0",
-    "nyc": "^11.2.1",
-    "tape": "^4.8.0",
-    "zen-observable": "^0.6.0"
-  },
-  "eslintConfig": {
-    "extends": "@shinnn/node"
-  }
+	"name": "inspect-with-kind",
+	"version": "1.0.3",
+	"description": "`util.inspect` with additional type information",
+	"repository": "shinnn/inspect-with-kind",
+	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
+	"scripts": {
+		"pretest": "eslint --fix --format=codeframe index.js test.js",
+		"test": "nyc node --throw-deprecation test.js"
+	},
+	"license": "ISC",
+	"files": [
+		"index.js"
+	],
+	"keywords": [
+		"inspect",
+		"format",
+		"beautify",
+		"clarify",
+		"stringify",
+		"type",
+		"kind",
+		"append",
+		"additional",
+		"info",
+		"check"
+	],
+	"dependencies": {
+		"kind-of": "^6.0.2"
+	},
+	"devDependencies": {
+		"@shinnn/eslint-config-node": "^5.0.0",
+		"eslint": "^4.13.1",
+		"nyc": "^11.4.0",
+		"tape": "^4.8.0",
+		"zen-observable": "^0.6.0"
+	},
+	"eslintConfig": {
+		"extends": "@shinnn/node"
+	}
 }
