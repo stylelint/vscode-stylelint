@@ -1,6 +1,6 @@
 {
 	"name": "inspect-with-kind",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"description": "`util.inspect` with additional type information",
 	"repository": "shinnn/inspect-with-kind",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
