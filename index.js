@@ -1,34 +1,32 @@
 'use strict';
 
-const path = require('path');
+const {join} = require('path');
 
-const langClient = require('vscode-languageclient');
-const LanguageClient = langClient.LanguageClient;
-const SettingMonitor = langClient.SettingMonitor;
-const vscode = require('vscode');
+const {LanguageClient, SettingMonitor} = require('vscode-languageclient');
+const {workspace} = require('vscode');
 
-exports.activate = context => {
-  const serverModule = path.join(__dirname, 'server.js');
-  const workspaceConfig = vscode.workspace.getConfiguration('stylelint');
-  const additionalDocuments = workspaceConfig.get('additionalDocumentSelectors');
+exports.activate = ({subscriptions}) => {
+	const serverPath = join(__dirname, 'server.js');
+	const workspaceConfig = workspace.getConfiguration('stylelint');
+	const additionalDocuments = workspaceConfig.get('additionalDocumentSelectors');
 
-  const client = new LanguageClient('stylelint', {
-    run: {
-      module: serverModule
-    },
-    debug: {
-      module: serverModule,
-      options: {
-        execArgv: ['--nolazy', '--debug=6004']
-      }
-    }
-  }, {
-    documentSelector: ['css', 'less', 'postcss', 'scss', 'sugarss', ...additionalDocuments],
-    synchronize: {
-      configurationSection: 'stylelint',
-      fileEvents: vscode.workspace.createFileSystemWatcher('**/{.stylelintrc,stylelint.config.js}')
-    }
-  });
+	const client = new LanguageClient('stylelint', {
+		run: {
+			module: serverPath
+		},
+		debug: {
+			module: serverPath,
+			options: {
+				execArgv: ['--nolazy', '--debug=6004']
+			}
+		}
+	}, {
+		documentSelector: ['css', 'less', 'postcss', 'scss', 'sugarss', ...additionalDocuments],
+		synchronize: {
+			configurationSection: 'stylelint',
+			fileEvents: workspace.createFileSystemWatcher('**/{.stylelintrc,stylelint.config.js}')
+		}
+	});
 
-  context.subscriptions.push(new SettingMonitor(client, 'stylelint.enable').start());
+	subscriptions.push(new SettingMonitor(client, 'stylelint.enable').start());
 };
