@@ -1,10 +1,8 @@
 # array-to-sentence
 
-[![NPM version](https://img.shields.io/npm/v/array-to-sentence.svg)](https://www.npmjs.com/package/array-to-sentence)
-[![Bower version](https://img.shields.io/bower/v/array-to-sentence.svg)](https://github.com/shinnn/array-to-sentence/releases)
+[![npm version](https://img.shields.io/npm/v/array-to-sentence.svg)](https://www.npmjs.com/package/array-to-sentence)
 [![Build Status](https://travis-ci.org/shinnn/array-to-sentence.svg?branch=master)](https://travis-ci.org/shinnn/array-to-sentence)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-sentence.svg)](https://coveralls.io/github/shinnn/array-to-sentence)
-[![devDependencies Status](https://david-dm.org/shinnn/array-to-sentence/dev-status.svg)](https://david-dm.org/shinnn/array-to-sentence?type=dev)
 
 Join all elements of an array and create a human-readable string
 
@@ -14,31 +12,23 @@ arrayToSentence(['foo', 'bar', 'baz', 'qux']); //=> 'foo, bar, baz and qux'
 
 ## Installation
 
-### Package managers
-
 #### [npm](https://www.npmjs.com/)
 
 ```
 npm install array-to-sentence
 ```
 
-#### [bower](https://bower.io/)
-
-```
-bower install array-to-sentence
-```
-
-### Standalone
-
-[Download the script file directly.](https://raw.githubusercontent.com/shinnn/array-to-sentence/master/browser.js)
-
 ## API
+
+```js
+import arrayToSentence from 'array-to-sentence';
+```
 
 ### arrayToSentence(*array* [, *options*])
 
-*array*: `Array` of any values  
+*array*: `Array<any>`  
 *options*: `Object`  
-Return: `String`
+Return: `string`
 
 It joins all elements of an array, and returns a string in the form `A, B, ... and X`.
 
@@ -46,24 +36,20 @@ It joins all elements of an array, and returns a string in the form `A, B, ... a
 arrayToSentence(['one', 'two', 3]); //=> 'one, two and 3'
 arrayToSentence(['one', 'two']); //=> 'one and two'
 arrayToSentence(['one']); //=> 'one'
-```
 
-It returns an empty string if the array is empty.
-
-```javascript
 arrayToSentence([]); //=> ''
 ```
 
 ### options.separator
 
-Type: `String`  
+Type: `string`  
 Default: `', '`
 
 Set the separator string of each word.
 
 ### options.lastSeparator
 
-Type: `String`  
+Type: `string`  
 Default: `' and '`
 
 Set the separator string before the last word.
@@ -81,10 +67,10 @@ arrayToSentence(['Earth', 'Wind', 'Fire'], {
 
 ## Acknowledgement
 
-I used [`.toSentence()` method](https://epeli.github.io/underscore.string/#tosentence-array-delimiter-lastdelimiter-gt-string) of [underscore.string](https://github.com/epeli/underscore.string) as reference of API design. Thanks, [Esa-Matti Suuronen](https://github.com/epeli) and [the contributors](https://github.com/epeli/underscore.string/graphs/contributors).
+I used [`.toSentence()` method](https://epeli.github.io/underscore.string/#tosentence-array-delimiter-lastdelimiter-gt-string) of [underscore.string](https://github.com/epeli/underscore.string) as API design reference. Thanks, [Esa-Matti Suuronen](https://github.com/epeli) and [the contributors](https://github.com/epeli/underscore.string/graphs/contributors).
 
 ## License
 
-Copyright (c) 2014 - 2016 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2014 - 2018 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
