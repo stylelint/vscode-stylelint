@@ -1,42 +1,43 @@
 {
-  "name": "array-to-sentence",
-  "version": "2.0.0-0",
-  "description": "Join all elements of an array and create a human-readable string",
-  "repository": "shinnn/array-to-sentence",
-  "scripts": {
-    "pretest": "eslint --fix --format=codeframe --ignore-path .gitignore .",
-    "test": "node --throw-deprecation --track-heap-objects test.js",
-    "coverage": "istanbul cover test.js"
-  },
-  "license": "MIT",
-  "jsnext:main": "index.jsnext.js",
-  "files": [
-    "index.js",
-    "index.jsnext.js"
-  ],
-  "keywords": [
-    "to-sentence",
-    "sentence",
-    "array",
-    "join",
-    "human",
-    "readable",
-    "string",
-    "separator",
-    "comma",
-    "and",
-    "browser",
-    "client-side"
-  ],
-  "devDependencies": {
-    "@shinnn/eslint-config": "^3.3.6",
-    "eslint": "^3.13.1",
-    "istanbul": "^0.4.5",
-    "require-from-string": "^1.2.1",
-    "rollup": "^0.41.4",
-    "tape": "^4.6.3"
-  },
-  "eslintConfig": {
-    "extends": "@shinnn"
-  }
+	"name": "array-to-sentence",
+	"version": "2.0.0-0",
+	"description": "Join all elements of an array and create a human-readable string",
+	"repository": "shinnn/array-to-sentence",
+	"scripts": {
+		"prebuild": "eslint --fix --format=codeframe module.mjs test.js",
+		"build": "rollup --config=node:module",
+		"pretest": "npm run-script build",
+		"test": "nyc --reporter=html --reporter=text node test.js"
+	},
+	"license": "MIT",
+	"module": "index.mjs",
+	"files": [
+		"index.js",
+		"index.mjs"
+	],
+	"keywords": [
+		"to-sentence",
+		"sentence",
+		"array",
+		"join",
+		"human",
+		"readable",
+		"string",
+		"separator",
+		"comma",
+		"and",
+		"browser",
+		"client-side"
+	],
+	"devDependencies": {
+		"@shinnn/eslint-config": "^5.4.0",
+		"eslint": "^4.18.1",
+		"nyc": "^11.5.0",
+		"rollup": "^0.56.2",
+		"rollup-config-module": "^2.0.0",
+		"tape": "^4.9.0"
+	},
+	"eslintConfig": {
+		"extends": "@shinnn"
+	}
 }

@@ -1,12 +1,5 @@
-dist: trusty
-sudo: false
-git:
-  depth: 1
 branches:
   except: /^v\d/
 language: node_js
 node_js: node
-after_script:
-  - npm install istanbul-coveralls
-  - npm run-script coverage
-  - node node_modules/.bin/istanbul-coveralls
+after_script: node_modules/.bin/nyc report --reporter=text-lcov | npx coveralls
