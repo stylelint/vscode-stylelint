@@ -1,8 +1,5 @@
-dist: trusty
 branches:
   except: /^v\d/
 language: node_js
 node_js: node
-after_script:
-  - npm install coveralls
-  - nyc report --reporter=text-lcov | coveralls
+after_script: node_modules/.bin/nyc report --reporter=text-lcov | npx coveralls
