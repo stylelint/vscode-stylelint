@@ -1,54 +1,54 @@
 {
-  "name": "stylelint-vscode",
-  "version": "6.0.0",
-  "description": "stylelint wrapper to easily integrate with Visual Studio Code",
-  "repository": "shinnn/stylelint-vscode",
-  "author": "Shinnosuke Watanabe (https://github.com/shinnn)",
-  "scripts": {
-    "pretest": "eslint --fix --format=codeframe index.js test/",
-    "test": "node --throw-deprecation test/test.js | tap-spec",
-    "coverage": "istanbul cover test/test.js"
-  },
-  "license": "MIT",
-  "files": [
-    "index.js"
-  ],
-  "keywords": [
-    "stylelint",
-    "style",
-    "lint",
-    "linter",
-    "check",
-    "checker",
-    "css",
-    "stylesheet",
-    "validate",
-    "validation",
-    "vsc",
-    "vscode",
-    "diagnostic",
-    "diagnostics",
-    "promise",
-    "promises",
-    "then",
-    "async",
-    "asynchronous",
-    "asynchronously"
-  ],
-  "dependencies": {
-    "array-to-error": "^1.1.1",
-    "inspect-with-kind": "^1.0.2",
-    "is-plain-obj": "^1.1.0",
-    "stylelint": "^8.0.0"
-  },
-  "devDependencies": {
-    "@shinnn/eslint-config-node": "^4.0.2",
-    "eslint": "^4.2.0",
-    "istanbul": "^0.4.2",
-    "tap-spec": "^4.1.1",
-    "tape": "^4.7.0"
-  },
-  "eslintConfig": {
-    "extends": "@shinnn/node"
-  }
+	"name": "stylelint-vscode",
+	"version": "6.0.0",
+	"description": "stylelint wrapper to easily integrate with Visual Studio Code",
+	"repository": "shinnn/stylelint-vscode",
+	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
+	"scripts": {
+		"pretest": "eslint --fix --format=codeframe .",
+		"test": "nyc node test/test.js"
+	},
+	"license": "MIT",
+	"files": [
+		"index.js"
+	],
+	"keywords": [
+		"stylelint",
+		"style",
+		"lint",
+		"linter",
+		"check",
+		"checker",
+		"css",
+		"stylesheet",
+		"validate",
+		"validation",
+		"vsc",
+		"vscode",
+		"diagnostic",
+		"diagnostics",
+		"promise",
+		"promises",
+		"then",
+		"async",
+		"asynchronous",
+		"asynchronously"
+	],
+	"dependencies": {
+		"array-to-error": "^1.1.1",
+		"inspect-with-kind": "^1.0.4",
+		"is-plain-obj": "^1.1.0",
+		"stylelint": "^9.1.1",
+		"stylelint-warning-to-vscode-diagnostic": "^1.0.1",
+		"vscode-languageserver-protocol": "^3.5.0"
+	},
+	"devDependencies": {
+		"@shinnn/eslint-config-node": "^5.0.0",
+		"eslint": "^4.18.1",
+		"nyc": "^11.5.0",
+		"tape": "^4.9.0"
+	},
+	"eslintConfig": {
+		"extends": "@shinnn/node"
+	}
 }

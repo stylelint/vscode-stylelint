@@ -1,6 +1,6 @@
 # stylelint-vscode
 
-[![NPM version](https://img.shields.io/npm/v/stylelint-vscode.svg)](https://www.npmjs.com/package/stylelint-vscode)
+[![npm version](https://img.shields.io/npm/v/stylelint-vscode.svg)](https://www.npmjs.com/package/stylelint-vscode)
 [![Build Status](https://travis-ci.org/shinnn/stylelint-vscode.svg?branch=master)](https://travis-ci.org/shinnn/stylelint-vscode)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/stylelint-vscode.svg)](https://coveralls.io/github/shinnn/stylelint-vscode)
 
@@ -15,41 +15,40 @@ p {
   color: red;
 }`;
 
-stylelintVSCode({
-  code,
-  config: {
-    rules: {
-      'number-leading-zero': 'always',
-      'color-named': ['never', {severity: 'warning'}]
+(async () => {
+  await stylelintVSCode({
+    code,
+    config: {
+      rules: {
+        'number-leading-zero': 'always',
+        'color-named': ['never', {severity: 'warning'}]
+      }
     }
-  }
-}).then(diagnostics => {
-  diagnostics;
-  /* =>
-    [{
-      message: 'Expected a leading zero (number-leading-zero)',
-      severity: 1,
-      range: {
-        start: {line: 2, character: 14},
-        end: {line: 2, character: 14}
-      },
-      source: 'stylelint'
-    }, {
-      message: 'Unexpected named color "red" (color-no-named)',
-      severity: 2,
-      range: {
-        start: {line: 3, character: 9},
-        end: {line: 3, character: 9}
-      },
-      source: 'stylelint'
-    }]
-  */
-});
+  }); /* => [{
+    range: {
+      start: {line: 2, character: 14},
+      end: {line: 2, character: 14}
+    },
+    message: 'Expected a leading zero (number-leading-zero)',
+    severity: 1,
+    code: 'number-leading-zero',
+    source: 'stylelint'
+  }, {
+    range: {
+      start: {line: 3, character: 9},
+      end: {line: 3, character: 9}
+    },
+    message: 'Unexpected named color "red" (color-no-named)',
+    severity: 2,
+    code: 'color-no-named',
+    source: 'stylelint'
+  }] */
+})();
 ```
 
 ## Installation
 
-[Use npm.](https://docs.npmjs.com/cli/install)
+[Use](https://docs.npmjs.com/cli/install) [npm](https://docs.npmjs.com/getting-started/what-is-npm).
 
 ```
 npm install stylelint-vscode
@@ -64,65 +63,69 @@ const stylelintVSCode = require('stylelint-vscode');
 ### stylelintVSCode(*options*)
 
 *options*: `Object` (directly passed to [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#the-stylelint-node-api))  
-Return: [`Promise`](http://www.ecma-international.org/ecma-262/6.0/#sec-promise-constructor) instance
+Return: `Promise<Array<Object>>`
 
 It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/893d050a24b47547fdf96c608f443f1f200eefa1/src/standalone.js#L16), except for:
 
-* It will be resolved with an array of [VS Code](https://github.com/Microsoft/vscode-extension-vscode)'s [`Diagnostic`](https://github.com/Microsoft/vscode-extension-vscode/blob/0.10.6/vscode.d.ts#L2220) instances.
+* It will be resolved with an `Array` of [VS Code](https://github.com/Microsoft/vscode-extension-vscode)'s [`Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/3.5.0/types/src/main.ts#L165-L192) instances.
 * It will be *rejected* (not resolved) when it takes invalid configs.
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
 * It suppresses `No configuration found` error.
   * Doing nothing when there is no configuration is a common behavior of editor plugins.
 * [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) option is required and [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) option is not supported.
-  * Because extension authors can derive file contents via [`TextDocument#getText()`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument) and there is no need to let stylelint read physical files.
+  * Because extensions can derive file contents via [`TextDocument#getText()`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument) and there is no need to read physical files again.
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
 
-stylelintVSCode({
-  code: '{foo}'
-}).then(diagnostics => {
-  diagnostics;
-  /* =>
-    [{
-      message: 'Unknown word',
-      severity: 1,
-      range: {
-        start: {line: 0, character: 1},
-        end: {line: 0, character: 1}
-      },
-      source: 'stylelint'
-    }]
-  */
+(async () => {
+  await stylelintVSCode({
+    code: '{foo}'
+  }); /*=> [{
+    range: {
+      start: {line: 0, character: 1},
+      end: {line: 0, character: 1}
+    },
+    message: 'Unknown word (CssSyntaxError)',
+    severity: 1,
+    code: 'CssSyntaxError',
+    source: 'stylelint'
+  }] */
 });
+```
 
-stylelintVSCode({
-  code: 'a {}',
-  config: {
-    rules: {
-      indentation: 2,
-      'function-comma-space-before': 'foo'
-    }
+```javascript
+(async () => {
+  try {
+    await stylelintVSCode({
+      code: 'a {}',
+      config: {
+        rules: {
+          indentation: 2,
+          'function-comma-space-before': 'foo'
+        }
+      }
+    });
+  } catch (err) {
+    err.name;
+    //=> 'SyntaxError'
+
+    err.message;
+    //=> 'Expected option value for rule "indentation"\nInvalid option value "foo" for rule "function-comma-space-before"'
+
+    err.reasons;
+    /* =>
+      [
+        'Expected option value for rule "indentation"',
+        'Invalid option value "foo" for rule "function-comma-space-before"'
+      ]
+    */
   }
-}).catch(err => {
-  err.name;
-  //=> 'SyntaxError'
-
-  err.message;
-  //=> 'Expected option value for rule "indentation"\nInvalid option value "foo" for rule "function-comma-space-before"'
-
-  err.reasons;
-  /* =>
-    [
-      'Expected option value for rule "indentation"',
-      'Invalid option value "foo" for rule "function-comma-space-before"'
-    ]
-  */
-});
+})();
 ```
 
 ## License
 
-Copyright (c) 2015 - 2017 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2015 - 2018 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
