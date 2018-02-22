@@ -82,13 +82,13 @@
 		"test": "eslint --fix --format=codeframe index.js server.js"
 	},
 	"dependencies": {
-		"stylelint-vscode": "^6.0.0",
+		"stylelint-vscode": "^6.1.0",
 		"vscode-languageclient": "^3.5.0",
 		"vscode-languageserver": "^3.5.0"
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
-		"eslint": "^4.15.0",
+		"eslint": "^4.18.1",
 		"vscode": "^1.1.10"
 	},
 	"eslintConfig": {
