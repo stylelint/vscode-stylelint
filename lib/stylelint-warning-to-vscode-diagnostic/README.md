@@ -1,6 +1,6 @@
 # stylelint-warning-to-vscode-diagnostic
 
-[![NPM version](https://img.shields.io/npm/v/stylelint-warning-to-vscode-diagnostic.svg)](https://www.npmjs.com/package/stylelint-warning-to-vscode-diagnostic)
+[![npm version](https://img.shields.io/npm/v/stylelint-warning-to-vscode-diagnostic.svg)](https://www.npmjs.com/package/stylelint-warning-to-vscode-diagnostic)
 [![Build Status](https://travis-ci.org/shinnn/stylelint-warning-to-vscode-diagnostic.svg?branch=master)](https://travis-ci.org/shinnn/stylelint-warning-to-vscode-diagnostic)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/stylelint-warning-to-vscode-diagnostic.svg)](https://coveralls.io/github/shinnn/stylelint-warning-to-vscode-diagnostic?branch=master)
 
@@ -10,8 +10,8 @@ Convert a [stylelint](https://github.com/stylelint/stylelint) warning into a [Vi
 const {lint} = require('stylelint');
 const stylelintWarningToVscodeDiagnostic = require('stylelint-warning-to-vscode-diagnostic');
 
-async () => {
-  const {results: [{warnings}]} = await lint({
+(async () => {
+  const [result] = await lint({
     code: 'a { color: red; }',
     config: {
       rules: {
@@ -20,7 +20,7 @@ async () => {
     }
   });
 
-  warnings[0];
+  const [warning] = result.warnings;
   /* {
     rule: 'color-named',
     text: 'Unexpected named color "red" (color-named)',
@@ -29,7 +29,7 @@ async () => {
     column: 12
   } */
 
-  stylelintWarningToVscodeDiagnostic(warnings[0]);
+  stylelintWarningToVscodeDiagnostic(warnings);
   /* {
     message: 'Unexpected named color "red" (color-named)',
     severity: 1,
@@ -45,12 +45,12 @@ async () => {
       }
     }
   } */
-};
+})();
 ```
 
 ## Installation
 
-[Use npm.](https://docs.npmjs.com/cli/install)
+[Use](https://docs.npmjs.com/cli/install) [npm](https://docs.npmjs.com/getting-started/what-is-npm).
 
 ```
 npm install stylelint-warning-to-vscode-diagnostic
@@ -64,11 +64,11 @@ const stylelintWarningToVscodeDiagnostic = require('stylelint-warning-to-vscode-
 
 ### stylelintWarningToVscodeDiagnostic(*warning*)
 
-*warning*: `Object` (stylelint [warning](https://github.com/stylelint/stylelint/blob/fc3df1fc897f368914f199b4ee97e8f76fcbebf6/lib/createStylelintResult.js#L37-L41))  
-Return: `Object` (VS Code [diagnostic](https://github.com/Microsoft/vscode-languageserver-node/blob/release/3.0.3/types/src/main.ts#L161-L192))
+*warning*: `Object` (stylelint [warning](https://github.com/stylelint/stylelint/blob/9.1.1/lib/createStylelintResult.js#L127-L131))  
+Return: `Object` (VS Code [diagnostic](https://github.com/Microsoft/vscode-languageserver-node/blob/release/3.5.0/types/src/main.ts#L165-L192))
 
 ## License
 
-Copyright (c) 2017 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2017 - 2018 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
