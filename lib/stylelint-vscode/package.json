@@ -6,9 +6,9 @@
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
 	"scripts": {
 		"pretest": "eslint --fix --format=codeframe .",
-		"test": "nyc node test/test.js"
+		"test": "nyc --reporter=html --reporter=text node test/test.js"
 	},
-	"license": "MIT",
+	"license": "ISC",
 	"files": [
 		"index.js"
 	],
