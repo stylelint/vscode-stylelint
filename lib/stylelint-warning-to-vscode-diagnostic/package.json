@@ -1,6 +1,6 @@
 {
 	"name": "stylelint-warning-to-vscode-diagnostic",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Convert a stylelint warning into a Visual Studio Code diagnostic",
 	"repository": "shinnn/stylelint-warning-to-vscode-diagnostic",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
