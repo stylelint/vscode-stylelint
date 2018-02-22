@@ -8,7 +8,7 @@
 		"pretest": "eslint --fix --format=codeframe index.js test.js",
 		"test": "nyc --reporter=html --reporter=text node test.js"
 	},
-	"license": "MIT",
+	"license": "ISC",
 	"files": [
 		"index.js"
 	],

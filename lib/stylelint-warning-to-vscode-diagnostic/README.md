@@ -69,6 +69,4 @@ Return: `Object` (VS Code [diagnostic](https://github.com/Microsoft/vscode-langu
 
 ## License
 
-Copyright (c) 2017 - 2018 [Shinnosuke Watanabe](https://github.com/shinnn)
-
-Licensed under [the MIT License](./LICENSE).
+[ISC License](./LICENSE) © 2018 Shinnosuke Watanabe
