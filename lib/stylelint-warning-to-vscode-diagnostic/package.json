@@ -25,7 +25,8 @@
 		"severity"
 	],
 	"dependencies": {
-		"vscode-languageserver-types": "^3.5.0"
+		"vscode-languageserver-types": "^3.5.0",
+		"inspect-with-kind": "^1.0.4"
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
