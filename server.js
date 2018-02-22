@@ -9,9 +9,9 @@ let configOverrides;
 const connection = createConnection(process.stdin, process.stdout);
 const documents = new TextDocuments();
 
-const supportedCustomSyntaxes = new Set(['less', 'scss']);
+const SUPPORTED_CUSTOM_SYNTAXES = new Set(['less', 'scss']);
 
-function validate(document) {
+async function validate(document) {
 	const options = {code: document.getText()};
 
 	const filePath = Files.uriToFilePath(document.uri);
@@ -28,15 +28,21 @@ function validate(document) {
 		options.configOverrides = configOverrides;
 	}
 
-	if (supportedCustomSyntaxes.has(document.languageId)) {
+	if (SUPPORTED_CUSTOM_SYNTAXES.has(document.languageId)) {
 		options.syntax = document.languageId;
 	}
 
-	return stylelintVSCode(options).then(diagnostics => {
-		connection.sendDiagnostics({uri: document.uri, diagnostics});
-	}).catch(err => {
+	try {
+		connection.sendDiagnostics({
+			uri: document.uri,
+			diagnostics: await stylelintVSCode(options)
+		});
+	} catch (err) {
 		if (err.reasons) {
-			err.reasons.forEach(reason => connection.window.showErrorMessage(`stylelint: ${reason}`));
+			for (const reason of err.reasons) {
+				connection.window.showErrorMessage(`stylelint: ${reason}`);
+			}
+
 			return;
 		}
 
@@ -47,11 +53,13 @@ function validate(document) {
 		}
 
 		connection.window.showErrorMessage(err.stack.replace(/\n/g, ' '));
-	});
+	}
 }
 
 function validateAll() {
-	return Promise.all(documents.all().map(document => validate(document)));
+	for (const document of documents.all()) {
+		validate(document);
+	}
 }
 
 connection.onInitialize(() => {
@@ -70,11 +78,11 @@ connection.onDidChangeConfiguration(params => {
 
 	validateAll();
 });
-connection.onDidChangeWatchedFiles(() => validateAll());
+connection.onDidChangeWatchedFiles(validateAll);
 
-documents.onDidChangeContent(event => validate(event.document));
-documents.onDidClose(event => connection.sendDiagnostics({
-	uri: event.document.uri,
+documents.onDidChangeContent(({document}) => validate(document));
+documents.onDidClose(({document}) => connection.sendDiagnostics({
+	uri: document.uri,
 	diagnostics: []
 }));
 documents.listen(connection);
