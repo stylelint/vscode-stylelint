@@ -9,12 +9,12 @@
 		"pretest": "npm run-script build",
 		"test": "nyc --reporter=html --reporter=text node test.js"
 	},
-	"license": "MIT",
-	"module": "index.mjs",
+	"license": "ISC",
 	"files": [
 		"index.js",
 		"index.mjs"
 	],
+	"module": "index.mjs",
 	"keywords": [
 		"to-sentence",
 		"sentence",
