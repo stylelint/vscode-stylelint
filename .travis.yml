@@ -1,7 +1,11 @@
-git:
-  depth: 1
 branches:
   except: /^v\d/
 language: node_js
 node_js: node
-before_install: npm install --global npm@next
+matrix:
+  include:
+  - script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
+  - os: osx
+    osx_image: xcode9.3beta
+branches:
+  except: /^v\d/

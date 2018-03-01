@@ -79,7 +79,8 @@
 		]
 	},
 	"scripts": {
-		"test": "eslint --fix --format=codeframe index.js server.js"
+		"pretest": "eslint --fix --format=codeframe .",
+		"test": "node node_modules/vscode/bin/test"
 	},
 	"dependencies": {
 		"stylelint-vscode": "^6.1.0",
@@ -89,6 +90,7 @@
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
 		"eslint": "^4.18.1",
+		"tape": "^4.9.0",
 		"vscode": "^1.1.10"
 	},
 	"eslintConfig": {

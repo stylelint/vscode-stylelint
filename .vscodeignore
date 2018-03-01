@@ -1,9 +1,11 @@
 .editorconfig
 .gitignore
-.vscode/**
+.vscode
+.vscode-test
 *.css
+*.less
 *.png
 *.scss
-*.less
+*.yml
 media/*.ai
 test
