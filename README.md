@@ -15,26 +15,31 @@ See the [extension installation guide](https://code.visualstudio.com/docs/editor
 
 ## Usage
 
-Enable the linter in the VS Code [settings](https://code.visualstudio.com/docs/customization/userandworkspace), while disabling the built-in CSS and SCSS linter:
+Once you follow [the stylelint startup guide](https://github.com/stylelint/stylelint#getting-started) by creating a [configuration](https://stylelint.io/user-guide/configuration/) file or edit [`stylelint.*` VSCode settings](#extension-settings), stylelint automatically validates documents with these [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-id):
 
-```json
-{
-  "stylelint.enable": true,
-  "css.validate": false,
-  "scss.validate": false
-}
-```
+* CSS (`css`)
+* HTML (`html`)
+* Less (`less`)
+* Markdown (`markdown`)
+* [Markdown+MathML (`source.markdown.math`)](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath)
+* [PostCSS (`postcss`)](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language)
+* [Sass (`sass`)](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented)
+* SCSS (`scss`)
+* [Sugarss (`sugarss`)](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language)
+* [Vue (`vue`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+* [Vue-HTML (`vue-html`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+* XML (`xml`)
 
-### Configurations
+### Extension settings
 
-*In addition to the VS Code settings mentioned below, you can set the config by adding [stylelint configuration files](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/configuration.md#configuration) to the workspace directory.*
+Though it's highly recommended to add a [stylelint configuration file](https://stylelint.io/user-guide/example-config/) to your workspace folder instead, you can also use the following extension [settings](https://code.visualstudio.com/docs/getstarted/settings).
 
 #### stylelint.enable
 
-Type: `Boolean`  
+Type: `boolean`  
 Default: `true`
 
-Control whether [stylelint](https://github.com/stylelint/stylelint/) is enabled for CSS/SCSS/Less files or not.
+Control whether [stylelint](https://github.com/stylelint/stylelint/) is enabled or not.
 
 #### stylelint.configOverrides
 
@@ -52,13 +57,13 @@ Will be directly passed to [`config`](https://github.com/stylelint/stylelint/blo
 
 #### stylelint.additionalDocumentSelectors
 
-Type: `Array`  
+Type: `Array<string>`  
 Default: `[]`
 
-Document types that you can use to run stylelint against if you are using CSS inside document types like: `javascriptreact`, `typescriptreact` or `vue`.
+Document types that you can use to run stylelint against if you are using CSS inside document types like: `javascriptreact`, `typescriptreact`.
 
 ## License
 
-Copyright (c) 2015 - 2017 [Shinnosuke Watanabe](https://github.com/shinnn)
+Copyright (c) 2015 - 2018 [Shinnosuke Watanabe](https://github.com/shinnn)
 
 Licensed under [the MIT License](./LICENSE).
