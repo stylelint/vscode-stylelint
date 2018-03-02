@@ -9,7 +9,13 @@ let configOverrides;
 const connection = createConnection(process.stdin, process.stdout);
 const documents = new TextDocuments();
 
-const SUPPORTED_CUSTOM_SYNTAXES = new Set(['less', 'scss']);
+// https://github.com/stylelint/stylelint/blob/9.1.1/lib/getPostcssResult.js#L20-L24
+const SUPPORTED_SYNTAXES = new Set([
+	'less',
+	'sass',
+	'sugarss',
+	'scss'
+]);
 
 async function validate(document) {
 	const options = {code: document.getText()};
@@ -28,7 +34,7 @@ async function validate(document) {
 		options.configOverrides = configOverrides;
 	}
 
-	if (SUPPORTED_CUSTOM_SYNTAXES.has(document.languageId)) {
+	if (SUPPORTED_SYNTAXES.has(document.languageId)) {
 		options.syntax = document.languageId;
 	}
 
@@ -46,7 +52,7 @@ async function validate(document) {
 			return;
 		}
 
-		// https://github.com/stylelint/stylelint/blob/8.4.0/lib/utils/configurationError.js#L9
+		// https://github.com/stylelint/stylelint/blob/9.1.1/lib/utils/configurationError.js#L9
 		if (err.code === 78) {
 			connection.window.showErrorMessage(`stylelint: ${err.message}`);
 			return;

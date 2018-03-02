@@ -29,10 +29,17 @@
 	"qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
 	"activationEvents": [
 		"onLanguage:css",
+		"onLanguage:html",
 		"onLanguage:less",
+		"onLanguage:markdown",
 		"onLanguage:postcss",
+		"onLanguage:sass",
 		"onLanguage:scss",
+		"onLanguage:source.markdown.math",
 		"onLanguage:sugarss",
+		"onLanguage:vue",
+		"onLanguage:vue-html",
+		"onLanguage:xml",
 		"workspaceContains:node_modules/stylelint-processor-styled-components/package.json"
 	],
 	"main": "index.js",
