@@ -8,10 +8,10 @@ A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](h
 
 ## Installation
 
-1. Run [`Install Extension`](https://code.visualstudio.com/docs/editor/extension-gallery#_install-an-extension) command from [Command Palette](https://code.visualstudio.com/Docs/editor/codebasics#_command-palette).
-2. Search and choose `stylelint`.
+1. Execute `Extensions: Install Extensions` command from [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
+2. Type `@sort:installs stylelint` into the search form and install the topmost one.
 
-See the [extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery) for details.
+Read the [extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery) for more details.
 
 ## Usage
 
