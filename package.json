@@ -7,7 +7,7 @@
 	"repository": "https://github.com/shinnn/vscode-stylelint",
 	"homepage": "https://github.com/shinnn/vscode-stylelint#readme",
 	"bugs": "https://github.com/shinnn/vscode-stylelint/issues",
-	"license": "MIT",
+	"license": "ISC",
 	"icon": "media/icon.png",
 	"galleryBanner": {
 		"color": "#32CD32",
