@@ -13,6 +13,18 @@ A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](h
 
 Read the [extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery) for more details.
 
+### Optional (but recommended) setup
+
+<img align="right" width="430" alt="duplicate messages from both the built-in linter and vscode-stylelint" src="media/duplicate.png">
+
+To prevent both [the VSCode built-in CSS linter](https://code.visualstudio.com/docs/languages/css#_syntax-verification-linting) `[css]` and this extension `[stylelint]` reporting the same CSS errors like in the screenshot, you can disable the built-in ones in User or Workspace [setting](https://code.visualstudio.com/docs/getstarted/settings):
+
+```json
+"css.validate": false,
+"less.validate": false,
+"scss.validate": false
+```
+
 ## Usage
 
 Once you follow [the stylelint startup guide](https://github.com/stylelint/stylelint#getting-started) by creating a [configuration](https://stylelint.io/user-guide/configuration/) file or edit [`stylelint.*` VSCode settings](#extension-settings), stylelint automatically validates documents with these [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-id):
