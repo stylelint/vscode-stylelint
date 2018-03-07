@@ -38,6 +38,7 @@
 		"array-to-error": "^1.1.1",
 		"inspect-with-kind": "^1.0.4",
 		"is-plain-obj": "^1.1.0",
+		"lodash": "^4.17.5",
 		"stylelint": "^9.1.1",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1"
 	},
