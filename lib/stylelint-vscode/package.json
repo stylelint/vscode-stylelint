@@ -1,6 +1,6 @@
 {
 	"name": "stylelint-vscode",
-	"version": "6.1.0",
+	"version": "6.1.1",
 	"description": "stylelint wrapper to easily integrate with Visual Studio Code",
 	"repository": "shinnn/stylelint-vscode",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
@@ -39,12 +39,11 @@
 		"inspect-with-kind": "^1.0.4",
 		"is-plain-obj": "^1.1.0",
 		"stylelint": "^9.1.1",
-		"stylelint-warning-to-vscode-diagnostic": "^1.0.1",
-		"vscode-languageserver-protocol": "^3.5.0"
+		"stylelint-warning-to-vscode-diagnostic": "^1.0.1"
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
-		"eslint": "^4.18.1",
+		"eslint": "^4.18.2",
 		"nyc": "^11.5.0",
 		"tape": "^4.9.0"
 	},
