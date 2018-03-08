@@ -75,7 +75,7 @@ It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.1
   * Doing nothing when there is no configuration is a common behavior of editor plugins.
 * [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) option is required and [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) option is not supported.
   * Because extensions can derive file contents via [`TextDocument#getText()`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument) and there is no need to read physical files again.
-* It ignores JavaScript files when [stylelint-processor-styled-components](https://github.com/styled-components/stylelint-processor-styled-components) is not loaded.
+* It ignores JavaScript files when stylelint doesn't load either [stylelint-processor-glamorous](https://github.com/zabute/stylelint-processor-glamorous) or [stylelint-processor-styled-components](https://github.com/styled-components/stylelint-processor-styled-components).
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');

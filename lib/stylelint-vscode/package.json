@@ -45,6 +45,7 @@
 		"@shinnn/eslint-config-node": "^5.0.0",
 		"eslint": "^4.18.2",
 		"nyc": "^11.5.0",
+		"stylelint-processor-glamorous": "^0.2.0",
 		"stylelint-processor-styled-components": "^1.3.0",
 		"tape": "^4.9.0"
 	},
