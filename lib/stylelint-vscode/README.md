@@ -2,6 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/stylelint-vscode.svg)](https://www.npmjs.com/package/stylelint-vscode)
 [![Build Status](https://travis-ci.org/shinnn/stylelint-vscode.svg?branch=master)](https://travis-ci.org/shinnn/stylelint-vscode)
+[![Build status](https://ci.appveyor.com/api/projects/status/ncmsp5lp5gke8mci/branch/master?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/stylelint-vscode/branch/master)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/stylelint-vscode.svg)](https://coveralls.io/github/shinnn/stylelint-vscode)
 
 [stylelint](https://github.com/stylelint/stylelint) wrapper to easily integrate with [Visual Studio Code](https://code.visualstudio.com/) [language server](https://github.com/Microsoft/vscode-languageserver-node)
