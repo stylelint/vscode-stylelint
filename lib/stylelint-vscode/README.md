@@ -65,15 +65,16 @@ const stylelintVSCode = require('stylelint-vscode');
 *options*: `Object` (directly passed to [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#the-stylelint-node-api))  
 Return: `Promise<Array<Object>>`
 
-It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/893d050a24b47547fdf96c608f443f1f200eefa1/src/standalone.js#L16), except for:
+It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.1.1/lib/index.js#L24), except for:
 
-* It will be resolved with an `Array` of [VS Code](https://github.com/Microsoft/vscode-extension-vscode)'s [`Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/3.5.0/types/src/main.ts#L165-L192) instances.
+* It will be resolved with an `Array` of [VS Code `Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/4.0.0/types/src/main.ts#L181-L208) instances.
 * It will be *rejected* (not resolved) when it takes invalid configs.
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
 * It suppresses `No configuration found` error.
   * Doing nothing when there is no configuration is a common behavior of editor plugins.
 * [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) option is required and [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) option is not supported.
   * Because extensions can derive file contents via [`TextDocument#getText()`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument) and there is no need to read physical files again.
+* It ignores JavaScript files when [stylelint-processor-styled-components](https://github.com/styled-components/stylelint-processor-styled-components) is not loaded.
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
