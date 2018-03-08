@@ -126,6 +126,10 @@ const stylelintVSCode = require('stylelint-vscode');
 })();
 ```
 
+## Related project
+
+* [vscode-stylelint](https://github.com/shinnn/vscode-stylelint) — A VS Code extension powered by this module
+
 ## License
 
 [ISC License](./LICENSE) © 2018 Shinnosuke Watanabe
