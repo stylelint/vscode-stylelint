@@ -18,7 +18,10 @@ const SUPPORTED_SYNTAXES = new Set([
 ]);
 
 async function validate(document) {
-	const options = {code: document.getText()};
+	const options = {
+		code: document.getText(),
+		languageId: document.languageId
+	};
 
 	const filePath = Files.uriToFilePath(document.uri);
 

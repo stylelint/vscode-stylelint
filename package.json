@@ -90,7 +90,7 @@
 		"test": "node node_modules/vscode/bin/test"
 	},
 	"dependencies": {
-		"stylelint-vscode": "^6.1.0",
+		"stylelint-vscode": "^7.0.0-2",
 		"vscode-languageclient": "^4.0.0",
 		"vscode-languageserver": "^4.0.0"
 	},
@@ -98,7 +98,7 @@
 		"@shinnn/eslint-config-node": "^5.0.0",
 		"eslint": "^4.18.2",
 		"tape": "^4.9.0",
-		"vscode": "^1.1.10"
+		"vscode": "^1.1.13"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn/node"
