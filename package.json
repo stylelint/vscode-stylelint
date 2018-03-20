@@ -40,7 +40,7 @@
 		"onLanguage:vue",
 		"onLanguage:vue-html",
 		"onLanguage:xml",
-		"workspaceContains:node_modules/stylelint-processor-styled-components/package.json"
+		"workspaceContains:**/node_modules/stylelint-processor-styled-components/package.json"
 	],
 	"main": "index.js",
 	"contributes": {
