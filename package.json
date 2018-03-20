@@ -30,17 +30,22 @@
 	"activationEvents": [
 		"onLanguage:css",
 		"onLanguage:html",
+		"onLanguage:javascript",
+		"onLanguage:javascriptreact",
 		"onLanguage:less",
 		"onLanguage:markdown",
 		"onLanguage:postcss",
 		"onLanguage:sass",
 		"onLanguage:scss",
+		"onLanguage:source.css.styled",
 		"onLanguage:source.markdown.math",
+		"onLanguage:styled-css",
 		"onLanguage:sugarss",
+		"onLanguage:typescript",
+		"onLanguage:typescriptreact",
 		"onLanguage:vue",
 		"onLanguage:vue-html",
-		"onLanguage:xml",
-		"workspaceContains:**/node_modules/stylelint-processor-styled-components/package.json"
+		"onLanguage:xml"
 	],
 	"main": "index.js",
 	"contributes": {
