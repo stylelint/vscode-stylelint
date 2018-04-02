@@ -73,13 +73,6 @@
 					],
 					"default": null,
 					"description": "A partial stylelint config whose properties override the existing ones."
-				},
-				"stylelint.additionalDocumentSelectors": {
-					"type": [
-						"array"
-					],
-					"default": [],
-					"description": "A optional set of additional document types to run stylelint against."
 				}
 			}
 		},

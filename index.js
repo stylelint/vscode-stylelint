@@ -6,17 +6,16 @@ const {LanguageClient, SettingMonitor} = require('vscode-languageclient');
 const {workspace} = require('vscode');
 const {activationEvents} = require('./package.json');
 
-const defaultDocuments = [];
+const documentSelector = [];
 
 for (const activationEvent of activationEvents) {
 	if (activationEvent.startsWith('onLanguage:')) {
-		defaultDocuments.push(activationEvent.replace('onLanguage:', ''));
+		documentSelector.push(activationEvent.replace('onLanguage:', ''));
 	}
 }
 
 exports.activate = ({subscriptions}) => {
 	const serverPath = join(__dirname, 'server.js');
-	const workspaceConfig = workspace.getConfiguration('stylelint');
 
 	const client = new LanguageClient('stylelint', {
 		run: {
@@ -29,7 +28,7 @@ exports.activate = ({subscriptions}) => {
 			}
 		}
 	}, {
-		documentSelector: [...defaultDocuments, ...workspaceConfig.get('additionalDocumentSelectors')],
+		documentSelector,
 		synchronize: {
 			configurationSection: 'stylelint',
 			fileEvents: workspace.createFileSystemWatcher('**/{.stylelintrc{,.js,.json,.yaml,.yml},stylelint.config.js}')

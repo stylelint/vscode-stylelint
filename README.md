@@ -78,13 +78,6 @@ Default: `null`
 
 Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
 
-#### stylelint.additionalDocumentSelectors
-
-Type: `Array<string>`  
-Default: `[]`
-
-Document types that you can use to run stylelint against if you are using CSS inside document types.
-
 ## License
 
 [ISC License](./LICENSE.txt) © 2018 Shinnosuke Watanabe
