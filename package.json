@@ -89,14 +89,14 @@
 	},
 	"dependencies": {
 		"stylelint-vscode": "^7.0.0-2",
-		"vscode-languageclient": "^4.0.0",
+		"vscode-languageclient": "^4.0.1",
 		"vscode-languageserver": "^4.0.0"
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
-		"eslint": "^4.19.0",
+		"eslint": "^4.19.1",
 		"tape": "^4.9.0",
-		"vscode": "^1.1.13"
+		"vscode": "^1.1.14"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn/node"
