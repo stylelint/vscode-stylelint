@@ -10,7 +10,8 @@ const documentSelector = [];
 
 for (const activationEvent of activationEvents) {
 	if (activationEvent.startsWith('onLanguage:')) {
-		documentSelector.push(activationEvent.replace('onLanguage:', ''));
+		const language = activationEvent.replace('onLanguage:', '');
+		documentSelector.push({language, scheme: 'file'}, {language, scheme: 'untitled'});
 	}
 }
 
