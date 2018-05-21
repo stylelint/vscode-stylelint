@@ -1,0 +1,5 @@
+.nyc_output
+benchmark/symlink
+coverage
+node_modules
+tmp
