@@ -1,6 +1,6 @@
 {
 	"name": "find-pkg-dir",
-	"version": "0.0.0",
+	"version": "0.1.0",
 	"description": "Find the root directory of a Node.js project from a given path",
 	"repository": "shinnn/find-pkg-dir",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
