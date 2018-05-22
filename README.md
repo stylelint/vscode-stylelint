@@ -34,24 +34,21 @@ Once a user follows [the stylelint startup guide](https://github.com/stylelint/s
 * CSS (`css`)
 * HTML (`html`)
 * Less (`less`)
+* JavaScript (`javascript`)
+* JavaScript React (`javascriptreact`)
 * Markdown (`markdown`)
 * [Markdown+MathML (`source.markdown.math`)](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath)
 * [PostCSS (`postcss`)](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language)
 * [Sass (`sass`)](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented)
 * SCSS (`scss`)
-* [Sugarss (`sugarss`)](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language)
-* [Vue (`vue`, `vue-html`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
-* XML (`xml`)
-
-If either [stylelint-processor-glamorous](https://github.com/zabute/stylelint-processor-glamorous) or [stylelint-processor-styled-components](https://github.com/styled-components/stylelint-processor-styled-components) is installed and [enabled](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/configuration.md#processors), stylelint also validates the followings:
-
-* JavaScript (`javascript`)
-* JavaScript React (`javascriptreact`)
 * styled-components
   * [Official (`source.css.styled`)](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components)
   * [Userland (`styled-css`)](https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel)
+* [Sugarss (`sugarss`)](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language)
 * TypeScript (`typescript`)
 * TypeScript React (`typescriptreact`)
+* [Vue (`vue`, `vue-html`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+* XML (`xml`)
 
 ### Extension settings
 

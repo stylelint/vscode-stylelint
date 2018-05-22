@@ -88,7 +88,7 @@
 		"test": "node node_modules/vscode/bin/test"
 	},
 	"dependencies": {
-		"stylelint-vscode": "^7.0.0-2",
+		"stylelint-vscode": "^7.0.0-3",
 		"vscode-languageclient": "^4.1.4",
 		"vscode-languageserver": "^4.1.3"
 	},

@@ -9,9 +9,11 @@ let configOverrides;
 const connection = createConnection(process.stdin, process.stdout);
 const documents = new TextDocuments();
 
-// https://github.com/stylelint/stylelint/blob/9.1.1/lib/getPostcssResult.js#L20-L24
+// https://github.com/stylelint/stylelint/blob/9.2.1/lib/getPostcssResult.js#L13-L23
 const SUPPORTED_SYNTAXES = new Set([
+	'html',
 	'less',
+	'markdown',
 	'sass',
 	'sugarss',
 	'scss'
