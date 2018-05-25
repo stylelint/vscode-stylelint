@@ -24,6 +24,9 @@
 		"directory",
 		"lookup"
 	],
+	"dependencies": {
+		"inspect-with-kind": "^1.0.4"
+	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^5.0.0",
 		"eslint": "^4.19.1",
