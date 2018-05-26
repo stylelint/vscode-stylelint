@@ -38,7 +38,7 @@
 		"array-to-error": "^1.1.1",
 		"inspect-with-kind": "^1.0.4",
 		"lodash": "^4.17.5",
-		"postcss-jsx": "^0.10.0",
+		"postcss-jsx": "^0.25.0",
 		"stylelint": "github:stylelint/stylelint#ecd7c0a89ef3d0c164770883852b3574a013144e",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1"
 	},
