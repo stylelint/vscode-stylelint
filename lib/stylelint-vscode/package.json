@@ -39,7 +39,7 @@
 		"inspect-with-kind": "^1.0.4",
 		"lodash": "^4.17.5",
 		"postcss-jsx": "^0.25.0",
-		"stylelint": "github:stylelint/stylelint#ecd7c0a89ef3d0c164770883852b3574a013144e",
+		"stylelint": "github:stylelint/stylelint#f2fa2ddb0b1d642e41645f3623f57f62cbecb7e2",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1"
 	},
 	"devDependencies": {
