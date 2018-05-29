@@ -19,8 +19,8 @@ findPkgDir('/Users/shinnn/foo/bar/baz'); //=> '/Users/shinnn/foo'
 
 Unlike [the](https://www.npmjs.com/package/pkg-dir) [prior](https://www.npmjs.com/package/find-pkg) [arts](https://www.npmjs.com/package/find-root),
 
-* It uses [`InternalModuleStat`](https://github.com/nodejs/node/blob/v10.1.0/src/node_file.cc#L798) through [`require.resolve()`](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) for [faster]() operation than [`fs.statSync()`](https://nodejs.org/api/fs.html#fs_fs_statsync_path).
-* It strictly checks if a path is file or directory, to avoid regarding a `package.json` *directory* as a `package.json` file wrongly.
+* It uses [`InternalModuleStat`](https://github.com/nodejs/node/blob/v10.1.0/src/node_file.cc#L798) through [`require.resolve()`](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) as it's [faster](#benchmark) than [`fs.statSync()`](https://nodejs.org/api/fs.html#fs_fs_statsync_path).
+* It checks if a path is file or directory, to avoid mistaking a `package.json` *directory* as a `package.json` file.
 * It automatically resolves symbolic links.
 
 ## Installation
@@ -54,28 +54,28 @@ findPkgDir('path/of/non/nodejs/project'); //=> null
 
 ```
 find-pkg-dir (this project):
-Find from the current directory        6.7020186997950075 ms/ops
-Find from the deep directory           322.12139540016653 ms/ops
-Resolve symlinks                       5.378852599859238 ms/ops
-Find from the `package.json` directory 77.20890000015497 ms/ops
+Find from the current directory          7.023312300443649 ms/op avg.
+Find from the deep directory           312.877874401211727 ms/op avg.
+Resolve symlinks                         5.399559700489045 ms/op avg.
+Find from the `package.json` directory  72.548829698562628 ms/op avg.
 
 find-pkg + path.dirname():
-Find from the current directory        9.038500399887562 ms/ops
-Find from the deep directory           433.8039125002921 ms/ops
-Resolve symlinks                       N/A (operation failed)
-Find from the `package.json` directory N/A (operation failed)
+Find from the current directory          8.823328000307082 ms/op avg.
+Find from the deep directory           417.688341200351715 ms/op avg.
+Resolve symlinks                               N/A (operation failed)
+Find from the `package.json` directory         N/A (operation failed)
 
 find-root:
-Find from the current directory        8.830409900099038 ms/ops
-Find from the deep directory           522.0375854998827 ms/ops
-Resolve symlinks                       N/A (operation failed)
-Find from the `package.json` directory N/A (operation failed)
+Find from the current directory          8.690280598402023 ms/op avg.
+Find from the deep directory           480.454576599597942 ms/op avg.
+Resolve symlinks                               N/A (operation failed)
+Find from the `package.json` directory         N/A (operation failed)
 
 pkg-dir:
-Find from the current directory        11.1050084002316 ms/ops
-Find from the deep directory           536.8203415997326 ms/ops
-Resolve symlinks                       N/A (operation failed)
-Find from the `package.json` directory N/A (operation failed)
+Find from the current directory          9.664102098345756 ms/op avg.
+Find from the deep directory           494.113495999574639 ms/op avg.
+Resolve symlinks                               N/A (operation failed)
+Find from the `package.json` directory         N/A (operation failed)
 ```
 
 ## License
