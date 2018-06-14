@@ -9,15 +9,14 @@
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
+const {TextDocument} = require('vscode-languageserver-types');
 
-const code = `
+(async () => {
+  await stylelintVSCode(TextDocument.create('file:///Users/me/0.css', 'css', 1, `
 p {
   line-height: .8;
   color: red;
-}`;
-
-(async () => {
-  await stylelintVSCode({
+}`), {
     code,
     config: {
       rules: {
@@ -61,28 +60,27 @@ npm install stylelint-vscode
 const stylelintVSCode = require('stylelint-vscode');
 ```
 
-### stylelintVSCode(*options*)
+### stylelintVSCode(*textDocument* [, *options*])
 
+*textDocument*: [`TextDocument`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument)  
 *options*: `Object` (directly passed to [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#the-stylelint-node-api))  
 Return: `Promise<Array<Object>>`
 
-It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.1.1/lib/index.js#L24), except for:
+It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.2.1/lib/index.js#L30), except for:
 
+* [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) and [`codeFilename`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#codefilename) option values are derived from a `TextDocument` passed to the first argument.
 * It will be resolved with an `Array` of [VS Code `Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/4.0.0/types/src/main.ts#L181-L208) instances.
 * It will be *rejected* (not resolved) when it takes invalid configs.
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
 * It suppresses `No configuration found` error.
   * Doing nothing when there is no configuration is a common behavior of editor plugins.
-* [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) option is required and [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) option is not supported.
-  * Because extensions can derive file contents via [`TextDocument#getText()`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument) and there is no need to read physical files again.
+* [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) option is not supported.
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
 
 (async () => {
-  await stylelintVSCode({
-    code: '{foo}'
-  }); /*=> [{
+  await stylelintVSCode(TextDocument.create('file:///Users/me/1.css', 'css', 1, '{foo}')); /*=> [{
     range: {
       start: {line: 0, character: 1},
       end: {line: 0, character: 1}
@@ -98,8 +96,7 @@ const stylelintVSCode = require('stylelint-vscode');
 ```javascript
 (async () => {
   try {
-    await stylelintVSCode({
-      code: 'a {}',
+    await stylelintVSCode(TextDocument.create('file:///Users/me/2.css', 'css', 1, 'a {}'), {
       config: {
         rules: {
           indentation: 2,
