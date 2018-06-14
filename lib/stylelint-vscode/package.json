@@ -39,8 +39,8 @@
 		"array-to-sentence": "^2.0.0",
 		"inspect-with-kind": "^1.0.4",
 		"lodash": "^4.17.10",
-		"postcss-jsx": "^0.25.0",
-		"stylelint": "github:stylelint/stylelint#f2fa2ddb0b1d642e41645f3623f57f62cbecb7e2",
+		"postcss-jsx": "^0.28.0",
+		"stylelint": "github:stylelint/stylelint#75172b66dfa50bc84775315accf039a305c4c7f7",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1",
 		"vscode-languageserver": "^4.2.1"
 	},
