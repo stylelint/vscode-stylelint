@@ -1,6 +1,6 @@
 {
 	"name": "stylelint-vscode",
-	"version": "7.0.0-5",
+	"version": "7.0.0-6",
 	"description": "stylelint wrapper to easily integrate with Visual Studio Code",
 	"repository": "shinnn/stylelint-vscode",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
