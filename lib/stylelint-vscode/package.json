@@ -40,7 +40,7 @@
 		"inspect-with-kind": "^1.0.4",
 		"lodash": "^4.17.10",
 		"postcss-jsx": "^0.28.0",
-		"stylelint": "github:stylelint/stylelint#75172b66dfa50bc84775315accf039a305c4c7f7",
+		"stylelint": "^9.3.0",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1",
 		"vscode-languageserver": "^4.2.1"
 	},
