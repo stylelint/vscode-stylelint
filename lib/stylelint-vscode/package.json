@@ -42,6 +42,7 @@
 		"postcss-html": "^0.28.0",
 		"postcss-jsx": "^0.28.0",
 		"postcss-markdown": "^0.28.0",
+		"postcss-syntax": "github:gucong3000/postcss-syntax#5f2b1a92e800ee83eb32b8a060175f5c19b30c59",
 		"stylelint": "^9.3.0",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1",
 		"vscode-languageserver": "^4.2.1"
