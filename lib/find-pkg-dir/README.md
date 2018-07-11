@@ -54,26 +54,26 @@ findPkgDir('path/of/non/nodejs/project'); //=> null
 
 ```
 find-pkg-dir (this project):
-Find from the current directory          7.023312300443649 ms/op avg.
-Find from the deep directory           312.877874401211727 ms/op avg.
-Resolve symlinks                         5.399559700489045 ms/op avg.
-Find from the `package.json` directory  72.548829698562628 ms/op avg.
+Find from the current directory          6.514971999917179 ms/op avg.
+Find from the deep directory           301.970978999976069 ms/op avg.
+Resolve symlinks                         4.765490400046110 ms/op avg.
+Find from the `package.json` directory  33.653173299971968 ms/op avg.
 
 find-pkg + path.dirname():
-Find from the current directory          8.823328000307082 ms/op avg.
-Find from the deep directory           417.688341200351715 ms/op avg.
+Find from the current directory          7.597467000037431 ms/op avg.
+Find from the deep directory           421.827792199980479 ms/op avg.
 Resolve symlinks                               N/A (operation failed)
 Find from the `package.json` directory         N/A (operation failed)
 
 find-root:
-Find from the current directory          8.690280598402023 ms/op avg.
-Find from the deep directory           480.454576599597942 ms/op avg.
+Find from the current directory          8.991230100020767 ms/op avg.
+Find from the deep directory           479.851285400055360 ms/op avg.
 Resolve symlinks                               N/A (operation failed)
 Find from the `package.json` directory         N/A (operation failed)
 
 pkg-dir:
-Find from the current directory          9.664102098345756 ms/op avg.
-Find from the deep directory           494.113495999574639 ms/op avg.
+Find from the current directory          9.322520200069993 ms/op avg.
+Find from the deep directory           505.923578500002634 ms/op avg.
 Resolve symlinks                               N/A (operation failed)
 Find from the `package.json` directory         N/A (operation failed)
 ```
