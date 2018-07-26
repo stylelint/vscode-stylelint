@@ -49,6 +49,7 @@ Once a user follows [the stylelint startup guide](https://github.com/stylelint/s
 * TypeScript React (`typescriptreact`)
 * [Vue (`vue`, `vue-html`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 * XML (`xml`)
+* XSL (`xsl`)
 
 ### Extension settings
 
