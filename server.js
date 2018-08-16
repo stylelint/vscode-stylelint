@@ -34,13 +34,13 @@ async function validate(document) {
 			return;
 		}
 
-		// https://github.com/stylelint/stylelint/blob/9.3.0/lib/utils/configurationError.js#L9
+		// https://github.com/stylelint/stylelint/blob/9.4.0/lib/utils/configurationError.js#L9
 		if (err.code === 78) {
 			connection.window.showErrorMessage(`stylelint: ${err.message}`);
 			return;
 		}
 
-		connection.window.showErrorMessage(err.stack.replace(/\n/g, ' '));
+		connection.window.showErrorMessage(err.stack.replace(/\n/ug, ' '));
 	}
 }
 

@@ -14,7 +14,7 @@
 		"theme": "light"
 	},
 	"engines": {
-		"vscode": ">=1.20.0"
+		"vscode": ">=1.26.0"
 	},
 	"categories": [
 		"Linters"
@@ -89,15 +89,15 @@
 		"test": "node node_modules/vscode/bin/test"
 	},
 	"dependencies": {
-		"stylelint-vscode": "^7.0.0-11",
-		"vscode-languageclient": "^4.4.0",
-		"vscode-languageserver": "^4.4.0"
+		"stylelint-vscode": "^7.0.0-13",
+		"vscode-languageclient": "^5.0.0",
+		"vscode-languageserver": "^5.0.0"
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^6.0.0",
-		"eslint": "^5.2.0",
+		"eslint": "^5.3.0",
 		"tape": "^4.9.1",
-		"vscode": "^1.1.18"
+		"vscode": "^1.1.21"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn/node"

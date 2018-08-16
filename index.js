@@ -1,7 +1,5 @@
 'use strict';
 
-const {join} = require('path');
-
 const {LanguageClient, SettingMonitor} = require('vscode-languageclient');
 const {workspace} = require('vscode');
 const {activationEvents} = require('./package.json');
@@ -16,7 +14,7 @@ for (const activationEvent of activationEvents) {
 }
 
 exports.activate = ({subscriptions}) => {
-	const serverPath = join(__dirname, 'server.js');
+	const serverPath = require.resolve('./server.js');
 
 	const client = new LanguageClient('stylelint', {
 		run: {
@@ -25,7 +23,7 @@ exports.activate = ({subscriptions}) => {
 		debug: {
 			module: serverPath,
 			options: {
-				execArgv: ['--nolazy', '--debug=6004']
+				execArgv: ['--nolazy', '--inspect=6004']
 			}
 		}
 	}, {
