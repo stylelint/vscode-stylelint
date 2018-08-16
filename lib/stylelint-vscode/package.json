@@ -58,9 +58,6 @@
 		"tape": "^4.9.1"
 	},
 	"eslintConfig": {
-		"extends": "@shinnn/node",
-		"rules": {
-			"prefer-object-spread": "off"
-		}
+		"extends": "@shinnn/node"
 	}
 }
