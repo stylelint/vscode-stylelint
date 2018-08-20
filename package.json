@@ -89,13 +89,13 @@
 		"test": "node node_modules/vscode/bin/test"
 	},
 	"dependencies": {
-		"stylelint-vscode": "^7.0.0-13",
-		"vscode-languageclient": "^5.0.0",
-		"vscode-languageserver": "^5.0.0"
+		"stylelint-vscode": "^7.0.0-14",
+		"vscode-languageclient": "^5.0.1",
+		"vscode-languageserver": "^5.0.3"
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^6.0.0",
-		"eslint": "^5.3.0",
+		"eslint": "^5.4.0",
 		"tape": "^4.9.1",
 		"vscode": "^1.1.21"
 	},
