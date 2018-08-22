@@ -35,6 +35,7 @@
 		"asynchronously"
 	],
 	"dependencies": {
+		"@babel/core": "7.0.0-rc.1",
 		"array-to-error": "^1.1.1",
 		"array-to-sentence": "^2.0.0",
 		"inspect-with-kind": "^1.0.4",
