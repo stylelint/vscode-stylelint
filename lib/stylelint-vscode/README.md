@@ -74,7 +74,7 @@ It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.2
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
 * It suppresses `No configuration found` error.
   * Doing nothing when there is no configuration is a common behavior of editor plugins.
-* [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) option is not supported.
+* [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) and [`formatter`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#formatter) options are not supported.
 
 ```javascript
 const stylelintVSCode = require('stylelint-vscode');
