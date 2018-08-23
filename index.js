@@ -30,7 +30,7 @@ exports.activate = ({subscriptions}) => {
 		documentSelector,
 		synchronize: {
 			configurationSection: 'stylelint',
-			fileEvents: workspace.createFileSystemWatcher('**/{.stylelintrc{,.js,.json,.yaml,.yml},stylelint.config.js}')
+			fileEvents: workspace.createFileSystemWatcher('**/{.stylelintrc{,.js,.json,.yaml,.yml},stylelint.config.js,.stylelintignore}')
 		}
 	});
 
