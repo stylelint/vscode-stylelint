@@ -5,8 +5,8 @@
 	"repository": "shinnn/inspect-with-kind",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
 	"scripts": {
-		"pretest": "eslint --fix --format=codeframe index.js test.js",
-		"test": "nyc node --throw-deprecation test.js"
+		"pretest": "eslint .",
+		"test": "nyc --reporter=html --reporter=text node test.js"
 	},
 	"license": "ISC",
 	"files": [
@@ -29,11 +29,11 @@
 		"kind-of": "^6.0.2"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config-node": "^5.0.0",
-		"eslint": "^4.13.1",
-		"nyc": "^11.4.0",
-		"tape": "^4.8.0",
-		"zen-observable": "^0.6.0"
+		"@shinnn/eslint-config-node": "^6.0.0",
+		"eslint": "^5.4.0",
+		"nyc": "^13.0.1",
+		"tape": "^4.9.1",
+		"zen-observable": "^0.8.9"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn/node"
