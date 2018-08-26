@@ -30,12 +30,14 @@
 	},
 	"devDependencies": {
 		"@shinnn/eslint-config-node": "^6.0.0",
+		"babel-eslint": "^8.2.6",
 		"eslint": "^5.4.0",
 		"nyc": "^13.0.1",
 		"tape": "^4.9.1",
 		"zen-observable": "^0.8.9"
 	},
 	"eslintConfig": {
-		"extends": "@shinnn/node"
+		"extends": "@shinnn/node",
+		"parser": "babel-eslint"
 	}
 }

@@ -36,7 +36,7 @@ Return: `string`
 
 Almost the same as `util.inspect`, but:
 
-* It appends a type information to the string if the first argument is one of `Boolean`, `String`, `Number`, `Array`, `RegExp`, `Date`, `arguments` or a plain `Object`.
+* It appends a type information to the string if the first argument is one of `boolean`, `string`, `number`, `bigint`, `Array`, `RegExp`, `Date`, `arguments` or a plain `Object`.
 * Error stack trace is omitted.
 * `breakLength` option defaults to `Infinity`.
 * `maxArrayLength` option defaults to `10`.
