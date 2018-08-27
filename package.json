@@ -82,6 +82,14 @@
 				"fileMatch": "**/.stylelintrc*",
 				"url": "http://json.schemastore.org/stylelintrc.json"
 			}
+		],
+		"languages": [
+			{
+				"id": "ignore",
+				"filenames": [
+					".stylelintignore"
+				]
+			}
 		]
 	},
 	"scripts": {

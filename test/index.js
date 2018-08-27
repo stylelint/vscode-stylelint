@@ -1,6 +1,8 @@
 /* eslint-disable node/no-unpublished-require */
 'use strict';
 
+const {join} = require('path');
+
 const test = require('tape');
 const {extensions, workspace, window} = require('vscode');
 
@@ -31,6 +33,12 @@ const run = () => test('vscode-stylelint', async t => {
 		vscodeStylelint.isActive,
 		true,
 		'should be activated when the open file is CSS.'
+	);
+
+	t.equal(
+		(await workspace.openTextDocument(join(__dirname, '.stylelintignore'))).languageId,
+		'ignore',
+		'should add syntax highlighting to .stylelintignore.'
 	);
 
 	t.end();
