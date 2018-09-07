@@ -7,6 +7,7 @@
 	"repository": "https://github.com/shinnn/vscode-stylelint",
 	"homepage": "https://github.com/shinnn/vscode-stylelint#readme",
 	"bugs": "https://github.com/shinnn/vscode-stylelint/issues",
+	"qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
 	"license": "ISC",
 	"icon": "media/icon.png",
 	"galleryBanner": {
@@ -23,10 +24,9 @@
 		"lint",
 		"style",
 		"stylelint",
-		"css",
+		"validation",
 		"check"
 	],
-	"qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
 	"activationEvents": [
 		"onLanguage:css",
 		"onLanguage:html",
@@ -100,17 +100,17 @@
 	"dependencies": {
 		"find-pkg-dir": "^1.0.1",
 		"path-is-inside": "^1.0.2",
-		"stylelint-vscode": "^7.0.0-16",
+		"stylelint-vscode": "^7.0.0-17",
 		"vscode-languageclient": "^5.0.1",
 		"vscode-languageserver": "^5.0.3"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config-node": "^6.0.0",
-		"eslint": "^5.4.0",
+		"@shinnn/eslint-config": "^6.7.0",
+		"eslint": "^5.5.0",
 		"tape": "^4.9.1",
 		"vscode": "^1.1.21"
 	},
 	"eslintConfig": {
-		"extends": "@shinnn/node"
+		"extends": "@shinnn"
 	}
 }
