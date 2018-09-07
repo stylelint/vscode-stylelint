@@ -41,6 +41,7 @@
 		"onLanguage:source.markdown.math",
 		"onLanguage:styled-css",
 		"onLanguage:sugarss",
+		"onLanguage:svelte",
 		"onLanguage:typescript",
 		"onLanguage:typescriptreact",
 		"onLanguage:vue",

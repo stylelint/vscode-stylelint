@@ -45,6 +45,7 @@ Once a user follows [the stylelint startup guide](https://github.com/stylelint/s
   * [Official (`source.css.styled`)](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components)
   * [Userland (`styled-css`)](https://marketplace.visualstudio.com/items?itemName=mgmcdermott.vscode-language-babel)
 * [Sugarss (`sugarss`)](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language)
+* [Svelte (`svelte`)](https://marketplace.visualstudio.com/items?itemName=JamesBirtles.svelte-vscode)
 * TypeScript (`typescript`)
 * TypeScript React (`typescriptreact`)
 * [Vue (`vue`, `vue-html`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
