@@ -4,11 +4,11 @@
 	"description": "Convert a stylelint warning into a Visual Studio Code diagnostic",
 	"repository": "shinnn/stylelint-warning-to-vscode-diagnostic",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
-	"scripts": {
-		"pretest": "eslint --fix --format=codeframe index.js test.js",
-		"test": "nyc --reporter=html --reporter=text node test.js"
-	},
 	"license": "ISC",
+	"scripts": {
+		"pretest": "eslint .",
+		"test": "nyc node test.js"
+	},
 	"files": [
 		"index.js"
 	],
@@ -25,17 +25,21 @@
 		"severity"
 	],
 	"dependencies": {
-		"vscode-languageserver-types": "^3.5.0",
-		"inspect-with-kind": "^1.0.4"
+		"vscode-languageserver-types": "^3.13.0",
+		"inspect-with-kind": "^1.0.5"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config-node": "^5.0.0",
-		"eslint": "^4.18.1",
-		"nyc": "^11.5.0",
-		"stylelint": "^9.1.1",
-		"tape": "^4.9.0"
+		"@shinnn/eslint-config": "^6.7.1",
+		"eslint": "^5.6.1",
+		"nyc": "^13.0.1",
+		"nyc-config-common": "^1.0.0",
+		"stylelint": "^9.6.0",
+		"tape": "^4.9.1"
 	},
 	"eslintConfig": {
-		"extends": "@shinnn/node"
+		"extends": "@shinnn"
+	},
+	"nyc": {
+		"extends": "nyc-config-common"
 	}
 }

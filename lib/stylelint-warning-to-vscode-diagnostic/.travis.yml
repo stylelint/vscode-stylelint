@@ -2,4 +2,4 @@ branches:
   except: /^v\d/
 language: node_js
 node_js: node
-after_script: node_modules/.bin/nyc report --reporter=text-lcov | npx coveralls
+after_script: node_modules/.bin/nyc report | npx coveralls
