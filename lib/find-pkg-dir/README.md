@@ -2,8 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/find-pkg-dir.svg)](https://www.npmjs.com/package/find-pkg-dir)
 [![Build Status](https://travis-ci.com/shinnn/find-pkg-dir.svg?branch=master)](https://travis-ci.com/shinnn/find-pkg-dir)
-[![Build status](https://ci.appveyor.com/api/projects/status/gmxyhw7o2n1ndypc/branch/master?svg=true)](https://ci.appveyor.com/project/ShinnosukeWatanabe/find-pkg-dir/branch/master)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/find-pkg-dir.svg)](https://coveralls.io/r/shinnn/find-pkg-dir)
+[![Coverage Status](https://img.shields.io/coveralls/shinnn/find-pkg-dir.svg)](https://coveralls.io/github/shinnn/find-pkg-dir)
 
 Find the root directory of a Node.js project from a given path
 

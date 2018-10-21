@@ -1,9 +1,0 @@
-image: Visual Studio 2017
-platform: x64
-shallow_clone: true
-skip_tags: true
-install:
-  - ps: Install-Product node Stable x64
-  - npm install
-build: off
-test_script: node test.js
