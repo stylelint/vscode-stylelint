@@ -6,9 +6,9 @@
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
 	"license": "ISC",
 	"scripts": {
-		"bench": "node benchmark/index.js",
+		"bench": "node --no-warnings benchmark/index.js",
 		"pretest": "eslint .",
-		"test": "nyc --reporter=html --reporter=text node test.js"
+		"test": "nyc node test.js"
 	},
 	"files": [
 		"index.js"
@@ -25,21 +25,24 @@
 		"lookup"
 	],
 	"dependencies": {
-		"inspect-with-kind": "^1.0.4"
+		"inspect-with-kind": "^1.0.5"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config-node": "^6.0.0",
-		"eslint": "^5.1.0",
+		"@shinnn/eslint-config": "^6.8.0",
+		"eslint": "^5.8.0",
 		"find-pkg": "^2.0.0",
 		"find-root": "^1.1.0",
-		"lodash": "^4.17.10",
-		"mkdirp": "^0.5.1",
-		"nyc": "^12.0.2",
+		"lodash": "^4.17.11",
+		"nyc": "^13.1.0",
+		"nyc-config-common": "^1.0.1",
 		"pkg-dir": "^3.0.0",
 		"rmfr": "^2.0.0",
 		"tape": "^4.9.1"
 	},
 	"eslintConfig": {
-		"extends": "@shinnn/node"
+		"extends": "@shinnn"
+	},
+	"nyc": {
+		"extends": "nyc-config-common"
 	}
 }
