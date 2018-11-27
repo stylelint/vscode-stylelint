@@ -3,8 +3,9 @@
 
 const {join} = require('path');
 
-const test = require('tape');
 const {extensions, workspace, window} = require('vscode');
+const pWaitFor = require('p-wait-for');
+const test = require('tape');
 
 const run = () => test('vscode-stylelint', async t => {
 	const vscodeStylelint = extensions.getExtension('shinnn.stylelint');
@@ -28,12 +29,9 @@ const run = () => test('vscode-stylelint', async t => {
 	});
 
 	await window.showTextDocument(cssDocument);
+	await pWaitFor(() => vscodeStylelint.isActive, 2000);
 
-	t.equal(
-		vscodeStylelint.isActive,
-		true,
-		'should be activated when the open file is CSS.'
-	);
+	t.pass('should be activated when the open file is CSS.');
 
 	t.equal(
 		(await workspace.openTextDocument(join(__dirname, '.stylelintignore'))).languageId,

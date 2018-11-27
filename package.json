@@ -105,8 +105,9 @@
 		"vscode-languageserver": "^5.1.0"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config": "^6.8.0",
+		"@shinnn/eslint-config": "^6.8.1",
 		"eslint": "^5.9.0",
+		"p-wait-for": "^2.0.1",
 		"tape": "^4.9.1",
 		"vscode": "^1.1.21"
 	},
