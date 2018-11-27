@@ -109,7 +109,7 @@
 		"eslint": "^5.9.0",
 		"p-wait-for": "^2.0.1",
 		"tape": "^4.9.1",
-		"vscode": "^1.1.21"
+		"vscode": "^1.1.22"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn"
