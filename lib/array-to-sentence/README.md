@@ -1,7 +1,7 @@
 # array-to-sentence
 
 [![npm version](https://img.shields.io/npm/v/array-to-sentence.svg)](https://www.npmjs.com/package/array-to-sentence)
-[![Build Status](https://travis-ci.org/shinnn/array-to-sentence.svg?branch=master)](https://travis-ci.org/shinnn/array-to-sentence)
+[![Build Status](https://travis-ci.com/shinnn/array-to-sentence.svg?branch=master)](https://travis-ci.com/shinnn/array-to-sentence)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-sentence.svg)](https://coveralls.io/github/shinnn/array-to-sentence)
 
 Join all elements of an array and create a human-readable string
@@ -12,7 +12,7 @@ arrayToSentence(['foo', 'bar', 'baz', 'qux']); //=> 'foo, bar, baz and qux'
 
 ## Installation
 
-#### [npm](https://www.npmjs.com/)
+[Use](https://docs.npmjs.com/cli/install) [npm](https://docs.npmjs.com/about-npm/).
 
 ```
 npm install array-to-sentence
@@ -20,7 +20,7 @@ npm install array-to-sentence
 
 ## API
 
-```js
+```javascript
 import arrayToSentence from 'array-to-sentence';
 ```
 
@@ -64,10 +64,6 @@ arrayToSentence(['Earth', 'Wind', 'Fire'], {
   lastSeparator: ' & '
 }); //=> 'Earth, Wind & Fire'
 ```
-
-## Acknowledgement
-
-I used [`.toSentence()` method](https://epeli.github.io/underscore.string/#tosentence-array-delimiter-lastdelimiter-gt-string) of [underscore.string](https://github.com/epeli/underscore.string) as API design reference. Thanks, [Esa-Matti Suuronen](https://github.com/epeli) and [the contributors](https://github.com/epeli/underscore.string/graphs/contributors).
 
 ## License
 
