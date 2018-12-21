@@ -1,5 +1,4 @@
-branches:
-  except: /^v\d/
+if: branch !~ ^v\d
 language: node_js
 node_js: node
 matrix:
@@ -11,5 +10,3 @@ matrix:
     script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
   - os: osx
     osx_image: xcode10.1
-branches:
-  except: /^v\d/
