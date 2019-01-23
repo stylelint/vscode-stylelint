@@ -39,22 +39,18 @@
 		"array-to-sentence": "^2.0.0",
 		"inspect-with-kind": "^1.0.5",
 		"lodash": "^4.17.11",
-		"postcss-html": "^0.34.0",
-		"postcss-jsx": "^0.35.0",
-		"postcss-markdown": "^0.34.0",
-		"postcss-syntax": "^0.34.0",
-		"stylelint": "^9.7.0",
+		"stylelint": "^9.10.1",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1",
-		"vscode-languageserver": "^5.0.3"
+		"vscode-languageserver": "^5.2.1"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config": "^6.8.0",
-		"eslint": "^5.8.0",
+		"@shinnn/eslint-config": "^6.8.9",
+		"eslint": "^5.12.1",
 		"nyc": "^13.1.0",
 		"nyc-config-common": "^1.0.1",
 		"stylelint-processor-glamorous": "^0.3.0",
-		"stylelint-processor-styled-components": "^1.5.0",
-		"tape": "^4.9.1"
+		"stylelint-processor-styled-components": "^1.5.2",
+		"tape": "^4.9.2"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn"

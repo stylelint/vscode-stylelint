@@ -1,7 +1,7 @@
 # stylelint-vscode
 
 [![npm version](https://img.shields.io/npm/v/stylelint-vscode.svg)](https://www.npmjs.com/package/stylelint-vscode)
-[![Build Status](https://travis-ci.org/shinnn/stylelint-vscode.svg?branch=master)](https://travis-ci.org/shinnn/stylelint-vscode)
+[![Build Status](https://travis-ci.com/shinnn/stylelint-vscode.svg?branch=master)](https://travis-ci.com/shinnn/stylelint-vscode)
 [![Coverage Status](https://img.shields.io/coveralls/shinnn/stylelint-vscode.svg)](https://coveralls.io/github/shinnn/stylelint-vscode)
 
 A [stylelint](https://github.com/stylelint/stylelint) wrapper to easily integrate with [Visual Studio Code](https://code.visualstudio.com/) [language server](https://github.com/Microsoft/vscode-languageserver-node)
@@ -65,10 +65,10 @@ const stylelintVSCode = require('stylelint-vscode');
 *options*: `Object` (directly passed to [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#the-stylelint-node-api))  
 Return: `Promise<Array<Object>>`
 
-It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.6.0/lib/index.js#L30), except for:
+It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.10.1/lib/index.js#L31), except for:
 
 * [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) and [`codeFilename`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#codefilename) option values are derived from a `TextDocument` passed to the first argument.
-* It will be resolved with an `Array` of [VS Code `Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/types/3.13.0/types/src/main.ts#L452-L485) instances.
+* It will be resolved with an `Array` of [VS Code `Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/types/3.14/types/src/main.ts#L508-L546) instances.
 * It will be *rejected* (not resolved) when it takes invalid configs.
   * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
 * It suppresses `No configuration found` error.
@@ -127,4 +127,4 @@ const stylelintVSCode = require('stylelint-vscode');
 
 ## License
 
-[ISC License](./LICENSE) © 2018 Shinnosuke Watanabe
+[ISC License](./LICENSE) © 2018 - 2019 Shinnosuke Watanabe
