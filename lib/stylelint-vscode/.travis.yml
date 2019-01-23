@@ -1,10 +1,9 @@
-branches:
-  except: /^v\d/
+if: branch !~ ^v\d
 language: node_js
 node_js: node
-matrix:
+jobs:
   include:
   - dist: xenial
     after_script: node_modules/.bin/nyc report | npx coveralls
   - os: windows
-    script: node "test\test.js"
+    script: node test\\test.js
