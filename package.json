@@ -100,16 +100,16 @@
 	"dependencies": {
 		"find-pkg-dir": "^1.0.1",
 		"path-is-inside": "^1.0.2",
-		"stylelint-vscode": "^7.0.0-19",
-		"vscode-languageclient": "^5.1.1",
-		"vscode-languageserver": "^5.1.0"
+		"stylelint-vscode": "^7.0.0-20",
+		"vscode-languageclient": "^5.2.1",
+		"vscode-languageserver": "^5.2.1"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config": "^6.8.1",
-		"eslint": "^5.9.0",
+		"@shinnn/eslint-config": "^6.8.9",
+		"eslint": "^5.12.1",
 		"p-wait-for": "^2.0.1",
-		"tape": "^4.9.1",
-		"vscode": "^1.1.22"
+		"tape": "^4.9.2",
+		"vscode": "^1.1.28"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn"
