@@ -1,12 +1,9 @@
 if: branch !~ ^v\d
 language: node_js
 node_js: node
-matrix:
+jobs:
   include:
   - dist: xenial
-    addons:
-      apt:
-        packages: libgconf-2-4
     script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
   - os: osx
     osx_image: xcode10.1
