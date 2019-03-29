@@ -102,14 +102,15 @@
 		"path-is-inside": "^1.0.2",
 		"stylelint-vscode": "^7.0.0-20",
 		"vscode-languageclient": "^5.2.1",
-		"vscode-languageserver": "^5.2.1"
+		"vscode-languageserver": "^5.2.1",
+		"vscode-uri": "^1.0.6"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config": "^6.8.9",
-		"eslint": "^5.12.1",
-		"p-wait-for": "^2.0.1",
-		"tape": "^4.9.2",
-		"vscode": "^1.1.28"
+		"@shinnn/eslint-config": "^6.9.2",
+		"eslint": "^5.15.3",
+		"p-wait-for": "^3.0.0",
+		"tape": "^4.10.1",
+		"vscode": "^1.1.33"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn"

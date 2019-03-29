@@ -2,8 +2,9 @@
 
 const {join, parse} = require('path');
 
-const {createConnection, Files, ProposedFeatures, TextDocuments} = require('vscode-languageserver');
+const {createConnection, ProposedFeatures, TextDocuments} = require('vscode-languageserver');
 const findPkgDir = require('find-pkg-dir');
+const parseUri = require('vscode-uri').default.parse;
 const pathIsInside = require('path-is-inside');
 const stylelintVSCode = require('stylelint-vscode');
 
@@ -24,14 +25,14 @@ async function validate(document) {
 		options.configOverrides = configOverrides;
 	}
 
-	const documentPath = Files.uriToFilePath(document.uri);
+	const documentPath = parseUri(document.uri).fsPath;
 
 	if (documentPath) {
 		const workspaceFolders = await connection.workspace.getWorkspaceFolders();
 
 		if (workspaceFolders) {
 			for (const {uri} of workspaceFolders) {
-				const workspacePath = Files.uriToFilePath(uri);
+				const workspacePath = parseUri(uri).fsPath;
 
 				if (pathIsInside(documentPath, workspacePath)) {
 					options.ignorePath = join(workspacePath, '.stylelintignore');
@@ -59,7 +60,7 @@ async function validate(document) {
 			return;
 		}
 
-		// https://github.com/stylelint/stylelint/blob/9.9.0/lib/utils/configurationError.js#L10
+		// https://github.com/stylelint/stylelint/blob/9.10.0/lib/utils/configurationError.js#L10
 		if (err.code === 78) {
 			connection.window.showErrorMessage(`stylelint: ${err.message}`);
 			return;
