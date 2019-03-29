@@ -6,4 +6,4 @@ jobs:
   - dist: xenial
     script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
   - os: osx
-    osx_image: xcode10.1
+    osx_image: xcode10.2
