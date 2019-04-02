@@ -1,6 +1,6 @@
 {
 	"name": "find-pkg-dir",
-	"version": "1.0.1",
+	"version": "2.0.0",
 	"description": "Find the root directory of a Node.js project from a given path",
 	"repository": "shinnn/find-pkg-dir",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
@@ -28,16 +28,16 @@
 		"inspect-with-kind": "^1.0.5"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config": "^6.8.0",
-		"eslint": "^5.8.0",
+		"@shinnn/eslint-config": "^6.10.0",
+		"eslint": "^5.16.0",
 		"find-pkg": "^2.0.0",
 		"find-root": "^1.1.0",
 		"lodash": "^4.17.11",
-		"nyc": "^13.1.0",
+		"nyc": "^13.3.0",
 		"nyc-config-common": "^1.0.1",
-		"pkg-dir": "^3.0.0",
+		"pkg-dir": "^4.1.0",
 		"rmfr": "^2.0.0",
-		"tape": "^4.9.1"
+		"tape": "^4.10.1"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn"
