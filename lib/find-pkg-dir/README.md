@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/find-pkg-dir.svg)](https://www.npmjs.com/package/find-pkg-dir)
 [![Build Status](https://travis-ci.com/shinnn/find-pkg-dir.svg?branch=master)](https://travis-ci.com/shinnn/find-pkg-dir)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/find-pkg-dir.svg)](https://coveralls.io/github/shinnn/find-pkg-dir)
+[![codecov](https://codecov.io/gh/shinnn/find-pkg-dir/branch/master/graph/badge.svg)](https://codecov.io/gh/shinnn/find-pkg-dir)
 
 Find the root directory of a Node.js project from a given path
 
@@ -24,7 +24,7 @@ Unlike [the](https://www.npmjs.com/package/pkg-dir) [prior](https://www.npmjs.co
 
 ## Installation
 
-[Use](https://docs.npmjs.com/cli/install) [npm](https://docs.npmjs.com/getting-started/what-is-npm).
+[Use](https://docs.npmjs.com/cli/install) [npm](https://docs.npmjs.com/about-npm/).
 
 ```
 npm install find-pkg-dir
@@ -79,4 +79,4 @@ Find from the `package.json` directory         N/A (operation failed)
 
 ## License
 
-[ISC License](./LICENSE) © 2018 Shinnosuke Watanabe
+[ISC License](./LICENSE) © 2018 - 2019 Shinnosuke Watanabe
