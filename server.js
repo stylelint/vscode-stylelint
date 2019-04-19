@@ -60,7 +60,7 @@ async function validate(document) {
 			return;
 		}
 
-		// https://github.com/stylelint/stylelint/blob/9.10.0/lib/utils/configurationError.js#L10
+		// https://github.com/stylelint/stylelint/blob/10.0.1/lib/utils/configurationError.js#L10
 		if (err.code === 78) {
 			connection.window.showErrorMessage(`stylelint: ${err.message}`);
 			return;
