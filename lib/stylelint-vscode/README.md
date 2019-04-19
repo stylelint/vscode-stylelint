@@ -2,7 +2,7 @@
 
 [![npm version](https://img.shields.io/npm/v/stylelint-vscode.svg)](https://www.npmjs.com/package/stylelint-vscode)
 [![Build Status](https://travis-ci.com/shinnn/stylelint-vscode.svg?branch=master)](https://travis-ci.com/shinnn/stylelint-vscode)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/stylelint-vscode.svg)](https://coveralls.io/github/shinnn/stylelint-vscode)
+[![codecov](https://codecov.io/gh/shinnn/stylelint-vscode/branch/master/graph/badge.svg)](https://codecov.io/gh/shinnn/stylelint-vscode)
 
 A [stylelint](https://github.com/stylelint/stylelint) wrapper to easily integrate with [Visual Studio Code](https://code.visualstudio.com/) [language server](https://github.com/Microsoft/vscode-languageserver-node)
 
@@ -62,10 +62,10 @@ const stylelintVSCode = require('stylelint-vscode');
 ### stylelintVSCode(*textDocument* [, *options*])
 
 *textDocument*: [`TextDocument`](https://code.visualstudio.com/docs/extensionAPI/vscode-api#TextDocument)  
-*options*: `Object` (directly passed to [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#the-stylelint-node-api))  
+*options*: `Object` (directly passed to [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#the-stylelint-nodejs-api))  
 Return: `Promise<Array<Object>>`
 
-It works like [`stylelint.lint`](https://github.com/stylelint/stylelint/blob/9.10.1/lib/index.js#L31), except for:
+It works like [`stylelint.lint()`](https://github.com/stylelint/stylelint/blob/10.0.1/lib/index.js#L31), except for:
 
 * [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) and [`codeFilename`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#codefilename) option values are derived from a `TextDocument` passed to the first argument.
 * It will be resolved with an `Array` of [VS Code `Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/types/3.14/types/src/main.ts#L508-L546) instances.

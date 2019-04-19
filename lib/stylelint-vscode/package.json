@@ -2,12 +2,12 @@
 	"name": "stylelint-vscode",
 	"version": "7.0.0-20",
 	"description": "A stylelint wrapper to easily integrate with Visual Studio Code",
-	"repository": "shinnn/stylelint-vscode",
 	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
+	"repository": "shinnn/stylelint-vscode",
 	"license": "ISC",
 	"scripts": {
 		"pretest": "eslint .",
-		"test": "nyc node test/test.js"
+		"test": "coverage test/test.js"
 	},
 	"files": [
 		"index.js"
@@ -39,23 +39,19 @@
 		"array-to-sentence": "^2.0.0",
 		"inspect-with-kind": "^1.0.5",
 		"lodash": "^4.17.11",
-		"stylelint": "^9.10.1",
+		"stylelint": "^10.0.1",
 		"stylelint-warning-to-vscode-diagnostic": "^1.0.1",
 		"vscode-languageserver": "^5.2.1"
 	},
 	"devDependencies": {
-		"@shinnn/eslint-config": "^6.8.9",
-		"eslint": "^5.12.1",
-		"nyc": "^13.1.0",
-		"nyc-config-common": "^1.0.1",
+		"@shinnn/eslint-config": "^6.10.2",
+		"coverage": "^0.1.5",
+		"eslint": "^5.16.0",
 		"stylelint-processor-glamorous": "^0.3.0",
-		"stylelint-processor-styled-components": "^1.5.2",
-		"tape": "^4.9.2"
+		"stylelint-processor-styled-components": "^1.6.0",
+		"tape": "^4.10.1"
 	},
 	"eslintConfig": {
 		"extends": "@shinnn"
-	},
-	"nyc": {
-		"extends": "nyc-config-common"
 	}
 }
