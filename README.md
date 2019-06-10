@@ -79,4 +79,4 @@ Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs
 
 ## License
 
-[ISC License](./LICENSE.txt) © 2018- 2019 Shinnosuke Watanabe
+[ISC License](./LICENSE.txt) © 2018- 2019 Watanabe Shinnosuke

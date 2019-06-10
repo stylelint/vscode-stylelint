@@ -4,7 +4,7 @@ const {join, parse} = require('path');
 
 const {createConnection, ProposedFeatures, TextDocuments} = require('vscode-languageserver');
 const findPkgDir = require('find-pkg-dir');
-const parseUri = require('vscode-uri').default.parse;
+const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
 const stylelintVSCode = require('stylelint-vscode');
 
