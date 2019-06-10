@@ -48,7 +48,7 @@ Once a user follows [the stylelint startup guide](https://github.com/stylelint/s
 * [Svelte (`svelte`)](https://marketplace.visualstudio.com/items?itemName=JamesBirtles.svelte-vscode)
 * TypeScript (`typescript`)
 * TypeScript React (`typescriptreact`)
-* [Vue (`vue`, `vue-html`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
+* [Vue (`vue`, `vue-html`, `vue-postcss`)](https://marketplace.visualstudio.com/items?itemName=octref.vetur)
 * XML (`xml`)
 * XSL (`xsl`)
 

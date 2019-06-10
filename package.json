@@ -45,7 +45,8 @@
 		"onLanguage:typescript",
 		"onLanguage:typescriptreact",
 		"onLanguage:vue",
-		"onLanguage:vue-html",
+    "onLanguage:vue-html",
+    "onLanguage:vue-postcss",
 		"onLanguage:xml",
 		"onLanguage:xsl"
 	],
