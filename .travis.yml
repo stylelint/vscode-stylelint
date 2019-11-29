@@ -7,3 +7,5 @@ jobs:
       script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
     - os: osx
       osx_image: xcode10.2
+notifications:
+  email: false
