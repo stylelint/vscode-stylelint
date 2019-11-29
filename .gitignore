@@ -1,2 +1,94 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# -------------------------------------------------
+# OS files
+# -------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# -------------------------------------------------
+# Logs and databases
+# -------------------------------------------------
+logs
+*.log
+npm-debug.log*
+*.sql
+*.sqlite3
+
+# -------------------------------------------------
+# Runtime data and caches
+# -------------------------------------------------
+pids
+*.pid
+*.seed
+*.pyc
+*.pyo
+*.pot
+
+# -------------------------------------------------
+# Instrumentation and tooling
+# -------------------------------------------------
+lib-cov
+coverage
+.coverage
+coverage_html_report
+.grunt
+.bundle
+webpack-stats.json
+webpack-stats.html
+
+# -------------------------------------------------
+# Dependency directories
+# -------------------------------------------------
+node_modules*
+python_modules*
+bower_components
+.venv
+venv
+.tox
+$virtualenv.tar.gz
+$node_modules.tar.gz
+
+# -------------------------------------------------
+# Users Environment
+# -------------------------------------------------
+.lock-wscript
+.idea
+.installed.cfg
+.vagrant
+.anaconda
+Vagrantfile.local
+.env
+/local
+local.py
+*.sublime-project
+*.sublime-workspace
+.vscode
+
+# -------------------------------------------------
+# Generated files
+# -------------------------------------------------
+dist
+build
+/var/static/
+/var/media/
+/docs/_build/
+develop-eggs
+*.egg-info
+downloads
+media
+eggs
+parts
+lib64
+.sass-cache
+
+# -------------------------------------------------
+# Your own project's ignores
+# -------------------------------------------------
 .vscode-test
-node_modules
+*.vsix

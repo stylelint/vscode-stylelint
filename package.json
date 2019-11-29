@@ -1,27 +1,35 @@
 {
 	"name": "stylelint",
-	"version": "0.51.0",
+  "version": "0.51.0",
+  "private": true,
+	"license": "MIT",
+  "description": "Modern CSS/SCSS/Less linter",
+  "main": "index.js",
 	"displayName": "stylelint",
-	"description": "Modern CSS/SCSS/Less linter",
 	"publisher": "thibaudcolas",
 	"repository": "https://github.com/thibaudcolas/vscode-stylelint",
 	"homepage": "https://github.com/thibaudcolas/vscode-stylelint#readme",
 	"bugs": "https://github.com/thibaudcolas/vscode-stylelint/issues",
 	"qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
-	"license": "ISC",
-	"icon": "media/icon.png",
+  "icon": "media/icon.png",
+  "engines": {
+		"vscode": ">=1.35.0"
+	},
 	"galleryBanner": {
 		"color": "#32CD32",
 		"theme": "light"
 	},
-	"engines": {
-		"vscode": ">=1.35.0"
-	},
 	"categories": [
 		"Linters"
-	],
-	"keywords": [
-		"lint",
+  ],
+  "keywords": [
+    "css",
+    "less",
+    "sass",
+    "scss",
+    "sugarss",
+    "lint",
+    "linter",
 		"style",
 		"stylelint",
 		"validation",
@@ -50,7 +58,6 @@
 		"onLanguage:xml",
 		"onLanguage:xsl"
 	],
-	"main": "index.js",
 	"contributes": {
 		"configuration": {
 			"type": "object",
@@ -93,10 +100,9 @@
 				]
 			}
 		]
-	},
-	"scripts": {
-		"pretest": "eslint .",
-		"test": "node node_modules/vscode/bin/test"
+  },
+	"eslintConfig": {
+		"extends": "@shinnn"
 	},
 	"dependencies": {
 		"find-pkg-dir": "^2.0.0",
@@ -112,8 +118,9 @@
 		"p-wait-for": "^3.1.0",
 		"tape": "^4.10.2",
 		"vscode": "^1.1.34"
-	},
-	"eslintConfig": {
-		"extends": "@shinnn"
+  },
+	"scripts": {
+		"pretest": "eslint .",
+		"test": "node node_modules/vscode/bin/test"
 	}
 }
