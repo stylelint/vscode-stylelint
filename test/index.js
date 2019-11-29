@@ -8,7 +8,7 @@ const pWaitFor = require('p-wait-for');
 const test = require('tape');
 
 const run = () => test('vscode-stylelint', async t => {
-	const vscodeStylelint = extensions.getExtension('shinnn.stylelint');
+	const vscodeStylelint = extensions.getExtension('thibaudcolas.stylelint');
 
 	const plaintextDocument = await workspace.openTextDocument({
 		content: 'Hello',
