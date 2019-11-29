@@ -3,7 +3,7 @@ language: node_js
 node_js: node
 jobs:
   include:
-  - dist: xenial
-    script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
-  - os: osx
-    osx_image: xcode10.2
+    - dist: xenial
+      script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
+    - os: osx
+      osx_image: xcode10.2

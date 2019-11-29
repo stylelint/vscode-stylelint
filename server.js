@@ -1,8 +1,8 @@
 'use strict';
 
-const {join, parse} = require('path');
+const { join, parse } = require('path');
 
-const {createConnection, ProposedFeatures, TextDocuments} = require('vscode-languageserver');
+const { createConnection, ProposedFeatures, TextDocuments } = require('vscode-languageserver');
 const findPkgDir = require('find-pkg-dir');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
@@ -31,7 +31,7 @@ async function validate(document) {
 		const workspaceFolders = await connection.workspace.getWorkspaceFolders();
 
 		if (workspaceFolders) {
-			for (const {uri} of workspaceFolders) {
+			for (const { uri } of workspaceFolders) {
 				const workspacePath = parseUri(uri).fsPath;
 
 				if (pathIsInside(documentPath, workspacePath)) {
@@ -42,14 +42,17 @@ async function validate(document) {
 		}
 
 		if (options.ignorePath === undefined) {
-			options.ignorePath = join(findPkgDir(documentPath) || parse(documentPath).root, '.stylelintignore');
+			options.ignorePath = join(
+				findPkgDir(documentPath) || parse(documentPath).root,
+				'.stylelintignore',
+			);
 		}
 	}
 
 	try {
 		connection.sendDiagnostics({
 			uri: document.uri,
-			diagnostics: await stylelintVSCode(document, options)
+			diagnostics: await stylelintVSCode(document, options),
 		});
 	} catch (err) {
 		if (err.reasons) {
@@ -66,7 +69,7 @@ async function validate(document) {
 			return;
 		}
 
-		connection.window.showErrorMessage(err.stack.replace(/\n/ug, ' '));
+		connection.window.showErrorMessage(err.stack.replace(/\n/gu, ' '));
 	}
 }
 
@@ -81,11 +84,11 @@ connection.onInitialize(() => {
 
 	return {
 		capabilities: {
-			textDocumentSync: documents.syncKind
-		}
+			textDocumentSync: documents.syncKind,
+		},
 	};
 });
-connection.onDidChangeConfiguration(({settings}) => {
+connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
 
@@ -93,11 +96,13 @@ connection.onDidChangeConfiguration(({settings}) => {
 });
 connection.onDidChangeWatchedFiles(validateAll);
 
-documents.onDidChangeContent(({document}) => validate(document));
-documents.onDidClose(({document}) => connection.sendDiagnostics({
-	uri: document.uri,
-	diagnostics: []
-}));
+documents.onDidChangeContent(({ document }) => validate(document));
+documents.onDidClose(({ document }) =>
+	connection.sendDiagnostics({
+		uri: document.uri,
+		diagnostics: [],
+	}),
+);
 documents.listen(connection);
 
 connection.listen();

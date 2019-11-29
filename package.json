@@ -1,26 +1,26 @@
 {
-	"name": "stylelint",
+  "name": "stylelint",
   "version": "0.51.0",
   "private": true,
-	"license": "MIT",
+  "license": "MIT",
   "description": "Modern CSS/SCSS/Less linter",
   "main": "index.js",
-	"displayName": "stylelint",
-	"publisher": "thibaudcolas",
-	"repository": "https://github.com/thibaudcolas/vscode-stylelint",
-	"homepage": "https://github.com/thibaudcolas/vscode-stylelint#readme",
-	"bugs": "https://github.com/thibaudcolas/vscode-stylelint/issues",
-	"qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
+  "displayName": "stylelint",
+  "publisher": "thibaudcolas",
+  "repository": "https://github.com/thibaudcolas/vscode-stylelint",
+  "homepage": "https://github.com/thibaudcolas/vscode-stylelint#readme",
+  "bugs": "https://github.com/thibaudcolas/vscode-stylelint/issues",
+  "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
   "icon": "media/icon.png",
   "engines": {
-		"vscode": ">=1.35.0"
-	},
-	"galleryBanner": {
-		"color": "#32CD32",
-		"theme": "light"
-	},
-	"categories": [
-		"Linters"
+    "vscode": ">=1.35.0"
+  },
+  "galleryBanner": {
+    "color": "#32CD32",
+    "theme": "light"
+  },
+  "categories": [
+    "Linters"
   ],
   "keywords": [
     "css",
@@ -30,97 +30,100 @@
     "sugarss",
     "lint",
     "linter",
-		"style",
-		"stylelint",
-		"validation",
-		"check"
-	],
-	"activationEvents": [
-		"onLanguage:css",
-		"onLanguage:html",
-		"onLanguage:javascript",
-		"onLanguage:javascriptreact",
-		"onLanguage:less",
-		"onLanguage:markdown",
-		"onLanguage:postcss",
-		"onLanguage:sass",
-		"onLanguage:scss",
-		"onLanguage:source.css.styled",
-		"onLanguage:source.markdown.math",
-		"onLanguage:styled-css",
-		"onLanguage:sugarss",
-		"onLanguage:svelte",
-		"onLanguage:typescript",
-		"onLanguage:typescriptreact",
-		"onLanguage:vue",
-		"onLanguage:vue-html",
-		"onLanguage:vue-postcss",
-		"onLanguage:xml",
-		"onLanguage:xsl"
-	],
-	"contributes": {
-		"configuration": {
-			"type": "object",
-			"title": "stylelint configuration options",
-			"properties": {
-				"stylelint.enable": {
-					"type": "boolean",
-					"default": true,
-					"description": "Control whether stylelint is enabled for CSS/SCSS/Less files or not."
-				},
-				"stylelint.config": {
-					"type": [
-						"object",
-						"null"
-					],
-					"default": null,
-					"description": "A stylelint configuration object."
-				},
-				"stylelint.configOverrides": {
-					"type": [
-						"object",
-						"null"
-					],
-					"default": null,
-					"description": "A partial stylelint config whose properties override the existing ones."
-				}
-			}
-		},
-		"jsonValidation": [
-			{
-				"fileMatch": "**/.stylelintrc*",
-				"url": "http://json.schemastore.org/stylelintrc.json"
-			}
-		],
-		"languages": [
-			{
-				"id": "ignore",
-				"filenames": [
-					".stylelintignore"
-				]
-			}
-		]
+    "style",
+    "stylelint",
+    "validation",
+    "check"
+  ],
+  "activationEvents": [
+    "onLanguage:css",
+    "onLanguage:html",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
+    "onLanguage:less",
+    "onLanguage:markdown",
+    "onLanguage:postcss",
+    "onLanguage:sass",
+    "onLanguage:scss",
+    "onLanguage:source.css.styled",
+    "onLanguage:source.markdown.math",
+    "onLanguage:styled-css",
+    "onLanguage:sugarss",
+    "onLanguage:svelte",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:vue",
+    "onLanguage:vue-html",
+    "onLanguage:vue-postcss",
+    "onLanguage:xml",
+    "onLanguage:xsl"
+  ],
+  "contributes": {
+    "configuration": {
+      "type": "object",
+      "title": "stylelint configuration options",
+      "properties": {
+        "stylelint.enable": {
+          "type": "boolean",
+          "default": true,
+          "description": "Control whether stylelint is enabled for CSS/SCSS/Less files or not."
+        },
+        "stylelint.config": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "default": null,
+          "description": "A stylelint configuration object."
+        },
+        "stylelint.configOverrides": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "default": null,
+          "description": "A partial stylelint config whose properties override the existing ones."
+        }
+      }
+    },
+    "jsonValidation": [
+      {
+        "fileMatch": "**/.stylelintrc*",
+        "url": "http://json.schemastore.org/stylelintrc.json"
+      }
+    ],
+    "languages": [
+      {
+        "id": "ignore",
+        "filenames": [
+          ".stylelintignore"
+        ]
+      }
+    ]
   },
-	"eslintConfig": {
-		"extends": "@shinnn"
-	},
-	"dependencies": {
-		"find-pkg-dir": "^2.0.0",
-		"path-is-inside": "^1.0.2",
-		"stylelint-vscode": "^7.0.0-21",
-		"vscode-languageclient": "^5.2.1",
-		"vscode-languageserver": "^5.2.1",
-		"vscode-uri": "^2.0.1"
-	},
-	"devDependencies": {
-		"@shinnn/eslint-config": "^6.10.2",
-		"eslint": "^5.16.0",
-		"p-wait-for": "^3.1.0",
-		"tape": "^4.10.2",
-		"vscode": "^1.1.34"
+  "eslintConfig": {
+    "extends": "@shinnn"
   },
-	"scripts": {
-		"pretest": "eslint .",
-		"test": "node node_modules/vscode/bin/test"
-	}
+  "dependencies": {
+    "find-pkg-dir": "^2.0.0",
+    "path-is-inside": "^1.0.2",
+    "stylelint-vscode": "^7.0.0-21",
+    "vscode-languageclient": "^5.2.1",
+    "vscode-languageserver": "^5.2.1",
+    "vscode-uri": "^2.0.1"
+  },
+  "devDependencies": {
+    "@shinnn/eslint-config": "^6.10.2",
+    "eslint": "^5.16.0",
+    "p-wait-for": "^3.1.0",
+    "prettier": "^1.19.1",
+    "tape": "^4.10.2",
+    "vscode": "^1.1.34"
+  },
+  "scripts": {
+    "lint": "eslint . && prettier --check '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
+    "format": "prettier --write '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
+    "pretest": "npm run lint -s",
+    "test": "node node_modules/vscode/bin/test"
+  }
 }
