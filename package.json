@@ -113,7 +113,7 @@
     "vscode-uri": "^2.0.1"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
+    "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-config-stylelint": "^11.1.0",
     "p-wait-for": "^3.1.0",
