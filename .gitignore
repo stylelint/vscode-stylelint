@@ -92,3 +92,4 @@ lib64
 # -------------------------------------------------
 .vscode-test
 *.vsix
+.vscode/settings.json
