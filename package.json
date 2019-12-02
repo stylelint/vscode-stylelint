@@ -101,9 +101,6 @@
       }
     ]
   },
-  "eslintConfig": {
-    "extends": "@shinnn"
-  },
   "dependencies": {
     "find-pkg-dir": "^2.0.0",
     "path-is-inside": "^1.0.2",
