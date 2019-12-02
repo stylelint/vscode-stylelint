@@ -2,11 +2,11 @@
 
 const { join, parse } = require('path');
 
-const { createConnection, ProposedFeatures, TextDocuments } = require('vscode-languageserver');
 const findPkgDir = require('find-pkg-dir');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
 const stylelintVSCode = require('stylelint-vscode');
+const { createConnection, ProposedFeatures, TextDocuments } = require('vscode-languageserver');
 
 let config;
 let configOverrides;
@@ -66,6 +66,7 @@ async function validate(document) {
 		// https://github.com/stylelint/stylelint/blob/10.0.1/lib/utils/configurationError.js#L10
 		if (err.code === 78) {
 			connection.window.showErrorMessage(`stylelint: ${err.message}`);
+
 			return;
 		}
 

@@ -1,11 +1,10 @@
-/* eslint-disable node/no-unpublished-require */
 'use strict';
 
 const { join } = require('path');
 
-const { extensions, workspace, window } = require('vscode');
 const pWaitFor = require('p-wait-for');
 const test = require('tape');
+const { extensions, workspace, window } = require('vscode');
 
 const run = () =>
 	test('vscode-stylelint', async (t) => {

@@ -2,6 +2,7 @@
 
 const { LanguageClient, SettingMonitor } = require('vscode-languageclient');
 const { workspace } = require('vscode');
+
 const { activationEvents } = require('./package.json');
 
 const documentSelector = [];
@@ -9,6 +10,7 @@ const documentSelector = [];
 for (const activationEvent of activationEvents) {
 	if (activationEvent.startsWith('onLanguage:')) {
 		const language = activationEvent.replace('onLanguage:', '');
+
 		documentSelector.push({ language, scheme: 'file' }, { language, scheme: 'untitled' });
 	}
 }
