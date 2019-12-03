@@ -1,0 +1,43 @@
+{
+	"name": "array-to-sentence",
+	"version": "2.0.0",
+	"description": "Join all elements of an array and create a human-readable string",
+	"repository": "shinnn/array-to-sentence",
+	"scripts": {
+		"prebuild": "eslint --fix --format=codeframe module.mjs test.js",
+		"build": "rollup --config=node:module",
+		"pretest": "npm run-script build",
+		"test": "nyc --reporter=html --reporter=text node test.js"
+	},
+	"license": "ISC",
+	"files": [
+		"index.js",
+		"index.mjs"
+	],
+	"module": "index.mjs",
+	"keywords": [
+		"to-sentence",
+		"sentence",
+		"array",
+		"join",
+		"human",
+		"readable",
+		"string",
+		"separator",
+		"comma",
+		"and",
+		"browser",
+		"client-side"
+	],
+	"devDependencies": {
+		"@shinnn/eslint-config": "^5.4.0",
+		"eslint": "^4.18.1",
+		"nyc": "^11.5.0",
+		"rollup": "^0.56.3",
+		"rollup-config-module": "^2.0.0",
+		"tape": "^4.9.0"
+	},
+	"eslintConfig": {
+		"extends": "@shinnn"
+	}
+}
