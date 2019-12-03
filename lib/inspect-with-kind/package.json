@@ -1,0 +1,43 @@
+{
+	"name": "inspect-with-kind",
+	"version": "1.0.5",
+	"description": "`util.inspect` with additional type information",
+	"repository": "shinnn/inspect-with-kind",
+	"author": "Shinnosuke Watanabe (https://github.com/shinnn)",
+	"license": "ISC",
+	"scripts": {
+		"pretest": "eslint .",
+		"test": "nyc --reporter=html --reporter=text node test.js"
+	},
+	"files": [
+		"index.js"
+	],
+	"keywords": [
+		"inspect",
+		"format",
+		"beautify",
+		"clarify",
+		"stringify",
+		"type",
+		"kind",
+		"append",
+		"additional",
+		"info",
+		"check"
+	],
+	"dependencies": {
+		"kind-of": "^6.0.2"
+	},
+	"devDependencies": {
+		"@shinnn/eslint-config-node": "^6.0.0",
+		"babel-eslint": "^9.0.0",
+		"eslint": "^5.4.0",
+		"nyc": "^13.0.1",
+		"tape": "^4.9.1",
+		"zen-observable": "^0.8.9"
+	},
+	"eslintConfig": {
+		"extends": "@shinnn/node",
+		"parser": "babel-eslint"
+	}
+}
