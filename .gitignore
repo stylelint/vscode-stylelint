@@ -93,3 +93,6 @@ lib64
 .vscode-test
 *.vsix
 .vscode/settings.json
+.nyc_output
+benchmark/symlink
+tmp
