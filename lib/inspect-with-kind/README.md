@@ -1,13 +1,13 @@
 # inspect-with-kind
 
-[![npm version](https://img.shields.io/npm/v/inspect-with-kind.svg)](https://www.npmjs.com/package/inspect-with-kind)
-[![Build Status](https://travis-ci.org/shinnn/inspect-with-kind.svg?branch=master)](https://travis-ci.org/shinnn/inspect-with-kind)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/inspect-with-kind.svg)](https://coveralls.io/github/shinnn/inspect-with-kind?branch=master)
+> 🚧 Inlined dependency taken from [https://github.com/shinnn/inspect-with-kind](https://github.com/shinnn/inspect-with-kind).
+
+---
 
 [`util.inspect`][util.inspect] with additional type information
 
 ```javascript
-const {inspect} = require('util');
+const { inspect } = require('util');
 const inspectWithKind = require('inspect-with-kind');
 
 inspect([1, 2, 3]); //=> '[ 1, 2, 3 ]'
@@ -18,7 +18,7 @@ inspectWithKind([1, 2, 3]); //=> '[ 1, 2, 3 ] (array)'
 
 [Use npm.](https://docs.npmjs.com/cli/install)
 
-```
+```sh
 npm install inspect-with-kind
 ```
 
@@ -28,18 +28,18 @@ npm install inspect-with-kind
 const inspectWithKind = require('inspect-with-kind');
 ```
 
-### inspectWithKind(*value* [, *options*])
+### inspectWithKind(_value_ [, *options*])
 
-*value*: any type  
-*options*: `Object` ([`util.inspect`][util.inspect] options)  
+_value_: any type  
+_options_: `Object` ([`util.inspect`][util.inspect] options)  
 Return: `string`
 
 Almost the same as `util.inspect`, but:
 
-* It appends a type information to the string if the first argument is one of `boolean`, `string`, `number`, `bigint`, `Array`, `RegExp`, `Date`, `arguments` or a plain `Object`.
-* Error stack trace is omitted.
-* `breakLength` option defaults to `Infinity`.
-* `maxArrayLength` option defaults to `10`.
+- It appends a type information to the string if the first argument is one of `boolean`, `string`, `number`, `bigint`, `Array`, `RegExp`, `Date`, `arguments` or a plain `Object`.
+- Error stack trace is omitted.
+- `breakLength` option defaults to `Infinity`.
+- `maxArrayLength` option defaults to `10`.
 
 ```javascript
 const util = require('util');
@@ -81,9 +81,5 @@ const reverse = require('./reverse.js');
 
 reverse(/true/); // TypeError: Expected a Boolean value, but got /true/ (regexp).
 ```
-
-## License
-
-[ISC License](./LICENSE) © 2017 Shinnosuke Watanabe
 
 [util.inspect]: https://nodejs.org/api/util.html#util_util_inspect_object_options

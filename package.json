@@ -103,6 +103,7 @@
   },
   "dependencies": {
     "find-pkg-dir": "^2.0.0",
+    "kind-of": "^6.0.2",
     "path-is-inside": "^1.0.2",
     "stylelint-vscode": "^7.0.0-21",
     "vscode-languageclient": "^5.2.1",
@@ -113,15 +114,18 @@
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-config-stylelint": "^11.1.0",
+    "nyc": "^13.3.0",
     "p-wait-for": "^3.1.0",
     "prettier": "^1.19.1",
     "tape": "^4.10.2",
-    "vscode": "^1.1.34"
+    "vscode": "^1.1.34",
+    "zen-observable": "^0.8.9"
   },
   "scripts": {
     "lint": "eslint --report-unused-disable-directives . && prettier --check '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
     "format": "prettier --write '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
     "pretest": "npm run lint -s",
-    "test": "node node_modules/vscode/bin/test"
+    "test": "node node_modules/vscode/bin/test",
+    "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js"
   }
 }
