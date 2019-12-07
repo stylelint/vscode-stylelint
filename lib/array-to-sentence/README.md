@@ -1,8 +1,8 @@
 # array-to-sentence
 
-[![npm version](https://img.shields.io/npm/v/array-to-sentence.svg)](https://www.npmjs.com/package/array-to-sentence)
-[![Build Status](https://travis-ci.com/shinnn/array-to-sentence.svg?branch=master)](https://travis-ci.com/shinnn/array-to-sentence)
-[![Coverage Status](https://img.shields.io/coveralls/shinnn/array-to-sentence.svg)](https://coveralls.io/github/shinnn/array-to-sentence)
+> 🚧 Inlined dependency taken from [https://github.com/shinnn/array-to-sentence](https://github.com/shinnn/array-to-sentence).
+
+---
 
 Join all elements of an array and create a human-readable string
 
@@ -24,10 +24,10 @@ npm install array-to-sentence
 import arrayToSentence from 'array-to-sentence';
 ```
 
-### arrayToSentence(*array* [, *options*])
+### arrayToSentence(_array_ [, *options*])
 
-*array*: `Array<any>`  
-*options*: `Object`  
+_array_: `Array<any>`  
+_options_: `Object`  
 Return: `string`
 
 It joins all elements of an array, and returns a string in the form `A, B, ... and X`.
@@ -57,14 +57,10 @@ Set the separator string before the last word.
 ```javascript
 arrayToSentence(['A', 'B', 'C'], {
   separator: '-',
-  lastSeparator: '-'
+  lastSeparator: '-',
 }); //=> 'A-B-C'
 
 arrayToSentence(['Earth', 'Wind', 'Fire'], {
-  lastSeparator: ' & '
+  lastSeparator: ' & ',
 }); //=> 'Earth, Wind & Fire'
 ```
-
-## License
-
-[ISC License](./LICENSE) © 2018 Shinnosuke Watanabe

@@ -133,6 +133,7 @@
     "test": "node node_modules/vscode/bin/test",
     "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js",
     "test:find-pkg-dir": "nyc node lib/find-pkg-dir/test.js",
+    "test:array-to-sentence": "nyc node lib/array-to-sentence/test.js",
     "bench:find-pkg-dir": "node lib/find-pkg-dir/benchmark/index.js"
   }
 }
