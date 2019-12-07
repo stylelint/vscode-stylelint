@@ -13,7 +13,8 @@
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
   "icon": "media/icon.png",
   "engines": {
-    "vscode": ">=1.35.0"
+    "vscode": ">=1.35.0",
+    "node": ">=10.2.0"
   },
   "galleryBanner": {
     "color": "#32CD32",
@@ -102,7 +103,6 @@
     ]
   },
   "dependencies": {
-    "find-pkg-dir": "^2.0.0",
     "kind-of": "^6.0.2",
     "path-is-inside": "^1.0.2",
     "stylelint-vscode": "^7.0.0-21",
@@ -114,9 +114,14 @@
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-config-stylelint": "^11.1.0",
+    "find-pkg": "^2.0.0",
+    "find-root": "^1.1.0",
+    "lodash": "^4.17.15",
     "nyc": "^13.3.0",
     "p-wait-for": "^3.1.0",
+    "pkg-dir": "^4.1.0",
     "prettier": "^1.19.1",
+    "rmfr": "^2.0.0",
     "tape": "^4.10.2",
     "vscode": "^1.1.34",
     "zen-observable": "^0.8.9"
@@ -126,6 +131,8 @@
     "format": "prettier --write '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
     "pretest": "npm run lint -s",
     "test": "node node_modules/vscode/bin/test",
-    "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js"
+    "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js",
+    "test:find-pkg-dir": "nyc node lib/find-pkg-dir/test.js",
+    "bench:find-pkg-dir": "node lib/find-pkg-dir/benchmark/index.js"
   }
 }

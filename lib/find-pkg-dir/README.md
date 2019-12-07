@@ -1,8 +1,8 @@
 # find-pkg-dir
 
-[![npm version](https://img.shields.io/npm/v/find-pkg-dir.svg)](https://www.npmjs.com/package/find-pkg-dir)
-[![Build Status](https://travis-ci.com/shinnn/find-pkg-dir.svg?branch=master)](https://travis-ci.com/shinnn/find-pkg-dir)
-[![codecov](https://codecov.io/gh/shinnn/find-pkg-dir/branch/master/graph/badge.svg)](https://codecov.io/gh/shinnn/find-pkg-dir)
+> 🚧 Inlined dependency taken from [https://github.com/shinnn/find-pkg-dir](https://github.com/shinnn/find-pkg-dir).
+
+---
 
 Find the root directory of a Node.js project from a given path
 
@@ -18,9 +18,9 @@ findPkgDir('/Users/shinnn/foo/bar/baz'); //=> '/Users/shinnn/foo'
 
 Unlike [the](https://www.npmjs.com/package/pkg-dir) [prior](https://www.npmjs.com/package/find-pkg) [arts](https://www.npmjs.com/package/find-root),
 
-* It uses [`InternalModuleStat`](https://github.com/nodejs/node/blob/v10.1.0/src/node_file.cc#L798) through [`require.resolve()`](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) as it's [faster](#benchmark) than [`fs.statSync()`](https://nodejs.org/api/fs.html#fs_fs_statsync_path).
-* It checks if a path is file or directory, to avoid mistaking a `package.json` *directory* as a `package.json` file.
-* It automatically resolves symbolic links.
+- It uses [`InternalModuleStat`](https://github.com/nodejs/node/blob/v10.1.0/src/node_file.cc#L798) through [`require.resolve()`](https://nodejs.org/api/modules.html#modules_require_resolve_request_options) as it's [faster](#benchmark) than [`fs.statSync()`](https://nodejs.org/api/fs.html#fs_fs_statsync_path).
+- It checks if a path is file or directory, to avoid mistaking a `package.json` _directory_ as a `package.json` file.
+- It automatically resolves symbolic links.
 
 ## Installation
 
@@ -36,12 +36,12 @@ npm install find-pkg-dir
 const findPkgDir = require('find-pkg-dir');
 ```
 
-### findPkgDir(*path*)
+### findPkgDir(_path_)
 
-*path*: `string` (a path to start searching from)  
+_path_: `string` (a path to start searching from)  
 Return: `string` (absolute path) or `null`
 
-It finds the first directory containing a [`package.json` file](https://docs.npmjs.com/files/package.json), recursively looking up, starting with the given *path*.
+It finds the first directory containing a [`package.json` file](https://docs.npmjs.com/files/package.json), recursively looking up, starting with the given _path_.
 
 When it cannot find any `package.json` files finally, returns `null`.
 
@@ -76,7 +76,3 @@ Find from the deep directory           505.923578500002634 ms/op avg.
 Resolve symlinks                               N/A (operation failed)
 Find from the `package.json` directory         N/A (operation failed)
 ```
-
-## License
-
-[ISC License](./LICENSE) © 2018 - 2019 Shinnosuke Watanabe

@@ -5,7 +5,12 @@ jobs:
   include:
     - dist: xenial
       script: eval xvfb-run `jq --raw-output .scripts.test < package.json`
+    - dist: xenial
+      script: nyc node lib/find-pkg-dir/test.js
     - os: osx
       osx_image: xcode10.2
+    - os: windows
+      script: node lib/find-pkg-dir/test.js
+
 notifications:
   email: false

@@ -13,7 +13,17 @@ module.exports = {
 		'node/no-unpublished-require': [
 			'error',
 			{
-				allowModules: ['vscode', 'p-wait-for', 'tape'],
+				allowModules: [
+					'vscode',
+					'p-wait-for',
+					'tape',
+					'rmfr',
+					'eslint',
+					'lodash',
+					'find-pkg',
+					'find-root',
+					'pkg-dir',
+				],
 			},
 		],
 	},

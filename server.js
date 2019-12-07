@@ -2,7 +2,7 @@
 
 const { join, parse } = require('path');
 
-const findPkgDir = require('find-pkg-dir');
+const findPkgDir = require('./lib/find-pkg-dir');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
 const stylelintVSCode = require('stylelint-vscode');
