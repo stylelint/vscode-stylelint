@@ -70,7 +70,7 @@ It works like [`stylelint.lint()`](https://github.com/stylelint/stylelint/blob/1
 * [`code`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#code) and [`codeFilename`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#codefilename) option values are derived from a `TextDocument` passed to the first argument.
 * It will be resolved with an `Array` of [VS Code `Diagnostic`](https://github.com/Microsoft/vscode-languageserver-node/blob/release/types/3.14/types/src/main.ts#L508-L546) instances.
 * It will be *rejected* (not resolved) when it takes invalid configs.
-  * In this case, it joins config errors into a single error object by using [array-to-error](https://github.com/shinnn/array-to-error).
+  * In this case, it joins config errors into a single error object.
 * It suppresses `No configuration found` error.
   * Doing nothing when there is no configuration is a common behavior of editor plugins.
 * [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) and [`formatter`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#formatter) options are not supported.
