@@ -104,6 +104,7 @@
   },
   "dependencies": {
     "kind-of": "^6.0.2",
+    "lodash": "^4.17.15",
     "path-is-inside": "^1.0.2",
     "stylelint": "^10.0.1",
     "stylelint-vscode": "^7.0.0-21",
@@ -118,7 +119,6 @@
     "eslint-config-stylelint": "^11.1.0",
     "find-pkg": "^2.0.0",
     "find-root": "^1.1.0",
-    "lodash": "^4.7.0",
     "nyc": "^13.3.0",
     "p-wait-for": "^3.1.0",
     "pkg-dir": "^4.1.0",
