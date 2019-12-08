@@ -23,6 +23,7 @@ module.exports = {
 					'find-pkg',
 					'find-root',
 					'pkg-dir',
+					'stylelint',
 				],
 			},
 		],

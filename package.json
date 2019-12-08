@@ -1,5 +1,5 @@
 {
-  "name": "stylelint",
+  "name": "vscode-stylelint",
   "version": "0.51.0",
   "private": true,
   "license": "MIT",
@@ -105,9 +105,11 @@
   "dependencies": {
     "kind-of": "^6.0.2",
     "path-is-inside": "^1.0.2",
+    "stylelint": "^10.0.1",
     "stylelint-vscode": "^7.0.0-21",
     "vscode-languageclient": "^5.2.1",
     "vscode-languageserver": "^5.2.1",
+    "vscode-languageserver-types": "^3.13.0",
     "vscode-uri": "^2.0.1"
   },
   "devDependencies": {
@@ -135,6 +137,7 @@
     "test:find-pkg-dir": "nyc node lib/find-pkg-dir/test.js",
     "test:array-to-sentence": "nyc node --throw-deprecation --track-heap-objects lib/array-to-sentence/test.js",
     "test:array-to-error": "nyc node lib/array-to-error/test.js",
+    "test:stylelint-warning-to-vscode-diagnostic": "nyc node lib/stylelint-warning-to-vscode-diagnostic/test.js",
     "bench:find-pkg-dir": "node lib/find-pkg-dir/benchmark/index.js"
   }
 }
