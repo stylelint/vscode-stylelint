@@ -1,8 +1,0 @@
-if: branch !~ ^v\d
-language: node_js
-node_js: node
-jobs:
-  include:
-  - dist: xenial
-  - os: windows
-    script: node test\\test.js

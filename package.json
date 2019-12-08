@@ -118,12 +118,14 @@
     "eslint-config-stylelint": "^11.1.0",
     "find-pkg": "^2.0.0",
     "find-root": "^1.1.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.7.0",
     "nyc": "^13.3.0",
     "p-wait-for": "^3.1.0",
     "pkg-dir": "^4.1.0",
     "prettier": "^1.19.1",
     "rmfr": "^2.0.0",
+    "stylelint-processor-glamorous": "^0.3.0",
+    "stylelint-processor-styled-components": "^1.6.0",
     "tape": "^4.10.2",
     "vscode": "^1.1.34",
     "zen-observable": "^0.8.9"
@@ -138,6 +140,7 @@
     "test:array-to-sentence": "nyc node --throw-deprecation --track-heap-objects lib/array-to-sentence/test.js",
     "test:array-to-error": "nyc node lib/array-to-error/test.js",
     "test:stylelint-warning-to-vscode-diagnostic": "nyc node lib/stylelint-warning-to-vscode-diagnostic/test.js",
+    "test:stylelint-vscode": "nyc node lib/stylelint-vscode/test/test.js",
     "bench:find-pkg-dir": "node lib/find-pkg-dir/benchmark/index.js"
   }
 }
