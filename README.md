@@ -76,3 +76,10 @@ Type: `Object`
 Default: `null`
 
 Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
+
+#### stylelint.autoFixOnSave
+
+Type: `boolean`  
+Default: `false`
+
+Turns auto fix on save on or off. Fix some errors using [--fix](https://stylelint.io/user-guide/cli#autofixing-errors) option of stylelint.

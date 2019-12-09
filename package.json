@@ -84,6 +84,11 @@
           ],
           "default": null,
           "description": "A partial stylelint config whose properties override the existing ones."
+        },
+        "stylelint.autoFixOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Turns auto fix on save on or off."
         }
       }
     },
@@ -103,6 +108,7 @@
     ]
   },
   "dependencies": {
+    "fast-diff": "^1.2.0",
     "kind-of": "^6.0.2",
     "lodash": "^4.17.15",
     "path-is-inside": "^1.0.2",
