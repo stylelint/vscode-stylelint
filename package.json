@@ -7,9 +7,9 @@
   "main": "index.js",
   "displayName": "stylelint",
   "publisher": "thibaudcolas",
-  "repository": "https://github.com/thibaudcolas/vscode-stylelint",
-  "homepage": "https://github.com/thibaudcolas/vscode-stylelint#readme",
-  "bugs": "https://github.com/thibaudcolas/vscode-stylelint/issues",
+  "repository": "https://github.com/stylelint/vscode-stylelint",
+  "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
+  "bugs": "https://github.com/stylelint/vscode-stylelint/issues",
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
   "icon": "media/icon.png",
   "engines": {
