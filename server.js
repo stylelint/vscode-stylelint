@@ -14,10 +14,15 @@ const {
 	TextDocumentSyncKind,
 	TextEdit,
 	Range,
+	WorkspaceChange,
 } = require('vscode-languageserver');
 /**
  * @typedef {import('vscode-languageserver').TextDocument} TextDocument
  */
+
+const CommandIds = {
+	applyAutoFix: 'stylelint.applyAutoFix',
+};
 
 let config;
 let configOverrides;
@@ -143,6 +148,9 @@ connection.onInitialize(() => {
 				change: TextDocumentSyncKind.Full,
 				willSaveWaitUntil: true,
 			},
+			executeCommandProvider: {
+				commands: [CommandIds.applyAutoFix],
+			},
 		},
 	};
 });
@@ -162,6 +170,39 @@ documents.onDidClose(({ document }) =>
 		diagnostics: [],
 	}),
 );
+connection.onExecuteCommand(async (params) => {
+	if (params.command === CommandIds.applyAutoFix) {
+		const identifier = params.arguments[0];
+		const uri = identifier.uri;
+		const document = documents.get(uri);
+
+		if (!document || identifier.version !== document.version) {
+			return {};
+		}
+
+		const workspaceChange = new WorkspaceChange();
+		const textChange = workspaceChange.getTextEditChange(identifier);
+
+		const edits = await getFixes(document);
+
+		edits.forEach((edit) => textChange.add(edit));
+
+		return connection.workspace.applyEdit(workspaceChange.edit).then(
+			(response) => {
+				if (!response.applied) {
+					connection.console.error(`Failed to apply command: ${params.command}`);
+				}
+
+				return {};
+			},
+			() => {
+				connection.console.error(`Failed to apply command: ${params.command}`);
+			},
+		);
+	}
+
+	return {};
+});
 documents.onWillSaveWaitUntil(async ({ document }) => {
 	if (!autoFixOnSave) {
 		return [];

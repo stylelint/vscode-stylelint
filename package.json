@@ -92,6 +92,13 @@
         }
       }
     },
+    "commands": [
+      {
+        "title": "Fix all auto-fixable Problems",
+        "category": "stylelint",
+        "command": "stylelint.executeAutofix"
+      }
+    ],
     "jsonValidation": [
       {
         "fileMatch": "**/.stylelintrc*",

@@ -83,3 +83,9 @@ Type: `boolean`
 Default: `false`
 
 Turns auto fix on save on or off. Fix some errors using [--fix](https://stylelint.io/user-guide/cli#autofixing-errors) option of stylelint.
+
+### Commands
+
+This extension contributes the following commands to the Command palette.
+
+- `Fix all auto-fixable problems`: applies stylelint auto-fix resolutions to all fixable problems.
