@@ -10,7 +10,7 @@
   "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
   "bugs": "https://github.com/stylelint/vscode-stylelint/issues",
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
-  "icon": "media/icon.png",
+  "icon": "media/stylelint.png",
   "engines": {
     "vscode": ">=1.35.0",
     "node": ">=10.2.0"
