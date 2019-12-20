@@ -1,7 +1,6 @@
 {
   "name": "vscode-stylelint",
   "version": "0.51.0",
-  "private": true,
   "license": "MIT",
   "description": "Modern CSS/SCSS/Less linter",
   "main": "index.js",
