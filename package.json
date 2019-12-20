@@ -130,9 +130,10 @@
     "zen-observable": "^0.8.9"
   },
   "scripts": {
-    "lint": "eslint --report-unused-disable-directives . && prettier --check '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
-    "format": "prettier --write '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
-    "pretest": "npm run lint -s",
+    "lint": "eslint --report-unused-disable-directives .",
+    "pretest": "npm run lint && npm run prettier:check",
+    "prettier:check": "prettier --check '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
+    "prettier:fix": "pprettier --write '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
     "test": "node node_modules/vscode/bin/test",
     "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js",
     "test:find-pkg-dir": "nyc node lib/find-pkg-dir/test.js",
