@@ -15,21 +15,23 @@ const {
 	TextEdit,
 	Range,
 	WorkspaceChange,
+	CodeActionKind,
+	TextDocumentEdit,
+	CodeAction,
 } = require('vscode-languageserver');
-/**
- * @typedef {import('vscode-languageserver').TextDocument} TextDocument
- */
+const { TextDocument } = require('vscode-languageserver-textdocument');
 
 const CommandIds = {
 	applyAutoFix: 'stylelint.applyAutoFix',
 };
 
+const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
+
 let config;
 let configOverrides;
-let autoFixOnSave;
 
 const connection = createConnection(ProposedFeatures.all);
-const documents = new TextDocuments();
+const documents = new TextDocuments(TextDocument);
 
 async function buildStylelintOptions(document, baseOptions = {}) {
 	const options = { ...baseOptions };
@@ -146,18 +148,17 @@ connection.onInitialize(() => {
 			textDocumentSync: {
 				openClose: true,
 				change: TextDocumentSyncKind.Full,
-				willSaveWaitUntil: true,
 			},
 			executeCommandProvider: {
 				commands: [CommandIds.applyAutoFix],
 			},
+			codeActionProvider: { codeActionKinds: [StylelintSourceFixAll] },
 		},
 	};
 });
 connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
-	autoFixOnSave = settings.stylelint.autoFixOnSave;
 
 	validateAll();
 });
@@ -203,12 +204,25 @@ connection.onExecuteCommand(async (params) => {
 
 	return {};
 });
-documents.onWillSaveWaitUntil(async ({ document }) => {
-	if (!autoFixOnSave) {
-		return [];
-	}
+connection.onCodeAction(async (params) => {
+	const only = params.context.only !== undefined ? params.context.only[0] : undefined;
+	const isSource = only === CodeActionKind.Source;
+	const isSourceFixAll = only === StylelintSourceFixAll || only === CodeActionKind.SourceFixAll;
 
-	return await getFixes(document);
+	if (isSourceFixAll || isSource) {
+		const uri = params.textDocument.uri;
+		const textDocument = documents.get(uri);
+		const textDocumentIdentifer = { uri: textDocument.uri, version: textDocument.version };
+		const edits = await getFixes(textDocument);
+
+		return [
+			CodeAction.create(
+				`Fix all stylelint auto-fixable problems`,
+				{ documentChanges: [TextDocumentEdit.create(textDocumentIdentifer, edits)] },
+				StylelintSourceFixAll,
+			),
+		];
+	}
 });
 
 documents.listen(connection);
