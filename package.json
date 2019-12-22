@@ -102,6 +102,7 @@
     ]
   },
   "dependencies": {
+    "find-pkg-dir": "^2.0.0",
     "kind-of": "^6.0.2",
     "lodash": "^4.17.15",
     "path-is-inside": "^1.0.2",
