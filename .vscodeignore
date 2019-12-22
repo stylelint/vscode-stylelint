@@ -1,8 +1,9 @@
 **/*
 !index.js
-!media/icon.png
+!media/stylelint.png
 !node_modules/**/*
 !package.json
 !README.md
 !server.js
 !LICENSE.txt
+!lib/**/*
