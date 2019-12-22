@@ -8,7 +8,7 @@ const { extensions, workspace, window } = require('vscode');
 
 const run = () =>
 	test('vscode-stylelint', async (t) => {
-		const vscodeStylelint = extensions.getExtension('thibaudcolas.stylelint');
+		const vscodeStylelint = extensions.getExtension('stylelint.vscode-stylelint');
 
 		const plaintextDocument = await workspace.openTextDocument({
 			content: 'Hello',
