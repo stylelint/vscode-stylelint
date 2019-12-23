@@ -8,9 +8,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## Published release of `stylelint.vscode-stylelint`
 
-## [0.60.0](https://github.com/stylelint/vscode-stylelint/compare/stylelint.stylelint-0.51.0...stylelint.stylelint-0.60.0) (2019-11-29)
+## [0.60.0](https://github.com/stylelint/vscode-stylelint/compare/stylelint.stylelint-0.51.0...stylelint.stylelint-0.60.0) (2019-12-23)
 
-- More to come soon...
+- Update all project metadata for new extension repository & publisher
 
 ---
 
