@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ---
 
+## HEAD 
+
+- [39dbeef](https://github.com/stylelint/vscode-stylelint/commit/39dbeef) update dependencies and devDependencies. Highlight: stylelint v12.0.0 -> v12.0.0 https://github.com/stylelint/stylelint/releases/tag/12.0.0
+
+---
+
 ## Published release of `stylelint.vscode-stylelint`
 
 ## [0.60.0](https://github.com/stylelint/vscode-stylelint/compare/stylelint.stylelint-0.51.0...stylelint.stylelint-0.60.0) (2019-11-29)
