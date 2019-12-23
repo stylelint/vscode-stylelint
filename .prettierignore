@@ -2,6 +2,7 @@ node_modules
 .coverage
 .nyc_output
 /lib/**
+/.vscode-test/**
 
 # Unignore config files like .prettierrc.js, because they're ignored by default
 !.*rc.js
