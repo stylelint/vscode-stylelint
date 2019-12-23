@@ -76,3 +76,48 @@ Type: `Object`
 Default: `null`
 
 Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
+
+#### editor.codeActionsOnSave
+
+This setting supports the entry `source.fixAll.stylelint`. If set to `true` all auto-fixable stylelint errors will be fixed on save.
+
+```json
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": true
+  }
+```
+
+The setting below turns on Auto Fix for all providers including stylelint:
+
+```json
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  }
+```
+
+You can also selectively disable stylelint via:
+
+```json
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.fixAll.stylelint": false
+  }
+```
+
+You can also selectively enable and disable specific languages using VS Code's language scoped settings. To disable `codeActionsOnSave` for HTML files, use the following setting:
+
+```json
+  "[html]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": false
+    }
+  }
+```
+
+Also note that there is a time budget of 750ms to run code actions on save which might not be enough for large files. You can increase the time budget using the `editor.codeActionsOnSaveTimeout` setting.
+
+### Commands
+
+This extension contributes the following commands to the Command palette.
+
+- `Fix all auto-fixable problems`: applies stylelint auto-fix resolutions to all fixable problems.

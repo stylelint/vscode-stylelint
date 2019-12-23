@@ -12,7 +12,7 @@
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.35.0",
+    "vscode": ">=1.41.0",
     "node": ">=10.2.0"
   },
   "galleryBanner": {
@@ -86,6 +86,13 @@
         }
       }
     },
+    "commands": [
+      {
+        "title": "Fix all auto-fixable Problems",
+        "category": "stylelint",
+        "command": "stylelint.executeAutofix"
+      }
+    ],
     "jsonValidation": [
       {
         "fileMatch": "**/.stylelintrc*",
@@ -102,14 +109,15 @@
     ]
   },
   "dependencies": {
+    "fast-diff": "^1.2.0",
     "kind-of": "^6.0.2",
     "lodash": "^4.17.15",
     "path-is-inside": "^1.0.2",
     "stylelint": "^10.0.1",
-    "stylelint-vscode": "^7.0.0-21",
-    "vscode-languageclient": "^5.2.1",
-    "vscode-languageserver": "^5.2.1",
-    "vscode-languageserver-types": "^3.13.0",
+    "vscode-languageclient": "^6.0.0-next.9",
+    "vscode-languageserver": "^6.0.0-next.8",
+    "vscode-languageserver-textdocument": "^1.0.0-next.5",
+    "vscode-languageserver-types": "^3.15.0-next.9",
     "vscode-uri": "^2.0.1"
   },
   "devDependencies": {
@@ -126,7 +134,7 @@
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.6.0",
     "tape": "^4.10.2",
-    "vscode": "^1.1.34",
+    "vscode-test": "^1.3.0",
     "zen-observable": "^0.8.9"
   },
   "scripts": {
@@ -134,7 +142,7 @@
     "pretest": "npm run lint && npm run prettier:check",
     "prettier:check": "prettier --check '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
     "prettier:fix": "prettier --write '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
-    "test": "node node_modules/vscode/bin/test",
+    "test": "node test/runTest.js",
     "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js",
     "test:find-pkg-dir": "nyc node lib/find-pkg-dir/test.js",
     "test:array-to-sentence": "nyc node --throw-deprecation --track-heap-objects lib/array-to-sentence/test.js",

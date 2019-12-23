@@ -10,6 +10,16 @@
 			"stopOnEntry": false
 		},
 		{
+			"type": "node",
+			"request": "attach",
+			"name": "Attach to Server",
+			"address": "localhost",
+			"protocol": "inspector",
+			"port": 6004,
+			"sourceMaps": false,
+			"outFiles": ["${workspaceRoot}/server.js"]
+		},
+		{
 			"name": "Launch Tests",
 			"type": "extensionHost",
 			"request": "launch",
