@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+---
+
+## Published release of `stylelint.vscode-stylelint`
+
+## [0.60.0](https://github.com/stylelint/vscode-stylelint/compare/stylelint.stylelint-0.51.0...stylelint.stylelint-0.60.0) (2019-11-29)
+
+- More to come soon...
+
+---
+
+## Published release of `thibaudcolas.stylelint`
+
 ## [0.51.0](https://github.com/thibaudcolas/vscode-stylelint/compare/shinnn.stylelint-0.51.0...thibaudcolas.stylelint-0.51.0) (2019-11-29)
 
 - [9a85a44](https://github.com/stylelint/vscode-stylelint/commit/9a85a44) Update all project metadata for new extension repository & publisher
