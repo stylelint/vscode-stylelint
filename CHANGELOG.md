@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### 0.70.0 (2019-12-24)
 
 - [9d55b07](https://github.com/stylelint/vscode-stylelint/commit/9d55b07aa98fee34d9b80ed322aacd5f24621272) Add support for autofix
+- [e5307d9](https://github.com/stylelint/vscode-stylelint/commit/e5307d9b362cd43c0ac34fbff109b95129188039) Update stylelint from v10.0.1 to v12.0.0
 
 ---
 
