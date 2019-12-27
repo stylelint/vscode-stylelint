@@ -77,6 +77,13 @@ Default: `null`
 
 Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
 
+#### stylelint.packageManager
+
+Type: `"npm" | "yarn" | "pnpm"`  
+Default: `"npm"`
+
+Controls the package manager to be used to resolve the stylelint library. This has only an influence if the stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
+
 #### editor.codeActionsOnSave
 
 This setting supports the entry `source.fixAll.stylelint`. If set to `true` all auto-fixable stylelint errors will be fixed on save.
