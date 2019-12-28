@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### 0.70.0 (2019-12-24)
+### [0.70.0](https://github.com/stylelint/vscode-stylelint/compare/v0.60.0...v0.70.0) (2019-12-28)
 
 - [9d55b07](https://github.com/stylelint/vscode-stylelint/commit/9d55b07aa98fee34d9b80ed322aacd5f24621272) Add support for autofix
 - [e5307d9](https://github.com/stylelint/vscode-stylelint/commit/e5307d9b362cd43c0ac34fbff109b95129188039) Update stylelint from v10.0.1 to v12.0.0
@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## Published release of `stylelint.vscode-stylelint`
 
-### [0.60.0](https://github.com/stylelint/vscode-stylelint/compare/stylelint.stylelint-0.51.0...stylelint.stylelint-0.60.0) (2019-12-23)
+### [0.60.0](https://github.com/stylelint/vscode-stylelint/compare/v0.51.0...v0.60.0) (2019-12-23)
 
 - Update all project metadata for new extension repository & publisher
 
