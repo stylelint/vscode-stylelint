@@ -16,8 +16,8 @@
     "node": ">=10.2.0"
   },
   "galleryBanner": {
-    "color": "#32CD32",
-    "theme": "light"
+    "color": "#000000",
+    "theme": "dark"
   },
   "categories": [
     "Linters"
