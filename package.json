@@ -1,6 +1,6 @@
 {
   "name": "vscode-stylelint",
-  "version": "0.60.0",
+  "version": "0.71.0",
   "license": "MIT",
   "description": "Modern CSS/SCSS/Less linter",
   "main": "index.js",
@@ -16,8 +16,8 @@
     "node": ">=10.2.0"
   },
   "galleryBanner": {
-    "color": "#32CD32",
-    "theme": "light"
+    "color": "#000000",
+    "theme": "dark"
   },
   "categories": [
     "Linters"

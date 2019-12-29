@@ -12,7 +12,7 @@ If not in the global installed stylelint, the extension uses the stylelint embed
 ## Installation
 
 1. Execute `Extensions: Install Extensions` command from [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
-2. Type `@sort:installs stylelint` into the search form and install the topmost one.
+2. Type `@id:stylelint.vscode-stylelint` into the search form and install the topmost one.
 
 Read the [extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery) for more details.
 
