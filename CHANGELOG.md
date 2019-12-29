@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+### [0.71.0](https://github.com/stylelint/vscode-stylelint/compare/v0.70.0...v0.71.0) (2019-12-28)
+
+- [1a07e95](https://github.com/stylelint/vscode-stylelint/commit/1a07e95ea3d3616f026786589fd1299b79f3fa84) Fixes an autofix issue where a missing config would cause unintended changes on save
+
 ### [0.70.0](https://github.com/stylelint/vscode-stylelint/compare/v0.60.0...v0.70.0) (2019-12-28)
 
 - [9d55b07](https://github.com/stylelint/vscode-stylelint/commit/9d55b07aa98fee34d9b80ed322aacd5f24621272) Add support for autofix
