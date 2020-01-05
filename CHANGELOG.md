@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [0.80.0](https://github.com/stylelint/vscode-stylelint/compare/v0.71.0...v0.80.0) (2020-01-05)
+
+- [73c78e6](https://github.com/stylelint/vscode-stylelint/commit/73c78e6ee749cc6cae6e82a8bff3d5bb672f39c7) Changed to load stylelint from local node modules
+- [8f822e8](https://github.com/stylelint/vscode-stylelint/commit/8f822e840b3b284b333c4b49e16331a3ed199b4e) Rename VS Code setting option from `stylelint configuration options` `stylelint`
+
 ### [0.71.0](https://github.com/stylelint/vscode-stylelint/compare/v0.70.0...v0.71.0) (2020-01-04)
 
 - [1a07e95](https://github.com/stylelint/vscode-stylelint/commit/1a07e95ea3d3616f026786589fd1299b79f3fa84) Fixes an autofix issue where a missing config would cause unintended changes on save
