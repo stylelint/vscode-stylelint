@@ -20,7 +20,8 @@
     "theme": "dark"
   },
   "categories": [
-    "Linters"
+    "Linters",
+    "Snippets"
   ],
   "keywords": [
     "css",
@@ -116,6 +117,20 @@
         "filenames": [
           ".stylelintignore"
         ]
+      }
+    ],
+    "snippets": [
+      {
+        "language": "css",
+        "path": "./snippets/stylelint-disable.json"
+      },
+      {
+        "language": "postcss",
+        "path": "./snippets/stylelint-disable.json"
+      },
+      {
+        "language": "scss",
+        "path": "./snippets/stylelint-disable.json"
       }
     ]
   },
