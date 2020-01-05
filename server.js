@@ -29,6 +29,7 @@ const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 
 let config;
 let configOverrides;
+let packageManager;
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
@@ -94,7 +95,7 @@ async function validate(document) {
 	const options = await buildStylelintOptions(document);
 
 	try {
-		const result = await stylelintVSCode(document, options);
+		const result = await stylelintVSCode(document, options, { connection, packageManager });
 
 		connection.sendDiagnostics({
 			uri: document.uri,
@@ -113,7 +114,7 @@ async function getFixes(document) {
 	const options = await buildStylelintOptions(document, { fix: true });
 
 	try {
-		const result = await stylelintVSCode(document, options);
+		const result = await stylelintVSCode(document, options, { connection, packageManager });
 
 		if (typeof result.output !== 'string') {
 			return [];
@@ -159,6 +160,7 @@ connection.onInitialize(() => {
 connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
+	packageManager = settings.stylelint.packageManager || 'npm';
 
 	validateAll();
 });

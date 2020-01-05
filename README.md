@@ -6,6 +6,9 @@ A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](h
 
 ![screenshot](screenshot.png)
 
+The extension uses the stylelint library installed in the opened workspace folder. If the workspace folder does not provide the stylelint, the extension looks for a global installed stylelint.  
+If not in the global installed stylelint, the extension uses the stylelint embedded in the extension. (However, using stylelint embedded in the extension is not recommended.)
+
 ## Installation
 
 1. Execute `Extensions: Install Extensions` command from [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
@@ -76,6 +79,13 @@ Type: `Object`
 Default: `null`
 
 Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
+
+#### stylelint.packageManager
+
+Type: `"npm" | "yarn" | "pnpm"`  
+Default: `"npm"`
+
+Controls the package manager to be used to resolve the stylelint library. This has only an influence if the stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
 
 #### editor.codeActionsOnSave
 

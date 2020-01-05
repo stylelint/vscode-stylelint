@@ -83,6 +83,17 @@
           ],
           "default": null,
           "description": "A partial stylelint config whose properties override the existing ones."
+        },
+        "stylelint.packageManager": {
+          "scope": "resource",
+          "type": "string",
+          "enum": [
+            "npm",
+            "yarn",
+            "pnpm"
+          ],
+          "default": "npm",
+          "description": "The package manager you use to install node modules."
         }
       }
     },
