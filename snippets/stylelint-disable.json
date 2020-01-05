@@ -4,7 +4,7 @@
 		"body": ["/* stylelint-disable ${1:rule} */", "$0/* stylelint-enable ${1:rule} */"],
 		"description": "Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint."
 	},
-	"stylelint disable line": {
+	"stylelint-disable-line": {
 		"prefix": "stylelint-disable-line",
 		"body": ["/* stylelint-disable-line ${0:rule} */"],
 		"description": "Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them."
