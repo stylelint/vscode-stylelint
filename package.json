@@ -61,7 +61,7 @@
   "contributes": {
     "configuration": {
       "type": "object",
-      "title": "stylelint configuration options",
+      "title": "stylelint",
       "properties": {
         "stylelint.enable": {
           "type": "boolean",
