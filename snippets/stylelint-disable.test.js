@@ -2,7 +2,7 @@
 
 const snippets = require('./stylelint-disable.json');
 
-const unique = xs => [...new Set(xs)];
+const unique = (xs) => [...new Set(xs)];
 
 describe('Snippets', () => {
 	const keys = Object.keys(snippets);
@@ -17,17 +17,15 @@ describe('Snippets', () => {
 		expect(keys).toEqual(sortedKeys);
 	});
 
-	it("has unique prefixes", () => {
-		const prefixes = Object.values(snippets).map(x => x.prefix);
+	it('has unique prefixes', () => {
+		const prefixes = Object.values(snippets).map((x) => x.prefix);
 
 		expect(prefixes).toEqual(unique(prefixes));
 	});
 
 	describe.each(keys)('%s', (key) => {
 		it('should have a prefix', () => {
-			const {
-				prefix
-			} = snippets[key];
+			const { prefix } = snippets[key];
 
 			expect(prefix).toBeDefined();
 			expect(prefix.length).toBeGreaterThan(0);
@@ -35,18 +33,14 @@ describe('Snippets', () => {
 		});
 
 		it('should have a body', () => {
-			const {
-				body
-			} = snippets[key];
+			const { body } = snippets[key];
 
 			expect(body).toBeDefined();
 			expect(body.length).toBeGreaterThan(0);
 		});
 
 		it('should have a description', () => {
-			const {
-				description
-			} = snippets[key];
+			const { description } = snippets[key];
 
 			expect(description).toBeDefined();
 			expect(description.length).toBeGreaterThan(0);
