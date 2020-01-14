@@ -1,0 +1,21 @@
+/* prettier-ignore */
+.foo {
+  /* stylelint-disable-next-line indentation, unknown */
+    color: red;
+}
+
+/* stylelint-disable indentation */ /* prettier-ignore */
+.bar {
+    color: red;
+}
+/* stylelint-enable indentation */
+
+/* prettier-ignore */
+.baz {
+    color: red; /* stylelint-disable-line indentation */
+}
+
+/* stylelint-disable indentation */ /* prettier-ignore */
+.bar {
+    color: red;
+}

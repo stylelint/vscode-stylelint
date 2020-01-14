@@ -14,6 +14,7 @@ const {
 	TextDocumentSyncKind,
 	TextEdit,
 	Range,
+	Position,
 	WorkspaceChange,
 	CodeActionKind,
 	TextDocumentEdit,
@@ -31,11 +32,28 @@ let config;
 let configOverrides;
 let packageManager;
 let customSyntax;
+let reportNeedlessDisables;
 let stylelintPath;
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
 
+/**
+ * @typedef { import('vscode-languageserver').DocumentUri } DocumentUri
+ * @typedef { import('vscode-languageserver').Diagnostic } Diagnostic
+ * @typedef { import('./lib/stylelint-vscode').DisableReportRange } DisableReportRange
+ */
+
+/**
+ * @type {Map<DocumentUri, ({ diagnostic: Diagnostic, range: DisableReportRange })[]>}
+ */
+const needlessDisableReports = new Map();
+
+/**
+ *
+ * @param {TextDocument} document
+ * @param {*} baseOptions
+ */
 async function buildStylelintOptions(document, baseOptions = {}) {
 	const options = { ...baseOptions };
 
@@ -47,8 +65,11 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 		options.configOverrides = configOverrides;
 	}
 
-	const workspaceFolder = await getWorkspaceFolder(document);
+	if (reportNeedlessDisables) {
+		options.reportNeedlessDisables = reportNeedlessDisables;
+	}
 
+	const workspaceFolder = await getWorkspaceFolder(document);
 	const documentPath = parseUri(document.uri).fsPath;
 
 	if (customSyntax) {
@@ -108,6 +129,9 @@ function handleError(err) {
 	connection.window.showErrorMessage(err.stack.replace(/\n/gu, ' '));
 }
 
+/**
+ * @param {TextDocument} document
+ */
 async function validate(document) {
 	const options = await buildStylelintOptions(document);
 
@@ -122,6 +146,8 @@ async function validate(document) {
 			uri: document.uri,
 			diagnostics: result.diagnostics,
 		});
+
+		needlessDisableReports.set(document.uri, result.needlessDisables);
 	} catch (err) {
 		handleError(err);
 	}
@@ -178,7 +204,7 @@ connection.onInitialize(() => {
 			executeCommandProvider: {
 				commands: [CommandIds.applyAutoFix],
 			},
-			codeActionProvider: { codeActionKinds: [StylelintSourceFixAll] },
+			codeActionProvider: { codeActionKinds: [CodeActionKind.QuickFix, StylelintSourceFixAll] },
 		},
 	};
 });
@@ -186,6 +212,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
 	customSyntax = settings.stylelint.customSyntax;
+	reportNeedlessDisables = settings.stylelint.reportNeedlessDisables;
 	stylelintPath = settings.stylelint.stylelintPath;
 	packageManager = settings.stylelint.packageManager || 'npm';
 
@@ -194,12 +221,13 @@ connection.onDidChangeConfiguration(({ settings }) => {
 connection.onDidChangeWatchedFiles(validateAll);
 
 documents.onDidChangeContent(({ document }) => validate(document));
-documents.onDidClose(({ document }) =>
+documents.onDidClose(({ document }) => {
 	connection.sendDiagnostics({
 		uri: document.uri,
 		diagnostics: [],
-	}),
-);
+	});
+	needlessDisableReports.delete(document.uri);
+});
 connection.onExecuteCommand(async (params) => {
 	if (params.command === CommandIds.applyAutoFix) {
 		const identifier = params.arguments[0];
@@ -251,6 +279,54 @@ connection.onCodeAction(async (params) => {
 				StylelintSourceFixAll,
 			),
 		];
+	}
+
+	if (only === CodeActionKind.QuickFix) {
+		const uri = params.textDocument.uri;
+		const textDocument = documents.get(uri);
+		const textDocumentIdentifer = { uri: textDocument.uri, version: textDocument.version };
+
+		if (!textDocument) {
+			return [];
+		}
+
+		const diagnostics = params.context.diagnostics;
+		const needlessDisables = needlessDisableReports.get(uri);
+
+		if (!needlessDisables) {
+			return [];
+		}
+
+		/**
+		 * @type {CodeAction[]}
+		 */
+		const results = [];
+
+		for (const diagnostic of diagnostics) {
+			const diagnostickey = computeKey(diagnostic);
+
+			for (const needlessDisable of needlessDisables) {
+				if (computeKey(needlessDisable.diagnostic) === diagnostickey) {
+					const edits = createRemoveCommentDirectiveTextEdits(textDocument, needlessDisable.range);
+
+					if (edits.length > 0) {
+						results.push(
+							CodeAction.create(
+								needlessDisable.range.unusedRule !== 'all'
+									? `Remove unused stylelint comment directive for ${needlessDisable.range.unusedRule} rule`
+									: `Remove unused stylelint comment directive.`,
+								{ documentChanges: [TextDocumentEdit.create(textDocumentIdentifer, edits)] },
+								CodeActionKind.QuickFix,
+							),
+						);
+					}
+
+					break;
+				}
+			}
+		}
+
+		return results;
 	}
 });
 
@@ -318,4 +394,178 @@ function replaceEdits(document, newText) {
 	}
 
 	return edits;
+}
+
+/**
+ * @param {TextDocument} document
+ * @param {DisableReportRange} range
+ * @returns {TextEdit[]}
+ */
+function createRemoveCommentDirectiveTextEdits(document, range) {
+	const text = document.getText();
+	const startLine = range.start - 1;
+	const startLineStartOffset = document.offsetAt(Position.create(startLine, 0));
+	const startLineEndOffset = document.offsetAt(Position.create(startLine + 1, 0)) - 1;
+
+	if (range.end !== undefined) {
+		if (range.start === range.end) {
+			// `/* stylelint-disable-line */`
+			const stylelintDisableLineText = text.slice(startLineStartOffset, startLineEndOffset);
+			const newStylelintDisableLineText = removeCommentDirective(
+				range,
+				stylelintDisableLineText,
+				'stylelint-disable-line',
+			);
+
+			if (newStylelintDisableLineText !== stylelintDisableLineText) {
+				return [
+					TextEdit.replace(
+						Range.create(
+							document.positionAt(startLineStartOffset),
+							document.positionAt(startLineEndOffset),
+						),
+						newStylelintDisableLineText,
+					),
+				];
+			}
+
+			// `/* stylelint-disable-next-line */`
+			if (startLine > 0) {
+				const prevLineStartOffset = document.offsetAt(Position.create(startLine - 1, 0));
+				const prevLineEndOffset = document.offsetAt(Position.create(startLine, 0)) - 1;
+				const stylelintDisableNextLineText = text.slice(prevLineStartOffset, prevLineEndOffset);
+				const newStylelintDisableNextLineText = removeCommentDirective(
+					range,
+					stylelintDisableNextLineText,
+					'stylelint-disable-next-line',
+				);
+
+				if (newStylelintDisableNextLineText !== stylelintDisableNextLineText) {
+					return [
+						TextEdit.replace(
+							Range.create(
+								document.positionAt(prevLineStartOffset),
+								document.positionAt(prevLineEndOffset),
+							),
+							newStylelintDisableNextLineText,
+						),
+					];
+				}
+			}
+		}
+	}
+
+	// `/* stylelint-disable */`
+	const stylelintDisableText = text.slice(startLineStartOffset, startLineEndOffset);
+	const newStylelintDisableText = removeCommentDirective(
+		range,
+		stylelintDisableText,
+		'stylelint-disable',
+	);
+
+	if (newStylelintDisableText !== stylelintDisableText) {
+		const stylelintDisableEdit = TextEdit.replace(
+			Range.create(
+				document.positionAt(startLineStartOffset),
+				document.positionAt(startLineEndOffset),
+			),
+			newStylelintDisableText,
+		);
+
+		if (range.end === undefined) {
+			return [stylelintDisableEdit];
+		}
+
+		const endLine = range.end - 1;
+		const endLineStartOffset = document.offsetAt(Position.create(endLine, 0));
+		const endLineEndOffset = document.offsetAt(Position.create(endLine + 1, 0)) - 1;
+		const stylelintEnableText = text.slice(endLineStartOffset, endLineEndOffset);
+		const newStylelintEnableText = removeCommentDirective(
+			range,
+			stylelintEnableText,
+			'stylelint-enable',
+		);
+
+		if (newStylelintEnableText !== stylelintEnableText) {
+			return [
+				stylelintDisableEdit,
+				TextEdit.replace(
+					Range.create(
+						document.positionAt(endLineStartOffset),
+						document.positionAt(endLineEndOffset),
+					),
+					newStylelintEnableText,
+				),
+			];
+		}
+	}
+
+	return null;
+}
+
+/**
+ * @param {Diagnostic} diagnostic
+ * @returns {string}
+ */
+function computeKey(diagnostic) {
+	const range = diagnostic.range;
+
+	return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}`;
+}
+
+function escapeRegExp(value) {
+	return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&'); // $& means the whole matched string
+}
+
+function removeCommentDirective(range, text, directive) {
+	if (range.unusedRule !== 'all') {
+		// `/* directive rulename */`
+		let newText = text.replace(
+			new RegExp(`\\/\\*\\s*${directive}\\s+${escapeRegExp(range.unusedRule)}\\s*\\*\\/`),
+			removesReplacer,
+		);
+
+		if (newText !== text) {
+			return newText;
+		}
+
+		// `/* directive xxx, rulename */`
+		newText = text.replace(
+			new RegExp(
+				`(\\/\\*\\s*${directive}\\s+[\\s\\S]*)\\s*,\\s*${escapeRegExp(
+					range.unusedRule,
+				)}([\\s\\S]*\\*\\/)`,
+			),
+			removesReplacer,
+		);
+
+		if (newText !== text) {
+			return newText;
+		}
+
+		// `/* directive rulename, xxx */`
+		newText = text.replace(
+			new RegExp(
+				`(\\/\\*\\s*${directive}\\s+[\\s\\S]*)${escapeRegExp(
+					range.unusedRule,
+				)}\\s*,\\s*([\\s\\S]*\\*\\/)`,
+			),
+			removesReplacer,
+		);
+
+		return newText;
+	}
+
+	// `/* directive */`
+	return text.replace(new RegExp(`\\/\\*\\s*${directive}\\s*\\*\\`), removesReplacer);
+
+	function removesReplacer(...args) {
+		let newText = '';
+
+		for (let index = 1; index < args.length - 2; index++) {
+			newText += args[index];
+		}
+
+		return newText;
+	}
 }

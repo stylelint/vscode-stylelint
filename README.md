@@ -101,6 +101,13 @@ e.g.
   "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
 ```
 
+#### stylelint.reportNeedlessDisables
+
+Type: `boolean`  
+Default: `false`
+
+Set stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/node-api#reportneedlessdisables) option. If `true`, also report errors for `stylelint-disable` comments that are not blocking a lint warning.
+
 #### stylelint.stylelintPath
 
 Type: `string`  
