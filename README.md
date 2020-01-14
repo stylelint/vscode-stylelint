@@ -80,6 +80,18 @@ Default: `null`
 
 Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
 
+#### stylelint.customSyntax
+
+Type: `string`  
+Default: `""`
+
+Set stylelint [`customSyntax`](https://stylelint.io/user-guide/node-api#customsyntax) option. An absolute path to a custom [PostCSS-compatible](https://github.com/postcss/postcss#syntaxes) syntax module.
+You can use `${workspaceFolder}` to replace the the path of the folder opened in VS Code.
+
+e.g.
+
+`"${workspaceFolder}/custom-syntax.js"`
+
 #### stylelint.packageManager
 
 Type: `"npm" | "yarn" | "pnpm"`  

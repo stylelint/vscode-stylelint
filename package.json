@@ -85,6 +85,11 @@
           "default": null,
           "description": "A partial stylelint config whose properties override the existing ones."
         },
+        "stylelint.customSyntax": {
+          "type": "string",
+          "default": "",
+          "description": "An absolute path to a custom PostCSS-compatible syntax module."
+        },
         "stylelint.packageManager": {
           "scope": "resource",
           "type": "string",

@@ -30,6 +30,7 @@ const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 let config;
 let configOverrides;
 let packageManager;
+let customSyntax;
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
@@ -45,20 +46,19 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 		options.configOverrides = configOverrides;
 	}
 
+	const workspaceFolder = await getWorkspaceFolder(document);
+
 	const documentPath = parseUri(document.uri).fsPath;
 
+	if (customSyntax) {
+		options.customSyntax = workspaceFolder
+			? customSyntax.replace(/\$\{workspaceFolder\}/gu, workspaceFolder)
+			: customSyntax;
+	}
+
 	if (documentPath) {
-		const workspaceFolders = await connection.workspace.getWorkspaceFolders();
-
-		if (workspaceFolders) {
-			for (const { uri } of workspaceFolders) {
-				const workspacePath = parseUri(uri).fsPath;
-
-				if (pathIsInside(documentPath, workspacePath)) {
-					options.ignorePath = join(workspacePath, '.stylelintignore');
-					break;
-				}
-			}
+		if (workspaceFolder && pathIsInside(documentPath, workspaceFolder)) {
+			options.ignorePath = join(workspaceFolder, '.stylelintignore');
 		}
 
 		if (options.ignorePath === undefined) {
@@ -160,6 +160,7 @@ connection.onInitialize(() => {
 connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
+	customSyntax = settings.stylelint.customSyntax;
 	packageManager = settings.stylelint.packageManager || 'npm';
 
 	validateAll();
@@ -230,6 +231,29 @@ connection.onCodeAction(async (params) => {
 documents.listen(connection);
 
 connection.listen();
+
+async function getWorkspaceFolder(document) {
+	const documentPath = parseUri(document.uri).fsPath;
+	const workspaceFolders = await connection.workspace.getWorkspaceFolders();
+
+	if (documentPath) {
+		if (workspaceFolders) {
+			for (const { uri } of workspaceFolders) {
+				const workspacePath = parseUri(uri).fsPath;
+
+				if (pathIsInside(documentPath, workspacePath)) {
+					return workspacePath;
+				}
+			}
+		}
+	} else if (workspaceFolders.length) {
+		const { uri } = workspaceFolders[0];
+
+		return parseUri(uri).fsPath;
+	}
+
+	return undefined;
+}
 
 /**
  * If replace all of the document, the cursor will move to the last position.
