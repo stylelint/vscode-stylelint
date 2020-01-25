@@ -1,0 +1,6 @@
+{
+	"stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js",
+	"editor.codeActionsOnSave": {
+		"source.fixAll.stylelint": true
+	}
+}

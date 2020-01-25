@@ -68,7 +68,7 @@ Vagrantfile.local
 local.py
 *.sublime-project
 *.sublime-workspace
-.vscode
+./.vscode
 
 # -------------------------------------------------
 # Generated files

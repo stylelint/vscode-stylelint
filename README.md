@@ -86,11 +86,20 @@ Type: `string`
 Default: `""`
 
 Set stylelint [`customSyntax`](https://stylelint.io/user-guide/node-api#customsyntax) option. An absolute path to a custom [PostCSS-compatible](https://github.com/postcss/postcss#syntaxes) syntax module.
+
+e.g.
+
+```json
+  "stylelint.customSyntax": "sugarss"
+```
+
 You can use `${workspaceFolder}` to replace the the path of the folder opened in VS Code.
 
 e.g.
 
-`"${workspaceFolder}/custom-syntax.js"`
+```json
+  "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
+```
 
 #### stylelint.packageManager
 
