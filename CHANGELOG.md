@@ -4,9 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### HEAD
+### [0.81.0](https://github.com/stylelint/vscode-stylelint/compare/v0.80.0...v0.81.0) (2020-02-03)
 
 - [0fd9975](https://github.com/stylelint/vscode-stylelint/commit/0fd9975d9b74cbe83674b64a0e2f2c59453ea0a7) Added `stylelint-disable` snippets
+- [5f01e54](https://github.com/stylelint/vscode-stylelint/commit/5f01e5471720303e68ece4b7a778ff1283d27db1) Fixes an autofix issue where content was removed on save
 
 ### [0.80.0](https://github.com/stylelint/vscode-stylelint/compare/v0.71.0...v0.80.0) (2020-01-05)
 
