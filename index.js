@@ -44,7 +44,7 @@ exports.activate = ({ subscriptions }) => {
 	);
 
 	subscriptions.push(
-		Commands.registerCommand('stylelint.executeAutofix', () => {
+		Commands.registerCommand('stylelint.executeAutofix', async () => {
 			const textEditor = Window.activeTextEditor;
 
 			if (!textEditor) {
@@ -60,7 +60,7 @@ exports.activate = ({ subscriptions }) => {
 				arguments: [textDocument],
 			};
 
-			client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
+			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
 				Window.showErrorMessage(
 					'Failed to apply styleint fixes to the document. Please consider opening an issue with steps to reproduce.',
 				);

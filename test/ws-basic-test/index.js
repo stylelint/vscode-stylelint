@@ -4,10 +4,12 @@ const { join } = require('path');
 
 const pWaitFor = require('p-wait-for');
 const test = require('tape');
-const { extensions, workspace, window } = require('vscode');
+const { extensions, workspace, window, Uri, commands } = require('vscode');
 
 const run = () =>
 	test('vscode-stylelint', async (t) => {
+		await commands.executeCommand('vscode.openFolder', Uri.file(__dirname));
+
 		const vscodeStylelint = extensions.getExtension('stylelint.vscode-stylelint');
 
 		const plaintextDocument = await workspace.openTextDocument({
@@ -29,7 +31,7 @@ const run = () =>
 		});
 
 		await window.showTextDocument(cssDocument);
-		await pWaitFor(() => vscodeStylelint.isActive, 2000);
+		await pWaitFor(() => vscodeStylelint.isActive, { timeout: 2000 });
 
 		t.pass('should be activated when the open file is CSS.');
 
