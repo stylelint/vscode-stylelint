@@ -35,6 +35,66 @@ const run = () =>
 
 		t.pass('should be activated when the open file is CSS.');
 
+		const htmlDocument = await workspace.openTextDocument({
+			content: '}',
+			language: 'html',
+		});
+
+		await window.showTextDocument(htmlDocument);
+		await pWaitFor(() => vscodeStylelint.isActive, 2000);
+
+		t.pass('should be activated when the open file is HTML.');
+
+		const lessDocument = await workspace.openTextDocument({
+			content: '}',
+			language: 'less',
+		});
+
+		await window.showTextDocument(lessDocument);
+		await pWaitFor(() => vscodeStylelint.isActive, 2000);
+
+		t.pass('should be activated when the open file is LESS.');
+
+		const markdownDocument = await workspace.openTextDocument({
+			content: '}',
+			language: 'markdown',
+		});
+
+		await window.showTextDocument(markdownDocument);
+		await pWaitFor(() => vscodeStylelint.isActive, 2000);
+
+		t.pass('should be activated when the open file is Markdown.');
+
+		const sassDocument = await workspace.openTextDocument({
+			content: '}',
+			language: 'sass',
+		});
+
+		await window.showTextDocument(sassDocument);
+		await pWaitFor(() => vscodeStylelint.isActive, 2000);
+
+		t.pass('should be activated when the open file is SASS.');
+
+		const scssDocument = await workspace.openTextDocument({
+			content: '}',
+			language: 'scss',
+		});
+
+		await window.showTextDocument(scssDocument);
+		await pWaitFor(() => vscodeStylelint.isActive, 2000);
+
+		t.pass('should be activated when the open file is SCSS.');
+
+		const sugarDocument = await workspace.openTextDocument({
+			content: '}',
+			language: 'scss',
+		});
+
+		await window.showTextDocument(sugarDocument);
+		await pWaitFor(() => vscodeStylelint.isActive, 2000);
+
+		t.pass('should be activated when the open file is SUGARSS.');
+
 		t.equal(
 			(await workspace.openTextDocument(join(__dirname, '.stylelintignore'))).languageId,
 			'ignore',
