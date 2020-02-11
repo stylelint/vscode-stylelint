@@ -1,6 +1,6 @@
 'use strict';
 
-const { join, parse } = require('path');
+const { join, parse, isAbsolute } = require('path');
 
 const diff = require('fast-diff');
 const findPkgDir = require('./lib/find-pkg-dir');
@@ -31,6 +31,7 @@ let config;
 let configOverrides;
 let packageManager;
 let customSyntax;
+let stylelintPath;
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
@@ -72,6 +73,22 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 	return options;
 }
 
+async function buildStylelintVSCodeOptions(document) {
+	const options = { connection, packageManager };
+
+	if (stylelintPath) {
+		if (isAbsolute(stylelintPath)) {
+			options.stylelintPath = stylelintPath;
+		} else {
+			const workspaceFolder = await getWorkspaceFolder(document);
+
+			options.stylelintPath = join(workspaceFolder, stylelintPath);
+		}
+	}
+
+	return options;
+}
+
 function handleError(err) {
 	if (err.reasons) {
 		for (const reason of err.reasons) {
@@ -95,7 +112,11 @@ async function validate(document) {
 	const options = await buildStylelintOptions(document);
 
 	try {
-		const result = await stylelintVSCode(document, options, { connection, packageManager });
+		const result = await stylelintVSCode(
+			document,
+			options,
+			await buildStylelintVSCodeOptions(document),
+		);
 
 		connection.sendDiagnostics({
 			uri: document.uri,
@@ -114,7 +135,11 @@ async function getFixes(document) {
 	const options = await buildStylelintOptions(document, { fix: true });
 
 	try {
-		const result = await stylelintVSCode(document, options, { connection, packageManager });
+		const result = await stylelintVSCode(
+			document,
+			options,
+			await buildStylelintVSCodeOptions(document),
+		);
 
 		if (typeof result.output !== 'string') {
 			return [];
@@ -161,6 +186,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
 	customSyntax = settings.stylelint.customSyntax;
+	stylelintPath = settings.stylelint.stylelintPath;
 	packageManager = settings.stylelint.packageManager || 'npm';
 
 	validateAll();
