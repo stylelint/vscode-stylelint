@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [0.82.0](https://github.com/stylelint/vscode-stylelint/compare/v0.81.0...v0.82.0) (2020-02-14)
+
+- [77b66c1](https://github.com/stylelint/vscode-stylelint/commit/77b66c13cf5dea3286d0df56bbff1486ed9bc747) Update stylelint from v12.0.0 to v13.2.0
+
 ### [0.81.0](https://github.com/stylelint/vscode-stylelint/compare/v0.80.0...v0.81.0) (2020-02-03)
 
 - [0fd9975](https://github.com/stylelint/vscode-stylelint/commit/0fd9975d9b74cbe83674b64a0e2f2c59453ea0a7) Added `stylelint-disable` snippets
