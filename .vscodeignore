@@ -1,4 +1,5 @@
 **/*
+!CHANGELOG.md
 !index.js
 !media/stylelint.png
 !node_modules/**/*
