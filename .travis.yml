@@ -12,9 +12,9 @@ jobs:
     - os: windows
       script: node lib/find-pkg-dir/test.js
     - dist: xenial
-      script: node lib/stylelint-vscode/test/test.js
+      script: node server/test/test.js
     - os: windows
-      script: node lib\\stylelint-vscode\\test\\test.js
+      script: node server\\test\\test.js
 
 notifications:
   email: false

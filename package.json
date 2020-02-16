@@ -179,7 +179,7 @@
     "test:array-to-sentence": "nyc node --throw-deprecation --track-heap-objects lib/array-to-sentence/test.js",
     "test:array-to-error": "nyc node lib/array-to-error/test.js",
     "test:stylelint-warning-to-vscode-diagnostic": "nyc node lib/stylelint-warning-to-vscode-diagnostic/test.js",
-    "test:stylelint-vscode": "nyc node lib/stylelint-vscode/test/test.js",
+    "test:stylelint-vscode": "nyc node server/test/test.js",
     "bench:find-pkg-dir": "node lib/find-pkg-dir/benchmark/index.js"
   }
 }

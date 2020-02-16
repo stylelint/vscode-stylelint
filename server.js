@@ -6,7 +6,7 @@ const diff = require('fast-diff');
 const findPkgDir = require('./lib/find-pkg-dir');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
-const stylelintVSCode = require('./lib/stylelint-vscode');
+const stylelintVSCode = require('./server');
 const {
 	createConnection,
 	ProposedFeatures,

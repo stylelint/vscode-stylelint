@@ -7,10 +7,10 @@ const { execSync } = require('child_process');
 const { Files, TextDocument } = require('vscode-languageserver');
 const { URI } = require('vscode-uri');
 
-const arrayToError = require('../array-to-error');
-const arrayToSentence = require('../array-to-sentence');
-const inspectWithKind = require('../inspect-with-kind');
-const stylelintWarningToVscodeDiagnostic = require('../stylelint-warning-to-vscode-diagnostic');
+const arrayToError = require('../lib/array-to-error');
+const arrayToSentence = require('../lib/array-to-sentence');
+const inspectWithKind = require('../lib/inspect-with-kind');
+const stylelintWarningToVscodeDiagnostic = require('../lib/stylelint-warning-to-vscode-diagnostic');
 
 // https://github.com/stylelint/stylelint/blob/12.0.1/lib/getPostcssResult.js#L82-L88
 const SUPPORTED_SYNTAXES = new Set([
