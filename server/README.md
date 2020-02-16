@@ -61,7 +61,7 @@ p {
 npm install stylelint-vscode
 ```
 
-**Note:** Since migration to the @stylelint organization this package has not had any updates published to npm.
+**Note:** Since migration to the @stylelint organization this package has not had any updates published to npm, see [#65](https://github.com/stylelint/vscode-stylelint/issues/65).
 
 ## API
 
