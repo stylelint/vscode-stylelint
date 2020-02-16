@@ -145,8 +145,6 @@ You can also selectively enable and disable specific languages using VS Code's l
   }
 ```
 
-Also note that there is a time budget of 750ms to run code actions on save which might not be enough for large files. You can increase the time budget using the `editor.codeActionsOnSaveTimeout` setting.
-
 ### Commands
 
 This extension contributes the following commands to the Command palette.
