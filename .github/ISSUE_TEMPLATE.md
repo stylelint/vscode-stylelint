@@ -15,13 +15,14 @@ e.g.
 ```
 
 > What vscode-stylelint configuration is needed to reproduce this issue?
+
 ```json
 "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js",
 "editor.codeActionsOnSave": {
   "source.fixAll.stylelint": true
 }
 ```
-  
+
 > Is this issue related to autofix? (`editor.codeActionsOnSave`)
 
 e.g. `Yes`
