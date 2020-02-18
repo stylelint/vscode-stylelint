@@ -101,6 +101,13 @@ e.g.
   "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
 ```
 
+#### stylelint.stylelintPath
+
+Type: `string`  
+Default: `""`
+
+Supply a custom path to the stylelint module.
+
 #### stylelint.packageManager
 
 Type: `"npm" | "yarn" | "pnpm"`  

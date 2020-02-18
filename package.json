@@ -90,6 +90,11 @@
           "default": "",
           "description": "An absolute path to a custom PostCSS-compatible syntax module."
         },
+        "stylelint.stylelintPath": {
+          "type": "string",
+          "default": "",
+          "description": "Supply a custom path to the stylelint module."
+        },
         "stylelint.packageManager": {
           "scope": "resource",
           "type": "string",
