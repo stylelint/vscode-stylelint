@@ -135,6 +135,10 @@
         "path": "./snippets/stylelint-disable.json"
       },
       {
+        "language": "less",
+        "path": "./snippets/stylelint-disable.json"
+      },
+      {
         "language": "postcss",
         "path": "./snippets/stylelint-disable.json"
       },
