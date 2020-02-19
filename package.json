@@ -37,27 +37,7 @@
     "check"
   ],
   "activationEvents": [
-    "onLanguage:css",
-    "onLanguage:html",
-    "onLanguage:javascript",
-    "onLanguage:javascriptreact",
-    "onLanguage:less",
-    "onLanguage:markdown",
-    "onLanguage:postcss",
-    "onLanguage:sass",
-    "onLanguage:scss",
-    "onLanguage:source.css.styled",
-    "onLanguage:source.markdown.math",
-    "onLanguage:styled-css",
-    "onLanguage:sugarss",
-    "onLanguage:svelte",
-    "onLanguage:typescript",
-    "onLanguage:typescriptreact",
-    "onLanguage:vue",
-    "onLanguage:vue-html",
-    "onLanguage:vue-postcss",
-    "onLanguage:xml",
-    "onLanguage:xsl"
+    "*"
   ],
   "contributes": {
     "configuration": {
@@ -110,6 +90,37 @@
           ],
           "default": "npm",
           "description": "The package manager you use to install node modules."
+        },
+        "stylelint.validate": {
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "css",
+            "html",
+            "javascript",
+            "javascriptreact",
+            "less",
+            "markdown",
+            "postcss",
+            "sass",
+            "scss",
+            "source.css.styled",
+            "source.markdown.math",
+            "styled-css",
+            "sugarss",
+            "svelte",
+            "typescript",
+            "typescriptreact",
+            "vue",
+            "vue-html",
+            "vue-postcss",
+            "xml",
+            "xsl"
+          ],
+          "description": "An array of language ids which should be validated by stylelint. If not installed stylelint will show an error."
         }
       }
     },

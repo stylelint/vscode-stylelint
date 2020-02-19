@@ -3,18 +3,6 @@
 const { LanguageClient, SettingMonitor, ExecuteCommandRequest } = require('vscode-languageclient');
 const { workspace, commands: Commands, window: Window } = require('vscode');
 
-const { activationEvents } = require('./package.json');
-
-const documentSelector = [];
-
-for (const activationEvent of activationEvents) {
-	if (activationEvent.startsWith('onLanguage:')) {
-		const language = activationEvent.replace('onLanguage:', '');
-
-		documentSelector.push({ language, scheme: 'file' }, { language, scheme: 'untitled' });
-	}
-}
-
 exports.activate = ({ subscriptions }) => {
 	const serverPath = require.resolve('./server.js');
 
@@ -32,7 +20,7 @@ exports.activate = ({ subscriptions }) => {
 			},
 		},
 		{
-			documentSelector,
+			documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
 			diagnosticCollectionName: 'stylelint',
 			synchronize: {
 				configurationSection: 'stylelint',

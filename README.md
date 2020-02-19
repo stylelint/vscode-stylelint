@@ -108,6 +108,13 @@ Default: `false`
 
 Set stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/usage/options#reportneedlessdisables) option. If `true`, also report errors for `stylelint-disable` comments that are not blocking a lint warning.
 
+#### stylelint.validate
+
+Type: `string[]`  
+Default: `["css","html","javascript","javascriptreact","less","markdown","postcss","sass","scss","source.css.styled","source.markdown.math","styled-css","sugarss","svelte","typescript","typescriptreact","vue","vue-html","vue-postcss","xml","xsl"]`
+
+An array of language identifiers specifying the files to be validated.
+
 #### stylelint.stylelintPath
 
 Type: `string`  
