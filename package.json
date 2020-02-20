@@ -90,6 +90,11 @@
           "default": "",
           "description": "An absolute path to a custom PostCSS-compatible syntax module."
         },
+        "stylelint.reportNeedlessDisables": {
+          "type": "boolean",
+          "default": false,
+          "description": "Also report errors for `stylelint-disable` comments that are not blocking a lint warning."
+        },
         "stylelint.stylelintPath": {
           "type": "string",
           "default": "",
