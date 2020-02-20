@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [0.82.0](https://github.com/stylelint/vscode-stylelint/compare/v0.82.0...v0.83.0) (2020-02-20)
+
+- [f7a2fcd](https://github.com/stylelint/vscode-stylelint/commit/f7a2fcdaf7958b1ea0595f9c91eb9a38079a9198) Add "stylelint.reportNeedlessDisables" option
+- [34388c0](https://github.com/stylelint/vscode-stylelint/pull/53/commits/34388c05b25397ec5a34bd751da4fc3742c57594) Add "stylelint.stylelintPath" option for Yarn 2 compatibility
+- [6eb4473](https://github.com/stylelint/vscode-stylelint/pull/69/commits/6eb4473b10dc4f9dae7fb6a98345d469eb23a34a) Fix autofix when there are errors that cannot be autofixed
+- [4b62566](https://github.com/stylelint/vscode-stylelint/pull/71/commits/4b6256659c0c074660cce82accf6dc1d10076788) Fix missing `snippets` folder from extension package
+- [b71f453](https://github.com/stylelint/vscode-stylelint/commit/b71f4535d1e801576b463513e27a24f0a0c784df) Add snippets support for Less files
+
 ### [0.82.0](https://github.com/stylelint/vscode-stylelint/compare/v0.81.0...v0.82.0) (2020-02-14)
 
 - [77b66c1](https://github.com/stylelint/vscode-stylelint/commit/77b66c13cf5dea3286d0df56bbff1486ed9bc747) Update stylelint from v12.0.0 to v13.2.0
