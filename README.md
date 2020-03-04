@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.com/stylelint/vscode-stylelint.svg?branch=master)](https://travis-ci.com/stylelint/vscode-stylelint)
 
-A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](https://sass-lang.com/documentation/file.SASS_REFERENCE.html#syntax)/[Less](http://lesscss.org/) with [stylelint](https://stylelint.io/)
+A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](https://sass-lang.com/documentation/syntax)/[Less](http://lesscss.org/) with [stylelint](https://stylelint.io/)
 
 ![screenshot](screenshot.png)
 
@@ -30,7 +30,7 @@ To prevent both [the editor built-in linters](https://code.visualstudio.com/docs
 
 ## Usage
 
-Once a user follows [the stylelint startup guide](https://github.com/stylelint/stylelint#getting-started) by creating a [configuration](https://stylelint.io/user-guide/configuration/) file or by editing [`stylelint.*` VSCode settings](#extension-settings), stylelint automatically validates documents with these [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-id):
+Once a user follows [the stylelint startup guide](https://stylelint.io/user-guide/get-started) by creating a [configuration](https://stylelint.io/user-guide/configuration) file or by editing [`stylelint.*` VSCode settings](#extension-settings), stylelint automatically validates documents with these [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-id):
 
 <img align="right" width="430" alt="UI to select a language identifier" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/master/media/language.png">
 
@@ -42,7 +42,7 @@ Once a user follows [the stylelint startup guide](https://github.com/stylelint/s
 - Markdown (`markdown`)
 - [Markdown+MathML (`source.markdown.math`)](https://marketplace.visualstudio.com/items?itemName=goessner.mdmath)
 - [PostCSS (`postcss`)](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language)
-- [Sass (`sass`)](https://marketplace.visualstudio.com/items?itemName=robinbentley.sass-indented)
+- [Sass (`sass`)](https://marketplace.visualstudio.com/items?itemName=Syler.sass-indented)
 - SCSS (`scss`)
 - styled-components
   - [Official (`source.css.styled`)](https://marketplace.visualstudio.com/items?itemName=jpoissonnier.vscode-styled-components)
@@ -57,7 +57,7 @@ Once a user follows [the stylelint startup guide](https://github.com/stylelint/s
 
 ### Extension settings
 
-Though it's highly recommended to add a [stylelint configuration file](https://stylelint.io/user-guide/example-config/) to the current workspace folder instead, the following extension [settings](https://code.visualstudio.com/docs/getstarted/settings) are also available.
+Though it's highly recommended to add a [stylelint configuration file](https://stylelint.io/user-guide/configure) to the current workspace folder instead, the following extension [settings](https://code.visualstudio.com/docs/getstarted/settings) are also available.
 
 #### stylelint.enable
 
@@ -71,21 +71,21 @@ Control whether this extension is enabled or not.
 Type: `Object`  
 Default: `null`
 
-Set stylelint [`configOverrides`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#configoverrides) option.
+Set stylelint [`configOverrides`](https://stylelint.io/user-guide/usage/node-api#configoverrides) option.
 
 #### stylelint.config
 
 Type: `Object`  
 Default: `null`
 
-Set stylelint [`config`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
+Set stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
 
 #### stylelint.customSyntax
 
 Type: `string`  
 Default: `""`
 
-Set stylelint [`customSyntax`](https://stylelint.io/user-guide/node-api#customsyntax) option. An absolute path to a custom [PostCSS-compatible](https://github.com/postcss/postcss#syntaxes) syntax module.
+Set stylelint [`customSyntax`](https://stylelint.io/user-guide/usage/options#customsyntax) option. An absolute path to a custom [PostCSS-compatible](https://github.com/postcss/postcss#syntaxes) syntax module.
 
 e.g.
 
@@ -106,7 +106,7 @@ e.g.
 Type: `boolean`  
 Default: `false`
 
-Set stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/node-api#reportneedlessdisables) option. If `true`, also report errors for `stylelint-disable` comments that are not blocking a lint warning.
+Set stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/usage/options#reportneedlessdisables) option. If `true`, also report errors for `stylelint-disable` comments that are not blocking a lint warning.
 
 #### stylelint.stylelintPath
 
