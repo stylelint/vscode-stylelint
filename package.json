@@ -120,7 +120,7 @@
             "xml",
             "xsl"
           ],
-          "description": "An array of language ids which should be validated by stylelint. If not installed stylelint will show an error."
+          "description": "An array of language ids which should be validated by stylelint."
         }
       }
     },
