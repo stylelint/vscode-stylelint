@@ -34,6 +34,7 @@ let packageManager;
 let customSyntax;
 let reportNeedlessDisables;
 let stylelintPath;
+let validateLanguages;
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
@@ -133,6 +134,10 @@ function handleError(err) {
  * @param {TextDocument} document
  */
 async function validate(document) {
+	if (!isValidateOn(document)) {
+		return;
+	}
+
 	const options = await buildStylelintOptions(document);
 
 	try {
@@ -192,6 +197,25 @@ function validateAll() {
 	}
 }
 
+/**
+ * @param {TextDocument} document
+ */
+function clearDiagnostics(document) {
+	connection.sendDiagnostics({
+		uri: document.uri,
+		diagnostics: [],
+	});
+	needlessDisableReports.delete(document.uri);
+}
+
+/**
+ * @param {TextDocument} document
+ * @returns {boolean}
+ */
+function isValidateOn(document) {
+	return validateLanguages.includes(document.languageId);
+}
+
 connection.onInitialize(() => {
 	validateAll();
 
@@ -209,12 +233,23 @@ connection.onInitialize(() => {
 	};
 });
 connection.onDidChangeConfiguration(({ settings }) => {
+	const oldValidateLanguages = validateLanguages || [];
+
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
 	customSyntax = settings.stylelint.customSyntax;
 	reportNeedlessDisables = settings.stylelint.reportNeedlessDisables;
 	stylelintPath = settings.stylelint.stylelintPath;
 	packageManager = settings.stylelint.packageManager || 'npm';
+	validateLanguages = settings.stylelint.validate || [];
+
+	const removeLanguages = oldValidateLanguages.filter((lang) => !validateLanguages.includes(lang));
+
+	for (const document of documents
+		.all()
+		.filter((document) => removeLanguages.includes(document.languageId))) {
+		clearDiagnostics(document);
+	}
 
 	validateAll();
 });
@@ -222,17 +257,17 @@ connection.onDidChangeWatchedFiles(validateAll);
 
 documents.onDidChangeContent(({ document }) => validate(document));
 documents.onDidClose(({ document }) => {
-	connection.sendDiagnostics({
-		uri: document.uri,
-		diagnostics: [],
-	});
-	needlessDisableReports.delete(document.uri);
+	clearDiagnostics(document);
 });
 connection.onExecuteCommand(async (params) => {
 	if (params.command === CommandIds.applyAutoFix) {
 		const identifier = params.arguments[0];
 		const uri = identifier.uri;
 		const document = documents.get(uri);
+
+		if (!isValidateOn(document)) {
+			return {};
+		}
 
 		if (!document || identifier.version !== document.version) {
 			return {};
@@ -269,6 +304,11 @@ connection.onCodeAction(async (params) => {
 	if (isSourceFixAll || isSource) {
 		const uri = params.textDocument.uri;
 		const textDocument = documents.get(uri);
+
+		if (!isValidateOn(textDocument)) {
+			return [];
+		}
+
 		const textDocumentIdentifer = { uri: textDocument.uri, version: textDocument.version };
 		const edits = await getFixes(textDocument);
 
@@ -284,11 +324,16 @@ connection.onCodeAction(async (params) => {
 	if (only === CodeActionKind.QuickFix) {
 		const uri = params.textDocument.uri;
 		const textDocument = documents.get(uri);
-		const textDocumentIdentifer = { uri: textDocument.uri, version: textDocument.version };
+
+		if (!isValidateOn(textDocument)) {
+			return [];
+		}
 
 		if (!textDocument) {
 			return [];
 		}
+
+		const textDocumentIdentifer = { uri: textDocument.uri, version: textDocument.version };
 
 		const diagnostics = params.context.diagnostics;
 		const needlessDisables = needlessDisableReports.get(uri);
