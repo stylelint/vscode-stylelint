@@ -19,11 +19,19 @@ const run = () =>
 
 		// Wait for diagnostics result.
 		await pWaitFor(() => vscodeStylelint.isActive, { timeout: 2000 });
-		await pWaitFor(() => languages.getDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
+		await pWaitFor(
+			() =>
+				languages.getDiagnostics(cssDocument.uri).filter((d) => d.source === 'stylelint').length >
+				0,
+			{ timeout: 5000 },
+		);
 
 		// Check the result.
 		t.deepEqual(
-			languages.getDiagnostics(cssDocument.uri).map(normalizeDiagnostic),
+			languages
+				.getDiagnostics(cssDocument.uri)
+				.filter((d) => d.source === 'stylelint')
+				.map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 0, character: 5 }, end: { line: 0, character: 5 } },
