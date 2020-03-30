@@ -4,6 +4,7 @@ const path = require('path');
 const pWaitFor = require('p-wait-for');
 const test = require('tape');
 const { extensions, workspace, window, Uri, commands, languages } = require('vscode');
+const { normalizeDiagnostic } = require('../utils');
 
 const run = () =>
 	test('vscode-stylelint with "stylelint.reportNeedlessDisables"', async (t) => {
@@ -24,7 +25,7 @@ const run = () =>
 		const diagnostics = languages.getDiagnostics(cssDocument.uri);
 
 		t.deepEqual(
-			diagnostics.map((o) => ({ ...o, range: normalizeRange(o.range) })),
+			diagnostics.map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 3, character: 0 }, end: { line: 3, character: 15 } },
@@ -58,7 +59,14 @@ const run = () =>
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
 					message: 'Expected indentation of 4 spaces (indentation)',
 					severity: 0,
-					code: 'indentation',
+					code: {
+						value: 'indentation',
+						target: {
+							scheme: 'https',
+							authority: 'stylelint.io',
+							path: '/user-guide/rules/indentation',
+						},
+					},
 					source: 'stylelint',
 				},
 			],
@@ -72,21 +80,3 @@ exports.run = (root, done) => {
 	test.onFinish(done);
 	run();
 };
-
-function normalizeRange(range) {
-	const obj = {
-		start: {
-			line: range.start.line,
-			character: range.start.character,
-		},
-	};
-
-	if (range.end !== undefined) {
-		obj.end = {
-			line: range.end.line,
-			character: range.end.character,
-		};
-	}
-
-	return obj;
-}

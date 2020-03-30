@@ -26,35 +26,26 @@ const run = () =>
 			languages.getDiagnostics(cssDocument.uri).map(normalizeDiagnostic),
 			[
 				{
-					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
-					message: 'Expected indentation of 4 spaces (indentation)',
+					range: { start: { line: 0, character: 5 }, end: { line: 0, character: 5 } },
+					message: 'Bar (plugin/foo-bar)',
+					severity: 0,
+					code: 'plugin/foo-bar',
+					source: 'stylelint',
+				},
+				{
+					range: { start: { line: 6, character: 11 }, end: { line: 6, character: 11 } },
+					message: 'Unexpected invalid hex color "#y3" (color-no-invalid-hex)',
 					severity: 0,
 					code: {
-						value: 'indentation',
+						value: 'color-no-invalid-hex',
 						target: {
 							scheme: 'https',
 							authority: 'stylelint.io',
-							path: '/user-guide/rules/indentation',
+							path: '/user-guide/rules/color-no-invalid-hex',
 						},
 					},
 					source: 'stylelint',
 				},
-			],
-			'should work on css.',
-		);
-
-		// Open the './test.scss' file.
-		const scssDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.scss'));
-
-		await window.showTextDocument(scssDocument);
-
-		// Wait for diagnostics result.
-		await pWaitFor(() => languages.getDiagnostics(scssDocument.uri).length > 0, { timeout: 5000 });
-
-		// Check the result.
-		t.deepEqual(
-			languages.getDiagnostics(scssDocument.uri).map(normalizeDiagnostic),
-			[
 				{
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
 					message: 'Expected indentation of 4 spaces (indentation)',
@@ -70,37 +61,7 @@ const run = () =>
 					source: 'stylelint',
 				},
 			],
-			'should work on scss.',
-		);
-
-		// Open the './test.md' file.
-		const mdDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.md'));
-
-		await window.showTextDocument(mdDocument);
-
-		// Wait for diagnostics result.
-		await pWaitFor(() => languages.getDiagnostics(mdDocument.uri).length > 0, { timeout: 5000 });
-
-		// Check the result.
-		t.deepEqual(
-			languages.getDiagnostics(mdDocument.uri).map(normalizeDiagnostic),
-			[
-				{
-					range: { start: { line: 4, character: 2 }, end: { line: 4, character: 2 } },
-					message: 'Expected indentation of 4 spaces (indentation)',
-					severity: 0,
-					code: {
-						value: 'indentation',
-						target: {
-							scheme: 'https',
-							authority: 'stylelint.io',
-							path: '/user-guide/rules/indentation',
-						},
-					},
-					source: 'stylelint',
-				},
-			],
-			'should work on markdown.',
+			'should display correctly that rule documentation links.',
 		);
 
 		t.end();
