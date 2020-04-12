@@ -11,16 +11,8 @@ module.exports = {
 			'error',
 			{
 				allowModules: [
-					'vscode',
 					'p-wait-for',
 					'tape',
-					'rmfr',
-					'eslint',
-					'lodash',
-					'find-pkg',
-					'find-root',
-					'pkg-dir',
-					'stylelint',
 				],
 			},
 		],
