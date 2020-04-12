@@ -166,7 +166,7 @@
   },
   "dependencies": {
     "fast-diff": "^1.2.0",
-    "kind-of": "^6.0.2",
+    "kind-of": "^6.0.3",
     "lodash": "^4.17.15",
     "path-is-inside": "^1.0.2",
     "stylelint": "^13.3.0",
@@ -184,14 +184,14 @@
     "find-root": "^1.1.0",
     "nyc": "^15.0.1",
     "p-wait-for": "^3.1.0",
-    "pkg-dir": "^4.1.0",
+    "pkg-dir": "^4.2.0",
     "prettier": "^1.19.1",
     "rmfr": "^2.0.0",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "tape": "^4.13.2",
     "vscode-test": "^1.3.0",
-    "zen-observable": "^0.8.9"
+    "zen-observable": "^0.8.15"
   },
   "scripts": {
     "lint": "eslint --report-unused-disable-directives .",
