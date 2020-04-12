@@ -204,6 +204,7 @@
     "vscode-uri": "^2.1.1"
   },
   "devDependencies": {
+    "@stylelint/prettier-config": "^2.0.0",
     "@types/kind-of": "^6.0.0",
     "@types/lodash": "^4.14.151",
     "@types/path-is-inside": "^1.0.0",
@@ -219,7 +220,7 @@
     "nyc": "^15.0.1",
     "p-wait-for": "^3.1.0",
     "pkg-dir": "^4.2.0",
-    "prettier": "^1.19.1",
+    "prettier": "^2.0.2",
     "rmfr": "^2.0.0",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
@@ -229,12 +230,12 @@
     "zen-observable": "^0.8.15"
   },
   "scripts": {
-    "lint": "npm-run-all --parallel lint:*",
+    "format": "prettier . --write",
+    "lint:formatting": "prettier . --check",
+    "lint": "npm run lint:js && npm run lint:types",
     "lint:js": "eslint --report-unused-disable-directives .",
     "lint:types": "tsc",
-    "pretest": "npm run lint && npm run prettier:check",
-    "prettier:check": "prettier --check '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
-    "prettier:fix": "prettier --write '**/?(.)*.{md,css,scss,js,json,json5,yaml,yml,html}'",
+    "pretest": "npm run lint && npm run lint:formatting",
     "test": "node test/runTest.js",
     "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js",
     "test:find-pkg-dir": "nyc node lib/find-pkg-dir/test.js",
@@ -243,5 +244,6 @@
     "test:stylelint-warning-to-vscode-diagnostic": "nyc node lib/stylelint-warning-to-vscode-diagnostic/test.js",
     "test:stylelint-vscode": "nyc node lib/stylelint-vscode/test/test.js",
     "bench:find-pkg-dir": "node lib/find-pkg-dir/benchmark/index.js"
-  }
+  },
+  "prettier": "@stylelint/prettier-config"
 }
