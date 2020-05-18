@@ -3,6 +3,12 @@
 const { LanguageClient, SettingMonitor, ExecuteCommandRequest } = require('vscode-languageclient');
 const { workspace, commands: Commands, window: Window } = require('vscode');
 
+/**
+ * @typedef {import('vscode').ExtensionContext} ExtensionContext
+ */
+/**
+ * @param {ExtensionContext} context
+ */
 exports.activate = ({ subscriptions }) => {
 	const serverPath = require.resolve('./server.js');
 
@@ -50,7 +56,7 @@ exports.activate = ({ subscriptions }) => {
 
 			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
 				Window.showErrorMessage(
-					'Failed to apply styleint fixes to the document. Please consider opening an issue with steps to reproduce.',
+					'Failed to apply stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
 				);
 			});
 		}),
