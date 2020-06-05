@@ -129,6 +129,13 @@ Default: `"npm"`
 
 Controls the package manager to be used to resolve the stylelint library. This has only an influence if the stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
 
+#### stylelint.snippet
+
+Type: `string[]`  
+Default: `["css","less","postcss","scss"]`
+
+An array of language identifiers specifying the files to enable snippets.
+
 #### editor.codeActionsOnSave
 
 This setting supports the entry `source.fixAll.stylelint`. If set to `true` all auto-fixable stylelint errors will be fixed on save.

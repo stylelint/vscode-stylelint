@@ -19,12 +19,18 @@ const {
 	CodeActionKind,
 	TextDocumentEdit,
 	CodeAction,
+	CompletionItemKind,
+	DiagnosticCode,
+	MarkupKind,
+	InsertTextFormat,
 } = require('vscode-languageserver');
 const { TextDocument } = require('vscode-languageserver-textdocument');
 
 /**
  * @typedef { import('vscode-languageserver').DocumentUri } DocumentUri
  * @typedef { import('vscode-languageserver').Diagnostic } Diagnostic
+ * @typedef { import('vscode-languageserver').CompletionItem } CompletionItem
+ * @typedef { import('vscode-languageserver').CompletionParams } CompletionParams
  * @typedef { import('vscode-languageserver-textdocument').TextDocument } TextDocument
  * @typedef { import('./lib/stylelint-vscode').DisableReportRange } DisableReportRange
  * @typedef { import('stylelint').Configuration } StylelintConfiguration
@@ -55,10 +61,16 @@ let reportNeedlessDisables;
 let stylelintPath;
 /** @type {string[]} */
 let validateLanguages;
+/** @type {string[]} */
+let snippetLanguages;
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
 
+/**
+ * @type {Map<DocumentUri, Diagnostic[]>}
+ */
+const documentDiagnostics = new Map();
 /**
  * @type {Map<DocumentUri, ({ diagnostic: Diagnostic, range: DisableReportRange })[]>}
  */
@@ -176,6 +188,7 @@ async function validate(document) {
 			uri: document.uri,
 			diagnostics: result.diagnostics,
 		});
+		documentDiagnostics.set(document.uri, result.diagnostics);
 
 		if (result.needlessDisables) {
 			needlessDisableReports.set(document.uri, result.needlessDisables);
@@ -236,6 +249,7 @@ function clearDiagnostics(document) {
 		uri: document.uri,
 		diagnostics: [],
 	});
+	documentDiagnostics.delete(document.uri);
 	needlessDisableReports.delete(document.uri);
 }
 
@@ -260,6 +274,7 @@ connection.onInitialize(() => {
 				commands: [CommandIds.applyAutoFix],
 			},
 			codeActionProvider: { codeActionKinds: [CodeActionKind.QuickFix, StylelintSourceFixAll] },
+			completionProvider: {},
 		},
 	};
 });
@@ -274,6 +289,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	stylelintPath = settings.stylelint.stylelintPath;
 	packageManager = settings.stylelint.packageManager || 'npm';
 	validateLanguages = settings.stylelint.validate || [];
+	snippetLanguages = settings.stylelint.snippet || ['css', 'less', 'postcss', 'scss'];
 
 	const removeLanguages = oldValidateLanguages.filter((lang) => !validateLanguages.includes(lang));
 
@@ -412,6 +428,8 @@ connection.onCodeAction(async (params) => {
 	}
 });
 
+connection.onCompletion(onCompletion);
+
 documents.listen(connection);
 
 connection.listen();
@@ -480,6 +498,180 @@ function replaceEdits(document, newText) {
 	}
 
 	return edits;
+}
+
+/**
+ * @param {CompletionParams} params
+ * @returns {CompletionItem[]}
+ */
+function onCompletion(params) {
+	const uri = params.textDocument.uri;
+	const document = documents.get(uri);
+
+	if (!document || !isValidateOn(document) || !snippetLanguages.includes(document.languageId)) {
+		return [];
+	}
+
+	const diagnostics = documentDiagnostics.get(uri);
+
+	if (!diagnostics) {
+		return [
+			createDisableLineCompletionItem('stylelint-disable-line'),
+			createDisableLineCompletionItem('stylelint-disable-next-line'),
+			createDisableEnableCompletionItem(),
+		];
+	}
+
+	/** @type {Set<string>} */
+	const needlessDisablesKeys = new Set();
+	const needlessDisables = needlessDisableReports.get(uri);
+
+	if (needlessDisables) {
+		for (const needlessDisable of needlessDisables) {
+			needlessDisablesKeys.add(computeKey(needlessDisable.diagnostic));
+		}
+	}
+
+	const thisLineRules = new Set();
+	const nextLineRules = new Set();
+
+	for (const diagnostic of diagnostics) {
+		if (needlessDisablesKeys.has(computeKey(diagnostic))) {
+			continue;
+		}
+
+		const start = diagnostic.range.start;
+
+		const rule = String(
+			(DiagnosticCode.is(diagnostic.code) ? diagnostic.code.value : diagnostic.code) || '',
+		);
+
+		if (start.line === params.position.line) {
+			thisLineRules.add(rule);
+		} else if (start.line === params.position.line + 1) {
+			nextLineRules.add(rule);
+		}
+	}
+
+	thisLineRules.delete('');
+	thisLineRules.delete('CssSyntaxError');
+	nextLineRules.delete('');
+	nextLineRules.delete('CssSyntaxError');
+
+	/** @type {CompletionItem[]} */
+	const results = [];
+
+	const disableKind = getStyleLintDisableKind(document, params.position);
+
+	if (disableKind) {
+		if (disableKind === 'stylelint-disable-line') {
+			for (const rule of new Set(thisLineRules)) {
+				results.push({
+					label: rule,
+					kind: CompletionItemKind.Snippet,
+					detail: `disable ${rule} rule. (stylelint)`,
+				});
+			}
+		} else if (
+			disableKind === 'stylelint-disable' ||
+			disableKind === 'stylelint-disable-next-line'
+		) {
+			for (const rule of new Set(nextLineRules)) {
+				results.push({
+					label: rule,
+					kind: CompletionItemKind.Snippet,
+					detail: `disable ${rule} rule. (stylelint)`,
+				});
+			}
+		}
+	} else {
+		if (thisLineRules.size === 1) {
+			results.push(
+				createDisableLineCompletionItem('stylelint-disable-line', [...thisLineRules][0]),
+			);
+		} else {
+			results.push(createDisableLineCompletionItem('stylelint-disable-line'));
+		}
+
+		if (nextLineRules.size === 1) {
+			results.push(
+				createDisableLineCompletionItem('stylelint-disable-next-line', [...nextLineRules][0]),
+			);
+		} else {
+			results.push(createDisableLineCompletionItem('stylelint-disable-next-line'));
+		}
+
+		results.push(createDisableEnableCompletionItem());
+	}
+
+	return results;
+}
+
+/**
+ * @param { 'stylelint-disable-line' | 'stylelint-disable-next-line' } kind
+ * @param {string} rule
+ * @returns {CompletionItem}
+ */
+function createDisableLineCompletionItem(kind, rule = '') {
+	return {
+		label: kind,
+		kind: CompletionItemKind.Snippet,
+		insertText: `/* ${kind} \${0:${rule || 'rule'}} */`,
+		insertTextFormat: InsertTextFormat.Snippet,
+		detail:
+			kind === 'stylelint-disable-line'
+				? 'Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)'
+				: 'Turn off stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)',
+		documentation: {
+			kind: MarkupKind.Markdown,
+			value: `\`\`\`css\n/* ${kind} ${rule || 'rule'} */\n\`\`\``,
+		},
+	};
+}
+
+/**
+ * @returns {CompletionItem}
+ */
+function createDisableEnableCompletionItem() {
+	return {
+		label: 'stylelint-disable',
+		kind: CompletionItemKind.Snippet,
+		insertText: `/* stylelint-disable \${0:rule} */\n/* stylelint-enable \${0:rule} */`,
+		insertTextFormat: InsertTextFormat.Snippet,
+		detail:
+			'Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)',
+		documentation: {
+			kind: MarkupKind.Markdown,
+			value: `\`\`\`css\n/* stylelint-disable rule */\n/* stylelint-enable rule */\n\`\`\``,
+		},
+	};
+}
+
+/**
+ * @param {TextDocument} document
+ * @param {Position} position
+ */
+function getStyleLintDisableKind(document, position) {
+	const lineStartOffset = document.offsetAt(Position.create(position.line, 0));
+	const lineEndOffset = document.offsetAt(Position.create(position.line + 1, 0)) - 1;
+	const line = document.getText().slice(lineStartOffset, lineEndOffset);
+
+	const before = line.slice(0, position.character);
+	const after = line.slice(position.character);
+
+	const disableKindResult = /\/\*\s*(stylelint-disable(?:(?:-next)?-line)?)\s+[a-z\-/\s,]*$/i.exec(
+		before,
+	);
+
+	if (!disableKindResult) {
+		return null;
+	}
+
+	if (/^[a-z\-/\s,]*\*\//i.test(after)) {
+		return disableKindResult[1];
+	}
+
+	return null;
 }
 
 /**
