@@ -4,6 +4,7 @@ const path = require('path');
 const pWaitFor = require('p-wait-for');
 const test = require('tape');
 const { extensions, workspace, window, Uri, commands, languages } = require('vscode');
+const { normalizeDiagnostic } = require('../utils');
 
 const run = () =>
 	test('vscode-stylelint lint test', async (t) => {
@@ -22,15 +23,20 @@ const run = () =>
 
 		// Check the result.
 		t.deepEqual(
-			languages
-				.getDiagnostics(cssDocument.uri)
-				.map((o) => ({ ...o, range: normalizeRange(o.range) })),
+			languages.getDiagnostics(cssDocument.uri).map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
 					message: 'Expected indentation of 4 spaces (indentation)',
 					severity: 0,
-					code: 'indentation',
+					code: {
+						value: 'indentation',
+						target: {
+							scheme: 'https',
+							authority: 'stylelint.io',
+							path: '/user-guide/rules/indentation',
+						},
+					},
 					source: 'stylelint',
 				},
 			],
@@ -47,15 +53,20 @@ const run = () =>
 
 		// Check the result.
 		t.deepEqual(
-			languages
-				.getDiagnostics(scssDocument.uri)
-				.map((o) => ({ ...o, range: normalizeRange(o.range) })),
+			languages.getDiagnostics(scssDocument.uri).map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
 					message: 'Expected indentation of 4 spaces (indentation)',
 					severity: 0,
-					code: 'indentation',
+					code: {
+						value: 'indentation',
+						target: {
+							scheme: 'https',
+							authority: 'stylelint.io',
+							path: '/user-guide/rules/indentation',
+						},
+					},
 					source: 'stylelint',
 				},
 			],
@@ -72,15 +83,20 @@ const run = () =>
 
 		// Check the result.
 		t.deepEqual(
-			languages
-				.getDiagnostics(mdDocument.uri)
-				.map((o) => ({ ...o, range: normalizeRange(o.range) })),
+			languages.getDiagnostics(mdDocument.uri).map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 4, character: 2 }, end: { line: 4, character: 2 } },
 					message: 'Expected indentation of 4 spaces (indentation)',
 					severity: 0,
-					code: 'indentation',
+					code: {
+						value: 'indentation',
+						target: {
+							scheme: 'https',
+							authority: 'stylelint.io',
+							path: '/user-guide/rules/indentation',
+						},
+					},
 					source: 'stylelint',
 				},
 			],
@@ -94,21 +110,3 @@ exports.run = (root, done) => {
 	test.onFinish(done);
 	run();
 };
-
-function normalizeRange(range) {
-	const obj = {
-		start: {
-			line: range.start.line,
-			character: range.start.character,
-		},
-	};
-
-	if (range.end !== undefined) {
-		obj.end = {
-			line: range.end.line,
-			character: range.end.character,
-		};
-	}
-
-	return obj;
-}

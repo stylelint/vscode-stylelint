@@ -7,7 +7,7 @@ const { extensions, workspace, window, Uri, commands, languages } = require('vsc
 const { normalizeDiagnostic } = require('../utils');
 
 const run = () =>
-	test('vscode-stylelint with "stylelint.reportNeedlessDisables"', async (t) => {
+	test('vscode-stylelint lint test', async (t) => {
 		await commands.executeCommand('vscode.openFolder', Uri.file(__dirname));
 
 		const vscodeStylelint = extensions.getExtension('stylelint.vscode-stylelint');
@@ -19,40 +19,39 @@ const run = () =>
 
 		// Wait for diagnostics result.
 		await pWaitFor(() => vscodeStylelint.isActive, { timeout: 2000 });
-		await pWaitFor(() => languages.getDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
+		await pWaitFor(
+			() =>
+				languages.getDiagnostics(cssDocument.uri).filter((d) => d.source === 'stylelint').length >
+				0,
+			{ timeout: 5000 },
+		);
 
 		// Check the result.
-		const diagnostics = languages.getDiagnostics(cssDocument.uri);
-
 		t.deepEqual(
-			diagnostics.map(normalizeDiagnostic),
+			languages
+				.getDiagnostics(cssDocument.uri)
+				.filter((d) => d.source === 'stylelint')
+				.map(normalizeDiagnostic),
 			[
 				{
-					range: { start: { line: 3, character: 0 }, end: { line: 3, character: 15 } },
-					message: 'unused rule: indentation, start line: 4, end line: 4',
-					severity: 1,
-					code: 'indentation',
+					range: { start: { line: 0, character: 5 }, end: { line: 0, character: 5 } },
+					message: 'Bar (plugin/foo-bar)',
+					severity: 0,
+					code: 'plugin/foo-bar',
 					source: 'stylelint',
 				},
 				{
-					range: { start: { line: 6, character: 0 }, end: { line: 10, character: 34 } },
-					message: 'unused rule: indentation, start line: 7, end line: 11',
-					severity: 1,
-					code: 'indentation',
-					source: 'stylelint',
-				},
-				{
-					range: { start: { line: 14, character: 0 }, end: { line: 14, character: 56 } },
-					message: 'unused rule: indentation, start line: 15, end line: 15',
-					severity: 1,
-					code: 'indentation',
-					source: 'stylelint',
-				},
-				{
-					range: { start: { line: 17, character: 0 }, end: { line: 21, character: 0 } },
-					message: 'unused rule: indentation, start line: 18',
-					severity: 1,
-					code: 'indentation',
+					range: { start: { line: 6, character: 11 }, end: { line: 6, character: 11 } },
+					message: 'Unexpected invalid hex color "#y3" (color-no-invalid-hex)',
+					severity: 0,
+					code: {
+						value: 'color-no-invalid-hex',
+						target: {
+							scheme: 'https',
+							authority: 'stylelint.io',
+							path: '/user-guide/rules/color-no-invalid-hex',
+						},
+					},
 					source: 'stylelint',
 				},
 				{
@@ -70,7 +69,7 @@ const run = () =>
 					source: 'stylelint',
 				},
 			],
-			'should work if "stylelint.reportNeedlessDisables" is enabled.',
+			'should display correctly that rule documentation links.',
 		);
 
 		t.end();
