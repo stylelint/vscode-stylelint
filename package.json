@@ -1,6 +1,6 @@
 {
   "name": "vscode-stylelint",
-  "version": "0.83.0",
+  "version": "0.84.0",
   "license": "MIT",
   "description": "Modern CSS/SCSS/Less linter",
   "main": "index.js",
@@ -183,7 +183,7 @@
     "@types/stylelint": "^9.10.1",
     "@types/tape": "^4.13.0",
     "@types/vscode": "^1.45.1",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-config-stylelint": "^11.1.0",
     "find-pkg": "^2.0.0",

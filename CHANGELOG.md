@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### [0.82.0](https://github.com/stylelint/vscode-stylelint/compare/v0.82.0...v0.83.0) (2020-02-20)
+### [0.84.0](https://github.com/stylelint/vscode-stylelint/compare/v0.83.0...v0.84.0) (2020-03-18)
+
+- [e777f4c ](https://github.com/stylelint/vscode-stylelint/commit/e777f4c93089e764fd6a95efbcab9736b5be361c) Add "stylelint.validate" option
+
+### [0.83.0](https://github.com/stylelint/vscode-stylelint/compare/v0.82.0...v0.83.0) (2020-02-20)
 
 - [f7a2fcd](https://github.com/stylelint/vscode-stylelint/commit/f7a2fcdaf7958b1ea0595f9c91eb9a38079a9198) Add "stylelint.reportNeedlessDisables" option
 - [34388c0](https://github.com/stylelint/vscode-stylelint/pull/53/commits/34388c05b25397ec5a34bd751da4fc3742c57594) Add "stylelint.stylelintPath" option for Yarn 2 compatibility
