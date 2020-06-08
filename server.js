@@ -51,6 +51,8 @@ const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 let config;
 /** @type {StylelintConfiguration} */
 let configOverrides;
+/** @type {string} */
+let configBasedir;
 /** @type {PackageManager} */
 let packageManager;
 /** @type {string} */
@@ -115,6 +117,14 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 		options.customSyntax = workspaceFolder
 			? customSyntax.replace(/\$\{workspaceFolder\}/gu, workspaceFolder)
 			: customSyntax;
+	}
+
+	if (configBasedir) {
+		if (isAbsolute(configBasedir)) {
+			options.configBasedir = configBasedir;
+		} else {
+			options.configBasedir = join(workspaceFolder || '', configBasedir);
+		}
 	}
 
 	if (documentPath) {
@@ -300,6 +310,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
+	configBasedir = settings.stylelint.configBasedir;
 	customSyntax = settings.stylelint.customSyntax;
 	reportNeedlessDisables = settings.stylelint.reportNeedlessDisables;
 	reportInvalidScopeDisables = settings.stylelint.reportInvalidScopeDisables;
