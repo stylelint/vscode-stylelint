@@ -126,6 +126,20 @@
             "xsl"
           ],
           "description": "An array of language ids which should be validated by stylelint."
+        },
+        "stylelint.snippet": {
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "css",
+            "less",
+            "postcss",
+            "scss"
+          ],
+          "description": "An array of language ids which snippets are provided by stylelint."
         }
       }
     },
@@ -148,24 +162,6 @@
         "filenames": [
           ".stylelintignore"
         ]
-      }
-    ],
-    "snippets": [
-      {
-        "language": "css",
-        "path": "./snippets/stylelint-disable.json"
-      },
-      {
-        "language": "less",
-        "path": "./snippets/stylelint-disable.json"
-      },
-      {
-        "language": "postcss",
-        "path": "./snippets/stylelint-disable.json"
-      },
-      {
-        "language": "scss",
-        "path": "./snippets/stylelint-disable.json"
       }
     ]
   },
