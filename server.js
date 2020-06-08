@@ -648,6 +648,8 @@ function createDisableEnableCompletionItem() {
 }
 
 /**
+ * Check if the given position is in the stylelint-disable comment.
+ * If inside a comment, return the kind of disable.
  * @param {TextDocument} document
  * @param {Position} position
  */
