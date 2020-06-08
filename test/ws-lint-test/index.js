@@ -3,8 +3,8 @@
 const path = require('path');
 const pWaitFor = require('p-wait-for');
 const test = require('tape');
-const { extensions, workspace, window, Uri, commands, languages } = require('vscode');
-const { normalizeDiagnostic } = require('../utils');
+const { extensions, workspace, window, Uri, commands } = require('vscode');
+const { normalizeDiagnostic, getStylelintDiagnostics } = require('../utils');
 
 const run = () =>
 	test('vscode-stylelint lint test', async (t) => {
@@ -19,11 +19,11 @@ const run = () =>
 
 		// Wait for diagnostics result.
 		await pWaitFor(() => vscodeStylelint.isActive, { timeout: 2000 });
-		await pWaitFor(() => languages.getDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
+		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
 
 		// Check the result.
 		t.deepEqual(
-			languages.getDiagnostics(cssDocument.uri).map(normalizeDiagnostic),
+			getStylelintDiagnostics(cssDocument.uri).map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
@@ -49,11 +49,11 @@ const run = () =>
 		await window.showTextDocument(scssDocument);
 
 		// Wait for diagnostics result.
-		await pWaitFor(() => languages.getDiagnostics(scssDocument.uri).length > 0, { timeout: 5000 });
+		await pWaitFor(() => getStylelintDiagnostics(scssDocument.uri).length > 0, { timeout: 5000 });
 
 		// Check the result.
 		t.deepEqual(
-			languages.getDiagnostics(scssDocument.uri).map(normalizeDiagnostic),
+			getStylelintDiagnostics(scssDocument.uri).map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
@@ -79,11 +79,11 @@ const run = () =>
 		await window.showTextDocument(mdDocument);
 
 		// Wait for diagnostics result.
-		await pWaitFor(() => languages.getDiagnostics(mdDocument.uri).length > 0, { timeout: 5000 });
+		await pWaitFor(() => getStylelintDiagnostics(mdDocument.uri).length > 0, { timeout: 5000 });
 
 		// Check the result.
 		t.deepEqual(
-			languages.getDiagnostics(mdDocument.uri).map(normalizeDiagnostic),
+			getStylelintDiagnostics(mdDocument.uri).map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 4, character: 2 }, end: { line: 4, character: 2 } },

@@ -3,8 +3,8 @@
 const path = require('path');
 const pWaitFor = require('p-wait-for');
 const test = require('tape');
-const { extensions, workspace, window, Uri, commands, languages } = require('vscode');
-const { normalizeDiagnostic } = require('../utils');
+const { extensions, workspace, window, Uri, commands } = require('vscode');
+const { normalizeDiagnostic, getStylelintDiagnostics } = require('../utils');
 
 const run = () =>
 	test('vscode-stylelint with "stylelint.validate"', async (t) => {
@@ -32,7 +32,7 @@ const run = () =>
 		await new Promise((resolve) => setTimeout(resolve, 2000));
 
 		// Check the result.
-		t.deepEqual(languages.getDiagnostics(cssDocument.uri), [], 'should be ignored lint on css.');
+		t.deepEqual(getStylelintDiagnostics(cssDocument.uri), [], 'should be ignored lint on css.');
 
 		// Execute the Autofix command.
 		await commands.executeCommand('stylelint.executeAutofix');
@@ -50,11 +50,11 @@ const run = () =>
 		await window.showTextDocument(scssDocument);
 
 		// Wait for diagnostics result.
-		await pWaitFor(() => languages.getDiagnostics(scssDocument.uri).length > 0, { timeout: 5000 });
+		await pWaitFor(() => getStylelintDiagnostics(scssDocument.uri).length > 0, { timeout: 5000 });
 
 		// Check the result.
 		t.deepEqual(
-			languages.getDiagnostics(scssDocument.uri).map(normalizeDiagnostic),
+			getStylelintDiagnostics(scssDocument.uri).map(normalizeDiagnostic),
 			[
 				{
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
@@ -93,11 +93,7 @@ const run = () =>
 		await new Promise((resolve) => setTimeout(resolve, 2000));
 
 		// Check the result.
-		t.deepEqual(
-			languages.getDiagnostics(mdDocument.uri),
-			[],
-			'should be ignored lint on markdown.',
-		);
+		t.deepEqual(getStylelintDiagnostics(mdDocument.uri), [], 'should be ignored lint on markdown.');
 
 		// Execute the Autofix command.
 		await commands.executeCommand('stylelint.executeAutofix');
