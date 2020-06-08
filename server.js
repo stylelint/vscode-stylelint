@@ -56,6 +56,8 @@ let packageManager;
 /** @type {string} */
 let customSyntax;
 /** @type {boolean} */
+let ignoreDisables;
+/** @type {boolean} */
 let reportNeedlessDisables;
 /** @type {boolean} */
 let reportInvalidScopeDisables;
@@ -97,6 +99,10 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 
 	if (configOverrides) {
 		options.configOverrides = configOverrides;
+	}
+
+	if (ignoreDisables) {
+		options.ignoreDisables = ignoreDisables;
 	}
 
 	if (reportNeedlessDisables) {
@@ -301,6 +307,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
 	customSyntax = settings.stylelint.customSyntax;
+	ignoreDisables = settings.stylelint.ignoreDisables;
 	reportNeedlessDisables = settings.stylelint.reportNeedlessDisables;
 	reportInvalidScopeDisables = settings.stylelint.reportInvalidScopeDisables;
 	stylelintPath = settings.stylelint.stylelintPath;
