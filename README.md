@@ -108,6 +108,13 @@ e.g.
   "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
 ```
 
+#### stylelint.ignoreDisables
+
+Type: `boolean`  
+Default: `false`
+
+Set stylelint [`ignoreDisables`](https://stylelint.io/user-guide/usage/options#ignoredisables) option. If `true`, ignore `styleline-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
+
 #### stylelint.reportNeedlessDisables
 
 Type: `boolean`  
