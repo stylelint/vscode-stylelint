@@ -565,7 +565,7 @@ function onCompletion(params) {
 
 	if (disableKind) {
 		if (disableKind === 'stylelint-disable-line') {
-			for (const rule of new Set(thisLineRules)) {
+			for (const rule of thisLineRules) {
 				results.push({
 					label: rule,
 					kind: CompletionItemKind.Snippet,
@@ -576,7 +576,7 @@ function onCompletion(params) {
 			disableKind === 'stylelint-disable' ||
 			disableKind === 'stylelint-disable-next-line'
 		) {
-			for (const rule of new Set(nextLineRules)) {
+			for (const rule of nextLineRules) {
 				results.push({
 					label: rule,
 					kind: CompletionItemKind.Snippet,
