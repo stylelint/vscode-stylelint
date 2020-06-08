@@ -1,0 +1,13 @@
+/* stylelint-disable-next-line foo */
+
+/* stylelint-disable-line foo */
+
+/* stylelint-disable foo */
+/* stylelint-enable foo */
+
+/* stylelint-disable-next-line indentation */
+
+/* stylelint-disable-line indentation */
+
+/* stylelint-disable indentation */
+/* stylelint-enable indentation */

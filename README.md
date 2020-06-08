@@ -108,6 +108,13 @@ Default: `false`
 
 Set stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/usage/options#reportneedlessdisables) option. If `true`, also report errors for `stylelint-disable` comments that are not blocking a lint warning.
 
+#### stylelint.reportInvalidScopeDisables
+
+Type: `boolean`  
+Default: `false`
+
+Set stylelint [`reportInvalidScopeDisables`](https://stylelint.io/user-guide/usage/options#reportInvalidScopeDisables) option. If `true`, also report errors for `stylelint-disable` comments that used for rules that don't exist within the configuration object.
+
 #### stylelint.validate
 
 Type: `string[]`  
