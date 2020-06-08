@@ -70,6 +70,22 @@
           "default": "",
           "description": "A path to the directory that relative paths defining \"extends\" and \"plugins\" are relative to."
         },
+        "stylelint.syntax": {
+          "type": "string",
+          "default": "",
+          "enum": [
+            "css",
+            "css-in-js",
+            "html",
+            "less",
+            "markdown",
+            "sass",
+            "scss",
+            "sugarss",
+            ""
+          ],
+          "description": "Specify a syntax. Only use this option if you want to force a specific syntax."
+        },
         "stylelint.customSyntax": {
           "type": "string",
           "default": "",

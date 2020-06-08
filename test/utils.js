@@ -1,11 +1,18 @@
 'use strict';
 
+const { languages } = require('vscode');
+
 module.exports = {
 	normalizeDiagnostic,
+	getStylelintDiagnostics,
 };
 
 function normalizeDiagnostic(message) {
 	return { ...message, code: normalizeCode(message.code), range: normalizeRange(message.range) };
+}
+
+function getStylelintDiagnostics(uri) {
+	return languages.getDiagnostics(uri).filter((d) => d.source === 'stylelint');
 }
 
 function normalizeRange(range) {

@@ -55,6 +55,8 @@ let configOverrides;
 let configBasedir;
 /** @type {PackageManager} */
 let packageManager;
+/** @type { "css-in-js" | "html" | "less" | "markdown" | "sass" | "scss" | "sugarss" | undefined } */
+let syntax;
 /** @type {string} */
 let customSyntax;
 /** @type {boolean} */
@@ -114,6 +116,10 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 	if (reportInvalidScopeDisables) {
 		// @ts-expect-error -- The stylelint type is old.
 		options.reportInvalidScopeDisables = reportInvalidScopeDisables;
+	}
+
+	if (syntax) {
+		options.syntax = syntax;
 	}
 
 	const workspaceFolder = await getWorkspaceFolder(document);
@@ -317,6 +323,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
 	configBasedir = settings.stylelint.configBasedir;
+	syntax = settings.stylelint.syntax || undefined;
 	customSyntax = settings.stylelint.customSyntax;
 	ignoreDisables = settings.stylelint.ignoreDisables;
 	reportNeedlessDisables = settings.stylelint.reportNeedlessDisables;

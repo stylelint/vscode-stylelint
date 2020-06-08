@@ -87,6 +87,13 @@ Default: `""`
 
 Set stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory that relative paths defining "extends" and "plugins" are relative to. Only necessary if these values are relative paths.
 
+#### stylelint.syntax
+
+Type: `"css" | "css-in-js" | "html" | "less" | "markdown" | "sass" | "scss" | "sugarss"`  
+Default: `""`
+
+Set stylelint [`syntax`](https://stylelint.io/user-guide/usage/options#syntax) option. Specify a syntax. Only use this option if you want to force a specific syntax.
+
 #### stylelint.customSyntax
 
 Type: `string`  

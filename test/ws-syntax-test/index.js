@@ -7,7 +7,7 @@ const { extensions, workspace, window, Uri, commands } = require('vscode');
 const { normalizeDiagnostic, getStylelintDiagnostics } = require('../utils');
 
 const run = () =>
-	test('vscode-stylelint with "stylelint.reportNeedlessDisables"', async (t) => {
+	test('vscode-stylelint with "stylelint.syntax"', async (t) => {
 		await commands.executeCommand('vscode.openFolder', Uri.file(__dirname));
 
 		const vscodeStylelint = extensions.getExtension('stylelint.vscode-stylelint');
@@ -28,34 +28,6 @@ const run = () =>
 			diagnostics.map(normalizeDiagnostic),
 			[
 				{
-					range: { start: { line: 3, character: 0 }, end: { line: 3, character: 15 } },
-					message: 'unused rule: indentation, start line: 4, end line: 4',
-					severity: 1,
-					code: 'indentation',
-					source: 'stylelint',
-				},
-				{
-					range: { start: { line: 6, character: 0 }, end: { line: 10, character: 34 } },
-					message: 'unused rule: indentation, start line: 7, end line: 11',
-					severity: 1,
-					code: 'indentation',
-					source: 'stylelint',
-				},
-				{
-					range: { start: { line: 14, character: 0 }, end: { line: 14, character: 56 } },
-					message: 'unused rule: indentation, start line: 15, end line: 15',
-					severity: 1,
-					code: 'indentation',
-					source: 'stylelint',
-				},
-				{
-					range: { start: { line: 17, character: 0 }, end: { line: 21, character: 0 } },
-					message: 'unused rule: indentation, start line: 18',
-					severity: 1,
-					code: 'indentation',
-					source: 'stylelint',
-				},
-				{
 					range: { start: { line: 2, character: 2 }, end: { line: 2, character: 2 } },
 					message: 'Expected indentation of 4 spaces (indentation)',
 					severity: 0,
@@ -70,7 +42,7 @@ const run = () =>
 					source: 'stylelint',
 				},
 			],
-			'should work if "stylelint.reportNeedlessDisables" is enabled.',
+			'should work even if "stylelint.syntax" is defined.',
 		);
 
 		t.end();

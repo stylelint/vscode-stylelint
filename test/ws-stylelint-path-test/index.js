@@ -3,8 +3,8 @@
 const path = require('path');
 const pWaitFor = require('p-wait-for');
 const test = require('tape');
-const { extensions, workspace, window, Uri, commands, languages } = require('vscode');
-const { normalizeDiagnostic } = require('../utils');
+const { extensions, workspace, window, Uri, commands } = require('vscode');
+const { normalizeDiagnostic, getStylelintDiagnostics } = require('../utils');
 
 const run = () =>
 	test('vscode-stylelint with "stylelint.stylelintPath"', async (t) => {
@@ -19,10 +19,10 @@ const run = () =>
 
 		// Wait for diagnostics result.
 		await pWaitFor(() => vscodeStylelint.isActive, { timeout: 2000 });
-		await pWaitFor(() => languages.getDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
+		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
 
 		// Check the result.
-		const diagnostics = languages.getDiagnostics(cssDocument.uri);
+		const diagnostics = getStylelintDiagnostics(cssDocument.uri);
 
 		t.deepEqual(
 			diagnostics.map(normalizeDiagnostic),
