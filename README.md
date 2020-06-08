@@ -80,6 +80,13 @@ Default: `null`
 
 Set stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
 
+#### stylelint.configBasedir
+
+Type: `string`  
+Default: `""`
+
+Set stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory that relative paths defining "extends" and "plugins" are relative to. Only necessary if these values are relative paths.
+
 #### stylelint.customSyntax
 
 Type: `string`  

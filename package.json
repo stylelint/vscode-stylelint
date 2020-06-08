@@ -65,6 +65,11 @@
           "default": null,
           "description": "A partial stylelint config whose properties override the existing ones."
         },
+        "stylelint.configBasedir": {
+          "type": "string",
+          "default": "",
+          "description": "A path to the directory that relative paths defining \"extends\" and \"plugins\" are relative to."
+        },
         "stylelint.customSyntax": {
           "type": "string",
           "default": "",
