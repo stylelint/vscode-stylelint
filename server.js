@@ -22,28 +22,42 @@ const {
 } = require('vscode-languageserver');
 const { TextDocument } = require('vscode-languageserver-textdocument');
 
+/**
+ * @typedef { import('vscode-languageserver').DocumentUri } DocumentUri
+ * @typedef { import('vscode-languageserver').Diagnostic } Diagnostic
+ * @typedef { import('vscode-languageserver-textdocument').TextDocument } TextDocument
+ * @typedef { import('./lib/stylelint-vscode').DisableReportRange } DisableReportRange
+ * @typedef { import('stylelint').Configuration } StylelintConfiguration
+ * @typedef { import('stylelint').LinterOptions } BaseStylelintLinterOptions
+ * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
+ * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
+ * @typedef { import('./lib/stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
+ * @typedef { import('./lib/array-to-error').HasReasonsError } HasReasonsError
+ */
+
 const CommandIds = {
 	applyAutoFix: 'stylelint.applyAutoFix',
 };
 
 const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 
+/** @type {StylelintConfiguration} */
 let config;
+/** @type {StylelintConfiguration} */
 let configOverrides;
+/** @type {PackageManager} */
 let packageManager;
+/** @type {string} */
 let customSyntax;
+/** @type {boolean} */
 let reportNeedlessDisables;
+/** @type {string} */
 let stylelintPath;
+/** @type {string[]} */
 let validateLanguages;
 
 const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
-
-/**
- * @typedef { import('vscode-languageserver').DocumentUri } DocumentUri
- * @typedef { import('vscode-languageserver').Diagnostic } Diagnostic
- * @typedef { import('./lib/stylelint-vscode').DisableReportRange } DisableReportRange
- */
 
 /**
  * @type {Map<DocumentUri, ({ diagnostic: Diagnostic, range: DisableReportRange })[]>}
@@ -53,7 +67,8 @@ const needlessDisableReports = new Map();
 /**
  *
  * @param {TextDocument} document
- * @param {*} baseOptions
+ * @param {StylelintLinterOptions} baseOptions
+ * @returns {Promise<StylelintLinterOptions>}
  */
 async function buildStylelintOptions(document, baseOptions = {}) {
 	const options = { ...baseOptions };
@@ -95,7 +110,12 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 	return options;
 }
 
+/**
+ * @param {TextDocument} document
+ * @returns {Promise<StylelintVSCodeOption>}
+ */
 async function buildStylelintVSCodeOptions(document) {
+	/** @type {StylelintVSCodeOption} */
 	const options = { connection, packageManager };
 
 	if (stylelintPath) {
@@ -104,13 +124,17 @@ async function buildStylelintVSCodeOptions(document) {
 		} else {
 			const workspaceFolder = await getWorkspaceFolder(document);
 
-			options.stylelintPath = join(workspaceFolder, stylelintPath);
+			options.stylelintPath = join(workspaceFolder || '', stylelintPath);
 		}
 	}
 
 	return options;
 }
 
+/**
+ * @param {HasReasonsError & {code?: number}} err
+ * @returns {void}
+ */
 function handleError(err) {
 	if (err.reasons) {
 		for (const reason of err.reasons) {
@@ -127,11 +151,12 @@ function handleError(err) {
 		return;
 	}
 
-	connection.window.showErrorMessage(err.stack.replace(/\n/gu, ' '));
+	connection.window.showErrorMessage((err.stack || '').replace(/\n/gu, ' '));
 }
 
 /**
  * @param {TextDocument} document
+ * @returns {Promise<void>}
  */
 async function validate(document) {
 	if (!isValidateOn(document)) {
@@ -152,7 +177,9 @@ async function validate(document) {
 			diagnostics: result.diagnostics,
 		});
 
-		needlessDisableReports.set(document.uri, result.needlessDisables);
+		if (result.needlessDisables) {
+			needlessDisableReports.set(document.uri, result.needlessDisables);
+		}
 	} catch (err) {
 		handleError(err);
 	}
@@ -191,6 +218,9 @@ async function getFixes(document) {
 	}
 }
 
+/**
+ * @returns {void}
+ */
 function validateAll() {
 	for (const document of documents.all()) {
 		validate(document);
@@ -199,6 +229,7 @@ function validateAll() {
 
 /**
  * @param {TextDocument} document
+ * @returns {void}
  */
 function clearDiagnostics(document) {
 	connection.sendDiagnostics({
@@ -233,6 +264,7 @@ connection.onInitialize(() => {
 	};
 });
 connection.onDidChangeConfiguration(({ settings }) => {
+	/** @type {string[]} */
 	const oldValidateLanguages = validateLanguages || [];
 
 	config = settings.stylelint.config;
@@ -261,15 +293,20 @@ documents.onDidClose(({ document }) => {
 });
 connection.onExecuteCommand(async (params) => {
 	if (params.command === CommandIds.applyAutoFix) {
+		if (!params.arguments) {
+			return {};
+		}
+
+		/** @type { { version: number, uri: string } } */
 		const identifier = params.arguments[0];
 		const uri = identifier.uri;
 		const document = documents.get(uri);
 
-		if (!isValidateOn(document)) {
+		if (!document || !isValidateOn(document)) {
 			return {};
 		}
 
-		if (!document || identifier.version !== document.version) {
+		if (identifier.version !== document.version) {
 			return {};
 		}
 
@@ -305,7 +342,7 @@ connection.onCodeAction(async (params) => {
 		const uri = params.textDocument.uri;
 		const textDocument = documents.get(uri);
 
-		if (!isValidateOn(textDocument)) {
+		if (!textDocument || !isValidateOn(textDocument)) {
 			return [];
 		}
 
@@ -325,7 +362,7 @@ connection.onCodeAction(async (params) => {
 		const uri = params.textDocument.uri;
 		const textDocument = documents.get(uri);
 
-		if (!isValidateOn(textDocument)) {
+		if (!textDocument || !isValidateOn(textDocument)) {
 			return [];
 		}
 
@@ -348,10 +385,10 @@ connection.onCodeAction(async (params) => {
 		const results = [];
 
 		for (const diagnostic of diagnostics) {
-			const diagnostickey = computeKey(diagnostic);
+			const diagnosticKey = computeKey(diagnostic);
 
 			for (const needlessDisable of needlessDisables) {
-				if (computeKey(needlessDisable.diagnostic) === diagnostickey) {
+				if (computeKey(needlessDisable.diagnostic) === diagnosticKey) {
 					const edits = createRemoveCommentDirectiveTextEdits(textDocument, needlessDisable.range);
 
 					if (edits.length > 0) {
@@ -379,6 +416,10 @@ documents.listen(connection);
 
 connection.listen();
 
+/**
+ * @param {TextDocument} document
+ * @returns {Promise<string | undefined>}
+ */
 async function getWorkspaceFolder(document) {
 	const documentPath = parseUri(document.uri).fsPath;
 	const workspaceFolders = await connection.workspace.getWorkspaceFolders();
@@ -393,7 +434,7 @@ async function getWorkspaceFolder(document) {
 				}
 			}
 		}
-	} else if (workspaceFolders.length) {
+	} else if (workspaceFolders && workspaceFolders.length) {
 		const { uri } = workspaceFolders[0];
 
 		return parseUri(uri).fsPath;
@@ -517,7 +558,7 @@ function createRemoveCommentDirectiveTextEdits(document, range) {
 			newStylelintDisableText,
 		);
 
-		if (range.end === undefined) {
+		if (range.end === null || range.end === undefined) {
 			return [stylelintDisableEdit];
 		}
 
@@ -545,7 +586,7 @@ function createRemoveCommentDirectiveTextEdits(document, range) {
 		}
 	}
 
-	return null;
+	return [];
 }
 
 /**
@@ -558,10 +599,20 @@ function computeKey(diagnostic) {
 	return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}`;
 }
 
+/**
+ * @param {string} value
+ * @returns {string}
+ */
 function escapeRegExp(value) {
 	return value.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&'); // $& means the whole matched string
 }
 
+/**
+ * @param {DisableReportRange} range
+ * @param {string} text
+ * @param {string} directive
+ * @returns {string}
+ */
 function removeCommentDirective(range, text, directive) {
 	if (range.unusedRule !== 'all') {
 		// `/* directive rulename */`
@@ -604,6 +655,9 @@ function removeCommentDirective(range, text, directive) {
 	// `/* directive */`
 	return text.replace(new RegExp(`\\/\\*\\s*${directive}\\s*\\*\\`), removesReplacer);
 
+	/**
+	 * @param  {string[]} args
+	 */
 	function removesReplacer(...args) {
 		let newText = '';
 
