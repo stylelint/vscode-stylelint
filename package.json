@@ -12,7 +12,7 @@
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.41.0",
+    "vscode": ">=1.43.0",
     "node": ">=10.2.0"
   },
   "galleryBanner": {
@@ -209,7 +209,7 @@
     "@types/path-is-inside": "^1.0.0",
     "@types/stylelint": "^9.10.1",
     "@types/tape": "^4.13.0",
-    "@types/vscode": "^1.45.1",
+    "@types/vscode": "1.43.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.1",
     "eslint-config-stylelint": "^11.1.0",
