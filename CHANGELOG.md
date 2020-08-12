@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [0.85.0](https://github.com/stylelint/vscode-stylelint/compare/v0.84.0...v0.85.0) (2020-08-12)
+
+- [f6f3672](https://github.com/stylelint/vscode-stylelint/commit/f6f367214fbfd4ad6568abecead0bed76cabda75) Add "stylelint.syntax" option
+- [ec802e8](https://github.com/stylelint/vscode-stylelint/commit/ec802e8b42247d0f2e6c654062bfa16de10ecd96) Add "stylelint.ignoreDisables" option
+- [9a0c69d](https://github.com/stylelint/vscode-stylelint/commit/9a0c69d9d6981d49295277388f0b23bd152a1777) Add "stylelint.configBasedir" option
+- [115118b](https://github.com/stylelint/vscode-stylelint/commit/115118ba1a9d2f36bfc0d7e9cbcc8370e227a6d1) Replace snippets with completions
+- [f204d8d](https://github.com/stylelint/vscode-stylelint/commit/f204d8d524a72c48de2e5ad98960d683d50202d5) Add "stylelint.reportInvalidScopeDisables" option
+- [192feb5](https://github.com/stylelint/vscode-stylelint/commit/192feb525c9120072f9c021d11d5a23c7311b69c) Add types to JSDoc
+- [83d7555](https://github.com/stylelint/vscode-stylelint/commit/83d755558702f0b6867cc76961290ef294686539) Add code action to show link to rule documentation
+
 ### [0.84.0](https://github.com/stylelint/vscode-stylelint/compare/v0.83.0...v0.84.0) (2020-03-18)
 
 - [e777f4c ](https://github.com/stylelint/vscode-stylelint/commit/e777f4c93089e764fd6a95efbcab9736b5be361c) Add "stylelint.validate" option
