@@ -1,11 +1,9 @@
 node_modules
 .coverage
 .nyc_output
-/lib/find-pkg-dir
-/lib/inspect-with-kind
-/lib/stylelint-warning-to-vscode-diagnostic
-/lib/array-to-sentence
+/lib/find-pkg-dir/benchmark
 /.vscode-test/**
-
+/test/**/*.css
+/package.json
 # Unignore config files like .prettierrc.js, because they're ignored by default
 !.*rc.js

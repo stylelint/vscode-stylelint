@@ -1,7 +1,6 @@
+'use strict';
+
 module.exports = {
-	parserOptions: {
-		ecmaVersion: 2019,
-	},
 	extends: ['stylelint', 'prettier'],
 	rules: {
 		'node/no-missing-require': [
@@ -13,19 +12,10 @@ module.exports = {
 		'node/no-unpublished-require': [
 			'error',
 			{
-				allowModules: [
-					'vscode',
-					'p-wait-for',
-					'tape',
-					'rmfr',
-					'eslint',
-					'lodash',
-					'find-pkg',
-					'find-root',
-					'pkg-dir',
-					'stylelint',
-				],
+				allowModules: ['p-wait-for', 'tape'],
 			},
 		],
+		'jest/expect-expect': 'off',
+		'jest/no-test-callback': 'off',
 	},
 };

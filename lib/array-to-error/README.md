@@ -7,9 +7,12 @@
 Create an error from an array of error messages
 
 ```javascript
-const arrayToError = require('array-to-error');
+const arrayToError = require("array-to-error");
 
-const error = arrayToError(['tranling comma on line 1', 'unexpected "(" on line 2']);
+const error = arrayToError([
+  "tranling comma on line 1",
+  'unexpected "(" on line 2'
+]);
 error.message; //=> 'tranling comma on line 1\nunexpected "(" on line 2'
 error.reasons; //=> ['tranling comma on line 1', 'unexpected "(" on line 2']
 ```
@@ -31,7 +34,7 @@ bower install array-to-error
 ## API
 
 ```javascript
-const arrayToError = require('array-to-error');
+const arrayToError = require("array-to-error");
 ```
 
 ### arrayToError(_messages_ [, *constructor*])
@@ -45,9 +48,9 @@ It returns an instance of error whose `message` is made from its first argument 
 The second argument is used as an error constructor.
 
 ```javascript
-const arrayToError = require('array-to-error');
+const arrayToError = require("array-to-error");
 
-const error = arrayToError(['foo', 'bar'], TypeError);
+const error = arrayToError(["foo", "bar"], TypeError);
 error.message; //=> 'foo\nbar'
 error.reasons; //=> ['foo', 'bar']
 error.constructor; //=> TypeError
