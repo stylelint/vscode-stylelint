@@ -7,17 +7,17 @@
 Convert a [stylelint](https://github.com/stylelint/stylelint) warning into a [Visual Studio Code diagnostic](https://code.visualstudio.com/Docs/extensionAPI/vscode-api#Diagnostic)
 
 ```javascript
-const { lint } = require('stylelint');
-const stylelintWarningToVscodeDiagnostic = require('stylelint-warning-to-vscode-diagnostic');
+const { lint } = require("stylelint");
+const stylelintWarningToVscodeDiagnostic = require("stylelint-warning-to-vscode-diagnostic");
 
 (async () => {
   const [result] = await lint({
-    code: 'a { color: red; }',
+    code: "a { color: red; }",
     config: {
       rules: {
-        'color-named': 'never',
-      },
-    },
+        "color-named": "never"
+      }
+    }
   });
 
   const [warning] = result.warnings;
@@ -59,7 +59,7 @@ npm install stylelint-warning-to-vscode-diagnostic
 ## API
 
 ```javascript
-const stylelintWarningToVscodeDiagnostic = require('stylelint-warning-to-vscode-diagnostic');
+const stylelintWarningToVscodeDiagnostic = require("stylelint-warning-to-vscode-diagnostic");
 ```
 
 ### stylelintWarningToVscodeDiagnostic(_warning_)

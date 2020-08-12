@@ -7,30 +7,30 @@
 A [stylelint](https://github.com/stylelint/stylelint) wrapper to easily integrate with [Visual Studio Code](https://code.visualstudio.com/) [language server](https://github.com/Microsoft/vscode-languageserver-node)
 
 ```javascript
-const stylelintVSCode = require('stylelint-vscode');
-const { TextDocument } = require('vscode-languageserver-types');
+const stylelintVSCode = require("stylelint-vscode");
+const { TextDocument } = require("vscode-languageserver-types");
 
 (async () => {
   await stylelintVSCode(
     TextDocument.create(
-      'file:///Users/me/0.css',
-      'css',
+      "file:///Users/me/0.css",
+      "css",
       1,
       `
 p {
   line-height: .8;
   color: red;
-}`,
+}`
     ),
     {
       code,
       config: {
         rules: {
-          'number-leading-zero': 'always',
-          'color-named': ['never', { severity: 'warning' }],
-        },
-      },
-    },
+          "number-leading-zero": "always",
+          "color-named": ["never", { severity: "warning" }]
+        }
+      }
+    }
   ); /* => [{
     range: {
       start: {line: 2, character: 14},
@@ -64,7 +64,7 @@ npm install stylelint-vscode
 ## API
 
 ```javascript
-const stylelintVSCode = require('stylelint-vscode');
+const stylelintVSCode = require("stylelint-vscode");
 ```
 
 ### stylelintVSCode(_textDocument_ [, *options*])
@@ -84,10 +84,12 @@ It works like [`stylelint.lint()`](https://github.com/stylelint/stylelint/blob/1
 - [`files`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#files) and [`formatter`](https://github.com/stylelint/stylelint/blob/master/docs/user-guide/node-api.md#formatter) options are not supported.
 
 ```javascript
-const stylelintVSCode = require('stylelint-vscode');
+const stylelintVSCode = require("stylelint-vscode");
 
 async () => {
-  await stylelintVSCode(TextDocument.create('file:///Users/me/1.css', 'css', 1, '{foo}')); /*=> [{
+  await stylelintVSCode(
+    TextDocument.create("file:///Users/me/1.css", "css", 1, "{foo}")
+  ); /*=> [{
     range: {
       start: {line: 0, character: 1},
       end: {line: 0, character: 1}
@@ -103,14 +105,17 @@ async () => {
 ```javascript
 (async () => {
   try {
-    await stylelintVSCode(TextDocument.create('file:///Users/me/2.css', 'css', 1, 'a {}'), {
-      config: {
-        rules: {
-          indentation: 2,
-          'function-comma-space-before': 'foo',
-        },
-      },
-    });
+    await stylelintVSCode(
+      TextDocument.create("file:///Users/me/2.css", "css", 1, "a {}"),
+      {
+        config: {
+          rules: {
+            indentation: 2,
+            "function-comma-space-before": "foo"
+          }
+        }
+      }
+    );
   } catch (err) {
     err.name;
     //=> 'SyntaxError'

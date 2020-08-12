@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
 	extends: ['stylelint', 'prettier'],
 	rules: {
@@ -10,13 +12,10 @@ module.exports = {
 		'node/no-unpublished-require': [
 			'error',
 			{
-				allowModules: [
-					'p-wait-for',
-					'tape',
-				],
+				allowModules: ['p-wait-for', 'tape'],
 			},
 		],
-		'jest/expect-expect': "off",
-		'jest/no-test-callback': "off"
+		'jest/expect-expect': 'off',
+		'jest/no-test-callback': 'off',
 	},
 };

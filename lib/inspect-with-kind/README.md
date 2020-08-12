@@ -7,8 +7,8 @@
 [`util.inspect`][util.inspect] with additional type information
 
 ```javascript
-const { inspect } = require('util');
-const inspectWithKind = require('inspect-with-kind');
+const { inspect } = require("util");
+const inspectWithKind = require("inspect-with-kind");
 
 inspect([1, 2, 3]); //=> '[ 1, 2, 3 ]'
 inspectWithKind([1, 2, 3]); //=> '[ 1, 2, 3 ] (array)'
@@ -25,7 +25,7 @@ npm install inspect-with-kind
 ## API
 
 ```javascript
-const inspectWithKind = require('inspect-with-kind');
+const inspectWithKind = require("inspect-with-kind");
 ```
 
 ### inspectWithKind(_value_ [, *options*])
@@ -42,22 +42,22 @@ Almost the same as `util.inspect`, but:
 - `maxArrayLength` option defaults to `10`.
 
 ```javascript
-const util = require('util');
-const inspectWithKind = require('inspect-with-kind');
+const util = require("util");
+const inspectWithKind = require("inspect-with-kind");
 
 // appends type info
 util.inspect(1); //=> '1'
 inspectWithKind(1); //=> '1 (number)'
-util.inspect('1'); //=> '\'1\''
-inspectWithKind('1'); //=> '\'1\' (string)'
+util.inspect("1"); //=> '\'1\''
+inspectWithKind("1"); //=> '\'1\' (string)'
 
 // doesn't appends type info, because <Buffer ...> clearly expresses what it is
-util.inspect(Buffer.from('1')); //=> '<Buffer 31>'
-inspectWithKind(Buffer.from('1')); //=> '<Buffer 31>'
+util.inspect(Buffer.from("1")); //=> '<Buffer 31>'
+inspectWithKind(Buffer.from("1")); //=> '<Buffer 31>'
 
 // omits stack trace
-util.inspect(new Error('error!')); //=> 'Error: error!\n    at repl:1:14\n    at ContextifyScript ...'
-inspectWithKind(new Error('error!')); //=> 'Error: error!'
+util.inspect(new Error("error!")); //=> 'Error: error!\n    at repl:1:14\n    at ContextifyScript ...'
+inspectWithKind(new Error("error!")); //=> 'Error: error!'
 ```
 
 ## Example
@@ -65,11 +65,13 @@ inspectWithKind(new Error('error!')); //=> 'Error: error!'
 This module is useful for making `TypeError` error messages in your Node.js library.
 
 ```javascript
-const inspectWithKind = require('inspect-with-kind');
+const inspectWithKind = require("inspect-with-kind");
 
 module.exports = function reverse(v) {
-  if (typeof v !== 'boolean') {
-    throw new TypeError(`Expected a Boolean value, but got ${inspectWithKind(v)}.`);
+  if (typeof v !== "boolean") {
+    throw new TypeError(
+      `Expected a Boolean value, but got ${inspectWithKind(v)}.`
+    );
   }
 
   return !v;
@@ -77,7 +79,7 @@ module.exports = function reverse(v) {
 ```
 
 ```javascript
-const reverse = require('./reverse.js');
+const reverse = require("./reverse.js");
 
 reverse(/true/); // TypeError: Expected a Boolean value, but got /true/ (regexp).
 ```

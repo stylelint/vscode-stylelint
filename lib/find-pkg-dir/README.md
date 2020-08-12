@@ -7,13 +7,13 @@
 Find the root directory of a Node.js project from a given path
 
 ```javascript
-const findPkgDir = require('find-pkg-dir');
+const findPkgDir = require("find-pkg-dir");
 
 // When the /Users/shinnn/foo directory contains a package.json file:
 
-findPkgDir('/Users/shinnn/foo'); //=> '/Users/shinnn/foo'
-findPkgDir('/Users/shinnn/foo/bar'); //=> '/Users/shinnn/foo'
-findPkgDir('/Users/shinnn/foo/bar/baz'); //=> '/Users/shinnn/foo'
+findPkgDir("/Users/shinnn/foo"); //=> '/Users/shinnn/foo'
+findPkgDir("/Users/shinnn/foo/bar"); //=> '/Users/shinnn/foo'
+findPkgDir("/Users/shinnn/foo/bar/baz"); //=> '/Users/shinnn/foo'
 ```
 
 Unlike [the](https://www.npmjs.com/package/pkg-dir) [prior](https://www.npmjs.com/package/find-pkg) [arts](https://www.npmjs.com/package/find-root),
@@ -33,7 +33,7 @@ npm install find-pkg-dir
 ## API
 
 ```javascript
-const findPkgDir = require('find-pkg-dir');
+const findPkgDir = require("find-pkg-dir");
 ```
 
 ### findPkgDir(_path_)
@@ -46,7 +46,7 @@ It finds the first directory containing a [`package.json` file](https://docs.npm
 When it cannot find any `package.json` files finally, returns `null`.
 
 ```javascript
-findPkgDir('path/of/non/nodejs/project'); //=> null
+findPkgDir("path/of/non/nodejs/project"); //=> null
 ```
 
 ### Benchmark

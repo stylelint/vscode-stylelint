@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41B Report a bug"
-about: 'Is something not working as you expect?'
+about: "Is something not working as you expect?"
 ---
 
 <!-- Please answer the following. We close issues that don't. -->
