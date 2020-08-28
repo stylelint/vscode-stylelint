@@ -5,7 +5,7 @@
 !node_modules/**/*
 !package.json
 !README.md
-!server.js
 !LICENSE.txt
-!lib/**/*
+!server/lib/**/*
+!server/server.js
 !snippets/**/*

@@ -14,14 +14,14 @@
 		"resolveJsonModule": true,
 		"typeRoots": ["./types", "./node_modules/@types"]
 	},
-	"include": ["server.js", "index.js", "lib"],
+	"include": ["server/server.js", "index.js", "server/lib"],
 	"exclude": [
-		"lib/array-to-error/test.js",
-		"lib/array-to-sentence/test.js",
-		"lib/find-pkg-dir/benchmark",
-		"lib/find-pkg-dir/test.js",
-		"lib/inspect-with-kind/test.js",
-		"lib/stylelint-vscode/test/test.js",
-		"lib/stylelint-warning-to-vscode-diagnostic/test.js"
+		"server/lib/array-to-error/test.js",
+		"server/lib/array-to-sentence/test.js",
+		"server/lib/find-pkg-dir/benchmark",
+		"server/lib/find-pkg-dir/test.js",
+		"server/lib/inspect-with-kind/test.js",
+		"server/lib/stylelint-vscode/test/test.js",
+		"server/lib/stylelint-warning-to-vscode-diagnostic/test.js"
 	]
 }

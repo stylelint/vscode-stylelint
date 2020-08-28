@@ -1,3 +1,3 @@
 node_modules
-/lib/find-pkg-dir
-/lib/inspect-with-kind
+/server/lib/find-pkg-dir
+/server/lib/inspect-with-kind
