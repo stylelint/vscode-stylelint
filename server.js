@@ -49,6 +49,8 @@ const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 
 /** @type {StylelintConfiguration} */
 let config;
+/** @type {string} */
+let configFile;
 /** @type {StylelintConfiguration} */
 let configOverrides;
 /** @type {string} */
@@ -96,9 +98,16 @@ const invalidScopeDisableReports = new Map();
  */
 async function buildStylelintOptions(document, baseOptions = {}) {
 	const options = { ...baseOptions };
+	const workspaceFolder = await getWorkspaceFolder(document);
 
 	if (config) {
 		options.config = config;
+	}
+
+	if (configFile) {
+		options.configFile = workspaceFolder
+			? configFile.replace(/\$\{workspaceFolder\}/gu, workspaceFolder)
+			: configFile;
 	}
 
 	if (configOverrides) {
@@ -122,9 +131,6 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 		options.syntax = syntax;
 	}
 
-	const workspaceFolder = await getWorkspaceFolder(document);
-	const documentPath = parseUri(document.uri).fsPath;
-
 	if (customSyntax) {
 		options.customSyntax = workspaceFolder
 			? customSyntax.replace(/\$\{workspaceFolder\}/gu, workspaceFolder)
@@ -138,6 +144,8 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 			options.configBasedir = join(workspaceFolder || '', configBasedir);
 		}
 	}
+
+	const documentPath = parseUri(document.uri).fsPath;
 
 	if (documentPath) {
 		if (workspaceFolder && pathIsInside(documentPath, workspaceFolder)) {
@@ -322,6 +330,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
+	configFile = settings.stylelint.configFile;
 	configBasedir = settings.stylelint.configBasedir;
 	syntax = settings.stylelint.syntax || undefined;
 	customSyntax = settings.stylelint.customSyntax;
