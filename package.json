@@ -238,7 +238,7 @@
     "test": "node test/runTest.js",
     "test:inspect-with-kind": "nyc node lib/inspect-with-kind/test.js",
     "test:find-pkg-dir": "nyc node lib/find-pkg-dir/test.js",
-    "test:array-to-sentence": "nyc node --throw-deprecation --track-heap-objects lib/array-to-sentence/test.js",
+    "test:array-to-sentence": "nyc node lib/array-to-sentence/test.js",
     "test:array-to-error": "nyc node lib/array-to-error/test.js",
     "test:stylelint-warning-to-vscode-diagnostic": "nyc node lib/stylelint-warning-to-vscode-diagnostic/test.js",
     "test:stylelint-vscode": "nyc node lib/stylelint-vscode/test/test.js",
