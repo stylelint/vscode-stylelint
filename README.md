@@ -87,7 +87,6 @@ Default: `""`
 
 Set stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want stylelint to search for a configuration file.
 
-
 #### stylelint.configBasedir
 
 Type: `string`  
