@@ -80,6 +80,13 @@ Default: `null`
 
 Set stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
 
+#### stylelint.configFile
+
+Type: `string`  
+Default: `""`
+
+Set stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want stylelint to search for a configuration file.
+
 #### stylelint.configBasedir
 
 Type: `string`  
