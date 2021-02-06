@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Head
 
-- Add "stylelint.configFile" option (#168)
+- Add "stylelint.configFile" option ([#168](https://github.com/stylelint/vscode-stylelint/pull/168))
 
 ### [0.85.0](https://github.com/stylelint/vscode-stylelint/compare/v0.84.0...v0.85.0) (2020-08-12)
 
