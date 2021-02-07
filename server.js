@@ -3,9 +3,9 @@
 const { join, parse, isAbsolute } = require('path');
 
 const diff = require('fast-diff');
-const findPkgDir = require('./lib/find-pkg-dir');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
+const pkgDir = require('pkg-dir').sync;
 const stylelintVSCode = require('./lib/stylelint-vscode');
 const {
 	createConnection,
@@ -38,7 +38,7 @@ const { TextDocument } = require('vscode-languageserver-textdocument');
  * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
  * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
  * @typedef { import('./lib/stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
- * @typedef { import('./lib/array-to-error').HasReasonsError } HasReasonsError
+ * @typedef { Error & { reasons: string[] } } InvalidOptionError
  */
 
 const CommandIds = {
@@ -154,7 +154,7 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 
 		if (options.ignorePath === undefined) {
 			options.ignorePath = join(
-				findPkgDir(documentPath) || parse(documentPath).root,
+				pkgDir(documentPath) || parse(documentPath).root,
 				'.stylelintignore',
 			);
 		}
@@ -185,7 +185,7 @@ async function buildStylelintVSCodeOptions(document) {
 }
 
 /**
- * @param {HasReasonsError & {code?: number}} err
+ * @param {InvalidOptionError & {code?: number}} err
  * @returns {void}
  */
 function handleError(err) {

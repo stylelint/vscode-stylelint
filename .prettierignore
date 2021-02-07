@@ -1,7 +1,6 @@
 node_modules
 .coverage
 .nyc_output
-/lib/find-pkg-dir/benchmark
 /.vscode-test/**
 /test/**/*.css
 /package.json
