@@ -38,7 +38,7 @@ const { TextDocument } = require('vscode-languageserver-textdocument');
  * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
  * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
  * @typedef { import('./lib/stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
- * @typedef { import('./lib/array-to-error').HasReasonsError } HasReasonsError
+ * @typedef { Error & { reasons: string[] } } InvalidOptionError
  */
 
 const CommandIds = {
@@ -185,7 +185,7 @@ async function buildStylelintVSCodeOptions(document) {
 }
 
 /**
- * @param {HasReasonsError & {code?: number}} err
+ * @param {InvalidOptionError & {code?: number}} err
  * @returns {void}
  */
 function handleError(err) {

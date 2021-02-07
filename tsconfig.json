@@ -16,9 +16,6 @@
 	},
 	"include": ["server.js", "index.js", "lib"],
 	"exclude": [
-		"lib/array-to-error/test.js",
-		"lib/array-to-sentence/test.js",
-		"lib/inspect-with-kind/test.js",
 		"lib/stylelint-vscode/test/test.js",
 		"lib/stylelint-warning-to-vscode-diagnostic/test.js"
 	]

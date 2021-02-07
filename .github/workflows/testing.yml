@@ -51,8 +51,5 @@ jobs:
         run: npm install --global npm@latest
       - name: Install dependencies
         run: npm ci
-      # - run: npm run test:inspect-with-kind Results will vary depending on your environment.
-      - run: npm run test:array-to-sentence
-      - run: npm run test:array-to-error
       - run: npm run test:stylelint-warning-to-vscode-diagnostic
       - run: npm run test:stylelint-vscode
