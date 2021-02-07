@@ -3,9 +3,9 @@
 const { join, parse, isAbsolute } = require('path');
 
 const diff = require('fast-diff');
-const findPkgDir = require('./lib/find-pkg-dir');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
+const pkgDir = require('pkg-dir').sync;
 const stylelintVSCode = require('./lib/stylelint-vscode');
 const {
 	createConnection,
@@ -154,7 +154,7 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 
 		if (options.ignorePath === undefined) {
 			options.ignorePath = join(
-				findPkgDir(documentPath) || parse(documentPath).root,
+				pkgDir(documentPath) || parse(documentPath).root,
 				'.stylelintignore',
 			);
 		}
