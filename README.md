@@ -1,6 +1,7 @@
 # vscode-stylelint
 
-[![Build Status](https://travis-ci.com/stylelint/vscode-stylelint.svg?branch=master)](https://travis-ci.com/stylelint/vscode-stylelint)
+![Testing](https://github.com/stylelint/vscode-stylelint/workflows/Testing/badge.svg)
+![Linting](https://github.com/stylelint/vscode-stylelint/workflows/Linting/badge.svg)
 
 A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](https://sass-lang.com/documentation/syntax)/[Less](http://lesscss.org/) with [stylelint](https://stylelint.io/)
 
