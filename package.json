@@ -198,7 +198,7 @@
   },
   "dependencies": {
     "fast-diff": "^1.2.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "path-is-inside": "^1.0.2",
     "pkg-dir": "^5.0.0",
     "stylelint": "^13.6.0",
