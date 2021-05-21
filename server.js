@@ -245,10 +245,36 @@ async function validate(document) {
 
 /**
  * @param {TextDocument} document
+ * @param {import('vscode-languageserver').FormattingOptions?} formattingOptions Formatting options to use.
+ * Overriden by stylelint configuration.
  * @returns {Promise<TextEdit[]>}
  */
-async function getFixes(document) {
-	const options = await buildStylelintOptions(document, { fix: true });
+async function getFixes(document, formattingOptions = null) {
+	/** @type {Partial<import('stylelint').LinterOptions>} */
+	const baseOptions = { fix: true };
+
+	// If formatting options were provided, translate them to their corresponding rules.
+	// NOTE: There is no equivalent rule for trimFinalNewlines, so it is not respected.
+	if (formattingOptions) {
+		const { insertSpaces, tabSize, insertFinalNewline, trimTrailingWhitespace } = formattingOptions;
+
+		/** @type {Record<string, any>} */
+		const rules = {
+			indentation: [insertSpaces ? tabSize : 'tab'],
+		};
+
+		if (insertFinalNewline !== undefined) {
+			rules['no-missing-end-of-source-newline'] = insertFinalNewline;
+		}
+
+		if (trimTrailingWhitespace !== undefined) {
+			rules['no-eol-whitespace'] = trimTrailingWhitespace;
+		}
+
+		baseOptions.config = { rules };
+	}
+
+	const options = await buildStylelintOptions(document, baseOptions);
 
 	try {
 		const result = await stylelintVSCode(
@@ -319,6 +345,7 @@ connection.onInitialize(() => {
 			executeCommandProvider: {
 				commands: [CommandIds.applyAutoFix],
 			},
+			documentFormattingProvider: true,
 			codeActionProvider: { codeActionKinds: [CodeActionKind.QuickFix, StylelintSourceFixAll] },
 			completionProvider: {},
 		},
@@ -348,6 +375,16 @@ connection.onDidChangeConfiguration(({ settings }) => {
 		.all()
 		.filter((document) => removeLanguages.includes(document.languageId))) {
 		clearDiagnostics(document);
+	}
+
+	if (removeLanguages.length > 0) {
+		connection.sendNotification('stylelint/languageIdsRemoved', removeLanguages);
+	}
+
+	const addLanguages = validateLanguages.filter((lang) => !oldValidateLanguages.includes(lang));
+
+	if (addLanguages.length > 0) {
+		connection.sendNotification('stylelint/languageIdsAdded', addLanguages);
 	}
 
 	validateAll();
@@ -399,6 +436,22 @@ connection.onExecuteCommand(async (params) => {
 	}
 
 	return {};
+});
+connection.onDocumentFormatting((params) => {
+	if (!params.textDocument) {
+		return null;
+	}
+
+	/** @type { { uri: string } } */
+	const identifier = params.textDocument;
+	const uri = identifier.uri;
+	const document = documents.get(uri);
+
+	if (!document || !isValidateOn(document)) {
+		return null;
+	}
+
+	return getFixes(document, params.options);
 });
 connection.onCodeAction(async (params) => {
 	const only = params.context.only !== undefined ? params.context.only[0] : undefined;
