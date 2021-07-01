@@ -224,7 +224,7 @@
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "tape": "^4.13.2",
-    "typescript": "^3.9.2",
+    "typescript": "^4.3.5",
     "vscode-test": "^1.5.0",
     "zen-observable": "^0.8.15"
   },
