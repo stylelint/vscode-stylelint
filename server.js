@@ -1,11 +1,10 @@
 'use strict';
 
-const { join, parse, isAbsolute } = require('path');
+const { join, isAbsolute } = require('path');
 
 const diff = require('fast-diff');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
-const pkgDir = require('pkg-dir').sync;
 const stylelintVSCode = require('./lib/stylelint-vscode');
 const {
 	createConnection,
@@ -51,6 +50,8 @@ const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 let config;
 /** @type {string} */
 let configFile;
+/** @type {string} */
+let ignorePath;
 /** @type {StylelintConfiguration} */
 let configOverrides;
 /** @type {string} */
@@ -110,6 +111,12 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 			: configFile;
 	}
 
+	if (ignorePath) {
+		options.ignorePath = workspaceFolder
+			? ignorePath.replace(/\$\{workspaceFolder\}/gu, workspaceFolder)
+			: ignorePath;
+	}
+
 	if (configOverrides) {
 		options.configOverrides = configOverrides;
 	}
@@ -142,21 +149,6 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 			options.configBasedir = configBasedir;
 		} else {
 			options.configBasedir = join(workspaceFolder || '', configBasedir);
-		}
-	}
-
-	const documentPath = parseUri(document.uri).fsPath;
-
-	if (documentPath) {
-		if (workspaceFolder && pathIsInside(documentPath, workspaceFolder)) {
-			options.ignorePath = join(workspaceFolder, '.stylelintignore');
-		}
-
-		if (options.ignorePath === undefined) {
-			options.ignorePath = join(
-				pkgDir(documentPath) || parse(documentPath).root,
-				'.stylelintignore',
-			);
 		}
 	}
 
@@ -331,6 +323,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	config = settings.stylelint.config;
 	configOverrides = settings.stylelint.configOverrides;
 	configFile = settings.stylelint.configFile;
+	ignorePath = settings.stylelint.ignorePath;
 	configBasedir = settings.stylelint.configBasedir;
 	syntax = settings.stylelint.syntax || undefined;
 	customSyntax = settings.stylelint.customSyntax;

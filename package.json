@@ -62,6 +62,11 @@
           "default": "",
           "description": "Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want stylelint to search for a configuration file."
         },
+        "stylelint.ignorePath": {
+          "type": "string",
+          "default": "",
+          "description": "A path to a file containing patterns describing files to ignore. By default, stylelint looks for `.stylelintignore` from your workspace root path."
+        },
         "stylelint.configOverrides": {
           "type": [
             "object",
