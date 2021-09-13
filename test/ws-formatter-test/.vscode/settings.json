@@ -1,0 +1,5 @@
+{
+	"[css]": {
+		"editor.defaultFormatter": "stylelint.vscode-stylelint"
+	}
+}
