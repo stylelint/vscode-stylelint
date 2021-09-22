@@ -13,23 +13,31 @@ env:
 
 jobs:
   lint:
-    name: Lint on Node.js ${{ matrix.node }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node: [14]
-        os: [ubuntu-latest]
+    name: Lint
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node }}
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
         uses: actions/setup-node@v2
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache npm cache
+        uses: actions/cache@v2
+        id: npm-cache
         with:
-          node-version: ${{ matrix.node }}
-      - name: Install latest npm
-        run: npm install --global npm@latest
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm ci
+
       - name: Lint
         run: npm run lint
-      - name: Lint formatting
-        run: npm run lint:formatting

@@ -14,9 +14,5 @@
 		"resolveJsonModule": true,
 		"typeRoots": ["./types", "./node_modules/@types"]
 	},
-	"include": ["server.js", "index.js", "lib"],
-	"exclude": [
-		"lib/stylelint-vscode/test/test.js",
-		"lib/stylelint-warning-to-vscode-diagnostic/test.js"
-	]
+	"include": ["server.js", "index.js", "lib"]
 }

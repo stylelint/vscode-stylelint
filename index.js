@@ -50,51 +50,57 @@ exports.activate = ({ subscriptions }) => {
 		 */
 		const registeredFormatters = new Map();
 
-		client.onNotification('stylelint/languageIdsAdded', (/** @type {string[]} */ langIds) => {
-			for (const langId of langIds) {
-				// Avoid registering another formatter if we already registered one for the same language ID.
-				if (registeredFormatters.has(langId)) {
-					return;
+		client.onNotification(
+			'stylelint/languageIdsAdded',
+			(/** @type {{langIds: string[]}} */ { langIds }) => {
+				for (const langId of langIds) {
+					// Avoid registering another formatter if we already registered one for the same language ID.
+					if (registeredFormatters.has(langId)) {
+						return;
+					}
+
+					const formatter = Languages.registerDocumentFormattingEditProvider(langId, {
+						provideDocumentFormattingEdits(textDocument, options) {
+							const params = {
+								textDocument: TextDocumentIdentifier.create(textDocument.uri.toString()),
+								options, // Editor formatting options, overriden by stylelint config.
+							};
+
+							// Request that the language server formats the document.
+							return client
+								.sendRequest(DocumentFormattingRequest.type, params)
+								.then(undefined, () => {
+									Window.showErrorMessage(
+										'Failed to format the document using stylelint. Please consider opening an issue with steps to reproduce.',
+									);
+
+									return null;
+								});
+						},
+					});
+
+					// Keep track of the new formatter.
+					registeredFormatters.set(langId, formatter);
 				}
+			},
+		);
 
-				const formatter = Languages.registerDocumentFormattingEditProvider(langId, {
-					provideDocumentFormattingEdits(textDocument, options) {
-						const params = {
-							textDocument: TextDocumentIdentifier.create(textDocument.uri.toString()),
-							options, // Editor formatting options, overriden by stylelint config.
-						};
+		client.onNotification(
+			'stylelint/languageIdsRemoved',
+			(/** @type {{langIds: string[]}} */ { langIds }) => {
+				for (const langId of langIds) {
+					const formatter = registeredFormatters.get(langId);
 
-						// Request that the language server formats the document.
-						return client
-							.sendRequest(DocumentFormattingRequest.type, params)
-							.then(undefined, () => {
-								Window.showErrorMessage(
-									'Failed to format the document using stylelint. Please consider opening an issue with steps to reproduce.',
-								);
+					if (!formatter) {
+						return;
+					}
 
-								return null;
-							});
-					},
-				});
-
-				// Keep track of the new formatter.
-				registeredFormatters.set(langId, formatter);
-			}
-		});
-
-		client.onNotification('stylelint/languageIdsRemoved', (/** @type {string[]} */ langIds) => {
-			for (const langId of langIds) {
-				const formatter = registeredFormatters.get(langId);
-
-				if (!formatter) {
-					return;
+					// Unregisters formatter.
+					formatter.dispose();
+					registeredFormatters.delete(langId);
 				}
-
-				// Unregisters formatter.
-				formatter.dispose();
-				registeredFormatters.delete(langId);
-			}
-		});
+			},
+		);
 
 		// Make sure that formatters are disposed when extension is unloaded.
 		subscriptions.push({

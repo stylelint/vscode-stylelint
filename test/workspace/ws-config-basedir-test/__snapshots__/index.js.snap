@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vscode-stylelint with "stylelint.configBasedir" should work even if "stylelint.configBasedir" is defined 1`] = `
+Array [
+  Object {
+    "code": Object {
+      "target": Object {
+        "authority": "stylelint.io",
+        "path": "/user-guide/rules/color-hex-case",
+        "scheme": "https",
+      },
+      "value": "color-hex-case",
+    },
+    "message": "Expected \\"#fff\\" to be \\"#FFF\\" (color-hex-case)",
+    "range": Object {
+      "end": Object {
+        "character": 9,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 9,
+        "line": 2,
+      },
+    },
+    "severity": 0,
+    "source": "stylelint",
+  },
+  Object {
+    "code": Object {
+      "target": Object {
+        "authority": "stylelint.io",
+        "path": "/user-guide/rules/indentation",
+        "scheme": "https",
+      },
+      "value": "indentation",
+    },
+    "message": "Expected indentation of 8 spaces (indentation)",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 2,
+      },
+    },
+    "severity": 0,
+    "source": "stylelint",
+  },
+]
+`;

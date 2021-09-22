@@ -1,0 +1,8 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vscode-stylelint should format document using formatting options 1`] = `
+"a {
+	color: red;
+}
+"
+`;

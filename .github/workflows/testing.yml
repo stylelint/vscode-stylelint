@@ -12,44 +12,61 @@ env:
   CI: true
 
 jobs:
-  test-vscode:
-    name: VSCode Test on Node.js ${{ matrix.node }} and ${{ matrix.os }}
+  test:
+    name: Test on Node.js ${{ matrix.node-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        node: [14]
-        os: [windows-latest, macos-latest]
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-      - name: Install latest npm
-        run: npm install --global npm@latest
-      - name: Install dependencies
-        run: npm ci
-      - name: Test
-        run: npm run test
-
-  test-libs:
-    name: Test on Node.js ${{ matrix.node }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        node: [12, 14]
+        node-version: [14]
         os: [ubuntu-latest, windows-latest, macos-latest]
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js ${{ matrix.node }}
+
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
+
+      - name: Get npm cache directory
+        id: npm-cache-dir
+        run: |
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Cache npm cache
+        uses: actions/cache@v2
+        id: npm-cache
+        with:
+          path: ${{ steps.npm-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install latest npm
         run: npm install --global npm@latest
+
       - name: Install dependencies
         run: npm ci
-      - run: npm run test:stylelint-warning-to-vscode-diagnostic
-      - run: npm run test:stylelint-vscode
+
+      - name: Cache VS Code binaries
+        uses: actions/cache@v2
+        id: vscode-cache
+        with:
+          path: .vscode-test
+          key: ${{ runner.os }}-vscode-${{ hashFiles('jest-runner-vscode.config.js') }}
+          restore-keys: |
+            ${{ runner.os }}-vscode-
+
+      - name: Download VS Code
+        run: npm run ci:download-vscode
+
+      - name: Run lib tests
+        run: npm run test:lib -- --coverage
+
+      - name: Run VS Code tests (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:workspace -- --silent
+
+      - name: Run VS Code tests (non-Linux)
+        if: runner.os != 'Linux'
+        run: npm run test:workspace -- --silent
