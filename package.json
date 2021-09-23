@@ -236,7 +236,7 @@
     "format": "prettier . --write",
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
-    "lint:js": "eslint --config .eslintrc.js --report-unused-disable-directives .",
+    "lint:js": "eslint --report-unused-disable-directives .",
     "lint:types": "tsc",
     "test": "jest",
     "test:lib": "jest --projects test/lib",
