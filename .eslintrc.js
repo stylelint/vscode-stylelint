@@ -1,29 +1,19 @@
 'use strict';
 
-module.exports = {
-	extends: ['stylelint', 'prettier'],
+/** @type {import('eslint').Linter.Config} */
+const config = {
+	extends: ['stylelint', 'plugin:node/recommended', 'prettier'],
 	parserOptions: {
 		ecmaVersion: 2020,
+		sourceType: 'script',
+	},
+	env: {
+		node: true,
+		es2020: true,
 	},
 	rules: {
-		'node/no-missing-require': [
-			'error',
-			{
-				allowModules: ['vscode'],
-			},
-		],
-		'node/no-unpublished-require': [
-			'error',
-			{
-				allowModules: ['p-wait-for'],
-			},
-		],
-		'node/no-unsupported-features/node-builtins': [
-			'error',
-			{
-				version: '>=14.16.0',
-				ignores: [],
-			},
-		],
+		'node/no-missing-require': ['error', { allowModules: ['vscode'] }],
 	},
 };
+
+module.exports = config;

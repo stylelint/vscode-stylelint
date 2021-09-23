@@ -379,7 +379,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 
 	for (const document of documents
 		.all()
-		.filter((document) => removeLanguages.includes(document.languageId))) {
+		.filter((doc) => removeLanguages.includes(doc.languageId))) {
 		clearDiagnostics(document);
 	}
 
@@ -579,9 +579,7 @@ async function getWorkspaceFolder(document) {
  * @returns {TextEdit[]}
  */
 function replaceEdits(document, newText) {
-	const text = document.getText();
-
-	const results = diff(text, newText);
+	const results = diff(document.getText(), newText);
 
 	const edits = [];
 	let offset = 0;
@@ -771,7 +769,7 @@ function getStyleLintDisableKind(document, position) {
 	const before = line.slice(0, position.character);
 	const after = line.slice(position.character);
 
-	const disableKindResult = /\/\*\s*(stylelint-disable(?:(?:-next)?-line)?)\s+[a-z\-/\s,]*$/i.exec(
+	const disableKindResult = /\/\*\s*(stylelint-disable(?:(?:-next)?-line)?)\s[a-z\-/\s,]*$/i.exec(
 		before,
 	);
 
