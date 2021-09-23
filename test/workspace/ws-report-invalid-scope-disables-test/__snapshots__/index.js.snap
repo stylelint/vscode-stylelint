@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vscode-stylelint with "stylelint.reportInvalidScopeDisables" should work if "stylelint.reportInvalidScopeDisables" is enabled 1`] = `
+Array [
+  Object {
+    "code": "foo",
+    "message": "unused rule: foo, start line: 2, end line: 2",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 1,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 1,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "foo",
+    "message": "unused rule: foo, start line: 3, end line: 3",
+    "range": Object {
+      "end": Object {
+        "character": 32,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "foo",
+    "message": "unused rule: foo, start line: 5, end line: 6",
+    "range": Object {
+      "end": Object {
+        "character": 26,
+        "line": 5,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 4,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;

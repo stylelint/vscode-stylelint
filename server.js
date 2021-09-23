@@ -378,13 +378,13 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	}
 
 	if (removeLanguages.length > 0) {
-		connection.sendNotification('stylelint/languageIdsRemoved', removeLanguages);
+		connection.sendNotification('stylelint/languageIdsRemoved', { langIds: removeLanguages });
 	}
 
 	const addLanguages = validateLanguages.filter((lang) => !oldValidateLanguages.includes(lang));
 
 	if (addLanguages.length > 0) {
-		connection.sendNotification('stylelint/languageIdsAdded', addLanguages);
+		connection.sendNotification('stylelint/languageIdsAdded', { langIds: addLanguages });
 	}
 
 	validateAll();

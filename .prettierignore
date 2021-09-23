@@ -1,5 +1,6 @@
 node_modules
 .coverage
+coverage
 .nyc_output
 /.vscode-test/**
 /test/**/*.css

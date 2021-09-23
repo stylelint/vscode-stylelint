@@ -12,8 +12,8 @@
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.43.0",
-    "node": ">=10.2.0"
+    "vscode": ">=1.56.0",
+    "node": ">=14.16.0"
   },
   "galleryBanner": {
     "color": "#000000",
@@ -210,34 +210,37 @@
   },
   "devDependencies": {
     "@stylelint/prettier-config": "^2.0.0",
+    "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.151",
     "@types/path-is-inside": "^1.0.0",
     "@types/stylelint": "^9.10.1",
-    "@types/tape": "^4.13.0",
     "@types/vscode": "1.43.0",
-    "eslint": "^7.25.0",
+    "@vscode/test-electron": "^1.6.2",
+    "eslint": "^7.5.0",
     "eslint-config-stylelint": "^12.0.0",
+    "fast-glob": "^3.2.7",
+    "fs-extra": "^10.0.0",
+    "jest": "^27.2.1",
+    "jest-runner-vscode": "^2.0.0",
     "npm-run-all": "^4.1.5",
-    "nyc": "^15.0.1",
     "p-wait-for": "^3.1.0",
+    "postcss-sass": "^0.5.0",
     "prettier": "^2.3.0",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
-    "tape": "^4.13.2",
     "typescript": "^3.9.2",
-    "vscode-test": "^1.5.0",
     "zen-observable": "^0.8.15"
   },
   "scripts": {
+    "ci:download-vscode": "node ci-download-vscode.js",
     "format": "prettier . --write",
+    "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
-    "lint": "npm run lint:js && npm run lint:types",
     "lint:js": "eslint --report-unused-disable-directives .",
     "lint:types": "tsc",
-    "pretest": "npm run lint && npm run lint:formatting",
-    "test": "node test/runTest.js",
-    "test:stylelint-warning-to-vscode-diagnostic": "nyc node lib/stylelint-warning-to-vscode-diagnostic/test.js",
-    "test:stylelint-vscode": "nyc node lib/stylelint-vscode/test/test.js"
+    "test": "jest",
+    "test:lib": "jest --projects test/lib",
+    "test:workspace": "jest --projects test/workspace"
   },
   "prettier": "@stylelint/prettier-config"
 }
