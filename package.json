@@ -201,7 +201,7 @@
     "lodash": "^4.17.20",
     "path-is-inside": "^1.0.2",
     "pkg-dir": "^5.0.0",
-    "stylelint": "^13.6.0",
+    "stylelint": "^13.13.1",
     "vscode-languageclient": "^6.2.0-next.1",
     "vscode-languageserver": "^6.2.0-next.1",
     "vscode-languageserver-textdocument": "^1.0.1",
