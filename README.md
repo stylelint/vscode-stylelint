@@ -7,13 +7,11 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension to l
 
 ![screenshot](screenshot.png)
 
-The extension uses the stylelint library installed in the opened workspace folder. If the workspace folder does not provide the stylelint, the extension looks for a global installed stylelint.
-
-If not in the globally installed stylelint, the extension uses the stylelint embedded in the extension. (However, using stylelint embedded in the extension is not recommended.)
+The extension first looks for a copy of stylelint installed in the open workspace folder, then for a globally installed version if it can't find one. If it can't find either, the extension uses the version of stylelint bundled with the extension (not recommended).
 
 ## Installation
 
-1. Execute `Extensions: Install Extensions` command from [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
+1. Execute the `Extensions: Install Extensions` command from the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette).
 2. Type `@id:stylelint.vscode-stylelint` into the search form and install the topmost one.
 
 Read the [extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery) for more details.
@@ -22,7 +20,7 @@ Read the [extension installation guide](https://code.visualstudio.com/docs/edito
 
 <img align="right" width="430" alt="duplicate messages from both the built-in linter and vscode-stylelint" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/master/media/duplicate.png">
 
-To prevent both [the editor built-in linters](https://code.visualstudio.com/docs/languages/css#_syntax-verification-linting) `[css]` `[less]` `[scss]` and this extension `[stylelint]` from reporting essentially the same errors like in the screenshot, disable the built-in ones in User or Workspace [setting](https://code.visualstudio.com/docs/getstarted/settings):
+To prevent both [VS Code's built-in linters](https://code.visualstudio.com/docs/languages/css#_syntax-verification-linting) `[css]` `[less]` `[scss]` and this extension `[stylelint]` from reporting the same errors as seen in the screenshot, disable the built-in linters in either the [user or workspace settings](https://code.visualstudio.com/docs/getstarted/settings):
 
 ```json
 "css.validate": false,
@@ -59,7 +57,7 @@ Once a user follows [the stylelint startup guide](https://stylelint.io/user-guid
 
 ### Extension settings
 
-Though it's highly recommended to add a [stylelint configuration file](https://stylelint.io/user-guide/configure) to the current workspace folder instead, the following extension [settings](https://code.visualstudio.com/docs/getstarted/settings) are also available.
+Though relying on a [stylelint configuration file](https://stylelint.io/user-guide/configure) in your project is highly recommended, you can instead use the following extension [settings](https://code.visualstudio.com/docs/getstarted/settings):
 
 #### stylelint.enable
 
@@ -175,7 +173,7 @@ An array of language identifiers specifying which files to enable snippets for.
 
 #### editor.codeActionsOnSave
 
-This extension provides an action that can be used with VS Code's `editor.codeActionsOnSave` setting. If provided a `source.fixAll.stylelint` property set to `true`, all auto-fixable stylelint errors will be fixed on save.
+This extension provides an action that you can use with VS Code's `editor.codeActionsOnSave` setting. If provided a `source.fixAll.stylelint` property set to `true`, all auto-fixable stylelint errors will be fixed on save.
 
 ```json
   "editor.codeActionsOnSave": {
@@ -212,6 +210,6 @@ You can also selectively enable and disable specific languages using VS Code's l
 
 ### Commands
 
-This extension contributes the following commands to the Command palette.
+This extension contributes the following commands to the command palette:
 
 - `Fix all auto-fixable problems`: applies stylelint resolutions to all automatically fixable problems.
