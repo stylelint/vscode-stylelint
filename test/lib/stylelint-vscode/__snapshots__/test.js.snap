@@ -390,6 +390,7 @@ Object {
       },
       "range": Object {
         "end": 3,
+        "rule": "foo",
         "start": 3,
         "unusedRule": "foo",
       },
@@ -413,6 +414,7 @@ Object {
       },
       "range": Object {
         "end": 4,
+        "rule": "foo",
         "start": 4,
         "unusedRule": "foo",
       },
@@ -436,6 +438,7 @@ Object {
       },
       "range": Object {
         "end": 7,
+        "rule": "foo",
         "start": 6,
         "unusedRule": "foo",
       },
@@ -551,6 +554,7 @@ Object {
       },
       "range": Object {
         "end": 4,
+        "rule": "indentation",
         "start": 4,
         "unusedRule": "indentation",
       },
@@ -574,6 +578,7 @@ Object {
       },
       "range": Object {
         "end": 11,
+        "rule": "indentation",
         "start": 7,
         "unusedRule": "indentation",
       },
@@ -597,6 +602,7 @@ Object {
       },
       "range": Object {
         "end": 14,
+        "rule": "indentation",
         "start": 14,
         "unusedRule": "indentation",
       },
@@ -620,6 +626,7 @@ Object {
       },
       "range": Object {
         "end": undefined,
+        "rule": "indentation",
         "start": 17,
         "unusedRule": "indentation",
       },

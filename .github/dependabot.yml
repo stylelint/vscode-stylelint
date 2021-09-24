@@ -8,3 +8,6 @@ updates:
     versioning-strategy: increase
     labels:
       - 'pr: dependencies'
+    ignore:
+      - dependency-name: p-wait-for
+        update-types: [version-update:semver-major]

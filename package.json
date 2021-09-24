@@ -206,7 +206,7 @@
     "vscode-languageserver": "^6.2.0-next.1",
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-languageserver-types": "^3.16.0-next.1",
-    "vscode-uri": "^2.1.1"
+    "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
     "@stylelint/prettier-config": "^2.0.0",
@@ -214,10 +214,10 @@
     "@types/lodash": "^4.14.151",
     "@types/path-is-inside": "^1.0.0",
     "@types/stylelint": "^9.10.1",
-    "@types/vscode": "1.43.0",
+    "@types/vscode": "1.56.0",
     "@vscode/test-electron": "^1.6.2",
     "eslint": "^7.5.0",
-    "eslint-config-stylelint": "^12.0.0",
+    "eslint-config-stylelint": "^14.0.0",
     "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
     "jest": "^27.2.1",
@@ -228,7 +228,7 @@
     "prettier": "^2.3.0",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
-    "typescript": "^3.9.2",
+    "typescript": "^4.4.3",
     "zen-observable": "^0.8.15"
   },
   "scripts": {

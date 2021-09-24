@@ -31,7 +31,6 @@ const { TextDocument } = require('vscode-languageserver-textdocument');
  * @typedef { import('vscode-languageserver').Diagnostic } Diagnostic
  * @typedef { import('vscode-languageserver').CompletionItem } CompletionItem
  * @typedef { import('vscode-languageserver').CompletionParams } CompletionParams
- * @typedef { import('vscode-languageserver-textdocument').TextDocument } TextDocument
  * @typedef { import('./lib/stylelint-vscode').DisableReportRange } DisableReportRange
  * @typedef { import('stylelint').Configuration } StylelintConfiguration
  * @typedef { import('stylelint').LinterOptions } BaseStylelintLinterOptions
@@ -39,6 +38,7 @@ const { TextDocument } = require('vscode-languageserver-textdocument');
  * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
  * @typedef { import('./lib/stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
  * @typedef { Error & { reasons: string[] } } InvalidOptionError
+ * @typedef { Error & { code: 78 } } ConfigurationError
  */
 
 const CommandIds = {
@@ -185,12 +185,18 @@ async function buildStylelintVSCodeOptions(document) {
 }
 
 /**
- * @param {InvalidOptionError & {code?: number}} err
+ * @param {unknown} err
  * @returns {void}
  */
 function handleError(err) {
-	if (err.reasons) {
-		for (const reason of err.reasons) {
+	if (!(err instanceof Error)) {
+		connection.window.showErrorMessage(String(err).replace(/\n/gu, ' '));
+
+		return;
+	}
+
+	if (/** @type {InvalidOptionError} */ (err)?.reasons) {
+		for (const reason of /** @type {InvalidOptionError} */ (err)?.reasons) {
 			connection.window.showErrorMessage(`stylelint: ${reason}`);
 		}
 
@@ -198,7 +204,7 @@ function handleError(err) {
 	}
 
 	// https://github.com/stylelint/stylelint/blob/10.0.1/lib/utils/configurationError.js#L10
-	if (err.code === 78) {
+	if (/** @type {ConfigurationError} */ (err)?.code === 78) {
 		connection.window.showErrorMessage(`stylelint: ${err.message}`);
 
 		return;
@@ -373,7 +379,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 
 	for (const document of documents
 		.all()
-		.filter((document) => removeLanguages.includes(document.languageId))) {
+		.filter((doc) => removeLanguages.includes(doc.languageId))) {
 		clearDiagnostics(document);
 	}
 
@@ -573,9 +579,7 @@ async function getWorkspaceFolder(document) {
  * @returns {TextEdit[]}
  */
 function replaceEdits(document, newText) {
-	const text = document.getText();
-
-	const results = diff(text, newText);
+	const results = diff(document.getText(), newText);
 
 	const edits = [];
 	let offset = 0;
@@ -765,7 +769,7 @@ function getStyleLintDisableKind(document, position) {
 	const before = line.slice(0, position.character);
 	const after = line.slice(position.character);
 
-	const disableKindResult = /\/\*\s*(stylelint-disable(?:(?:-next)?-line)?)\s+[a-z\-/\s,]*$/i.exec(
+	const disableKindResult = /\/\*\s*(stylelint-disable(?:(?:-next)?-line)?)\s[a-z\-/\s,]*$/i.exec(
 		before,
 	);
 

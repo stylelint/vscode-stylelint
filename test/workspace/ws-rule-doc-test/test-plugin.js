@@ -8,7 +8,7 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
 	expected: 'Bar',
 });
 
-module.exports = stylelint.createPlugin(ruleName, function (primaryOption) {
+module.exports = stylelint.createPlugin(ruleName, (primaryOption) => {
 	return function (postcssRoot, postcssResult) {
 		const validOptions = stylelint.utils.validateOptions(postcssResult, ruleName, {
 			actual: primaryOption,

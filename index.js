@@ -126,7 +126,9 @@ exports.activate = ({ subscriptions }) => {
 			};
 			const params = {
 				command: 'stylelint.applyAutoFix',
-				arguments: [textDocument],
+				// https://github.com/microsoft/TypeScript/issues/43362
+				/* prettier-ignore */
+				'arguments': [textDocument],
 			};
 
 			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
