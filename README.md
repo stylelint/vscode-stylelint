@@ -3,12 +3,13 @@
 ![Testing](https://github.com/stylelint/vscode-stylelint/workflows/Testing/badge.svg)
 ![Linting](https://github.com/stylelint/vscode-stylelint/workflows/Linting/badge.svg)
 
-A [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](https://sass-lang.com/documentation/syntax)/[Less](http://lesscss.org/) with [stylelint](https://stylelint.io/)
+The official [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](https://sass-lang.com/documentation/syntax)/[Less](http://lesscss.org/) with [stylelint](https://stylelint.io/)
 
 ![screenshot](screenshot.png)
 
-The extension uses the stylelint library installed in the opened workspace folder. If the workspace folder does not provide the stylelint, the extension looks for a global installed stylelint.  
-If not in the global installed stylelint, the extension uses the stylelint embedded in the extension. (However, using stylelint embedded in the extension is not recommended.)
+The extension uses the stylelint library installed in the opened workspace folder. If the workspace folder does not provide the stylelint, the extension looks for a global installed stylelint.
+
+If not in the globally installed stylelint, the extension uses the stylelint embedded in the extension. (However, using stylelint embedded in the extension is not recommended.)
 
 ## Installation
 
@@ -17,7 +18,7 @@ If not in the global installed stylelint, the extension uses the stylelint embed
 
 Read the [extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery) for more details.
 
-### Optional (but recommended) setup
+### Recommended setup (optional)
 
 <img align="right" width="430" alt="duplicate messages from both the built-in linter and vscode-stylelint" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/master/media/duplicate.png">
 
@@ -65,49 +66,49 @@ Though it's highly recommended to add a [stylelint configuration file](https://s
 Type: `boolean`  
 Default: `true`
 
-Control whether this extension is enabled or not.
+Controls whether this extension is enabled or not.
 
 #### stylelint.configOverrides
 
 Type: `Object`  
 Default: `null`
 
-Set stylelint [`configOverrides`](https://stylelint.io/user-guide/usage/node-api#configoverrides) option.
+Sets the stylelint [`configOverrides`](https://stylelint.io/user-guide/usage/node-api#configoverrides) option.
 
 #### stylelint.config
 
 Type: `Object`  
 Default: `null`
 
-Set stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
+Sets the stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, stylelint doesn't load configuration files.
 
 #### stylelint.configFile
 
 Type: `string`  
 Default: `""`
 
-Set stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want stylelint to search for a configuration file.
+Sets the stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want stylelint to search for a configuration file.
 
 #### stylelint.configBasedir
 
 Type: `string`  
 Default: `""`
 
-Set stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory that relative paths defining "extends" and "plugins" are relative to. Only necessary if these values are relative paths.
+Sets the stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory to which relative paths defining "extends" and "plugins" are relative. Only necessary if these values are relative paths.
 
 #### stylelint.syntax
 
 Type: `"css" | "css-in-js" | "html" | "less" | "markdown" | "sass" | "scss" | "sugarss"`  
 Default: `""`
 
-Set stylelint [`syntax`](https://stylelint.io/user-guide/usage/options#syntax) option. Specify a syntax. Only use this option if you want to force a specific syntax.
+Sets the stylelint [`syntax`](https://stylelint.io/user-guide/usage/options#syntax) option. Only use this option if you want to force a specific syntax.
 
 #### stylelint.customSyntax
 
 Type: `string`  
 Default: `""`
 
-Set stylelint [`customSyntax`](https://stylelint.io/user-guide/usage/options#customsyntax) option. An absolute path to a custom [PostCSS-compatible](https://github.com/postcss/postcss#syntaxes) syntax module.
+Sets the stylelint [`customSyntax`](https://stylelint.io/user-guide/usage/options#customsyntax) option. An absolute path to a custom [PostCSS-compatible](https://github.com/postcss/postcss#syntaxes) syntax module.
 
 e.g.
 
@@ -115,7 +116,7 @@ e.g.
   "stylelint.customSyntax": "sugarss"
 ```
 
-You can use `${workspaceFolder}` to replace the the path of the folder opened in VS Code.
+You can use `${workspaceFolder}` to refer to the folder opened in VS Code.
 
 e.g.
 
@@ -128,53 +129,53 @@ e.g.
 Type: `boolean`  
 Default: `false`
 
-Set stylelint [`ignoreDisables`](https://stylelint.io/user-guide/usage/options#ignoredisables) option. If `true`, ignore `styleline-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
+Sets the stylelint [`ignoreDisables`](https://stylelint.io/user-guide/usage/options#ignoredisables) option. If `true`, stylelint ignores `styleline-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
 
 #### stylelint.reportNeedlessDisables
 
 Type: `boolean`  
 Default: `false`
 
-Set stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/usage/options#reportneedlessdisables) option. If `true`, also report errors for `stylelint-disable` comments that are not blocking a lint warning.
+Sets the stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/usage/options#reportneedlessdisables) option. If `true`, stylelint reports errors for `stylelint-disable` comments that are not blocking a lint warning.
 
 #### stylelint.reportInvalidScopeDisables
 
 Type: `boolean`  
 Default: `false`
 
-Set stylelint [`reportInvalidScopeDisables`](https://stylelint.io/user-guide/usage/options#reportInvalidScopeDisables) option. If `true`, also report errors for `stylelint-disable` comments that used for rules that don't exist within the configuration object.
+Sets the stylelint [`reportInvalidScopeDisables`](https://stylelint.io/user-guide/usage/options#reportInvalidScopeDisables) option. If `true`, stylelint reports errors for `stylelint-disable` comments referring to rules that don't exist within the configuration object.
 
 #### stylelint.validate
 
 Type: `string[]`  
 Default: `["css","html","javascript","javascriptreact","less","markdown","postcss","sass","scss","source.css.styled","source.markdown.math","styled-css","sugarss","svelte","typescript","typescriptreact","vue","vue-html","vue-postcss","xml","xsl"]`
 
-An array of language identifiers specifying the files to be validated.
+An array of language identifiers specifying which files to validate.
 
 #### stylelint.stylelintPath
 
 Type: `string`  
 Default: `""`
 
-Supply a custom path to the stylelint module.
+Used to supply a custom path to the stylelint module.
 
 #### stylelint.packageManager
 
 Type: `"npm" | "yarn" | "pnpm"`  
 Default: `"npm"`
 
-Controls the package manager to be used to resolve the stylelint library. This has only an influence if the stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
+Controls the package manager to be used to resolve the stylelint library. This setting only has an effect if the stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
 
 #### stylelint.snippet
 
 Type: `string[]`  
 Default: `["css","less","postcss","scss"]`
 
-An array of language identifiers specifying the files to enable snippets.
+An array of language identifiers specifying which files to enable snippets for.
 
 #### editor.codeActionsOnSave
 
-This setting supports the entry `source.fixAll.stylelint`. If set to `true` all auto-fixable stylelint errors will be fixed on save.
+This extension provides an action that can be used with VS Code's `editor.codeActionsOnSave` setting. If provided a `source.fixAll.stylelint` property set to `true`, all auto-fixable stylelint errors will be fixed on save.
 
 ```json
   "editor.codeActionsOnSave": {
@@ -182,7 +183,7 @@ This setting supports the entry `source.fixAll.stylelint`. If set to `true` all 
   }
 ```
 
-The setting below turns on Auto Fix for all providers including stylelint:
+The following turns on auto fix for all providers, not just stylelint:
 
 ```json
   "editor.codeActionsOnSave": {
@@ -190,7 +191,7 @@ The setting below turns on Auto Fix for all providers including stylelint:
   }
 ```
 
-You can also selectively disable stylelint via:
+You can also selectively disable stylelint:
 
 ```json
   "editor.codeActionsOnSave": {
@@ -199,7 +200,7 @@ You can also selectively disable stylelint via:
   }
 ```
 
-You can also selectively enable and disable specific languages using VS Code's language scoped settings. To disable `codeActionsOnSave` for HTML files, use the following setting:
+You can also selectively enable and disable specific languages using VS Code's language-scoped settings. For example, to disable `codeActionsOnSave` for HTML files, use the following:
 
 ```json
   "[html]": {
@@ -213,4 +214,4 @@ You can also selectively enable and disable specific languages using VS Code's l
 
 This extension contributes the following commands to the Command palette.
 
-- `Fix all auto-fixable problems`: applies stylelint auto-fix resolutions to all fixable problems.
+- `Fix all auto-fixable problems`: applies stylelint resolutions to all automatically fixable problems.
