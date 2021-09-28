@@ -1,11 +1,26 @@
 **/*
-!CHANGELOG.md
-!index.js
-!media/stylelint.png
-!node_modules/**/*
-!package.json
-!README.md
-!server.js
-!LICENSE.txt
+
+# Code
+
 !lib/**/*
-!snippets/**/*
+!index.js
+!server.js
+
+# Dependencies
+
+!node_modules/**/*.js
+
+# Documention
+
+!CHANGELOG.md
+!README.md
+!screenshot.png
+!LICENSE
+
+# Assets
+
+!media/stylelint.png
+
+# Manifest
+
+!package.json
