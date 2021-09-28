@@ -1,6 +1,6 @@
 {
   "name": "vscode-stylelint",
-  "version": "0.86.0",
+  "version": "0.87.0",
   "license": "MIT",
   "description": "Modern CSS/SCSS/Less linter",
   "main": "index.js",
@@ -201,7 +201,7 @@
     "lodash": "^4.17.20",
     "path-is-inside": "^1.0.2",
     "pkg-dir": "^5.0.0",
-    "stylelint": "^13.6.0",
+    "stylelint": "^13.13.1",
     "vscode-languageclient": "^6.2.0-next.1",
     "vscode-languageserver": "^6.2.0-next.1",
     "vscode-languageserver-textdocument": "^1.0.1",
@@ -213,7 +213,6 @@
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.151",
     "@types/path-is-inside": "^1.0.0",
-    "@types/stylelint": "^9.10.1",
     "@types/vscode": "1.56.0",
     "@vscode/test-electron": "^1.6.2",
     "eslint": "^7.5.0",
@@ -237,10 +236,12 @@
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
+    "lint:stylelint-types": "node check-types-version.js",
     "lint:types": "tsc",
     "test": "jest",
     "test:lib": "jest --projects test/lib",
-    "test:workspace": "jest --projects test/workspace"
+    "test:workspace": "jest --projects test/workspace",
+    "download-types": "node download-types.js"
   },
   "prettier": "@stylelint/prettier-config"
 }

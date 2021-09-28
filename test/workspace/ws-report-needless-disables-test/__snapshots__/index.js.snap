@@ -3,70 +3,6 @@
 exports[`vscode-stylelint with "stylelint.reportNeedlessDisables" should work if "stylelint.reportNeedlessDisables" is enabled 1`] = `
 Array [
   Object {
-    "code": "indentation",
-    "message": "unused rule: indentation, start line: 4, end line: 4",
-    "range": Object {
-      "end": Object {
-        "character": 15,
-        "line": 3,
-      },
-      "start": Object {
-        "character": 0,
-        "line": 3,
-      },
-    },
-    "severity": 1,
-    "source": "stylelint",
-  },
-  Object {
-    "code": "indentation",
-    "message": "unused rule: indentation, start line: 7, end line: 11",
-    "range": Object {
-      "end": Object {
-        "character": 34,
-        "line": 10,
-      },
-      "start": Object {
-        "character": 0,
-        "line": 6,
-      },
-    },
-    "severity": 1,
-    "source": "stylelint",
-  },
-  Object {
-    "code": "indentation",
-    "message": "unused rule: indentation, start line: 15, end line: 15",
-    "range": Object {
-      "end": Object {
-        "character": 56,
-        "line": 14,
-      },
-      "start": Object {
-        "character": 0,
-        "line": 14,
-      },
-    },
-    "severity": 1,
-    "source": "stylelint",
-  },
-  Object {
-    "code": "indentation",
-    "message": "unused rule: indentation, start line: 18",
-    "range": Object {
-      "end": Object {
-        "character": 0,
-        "line": 21,
-      },
-      "start": Object {
-        "character": 0,
-        "line": 17,
-      },
-    },
-    "severity": 1,
-    "source": "stylelint",
-  },
-  Object {
     "code": Object {
       "target": Object {
         "authority": "stylelint.io",
@@ -76,6 +12,86 @@ Array [
       "value": "indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 2,
+      },
+    },
+    "severity": 0,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 2,
+      },
+    },
+    "severity": 0,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 6,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 6,
+      },
+    },
+    "severity": 0,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 16,
+        "line": 14,
+      },
+      "start": Object {
+        "character": 16,
+        "line": 14,
+      },
+    },
+    "severity": 0,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 17,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 17,
+      },
+    },
+    "severity": 0,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"unknown\\"",
     "range": Object {
       "end": Object {
         "character": 2,

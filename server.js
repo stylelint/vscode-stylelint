@@ -32,8 +32,8 @@ const { TextDocument } = require('vscode-languageserver-textdocument');
  * @typedef { import('vscode-languageserver').CompletionItem } CompletionItem
  * @typedef { import('vscode-languageserver').CompletionParams } CompletionParams
  * @typedef { import('./lib/stylelint-vscode').DisableReportRange } DisableReportRange
- * @typedef { import('stylelint').Configuration } StylelintConfiguration
- * @typedef { import('stylelint').LinterOptions } BaseStylelintLinterOptions
+ * @typedef { import('stylelint').StylelintConfig } StylelintConfiguration
+ * @typedef { import('stylelint').StylelintStandaloneOptions } BaseStylelintLinterOptions
  * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
  * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
  * @typedef { import('./lib/stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
@@ -123,7 +123,6 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 	}
 
 	if (reportInvalidScopeDisables) {
-		// @ts-expect-error -- The stylelint type is old.
 		options.reportInvalidScopeDisables = reportInvalidScopeDisables;
 	}
 
@@ -256,7 +255,7 @@ async function validate(document) {
  * @returns {Promise<TextEdit[]>}
  */
 async function getFixes(document, formattingOptions = null) {
-	/** @type {Partial<import('stylelint').LinterOptions>} */
+	/** @type {Partial<import('stylelint').StylelintStandaloneOptions>} */
 	const baseOptions = { fix: true };
 
 	// If formatting options were provided, translate them to their corresponding rules.

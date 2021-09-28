@@ -322,27 +322,27 @@ exports[`stylelintVSCode() with reportInvalidScopeDisables should work properly 
 Object {
   "diagnostics": Array [
     Object {
-      "code": "foo",
-      "message": "unused rule: foo, start line: 3, end line: 3",
+      "code": "--report-invalid-scope-disables",
+      "message": "Rule \\"foo\\" isn't enabled",
       "range": Object {
         "end": Object {
           "character": 0,
-          "line": 2,
+          "line": 1,
         },
         "start": Object {
           "character": 0,
-          "line": 2,
+          "line": 1,
         },
       },
-      "severity": 2,
+      "severity": 1,
       "source": "stylelint",
     },
     Object {
-      "code": "foo",
-      "message": "unused rule: foo, start line: 4, end line: 4",
+      "code": "--report-invalid-scope-disables",
+      "message": "Rule \\"foo\\" isn't enabled",
       "range": Object {
         "end": Object {
-          "character": 32,
+          "character": 0,
           "line": 3,
         },
         "start": Object {
@@ -350,98 +350,24 @@ Object {
           "line": 3,
         },
       },
-      "severity": 2,
+      "severity": 1,
       "source": "stylelint",
     },
     Object {
-      "code": "foo",
-      "message": "unused rule: foo, start line: 6, end line: 7",
+      "code": "--report-invalid-scope-disables",
+      "message": "Rule \\"foo\\" isn't enabled",
       "range": Object {
         "end": Object {
-          "character": 26,
-          "line": 6,
+          "character": 0,
+          "line": 5,
         },
         "start": Object {
           "character": 0,
           "line": 5,
         },
       },
-      "severity": 2,
+      "severity": 1,
       "source": "stylelint",
-    },
-  ],
-  "invalidScopeDisables": Array [
-    Object {
-      "diagnostic": Object {
-        "code": "foo",
-        "message": "unused rule: foo, start line: 3, end line: 3",
-        "range": Object {
-          "end": Object {
-            "character": 0,
-            "line": 2,
-          },
-          "start": Object {
-            "character": 0,
-            "line": 2,
-          },
-        },
-        "severity": 2,
-        "source": "stylelint",
-      },
-      "range": Object {
-        "end": 3,
-        "rule": "foo",
-        "start": 3,
-        "unusedRule": "foo",
-      },
-    },
-    Object {
-      "diagnostic": Object {
-        "code": "foo",
-        "message": "unused rule: foo, start line: 4, end line: 4",
-        "range": Object {
-          "end": Object {
-            "character": 32,
-            "line": 3,
-          },
-          "start": Object {
-            "character": 0,
-            "line": 3,
-          },
-        },
-        "severity": 2,
-        "source": "stylelint",
-      },
-      "range": Object {
-        "end": 4,
-        "rule": "foo",
-        "start": 4,
-        "unusedRule": "foo",
-      },
-    },
-    Object {
-      "diagnostic": Object {
-        "code": "foo",
-        "message": "unused rule: foo, start line: 6, end line: 7",
-        "range": Object {
-          "end": Object {
-            "character": 26,
-            "line": 6,
-          },
-          "start": Object {
-            "character": 0,
-            "line": 5,
-          },
-        },
-        "severity": 2,
-        "source": "stylelint",
-      },
-      "range": Object {
-        "end": 7,
-        "rule": "foo",
-        "start": 6,
-        "unusedRule": "foo",
-      },
     },
   ],
 }
@@ -450,70 +376,6 @@ Object {
 exports[`stylelintVSCode() with reportNeedlessDisables should work properly if reportNeedlessDisables is true 1`] = `
 Object {
   "diagnostics": Array [
-    Object {
-      "code": "indentation",
-      "message": "unused rule: indentation, start line: 4, end line: 4",
-      "range": Object {
-        "end": Object {
-          "character": 15,
-          "line": 3,
-        },
-        "start": Object {
-          "character": 0,
-          "line": 3,
-        },
-      },
-      "severity": 2,
-      "source": "stylelint",
-    },
-    Object {
-      "code": "indentation",
-      "message": "unused rule: indentation, start line: 7, end line: 11",
-      "range": Object {
-        "end": Object {
-          "character": 34,
-          "line": 10,
-        },
-        "start": Object {
-          "character": 0,
-          "line": 6,
-        },
-      },
-      "severity": 2,
-      "source": "stylelint",
-    },
-    Object {
-      "code": "indentation",
-      "message": "unused rule: indentation, start line: 14, end line: 14",
-      "range": Object {
-        "end": Object {
-          "character": 56,
-          "line": 13,
-        },
-        "start": Object {
-          "character": 0,
-          "line": 13,
-        },
-      },
-      "severity": 2,
-      "source": "stylelint",
-    },
-    Object {
-      "code": "indentation",
-      "message": "unused rule: indentation, start line: 17",
-      "range": Object {
-        "end": Object {
-          "character": 0,
-          "line": 20,
-        },
-        "start": Object {
-          "character": 0,
-          "line": 16,
-        },
-      },
-      "severity": 2,
-      "source": "stylelint",
-    },
     Object {
       "code": Object {
         "target": "https://stylelint.io/user-guide/rules/indentation",
@@ -533,103 +395,69 @@ Object {
       "severity": 1,
       "source": "stylelint",
     },
-  ],
-  "needlessDisables": Array [
     Object {
-      "diagnostic": Object {
-        "code": "indentation",
-        "message": "unused rule: indentation, start line: 4, end line: 4",
-        "range": Object {
-          "end": Object {
-            "character": 15,
-            "line": 3,
-          },
-          "start": Object {
-            "character": 0,
-            "line": 3,
-          },
-        },
-        "severity": 2,
-        "source": "stylelint",
-      },
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
       "range": Object {
-        "end": 4,
-        "rule": "indentation",
-        "start": 4,
-        "unusedRule": "indentation",
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
       },
+      "severity": 1,
+      "source": "stylelint",
     },
     Object {
-      "diagnostic": Object {
-        "code": "indentation",
-        "message": "unused rule: indentation, start line: 7, end line: 11",
-        "range": Object {
-          "end": Object {
-            "character": 34,
-            "line": 10,
-          },
-          "start": Object {
-            "character": 0,
-            "line": 6,
-          },
-        },
-        "severity": 2,
-        "source": "stylelint",
-      },
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
       "range": Object {
-        "end": 11,
-        "rule": "indentation",
-        "start": 7,
-        "unusedRule": "indentation",
+        "end": Object {
+          "character": 0,
+          "line": 6,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 6,
+        },
       },
+      "severity": 1,
+      "source": "stylelint",
     },
     Object {
-      "diagnostic": Object {
-        "code": "indentation",
-        "message": "unused rule: indentation, start line: 14, end line: 14",
-        "range": Object {
-          "end": Object {
-            "character": 56,
-            "line": 13,
-          },
-          "start": Object {
-            "character": 0,
-            "line": 13,
-          },
-        },
-        "severity": 2,
-        "source": "stylelint",
-      },
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
       "range": Object {
-        "end": 14,
-        "rule": "indentation",
-        "start": 14,
-        "unusedRule": "indentation",
+        "end": Object {
+          "character": 16,
+          "line": 13,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 13,
+        },
       },
+      "severity": 1,
+      "source": "stylelint",
     },
     Object {
-      "diagnostic": Object {
-        "code": "indentation",
-        "message": "unused rule: indentation, start line: 17",
-        "range": Object {
-          "end": Object {
-            "character": 0,
-            "line": 20,
-          },
-          "start": Object {
-            "character": 0,
-            "line": 16,
-          },
-        },
-        "severity": 2,
-        "source": "stylelint",
-      },
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
       "range": Object {
-        "end": undefined,
-        "rule": "indentation",
-        "start": 17,
-        "unusedRule": "indentation",
+        "end": Object {
+          "character": 0,
+          "line": 16,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 16,
+        },
       },
+      "severity": 1,
+      "source": "stylelint",
     },
   ],
 }
