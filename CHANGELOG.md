@@ -4,11 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### [0.86.0](https://github.com/stylelint/vscode-stylelint/compare/v0.85.0...v0.86.0) (2021-02-07)
+## [0.87.0](https://github.com/stylelint/vscode-stylelint/compare/v0.86.0...v0.87.0) (2021-09-28)
+
+### Added
+
+- Document formatting support ([#200](https://github.com/stylelint/vscode-stylelint/pull/200)).
+
+### Changed
+
+- Bundled Stylelint updated to v13.13.1 ([#235](https://github.com/stylelint/vscode-stylelint/pull/235)).
+- Internal testing setup refactored, switched to [Jest](https://jestjs.io/) using [jest-runner-vscode](https://github.com/adalinesimonian/jest-runner-vscode) ([#224](https://github.com/stylelint/vscode-stylelint/pull/224)).
+- Readme updated for readability ([#232](https://github.com/stylelint/vscode-stylelint/pull/232), [c211b1a](https://github.com/stylelint/vscode-stylelint/commit/c211b1a), [0bbea15](https://github.com/stylelint/vscode-stylelint/commit/0bbea15)).
+
+## [0.86.0](https://github.com/stylelint/vscode-stylelint/compare/v0.85.0...v0.86.0) (2021-02-07)
 
 - Add "stylelint.configFile" option ([#168](https://github.com/stylelint/vscode-stylelint/pull/168))
 
-### [0.85.0](https://github.com/stylelint/vscode-stylelint/compare/v0.84.0...v0.85.0) (2020-08-12)
+## [0.85.0](https://github.com/stylelint/vscode-stylelint/compare/v0.84.0...v0.85.0) (2020-08-12)
 
 - [f6f3672](https://github.com/stylelint/vscode-stylelint/commit/f6f367214fbfd4ad6568abecead0bed76cabda75) Add "stylelint.syntax" option
 - [ec802e8](https://github.com/stylelint/vscode-stylelint/commit/ec802e8b42247d0f2e6c654062bfa16de10ecd96) Add "stylelint.ignoreDisables" option
@@ -18,11 +30,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - [192feb5](https://github.com/stylelint/vscode-stylelint/commit/192feb525c9120072f9c021d11d5a23c7311b69c) Add types to JSDoc
 - [83d7555](https://github.com/stylelint/vscode-stylelint/commit/83d755558702f0b6867cc76961290ef294686539) Add code action to show link to rule documentation
 
-### [0.84.0](https://github.com/stylelint/vscode-stylelint/compare/v0.83.0...v0.84.0) (2020-03-18)
+## [0.84.0](https://github.com/stylelint/vscode-stylelint/compare/v0.83.0...v0.84.0) (2020-03-18)
 
 - [e777f4c ](https://github.com/stylelint/vscode-stylelint/commit/e777f4c93089e764fd6a95efbcab9736b5be361c) Add "stylelint.validate" option
 
-### [0.83.0](https://github.com/stylelint/vscode-stylelint/compare/v0.82.0...v0.83.0) (2020-02-20)
+## [0.83.0](https://github.com/stylelint/vscode-stylelint/compare/v0.82.0...v0.83.0) (2020-02-20)
 
 - [f7a2fcd](https://github.com/stylelint/vscode-stylelint/commit/f7a2fcdaf7958b1ea0595f9c91eb9a38079a9198) Add "stylelint.reportNeedlessDisables" option
 - [34388c0](https://github.com/stylelint/vscode-stylelint/pull/53/commits/34388c05b25397ec5a34bd751da4fc3742c57594) Add "stylelint.stylelintPath" option for Yarn 2 compatibility
@@ -30,25 +42,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - [4b62566](https://github.com/stylelint/vscode-stylelint/pull/71/commits/4b6256659c0c074660cce82accf6dc1d10076788) Fix missing `snippets` folder from extension package
 - [b71f453](https://github.com/stylelint/vscode-stylelint/commit/b71f4535d1e801576b463513e27a24f0a0c784df) Add snippets support for Less files
 
-### [0.82.0](https://github.com/stylelint/vscode-stylelint/compare/v0.81.0...v0.82.0) (2020-02-14)
+## [0.82.0](https://github.com/stylelint/vscode-stylelint/compare/v0.81.0...v0.82.0) (2020-02-14)
 
 - [77b66c1](https://github.com/stylelint/vscode-stylelint/commit/77b66c13cf5dea3286d0df56bbff1486ed9bc747) Update stylelint from v12.0.0 to v13.2.0
 
-### [0.81.0](https://github.com/stylelint/vscode-stylelint/compare/v0.80.0...v0.81.0) (2020-02-03)
+## [0.81.0](https://github.com/stylelint/vscode-stylelint/compare/v0.80.0...v0.81.0) (2020-02-03)
 
 - [0fd9975](https://github.com/stylelint/vscode-stylelint/commit/0fd9975d9b74cbe83674b64a0e2f2c59453ea0a7) Added `stylelint-disable` snippets
 - [5f01e54](https://github.com/stylelint/vscode-stylelint/commit/5f01e5471720303e68ece4b7a778ff1283d27db1) Fixes an autofix issue where content was removed on save
 
-### [0.80.0](https://github.com/stylelint/vscode-stylelint/compare/v0.71.0...v0.80.0) (2020-01-05)
+## [0.80.0](https://github.com/stylelint/vscode-stylelint/compare/v0.71.0...v0.80.0) (2020-01-05)
 
 - [73c78e6](https://github.com/stylelint/vscode-stylelint/commit/73c78e6ee749cc6cae6e82a8bff3d5bb672f39c7) Changed to load stylelint from local node modules
 - [8f822e8](https://github.com/stylelint/vscode-stylelint/commit/8f822e840b3b284b333c4b49e16331a3ed199b4e) Rename VS Code setting option from `stylelint configuration options` `stylelint`
 
-### [0.71.0](https://github.com/stylelint/vscode-stylelint/compare/v0.70.0...v0.71.0) (2020-01-04)
+## [0.71.0](https://github.com/stylelint/vscode-stylelint/compare/v0.70.0...v0.71.0) (2020-01-04)
 
 - [1a07e95](https://github.com/stylelint/vscode-stylelint/commit/1a07e95ea3d3616f026786589fd1299b79f3fa84) Fixes an autofix issue where a missing config would cause unintended changes on save
 
-### [0.70.0](https://github.com/stylelint/vscode-stylelint/compare/v0.60.0...v0.70.0) (2019-12-28)
+## [0.70.0](https://github.com/stylelint/vscode-stylelint/compare/v0.60.0...v0.70.0) (2019-12-28)
 
 - [9d55b07](https://github.com/stylelint/vscode-stylelint/commit/9d55b07aa98fee34d9b80ed322aacd5f24621272) Add support for autofix
 - [e5307d9](https://github.com/stylelint/vscode-stylelint/commit/e5307d9b362cd43c0ac34fbff109b95129188039) Update stylelint from v10.0.1 to v12.0.0
