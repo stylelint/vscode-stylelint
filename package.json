@@ -213,7 +213,7 @@
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.151",
     "@types/path-is-inside": "^1.0.0",
-    "@types/vscode": "1.56.0",
+    "@types/vscode": "1.60.0",
     "@vscode/test-electron": "^1.6.2",
     "esbuild": "^0.13.3",
     "eslint": "^7.5.0",
