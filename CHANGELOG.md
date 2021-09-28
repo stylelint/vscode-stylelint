@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.87.1](https://github.com/stylelint/vscode-stylelint/compare/v0.87.0...v0.87.1) (2021-09-28)
+
+### Fixed
+
+- Fixed entry in .vscodeignore resulting in package missing dependencies ([e9813e6](https://github.com/stylelint/vscode-stylelint/commit/e9813e6)).
+
 ## [0.87.0](https://github.com/stylelint/vscode-stylelint/compare/v0.86.0...v0.87.0) (2021-09-28)
 
 ### Added
