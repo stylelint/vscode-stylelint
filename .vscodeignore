@@ -2,13 +2,7 @@
 
 # Code
 
-!lib/**/*.js
-!index.js
-!server.js
-
-# Dependencies
-
-!node_modules/**/*
+!dist/**/*.js
 
 # Documention
 
