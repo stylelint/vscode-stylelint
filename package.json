@@ -233,7 +233,7 @@
   },
   "scripts": {
     "ci:download-vscode": "node ci-download-vscode.js",
-    "bundle-base": "esbuild ./index.js ./server.js --bundle --outdir=dist --external:vscode --format=cjs --platform=node",
+    "bundle-base": "node bundle.js",
     "bundle": "npm run bundle-base -- --sourcemap",
     "bundle-watch": "npm run bundle-base -- --sourcemap --watch",
     "format": "prettier . --write",
