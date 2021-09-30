@@ -205,7 +205,7 @@
     "postcss-html": "https://git@github.com/adalinesimonian/postcss-html.git#bundler-friendly",
     "pkg-dir": "^5.0.0",
     "stylelint": "^13.13.1",
-    "vscode-languageclient": "^6.2.0-next.1",
+    "vscode-languageclient": "^7.0.0",
     "vscode-languageserver": "^6.2.0-next.1",
     "vscode-languageserver-textdocument": "^1.0.1",
     "vscode-languageserver-types": "^3.16.0-next.1",
