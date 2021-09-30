@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.87.5](https://github.com/stylelint/vscode-stylelint/compare/v0.87.4...v0.87.5) (2021-09-30)
+
+### Fixed
+
+- Fixed bug where extension would throw an error "Cannot find module '.../dist/template-parse'" ([#244](https://github.com/stylelint/vscode-stylelint/pull/244)).
+
 ## [0.87.4](https://github.com/stylelint/vscode-stylelint/compare/v0.87.3...v0.87.4) (2021-09-29)
 
 ### Fixed
