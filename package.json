@@ -200,7 +200,7 @@
     "fast-diff": "^1.2.0",
     "lodash": "^4.17.20",
     "path-is-inside": "^1.0.2",
-    "postcss-css-in-js": "https://git@github.com/adalinesimonian/postcss-css-in-js.git#bundler-friendly",
+    "@stylelint/postcss-css-in-js": "https://git@github.com/adalinesimonian/postcss-css-in-js.git#bundler-friendly",
     "postcss-syntax": "https://git@github.com/adalinesimonian/postcss-syntax.git#bundler-friendly",
     "postcss-html": "https://git@github.com/adalinesimonian/postcss-html.git#bundler-friendly",
     "pkg-dir": "^5.0.0",
