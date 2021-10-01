@@ -2,18 +2,13 @@
 
 // Checks that the downloaded types file from the stylelint repo is up to date
 
-/* eslint-disable eslint-comments/disable-enable-pair */
-/* eslint-disable no-console */
-/* eslint-disable no-process-exit */
-/* eslint-disable node/no-unpublished-require */
-
 const fs = require('fs-extra');
 const path = require('path');
 
-const typesDir = path.join(__dirname, 'types/stylelint');
+const typesDir = path.join(__dirname, '../types/stylelint');
 const typesVersionPath = path.join(typesDir, 'version');
 
-const lockfile = require('./package-lock.json');
+const lockfile = require('../package-lock.json');
 
 const { version } = lockfile?.dependencies?.stylelint;
 

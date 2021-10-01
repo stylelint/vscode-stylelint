@@ -235,20 +235,20 @@
     "zen-observable": "^0.8.15"
   },
   "scripts": {
-    "ci:download-vscode": "node ci-download-vscode.js",
-    "bundle-base": "node bundle.js",
+    "ci:download-vscode": "node scripts/ci-download-vscode.js",
+    "bundle-base": "node scripts/bundle.js",
     "bundle": "npm run bundle-base -- --sourcemap",
     "bundle-watch": "npm run bundle-base -- --sourcemap --watch",
     "format": "prettier . --write",
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
-    "lint:stylelint-types": "node check-types-version.js",
+    "lint:stylelint-types": "node scripts/check-types-version.js",
     "lint:types": "tsc",
     "test": "npm run bundle && jest",
     "test:lib": "jest --projects test/lib",
     "test:workspace": "npm run bundle && jest --projects test/workspace",
-    "download-types": "node download-types.js",
+    "download-types": "node scripts/download-types.js",
     "vscode:prepublish": "npm run bundle-base -- --minify"
   },
   "prettier": "@stylelint/prettier-config"

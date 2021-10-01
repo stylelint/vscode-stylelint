@@ -4,7 +4,7 @@ const { join, resolve } = require('path');
 const { pathToFileURL } = require('url');
 
 const createDocument = require('vscode-languageserver').TextDocument.create;
-const stylelintVSCode = require('../../../lib/stylelint-vscode');
+const stylelintVSCode = require('../../../src/stylelint-vscode');
 
 class Document {
 	constructor(uri, languageId, contents) {

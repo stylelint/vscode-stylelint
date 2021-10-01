@@ -2,7 +2,7 @@
 
 const { lint } = require('stylelint');
 
-const fn = require('../../../lib/stylelint-warning-to-vscode-diagnostic');
+const fn = require('../../../src/warnings-to-diagnostics');
 
 describe('stylelintWarningToVscodeDiagnostic()', () => {
 	test('should convert a stylelint warning into a VS Code diagnostic and consider severity level', async () => {
