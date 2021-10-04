@@ -1,6 +1,10 @@
 'use strict';
 
-const { LanguageClient, SettingMonitor, ExecuteCommandRequest } = require('vscode-languageclient/node');
+const {
+	LanguageClient,
+	SettingMonitor,
+	ExecuteCommandRequest,
+} = require('vscode-languageclient/node');
 const { workspace, commands: Commands, window: Window } = require('vscode');
 
 /**
