@@ -6,12 +6,12 @@ on:
       - main
       - v1
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - v1
     paths-ignore:
       - '**/*.md'
       - '**/*.png'
-      - '**/*.svg'
-      - '**/*.tiff'
       - '**/*.css'
   schedule:
     - cron: '45 9 * * 4'

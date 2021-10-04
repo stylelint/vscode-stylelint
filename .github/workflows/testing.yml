@@ -59,7 +59,7 @@ jobs:
             ${{ runner.os }}-vscode-
 
       - name: Download VS Code
-        run: npm run ci:download-vscode
+        run: npm run download-vscode
 
       - name: Run lib tests
         run: npm run test:lib -- --coverage

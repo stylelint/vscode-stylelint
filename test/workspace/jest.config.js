@@ -2,7 +2,7 @@
 
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
-	testMatch: ['<rootDir>/ws-*/index.[jt]s?(x)'],
+	testMatch: ['<rootDir>/*/index.[jt]s?(x)'],
 	verbose: true,
 	modulePathIgnorePatterns: ['<rootDir>/../../.vscode-test'],
 	setupFilesAfterEnv: ['<rootDir>/setup.js'],

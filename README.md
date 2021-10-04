@@ -5,7 +5,7 @@
 
 The official [Visual Studio Code](https://code.visualstudio.com/) extension to lint [CSS](https://www.w3.org/Style/CSS/)/[SCSS](https://sass-lang.com/documentation/syntax)/[Less](http://lesscss.org/) with [stylelint](https://stylelint.io/)
 
-![screenshot](screenshot.png)
+![screenshot](media/screenshot.png)
 
 The extension first looks for a copy of stylelint installed in the open workspace folder, then for a globally installed version if it can't find one. If it can't find either, the extension uses the version of stylelint bundled with the extension (not recommended).
 
