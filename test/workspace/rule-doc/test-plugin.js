@@ -1,7 +1,6 @@
 'use strict';
 
 // Abbreviated example
-// eslint-disable-next-line node/no-unpublished-require
 const stylelint = require('stylelint');
 
 const ruleName = 'plugin/foo-bar';

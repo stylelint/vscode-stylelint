@@ -1,6 +1,5 @@
 'use strict';
 
-// eslint-disable-next-line node/no-unpublished-require
 const { lint } = require('stylelint');
 
 const fn = require('../../../src/warnings-to-diagnostics');
