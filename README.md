@@ -7,7 +7,7 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension to l
 
 ![screenshot](media/screenshot.png)
 
-The extension first looks for a copy of stylelint installed in the open workspace folder, then for a globally installed version if it can't find one. If it can't find either, the extension uses the version of stylelint bundled with the extension (not recommended).
+The extension first looks for a copy of stylelint installed in the open workspace folder, then for a globally installed version if it can't find one.
 
 ## Installation
 
