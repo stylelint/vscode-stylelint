@@ -3,7 +3,7 @@
 /** @type {import('eslint').Linter.Config} */
 const config = {
 	rules: {
-		'node/no-unpublished-require': ['error', { allowModules: ['p-wait-for'] }],
+		'node/no-unpublished-require': 'off',
 	},
 };
 
