@@ -206,6 +206,12 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 
 	const stylelint = await resolveStylelint({ ...serverOptions, textDocument });
 
+	if (!stylelint) {
+		return {
+			diagnostics: [],
+		};
+	}
+
 	try {
 		resultContainer = await stylelint.lint({ ...options, ...priorOptions });
 	} catch (err) {
@@ -239,7 +245,7 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 
 /**
  * @param {StylelintVSCodeOption & {textDocument: TextDocument} } options
- * @returns {Promise<StylelintModule>}
+ * @returns {Promise<StylelintModule | undefined>}
  */
 async function resolveStylelint({
 	connection,
@@ -255,13 +261,14 @@ async function resolveStylelint({
 	if (customStylelintPath) {
 		let stylelint;
 
+		const errorMessage = `stylelint: cannot resolve "stylelintPath": ${customStylelintPath}`;
+		const consoleErrorMessage = `Failed to load stylelint from ${customStylelintPath}.`;
+
 		try {
 			stylelint = require(customStylelintPath);
 		} catch (err) {
-			connection &&
-				connection.window.showErrorMessage(
-					`stylelint: cannot resolve "stylelintPath": ${customStylelintPath}`,
-				);
+			connection?.console.error(consoleErrorMessage);
+			connection?.window.showErrorMessage(errorMessage);
 			throw err;
 		}
 
@@ -269,10 +276,8 @@ async function resolveStylelint({
 			return stylelint;
 		}
 
-		connection &&
-			connection.window.showErrorMessage(
-				`stylelint: cannot resolve "stylelintPath": ${customStylelintPath}`,
-			);
+		connection?.console.error(consoleErrorMessage);
+		connection?.window.showErrorMessage(errorMessage);
 	}
 
 	let stylelint;
@@ -306,9 +311,21 @@ async function resolveStylelint({
 		// ignore
 	}
 
-	if (!stylelint || typeof stylelint.lint !== 'function') {
-		// Use self module
-		stylelint = require('stylelint');
+	if (!stylelint) {
+		connection?.console.error(
+			'Failed to load stylelint either globally or from the current workspace.',
+		);
+
+		return undefined;
+	}
+
+	if (typeof stylelint.lint !== 'function') {
+		const errorMessage = 'stylelint.lint is not a function.';
+
+		connection?.console.error(errorMessage);
+		connection?.window.showErrorMessage(errorMessage);
+
+		return undefined;
 	}
 
 	return stylelint;
