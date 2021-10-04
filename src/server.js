@@ -6,7 +6,7 @@ const diff = require('fast-diff');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
 const pkgDir = require('pkg-dir').sync;
-const stylelintVSCode = require('./lib/stylelint-vscode');
+const stylelintVSCode = require('./stylelint-vscode');
 const {
 	createConnection,
 	ProposedFeatures,
@@ -32,12 +32,12 @@ const { TextDocument } = require('vscode-languageserver-textdocument');
  * @typedef { import('vscode-languageserver').Diagnostic } Diagnostic
  * @typedef { import('vscode-languageserver').CompletionItem } CompletionItem
  * @typedef { import('vscode-languageserver').CompletionParams } CompletionParams
- * @typedef { import('./lib/stylelint-vscode').DisableReportRange } DisableReportRange
+ * @typedef { import('./stylelint-vscode').DisableReportRange } DisableReportRange
  * @typedef { import('stylelint').StylelintConfig } StylelintConfiguration
  * @typedef { import('stylelint').StylelintStandaloneOptions } BaseStylelintLinterOptions
  * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
  * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
- * @typedef { import('./lib/stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
+ * @typedef { import('./stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
  * @typedef { Error & { reasons: string[] } } InvalidOptionError
  * @typedef { Error & { code: 78 } } ConfigurationError
  */

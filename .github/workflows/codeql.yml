@@ -8,8 +8,6 @@ on:
     paths-ignore:
       - '**/*.md'
       - '**/*.png'
-      - '**/*.svg'
-      - '**/*.tiff'
       - '**/*.css'
   schedule:
     - cron: '45 9 * * 4'
