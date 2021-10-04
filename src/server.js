@@ -426,7 +426,7 @@ connection.onDidChangeConfiguration(({ settings }) => {
 		// languages.
 		if (validateLanguages.length > 0) {
 			formatterRegistration = connection.client.register(DocumentFormattingRequest.type, {
-				documentSelector: validateLanguages,
+				documentSelector: validateLanguages.map((language) => ({ language })),
 			});
 		}
 	}
