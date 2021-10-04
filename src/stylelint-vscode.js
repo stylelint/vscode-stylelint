@@ -315,6 +315,17 @@ async function resolveStylelint({
 		connection?.console.error(
 			'Failed to load stylelint either globally or from the current workspace.',
 		);
+
+		return undefined;
+	}
+
+	if (typeof stylelint.lint !== 'function') {
+		const errorMessage = 'stylelint.lint is not a function.';
+
+		connection?.console.error(errorMessage);
+		connection?.window.showErrorMessage(errorMessage);
+
+		return undefined;
 	}
 
 	return stylelint;
