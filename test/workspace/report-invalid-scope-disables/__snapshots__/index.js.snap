@@ -4,6 +4,8 @@ exports[`vscode-stylelint with "stylelint.reportInvalidScopeDisables" should wor
 Array [
   Object {
     "code": "--report-invalid-scope-disables",
+    "data": undefined,
+    "hasDiagnosticCode": false,
     "message": "Rule \\"foo\\" isn't enabled",
     "range": Object {
       "end": Object {
@@ -20,6 +22,8 @@ Array [
   },
   Object {
     "code": "--report-invalid-scope-disables",
+    "data": undefined,
+    "hasDiagnosticCode": false,
     "message": "Rule \\"foo\\" isn't enabled",
     "range": Object {
       "end": Object {
@@ -36,6 +40,8 @@ Array [
   },
   Object {
     "code": "--report-invalid-scope-disables",
+    "data": undefined,
+    "hasDiagnosticCode": false,
     "message": "Rule \\"foo\\" isn't enabled",
     "range": Object {
       "end": Object {

@@ -20,11 +20,10 @@ const {
 	TextDocumentEdit,
 	CodeAction,
 	CompletionItemKind,
-	DiagnosticCode,
 	MarkupKind,
 	InsertTextFormat,
 	DocumentFormattingRequest,
-} = require('vscode-languageserver');
+} = require('vscode-languageserver/node');
 const { TextDocument } = require('vscode-languageserver-textdocument');
 
 /**
@@ -688,9 +687,7 @@ function onCompletion(params) {
 
 		const start = diagnostic.range.start;
 
-		const rule = String(
-			(DiagnosticCode.is(diagnostic.code) ? diagnostic.code.value : diagnostic.code) || '',
-		);
+		const rule = diagnostic.code;
 
 		if (start.line === params.position.line) {
 			thisLineRules.add(rule);

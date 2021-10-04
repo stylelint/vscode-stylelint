@@ -4,6 +4,8 @@ exports[`vscode-stylelint lint test should display correctly that rule documenta
 Array [
   Object {
     "code": "plugin/foo-bar",
+    "data": undefined,
+    "hasDiagnosticCode": false,
     "message": "Bar (plugin/foo-bar)",
     "range": Object {
       "end": Object {
@@ -27,6 +29,8 @@ Array [
       },
       "value": "color-no-invalid-hex",
     },
+    "data": undefined,
+    "hasDiagnosticCode": true,
     "message": "Unexpected invalid hex color \\"#y3\\" (color-no-invalid-hex)",
     "range": Object {
       "end": Object {
@@ -50,6 +54,8 @@ Array [
       },
       "value": "indentation",
     },
+    "data": undefined,
+    "hasDiagnosticCode": true,
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {

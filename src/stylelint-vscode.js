@@ -5,7 +5,7 @@ const pathIsInside = require('path-is-inside');
 const { at, has, map, stubString } = require('lodash');
 const { Diagnostic, DiagnosticSeverity, Position, Range } = require('vscode-languageserver-types');
 const { execSync } = require('child_process');
-const { Files } = require('vscode-languageserver');
+const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
 
 const stylelintWarningToVscodeDiagnostic = require('./warnings-to-diagnostics');
@@ -13,9 +13,9 @@ const stylelintWarningToVscodeDiagnostic = require('./warnings-to-diagnostics');
 /**
  * @typedef { import('stylelint').StylelintPublicAPI } StylelintModule
  * @typedef { import('vscode-languageserver-textdocument').TextDocument } TextDocument
- * @typedef { import('vscode-languageserver').IConnection } IConnection
+ * @typedef { import('vscode-languageserver').Connection } Connection
  * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
- * @typedef { {connection?: IConnection, packageManager?: PackageManager, stylelintPath?: string } } StylelintVSCodeOption
+ * @typedef { {connection?: Connection, packageManager?: PackageManager, stylelintPath?: string } } StylelintVSCodeOption
  * @typedef {object} StylelintVSCodeResult
  * @property {Diagnostic[]} diagnostics
  * @property {string} [output]
@@ -347,7 +347,7 @@ function createRuleDocUrlProvider(stylelint) {
 
 /**
  * @param {TextDocument} document
- * @param {IConnection} [connection]
+ * @param {Connection} [connection]
  * @returns {Promise<string | undefined>}
  */
 async function getWorkspaceFolder(document, connection) {
