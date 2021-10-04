@@ -344,7 +344,7 @@ let registerFormatterDynamically = false;
 
 /**
  * A promise that resolves to the disposable for the dynamically registered document formatter.
- * @type {Promise<import('vscode').Disposable> | undefined}
+ * @type {Promise<import('vscode-languageserver').Disposable> | undefined}
  */
 let formatterRegistration;
 
