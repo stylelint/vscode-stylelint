@@ -1,13 +1,7 @@
 'use strict';
 
-const {
-	LanguageClient,
-	SettingMonitor,
-	ExecuteCommandRequest,
-	DocumentFormattingRequest,
-	TextDocumentIdentifier,
-} = require('vscode-languageclient');
-const { workspace, commands: Commands, window: Window, languages: Languages } = require('vscode');
+const { LanguageClient, SettingMonitor, ExecuteCommandRequest } = require('vscode-languageclient');
+const { workspace, commands: Commands, window: Window } = require('vscode');
 
 /**
  * @typedef {import('vscode').ExtensionContext} ExtensionContext
@@ -42,75 +36,6 @@ exports.activate = ({ subscriptions }) => {
 			},
 		},
 	);
-
-	client.onReady().then(() => {
-		/**
-		 * Map of registered formatters by language ID.
-		 * @type {Map<string, { dispose(): any }>}
-		 */
-		const registeredFormatters = new Map();
-
-		client.onNotification(
-			'stylelint/languageIdsAdded',
-			(/** @type {{langIds: string[]}} */ { langIds }) => {
-				for (const langId of langIds) {
-					// Avoid registering another formatter if we already registered one for the same language ID.
-					if (registeredFormatters.has(langId)) {
-						return;
-					}
-
-					const formatter = Languages.registerDocumentFormattingEditProvider(langId, {
-						provideDocumentFormattingEdits(textDocument, options) {
-							const params = {
-								textDocument: TextDocumentIdentifier.create(textDocument.uri.toString()),
-								options, // Editor formatting options, overriden by stylelint config.
-							};
-
-							// Request that the language server formats the document.
-							return client
-								.sendRequest(DocumentFormattingRequest.type, params)
-								.then(undefined, () => {
-									Window.showErrorMessage(
-										'Failed to format the document using stylelint. Please consider opening an issue with steps to reproduce.',
-									);
-
-									return null;
-								});
-						},
-					});
-
-					// Keep track of the new formatter.
-					registeredFormatters.set(langId, formatter);
-				}
-			},
-		);
-
-		client.onNotification(
-			'stylelint/languageIdsRemoved',
-			(/** @type {{langIds: string[]}} */ { langIds }) => {
-				for (const langId of langIds) {
-					const formatter = registeredFormatters.get(langId);
-
-					if (!formatter) {
-						return;
-					}
-
-					// Unregisters formatter.
-					formatter.dispose();
-					registeredFormatters.delete(langId);
-				}
-			},
-		);
-
-		// Make sure that formatters are disposed when extension is unloaded.
-		subscriptions.push({
-			dispose() {
-				for (const formatter of registeredFormatters.values()) {
-					formatter.dispose();
-				}
-			},
-		});
-	});
 
 	subscriptions.push(
 		Commands.registerCommand('stylelint.executeAutofix', async () => {
