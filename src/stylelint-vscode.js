@@ -8,7 +8,7 @@ const { execSync } = require('child_process');
 const { Files } = require('vscode-languageserver');
 const { URI } = require('vscode-uri');
 
-const stylelintWarningToVscodeDiagnostic = require('../stylelint-warning-to-vscode-diagnostic');
+const stylelintWarningToVscodeDiagnostic = require('./warnings-to-diagnostics');
 
 /**
  * @typedef { import('stylelint').StylelintPublicAPI } StylelintModule
@@ -26,7 +26,7 @@ const stylelintWarningToVscodeDiagnostic = require('../stylelint-warning-to-vsco
  * @typedef { "css-in-js" | "html"  | "less"  | "markdown"  | "sass"   | "scss" | "sugarss" } SyntaxType
  * @typedef { {unusedRule:string,start:number,end:?number} } DisableReportRange
  * @typedef { { source?: string, ranges: DisableReportRange[] } } StylelintDisableReportEntry
- * @typedef { import('../stylelint-warning-to-vscode-diagnostic').RuleDocUrlProvider } RuleDocUrlProvider
+ * @typedef { import('./warnings-to-diagnostics').RuleDocUrlProvider } RuleDocUrlProvider
  * @typedef { (message: string, verbose?: string) => void } TracerFn
  */
 
