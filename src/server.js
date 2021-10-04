@@ -23,6 +23,7 @@ const {
 	DiagnosticCode,
 	MarkupKind,
 	InsertTextFormat,
+	DocumentFormattingRequest,
 } = require('vscode-languageserver');
 const { TextDocument } = require('vscode-languageserver-textdocument');
 
@@ -338,8 +339,21 @@ function isValidateOn(document) {
 	return validateLanguages.includes(document.languageId);
 }
 
-connection.onInitialize(() => {
+/** Whether or not dynamic registration for document formatting should be attempted. */
+let registerFormatterDynamically = false;
+
+/**
+ * A promise that resolves to the disposable for the dynamically registered document formatter.
+ * @type {Promise<import('vscode-languageserver').Disposable> | undefined}
+ */
+let formatterRegistration;
+
+connection.onInitialize(({ capabilities }) => {
 	validateAll();
+
+	registerFormatterDynamically = Boolean(
+		capabilities.textDocument?.formatting?.dynamicRegistration,
+	);
 
 	return {
 		capabilities: {
@@ -350,7 +364,8 @@ connection.onInitialize(() => {
 			executeCommandProvider: {
 				commands: [CommandIds.applyAutoFix],
 			},
-			documentFormattingProvider: true,
+			// Use static registration if dynamic registration is not supported by the client
+			documentFormattingProvider: !registerFormatterDynamically,
 			codeActionProvider: { codeActionKinds: [CodeActionKind.QuickFix, StylelintSourceFixAll] },
 			completionProvider: {},
 		},
@@ -374,22 +389,46 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	validateLanguages = settings.stylelint.validate || [];
 	snippetLanguages = settings.stylelint.snippet || ['css', 'less', 'postcss', 'scss'];
 
-	const removeLanguages = oldValidateLanguages.filter((lang) => !validateLanguages.includes(lang));
+	const validateLanguageSet = new Set(validateLanguages);
+	const oldValidateLanguageSet = new Set(oldValidateLanguages);
 
-	for (const document of documents
-		.all()
-		.filter((doc) => removeLanguages.includes(doc.languageId))) {
-		clearDiagnostics(document);
+	/** Whether or not the list of languages that should be validated has changed. */
+	let changed = validateLanguageSet.size !== oldValidateLanguageSet.size;
+
+	/** The languages removed from the list of languages that should be validated */
+	const removeLanguages = new Set();
+
+	// Check if the sets are unequal, which means that the list of languages that should be
+	// validated has changed.
+	for (const language of oldValidateLanguageSet) {
+		if (!validateLanguageSet.has(language)) {
+			removeLanguages.add(language);
+			changed = true;
+		}
 	}
 
-	if (removeLanguages.length > 0) {
-		connection.sendNotification('stylelint/languageIdsRemoved', { langIds: removeLanguages });
+	// If languages have been removed, clear diagnostics for documents of those languages.
+	if (removeLanguages.size > 0) {
+		for (const document of documents.all().filter((doc) => removeLanguages.has(doc.languageId))) {
+			clearDiagnostics(document);
+		}
 	}
 
-	const addLanguages = validateLanguages.filter((lang) => !oldValidateLanguages.includes(lang));
+	// If dynamic registration is supported and the list of languages that should be validated
+	// has changed, then (re-)register the formatter.
+	if (registerFormatterDynamically && changed) {
+		// Dispose the old formatter registration if it exists.
+		if (formatterRegistration) {
+			void formatterRegistration.then((disposable) => disposable.dispose());
+		}
 
-	if (addLanguages.length > 0) {
-		connection.sendNotification('stylelint/languageIdsAdded', { langIds: addLanguages });
+		// If there are languages that should be validated, register a formatter for those
+		// languages.
+		if (validateLanguages.length > 0) {
+			formatterRegistration = connection.client.register(DocumentFormattingRequest.type, {
+				documentSelector: validateLanguages.map((language) => ({ language })),
+			});
+		}
 	}
 
 	validateAll();
