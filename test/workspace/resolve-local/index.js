@@ -8,7 +8,7 @@ const { workspace, window } = require('vscode');
 const { normalizeDiagnostic, getStylelintDiagnostics } = require('../utils');
 
 describe('Local Stylelint resolution', () => {
-	it('should work even if "stylelint.stylelintPath" is defined', async () => {
+	it('should resolve to the locally installed copy of Stylelint', async () => {
 		// Open the './test.css' file.
 		const cssDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.css'));
 

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Local Stylelint resolution should work even if "stylelint.stylelintPath" is defined 1`] = `
+exports[`Local Stylelint resolution should resolve to the locally installed copy of Stylelint 1`] = `
 Array [
   Object {
     "code": "fake",
