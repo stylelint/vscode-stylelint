@@ -687,7 +687,7 @@ function onCompletion(params) {
 
 		const start = diagnostic.range.start;
 
-		const rule = diagnostic.code;
+		const rule = diagnostic.code ?? '';
 
 		if (start.line === params.position.line) {
 			thisLineRules.add(rule);
