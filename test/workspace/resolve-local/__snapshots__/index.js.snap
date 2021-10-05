@@ -4,6 +4,8 @@ exports[`Local Stylelint resolution should resolve to the locally installed copy
 Array [
   Object {
     "code": "fake",
+    "data": undefined,
+    "hasDiagnosticCode": false,
     "message": "Fake result",
     "range": Object {
       "end": Object {

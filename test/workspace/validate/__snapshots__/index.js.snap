@@ -30,6 +30,8 @@ Array [
       },
       "value": "indentation",
     },
+    "data": undefined,
+    "hasDiagnosticCode": true,
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
