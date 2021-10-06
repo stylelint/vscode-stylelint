@@ -1,15 +1,23 @@
 'use strict';
 
 // Abbreviated example
-const stylelint = require('stylelint');
+const stylelint = /** @type {import('stylelint').StylelintPublicAPI} */ (require('stylelint'));
 
 const ruleName = 'plugin/foo-bar';
 const messages = stylelint.utils.ruleMessages(ruleName, {
 	expected: 'Bar',
 });
 
-module.exports = stylelint.createPlugin(ruleName, (primaryOption) => {
-	return function (postcssRoot, postcssResult) {
+/**
+ * @typedef {import('postcss').Root} PostCSSRoot
+ * @typedef {import('stylelint').PostcssResult} PostCSSResult
+ */
+
+module.exports = stylelint.createPlugin(ruleName, (/** @type {any} */ primaryOption) => {
+	return function (
+		/** @type {PostCSSRoot} */ postcssRoot,
+		/** @type {PostCSSResult} */ postcssResult,
+	) {
 		const validOptions = stylelint.utils.validateOptions(postcssResult, ruleName, {
 			actual: primaryOption,
 		});
@@ -28,5 +36,4 @@ module.exports = stylelint.createPlugin(ruleName, (primaryOption) => {
 	};
 });
 
-module.exports.ruleName = ruleName;
 module.exports.messages = messages;

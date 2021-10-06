@@ -9,6 +9,7 @@ const rootDir = path.resolve(__dirname, '..');
 
 const args = new Set(process.argv.slice(2));
 
+/** @returns {Promise<void>} */
 async function bundle() {
 	const entryPoints = ['src/index.js', 'src/server.js'];
 

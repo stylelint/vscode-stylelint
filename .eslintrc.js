@@ -13,6 +13,7 @@ const config = {
 	},
 	rules: {
 		'node/no-missing-require': ['error', { allowModules: ['vscode'] }],
+		'require-jsdoc': 'error',
 	},
 };
 

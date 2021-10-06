@@ -28,17 +28,17 @@ module.exports = function stylelintWarningToVscodeDiagnostic(
 	 */
 	const ruleDocUrl = ruleDocUrlProvider(warning.rule);
 
-	return Diagnostic.create(
+	const diagnostic = Diagnostic.create(
 		Range.create(position, position),
 		warning.text,
 		DiagnosticSeverity[warning.severity === 'warning' ? 'Warning' : 'Error'],
-		// @ts-expect-error -- It is a types bug. DiagnosticCode exists but is not accepted in create argument.
-		ruleDocUrl
-			? {
-					value: warning.rule,
-					target: ruleDocUrl,
-			  }
-			: warning.rule,
+		warning.rule,
 		'stylelint',
 	);
+
+	if (ruleDocUrl) {
+		diagnostic.codeDescription = { href: ruleDocUrl };
+	}
+
+	return diagnostic;
 };

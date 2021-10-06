@@ -3,9 +3,9 @@
 exports[`stylelintVSCode() should be resolved with diagnostics when it lints CSS successfully 1`] = `
 Array [
   Object {
-    "code": Object {
-      "target": "https://stylelint.io/user-guide/rules/string-quotes",
-      "value": "string-quotes",
+    "code": "string-quotes",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/string-quotes",
     },
     "message": "Expected single quotes (string-quotes)",
     "range": Object {
@@ -22,9 +22,9 @@ Array [
     "source": "stylelint",
   },
   Object {
-    "code": Object {
-      "target": "https://stylelint.io/user-guide/rules/indentation",
-      "value": "indentation",
+    "code": "indentation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 0 tabs (indentation)",
     "range": Object {
@@ -172,9 +172,9 @@ Array [
 exports[`stylelintVSCode() should support CSS-in-JS 1`] = `
 Array [
   Object {
-    "code": Object {
-      "target": "https://stylelint.io/user-guide/rules/font-weight-notation",
-      "value": "font-weight-notation",
+    "code": "font-weight-notation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
     },
     "message": "Expected numeric font-weight notation (font-weight-notation)",
     "range": Object {
@@ -191,9 +191,9 @@ Array [
     "source": "stylelint",
   },
   Object {
-    "code": Object {
-      "target": "https://stylelint.io/user-guide/rules/font-weight-notation",
-      "value": "font-weight-notation",
+    "code": "font-weight-notation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
     },
     "message": "Expected numeric font-weight notation (font-weight-notation)",
     "range": Object {
@@ -215,9 +215,9 @@ Array [
 exports[`stylelintVSCode() with a configuration file should adhere to configuration file settings 1`] = `
 Array [
   Object {
-    "code": Object {
-      "target": "https://stylelint.io/user-guide/rules/length-zero-no-unit",
-      "value": "length-zero-no-unit",
+    "code": "length-zero-no-unit",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/length-zero-no-unit",
     },
     "message": "Unexpected unit (length-zero-no-unit)",
     "range": Object {
@@ -240,9 +240,9 @@ exports[`stylelintVSCode() with autofix autofix should work if there are errors 
 Object {
   "diagnostics": Array [
     Object {
-      "code": Object {
-        "target": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
-        "value": "selector-type-no-unknown",
+      "code": "selector-type-no-unknown",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
       },
       "message": "Unexpected unknown type selector \\"unknown\\" (selector-type-no-unknown)",
       "range": Object {
@@ -296,9 +296,9 @@ exports[`stylelintVSCode() with customSyntax should work properly if customSynta
 Object {
   "diagnostics": Array [
     Object {
-      "code": Object {
-        "target": "https://stylelint.io/user-guide/rules/indentation",
-        "value": "indentation",
+      "code": "indentation",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/indentation",
       },
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {
@@ -377,9 +377,9 @@ exports[`stylelintVSCode() with reportNeedlessDisables should work properly if r
 Object {
   "diagnostics": Array [
     Object {
-      "code": Object {
-        "target": "https://stylelint.io/user-guide/rules/indentation",
-        "value": "indentation",
+      "code": "indentation",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/indentation",
       },
       "message": "Expected indentation of 4 spaces (indentation)",
       "range": Object {
@@ -490,9 +490,9 @@ exports[`stylelintVSCode() with stylelintPath should work properly if stylelintP
 Object {
   "diagnostics": Array [
     Object {
-      "code": Object {
-        "target": "https://stylelint.io/user-guide/rules/indentation",
-        "value": "indentation",
+      "code": "indentation",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/indentation",
       },
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {

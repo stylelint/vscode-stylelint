@@ -4,8 +4,6 @@ exports[`vscode-stylelint with "stylelint.stylelintPath" should work even if "st
 Array [
   Object {
     "code": "fake",
-    "data": undefined,
-    "hasDiagnosticCode": false,
     "message": "Fake result",
     "range": Object {
       "end": Object {
@@ -17,7 +15,7 @@ Array [
         "line": 0,
       },
     },
-    "severity": 0,
+    "severity": 1,
     "source": "stylelint",
   },
 ]

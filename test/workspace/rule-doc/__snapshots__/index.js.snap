@@ -4,8 +4,6 @@ exports[`vscode-stylelint lint test should display correctly that rule documenta
 Array [
   Object {
     "code": "plugin/foo-bar",
-    "data": undefined,
-    "hasDiagnosticCode": false,
     "message": "Bar (plugin/foo-bar)",
     "range": Object {
       "end": Object {
@@ -17,20 +15,14 @@ Array [
         "line": 0,
       },
     },
-    "severity": 0,
+    "severity": 1,
     "source": "stylelint",
   },
   Object {
-    "code": Object {
-      "target": Object {
-        "authority": "stylelint.io",
-        "path": "/user-guide/rules/color-no-invalid-hex",
-        "scheme": "https",
-      },
-      "value": "color-no-invalid-hex",
+    "code": "color-no-invalid-hex",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
     },
-    "data": undefined,
-    "hasDiagnosticCode": true,
     "message": "Unexpected invalid hex color \\"#y3\\" (color-no-invalid-hex)",
     "range": Object {
       "end": Object {
@@ -42,20 +34,14 @@ Array [
         "line": 6,
       },
     },
-    "severity": 0,
+    "severity": 1,
     "source": "stylelint",
   },
   Object {
-    "code": Object {
-      "target": Object {
-        "authority": "stylelint.io",
-        "path": "/user-guide/rules/indentation",
-        "scheme": "https",
-      },
-      "value": "indentation",
+    "code": "indentation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
-    "data": undefined,
-    "hasDiagnosticCode": true,
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
@@ -67,7 +53,7 @@ Array [
         "line": 2,
       },
     },
-    "severity": 0,
+    "severity": 1,
     "source": "stylelint",
   },
 ]

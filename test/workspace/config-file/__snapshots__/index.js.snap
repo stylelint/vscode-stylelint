@@ -3,16 +3,10 @@
 exports[`vscode-stylelint with "stylelint.configFile" should work even if "stylelint.configFile" is defined 1`] = `
 Array [
   Object {
-    "code": Object {
-      "target": Object {
-        "authority": "stylelint.io",
-        "path": "/user-guide/rules/color-hex-case",
-        "scheme": "https",
-      },
-      "value": "color-hex-case",
+    "code": "color-hex-case",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/color-hex-case",
     },
-    "data": undefined,
-    "hasDiagnosticCode": true,
     "message": "Expected \\"#fff\\" to be \\"#FFF\\" (color-hex-case)",
     "range": Object {
       "end": Object {
@@ -24,20 +18,14 @@ Array [
         "line": 2,
       },
     },
-    "severity": 0,
+    "severity": 1,
     "source": "stylelint",
   },
   Object {
-    "code": Object {
-      "target": Object {
-        "authority": "stylelint.io",
-        "path": "/user-guide/rules/indentation",
-        "scheme": "https",
-      },
-      "value": "indentation",
+    "code": "indentation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
-    "data": undefined,
-    "hasDiagnosticCode": true,
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
@@ -49,7 +37,7 @@ Array [
         "line": 2,
       },
     },
-    "severity": 0,
+    "severity": 1,
     "source": "stylelint",
   },
 ]

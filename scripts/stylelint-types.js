@@ -20,7 +20,10 @@ if (!version) {
 
 const args = new Set(process.argv.slice(2));
 
-/** Checks if the Stylelint types file is up to date. */
+/**
+ * Checks if the Stylelint types file is up to date.
+ * @returns {Promise<void>}
+ */
 const checkTypesVersion = async () => {
 	try {
 		const downloadedVersion = (await fs.readFile(typesVersionPath, 'utf8'))?.trim();
@@ -44,7 +47,10 @@ const checkTypesVersion = async () => {
 	}
 };
 
-/** Downloads the stylelint types file for the currently installed version of Stylelint. */
+/**
+ * Downloads the stylelint types file for the currently installed version of Stylelint.
+ * @returns {Promise<void>}
+ */
 const downloadTypes = async () => {
 	const typesURL = `https://raw.githubusercontent.com/stylelint/stylelint/${version}/types/stylelint/index.d.ts`;
 

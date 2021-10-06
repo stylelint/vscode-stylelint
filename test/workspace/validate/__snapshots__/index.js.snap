@@ -22,16 +22,10 @@ a {
 exports[`vscode-stylelint with "stylelint.validate" should be ignored lint and autofix on scss 1`] = `
 Array [
   Object {
-    "code": Object {
-      "target": Object {
-        "authority": "stylelint.io",
-        "path": "/user-guide/rules/indentation",
-        "scheme": "https",
-      },
-      "value": "indentation",
+    "code": "indentation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
-    "data": undefined,
-    "hasDiagnosticCode": true,
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
@@ -43,7 +37,7 @@ Array [
         "line": 2,
       },
     },
-    "severity": 0,
+    "severity": 1,
     "source": "stylelint",
   },
 ]

@@ -3,19 +3,20 @@
 const { join, resolve } = require('path');
 const { pathToFileURL } = require('url');
 
-const createDocument = require('vscode-languageserver').TextDocument.create;
+const createTextDocument = require('vscode-languageserver').TextDocument.create;
 const stylelintVSCode = require('../../../src/stylelint-vscode');
 
-class Document {
-	constructor(uri, languageId, contents) {
-		return createDocument(
-			uri ? pathToFileURL(resolve(__dirname, '..', uri)).toString() : 'Untitled:Untitled',
-			languageId,
-			1,
-			contents,
-		);
-	}
-}
+const createDocument = (
+	/** @type {string | null} */ uri,
+	/** @type {string} */ languageId,
+	/** @type {string} */ contents,
+) =>
+	createTextDocument(
+		uri ? pathToFileURL(resolve(__dirname, '..', uri)).toString() : 'Untitled:Untitled',
+		languageId,
+		1,
+		contents,
+	);
 
 describe('stylelintVSCode()', () => {
 	beforeAll(() => {
@@ -24,7 +25,7 @@ describe('stylelintVSCode()', () => {
 
 	test('should be resolved with diagnostics when it lints CSS successfully', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document(null, 'css', '  a[id="id"]{}'), {
+		const result = await stylelintVSCode(createDocument(null, 'css', '  a[id="id"]{}'), {
 			config: {
 				rules: {
 					'string-quotes': ['single', { severity: 'warning' }],
@@ -38,7 +39,7 @@ describe('stylelintVSCode()', () => {
 
 	test('should be resolved with an empty array when no errors and warnings are reported', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document(null, 'scss', ''), {
+		const result = await stylelintVSCode(createDocument(null, 'scss', ''), {
 			config: { rules: { indentation: [2] } },
 		});
 
@@ -48,7 +49,7 @@ describe('stylelintVSCode()', () => {
 	test('should be resolved with one diagnostic when the CSS is broken', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				'markdown.md',
 				'markdown',
 				`# Title
@@ -74,7 +75,7 @@ describe('stylelintVSCode()', () => {
 
 	test('should be resolved even if no configs are defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document(null, 'plaintext', '<style>a{}</style>'), {
+		const result = await stylelintVSCode(createDocument(null, 'plaintext', '<style>a{}</style>'), {
 			syntax: 'html',
 		});
 
@@ -84,7 +85,7 @@ describe('stylelintVSCode()', () => {
 	test('should support `.stylelintignore`.', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document('listed-in-stylelintignore.css', 'css', '}'),
+			createDocument('listed-in-stylelintignore.css', 'css', '}'),
 			{
 				ignorePath: require.resolve('./.stylelintignore'),
 			},
@@ -95,12 +96,15 @@ describe('stylelintVSCode()', () => {
 
 	test('should support non-standard CSS syntax with `syntax` option', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('single-line-comment.scss', 'scss', '//Hi'), {
-			syntax: 'scss',
-			config: {
-				rules: {},
+		const result = await stylelintVSCode(
+			createDocument('single-line-comment.scss', 'scss', '//Hi'),
+			{
+				syntax: 'scss',
+				config: {
+					rules: {},
+				},
 			},
-		});
+		);
 
 		expect(result.diagnostics).toEqual([]);
 	});
@@ -108,7 +112,7 @@ describe('stylelintVSCode()', () => {
 	test('should support CSS-in-JS', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				null,
 				'javascript',
 				`import glamorous from 'glamorous';
@@ -129,7 +133,7 @@ font: normal
 	test('should set `codeFilename` option from a TextDocument', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				'should-be-ignored.xml',
 				'xml',
 				`<style>
@@ -152,7 +156,7 @@ a { color: #000 }
 	test('should support `processors` option', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document('processors.tsx', 'typescriptreact', 'styled.p`"`'),
+			createDocument('processors.tsx', 'typescriptreact', 'styled.p`"`'),
 			{
 				config: {
 					processors: ['stylelint-processor-styled-components'],
@@ -167,7 +171,7 @@ a { color: #000 }
 	test('should check CSS syntax even if no configuration is provided', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document('unclosed.xml', 'xml', '<style>a{color:rgba(}</style>'),
+			createDocument('unclosed.xml', 'xml', '<style>a{color:rgba(}</style>'),
 		);
 
 		expect(result.diagnostics).toMatchSnapshot();
@@ -175,14 +179,14 @@ a { color: #000 }
 
 	test('should check CSS syntax even if no rule is provided', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('at.xsl', 'xsl', '<style>@</style>'));
+		const result = await stylelintVSCode(createDocument('at.xsl', 'xsl', '<style>@</style>'));
 
 		expect(result.diagnostics).toMatchSnapshot();
 	});
 
 	test('should be resolved even if no rules are defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('no-rules.css', 'css', 'a{}'), {
+		const result = await stylelintVSCode(createDocument('no-rules.css', 'css', 'a{}'), {
 			config: {},
 		});
 
@@ -191,22 +195,25 @@ a { color: #000 }
 
 	test('should reject with a reason when it takes incorrect options', async () => {
 		expect.assertions(1);
-		const promise = stylelintVSCode(new Document('invalid-options.css', 'css', '  a[id="id"]{}'), {
-			config: {
-				rules: {
-					'string-quotes': 'single',
-					'color-hex-case': 'foo',
-					'at-rule-empty-line-before': ['always', { bar: true }],
+		const promise = stylelintVSCode(
+			createDocument('invalid-options.css', 'css', '  a[id="id"]{}'),
+			{
+				config: {
+					rules: {
+						'string-quotes': 'single',
+						'color-hex-case': 'foo',
+						'at-rule-empty-line-before': ['always', { bar: true }],
+					},
 				},
 			},
-		});
+		);
 
 		await expect(promise).rejects.toThrowErrorMatchingSnapshot();
 	});
 
 	test('should be resolved with diagnostics when the rules include unknown rules', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('unknown-rule.css', 'css', 'b{}'), {
+		const result = await stylelintVSCode(createDocument('unknown-rule.css', 'css', 'b{}'), {
 			config: {
 				rules: {
 					'this-rule-does-not-exist': 1,
@@ -227,7 +234,7 @@ describe('stylelintVSCode() with a configuration file', () => {
 	test('should adhere to configuration file settings', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				join(__dirname, 'has-config-file.tsx'),
 				'typescriptreact',
 				`
@@ -263,7 +270,7 @@ describe('stylelintVSCode() with autofix', () => {
 
 	test('autofix should work properly if configs are defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document(null, 'css', 'a\n{\ncolor:red;\n}'), {
+		const result = await stylelintVSCode(createDocument(null, 'css', 'a\n{\ncolor:red;\n}'), {
 			config: { rules: { indentation: [2] } },
 			fix: true,
 		});
@@ -273,7 +280,7 @@ describe('stylelintVSCode() with autofix', () => {
 
 	test('autofix should only work properly for syntax errors if no rules are defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('no-rules.css', 'css', 'a {'), {
+		const result = await stylelintVSCode(createDocument('no-rules.css', 'css', 'a {'), {
 			config: {},
 			fix: true,
 		});
@@ -283,7 +290,7 @@ describe('stylelintVSCode() with autofix', () => {
 
 	test('JS file autofix should not change the content if no rules are defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('no-rules.js', 'javascript', '"a"'), {
+		const result = await stylelintVSCode(createDocument('no-rules.js', 'javascript', '"a"'), {
 			config: {},
 			fix: true,
 		});
@@ -294,7 +301,7 @@ describe('stylelintVSCode() with autofix', () => {
 	test('autofix should ignore if the file matches the ignoreFiles', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document('should-be-ignored.js', 'javascript', '"a"'),
+			createDocument('should-be-ignored.js', 'javascript', '"a"'),
 			{
 				config: {
 					rules: {},
@@ -310,7 +317,7 @@ describe('stylelintVSCode() with autofix', () => {
 	test('autofix should work if there is syntax errors in css', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				'test.css',
 				'css',
 				`
@@ -332,7 +339,7 @@ describe('stylelintVSCode() with autofix', () => {
 	test('autofix should ignore if there is syntax errors in scss', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				'test.scss',
 				'scss',
 				`
@@ -353,7 +360,7 @@ describe('stylelintVSCode() with autofix', () => {
 
 	test('autofix should work if there are errors that cannot be autofixed', async () => {
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				'test.css',
 				'css',
 				`
@@ -381,7 +388,7 @@ unknown {
 describe('stylelintVSCode() with customSyntax', () => {
 	test('should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('test.css', 'css', 'a\n   color:red'), {
+		const result = await stylelintVSCode(createDocument('test.css', 'css', 'a\n   color:red'), {
 			config: { rules: { indentation: [2] } },
 			customSyntax: 'postcss-sass',
 		});
@@ -391,7 +398,7 @@ describe('stylelintVSCode() with customSyntax', () => {
 
 	test('autofix should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(new Document('test.css', 'css', 'a\n   color:red'), {
+		const result = await stylelintVSCode(createDocument('test.css', 'css', 'a\n   color:red'), {
 			config: { rules: { indentation: [2] } },
 			customSyntax: 'postcss-sass',
 			fix: true,
@@ -405,7 +412,7 @@ describe('stylelintVSCode() with reportNeedlessDisables', () => {
 	test('should work properly if reportNeedlessDisables is true', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				'test.css',
 				'css',
 				`
@@ -444,7 +451,7 @@ describe('stylelintVSCode() with reportInvalidScopeDisables', () => {
 	test('should work properly if reportInvalidScopeDisables is true', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document(
+			createDocument(
 				'test.css',
 				'css',
 				`
@@ -477,7 +484,7 @@ describe('stylelintVSCode() with stylelintPath', () => {
 	test('should work properly if stylelintPath is defined', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document('test.css', 'css', 'a{\n   color:red}'),
+			createDocument('test.css', 'css', 'a{\n   color:red}'),
 			{
 				config: { rules: { indentation: [2] } },
 			},
@@ -492,7 +499,7 @@ describe('stylelintVSCode() with stylelintPath', () => {
 	test('should work properly if custom path is defined in stylelintPath', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
-			new Document('test.css', 'css', 'a{\n   color:red}'),
+			createDocument('test.css', 'css', 'a{\n   color:red}'),
 			{
 				config: { rules: { indentation: [2] } },
 			},
