@@ -218,7 +218,7 @@
     "@types/path-is-inside": "^1.0.0",
     "@types/vscode": "1.56.0",
     "@vscode/test-electron": "^1.6.2",
-    "esbuild": "^0.13.3",
+    "esbuild": "^0.13.4",
     "eslint": "^7.5.0",
     "eslint-config-stylelint": "^14.0.0",
     "fast-glob": "^3.2.7",
