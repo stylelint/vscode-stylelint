@@ -50,7 +50,7 @@ _You can see or change the current document's language in the bottom-right corne
 
 vscode-stylelint 1.x expects to use Stylelint 14 at minimum. Usage with prior versions of Stylelint is not supported nor recommended. If you want to continue using this extension, upgrade your copy of Stylelint to version 14 or later.
 
-The `syntax` and `configOverrides` options have been removed from Stylelint 14 and this extension. See the [following section](#only-css-and-postcss-are-validated-by-default) for information on how to use different syntaxes.
+The `syntax` and `configOverrides` options have been removed from Stylelint 14 and this extension. See the [following section](#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for information on how to use different syntaxes.
 
 ### ⚠️ Stylelint is No Longer Bundled
 
