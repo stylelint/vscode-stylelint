@@ -3,7 +3,7 @@
 [![Testing](https://github.com/stylelint/vscode-stylelint/workflows/Testing/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml)
 [![Linting](https://github.com/stylelint/vscode-stylelint/workflows/Linting/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/linting.yml)
 
-The official [Visual Studio Code] extension to lint [CSS]/[SCSS]/[Less] with [Stylelint]
+The official [Visual Studio Code] extension for [Stylelint]
 
 ![Screenshot of Stylelint errors displayed in VS Code](media/screenshot.png)
 
@@ -64,7 +64,7 @@ The 0.x versions of this extension, which used Stylelint 13.x and prior, support
 
 In current versions of the extension, the extension only supports validating CSS and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
 
-1. Install the PostCSS syntax for the language you want to validate into your workspace (e.g. [postcss-html] or [postcss-scss]).
+1. Install the PostCSS syntax for the language you want to validate into your workspace, e.g. [postcss-scss].
 1. Configure Stylelint to use the syntax by providing the module name in the [`customSyntax`] option using overrides (or use the [corresponding option](#stylelintcustomsyntax) in this extension's settings).
 
    Example Stylelint config:
