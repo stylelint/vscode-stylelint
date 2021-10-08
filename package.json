@@ -203,7 +203,7 @@
     "@stylelint/postcss-css-in-js": "https://git@github.com/adalinesimonian/postcss-css-in-js.git#bundler-friendly",
     "postcss-syntax": "https://git@github.com/adalinesimonian/postcss-syntax.git#bundler-friendly",
     "postcss-html": "https://git@github.com/adalinesimonian/postcss-html.git#bundler-friendly",
-    "pkg-dir": "^5.0.0",
+    "pkg-dir": "^6.0.1",
     "stylelint": "^13.13.1",
     "vscode-languageclient": "^6.2.0-next.1",
     "vscode-languageserver": "^6.2.0-next.1",
