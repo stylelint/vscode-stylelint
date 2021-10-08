@@ -9,10 +9,11 @@ const config = {
 		indentation: [4],
 	},
 	overrides: [
-		{
-			files: ['**/*.md'],
-			customSyntax: '@stylelint/postcss-markdown',
-		},
+		// TODO: Restore once postcss-markdown is PostCSS 8 compatible
+		// {
+		// 	files: ['**/*.md'],
+		// 	customSyntax: '/postcss-markdown',
+		// },
 		{
 			files: ['**/*.scss'],
 			customSyntax: 'postcss-scss',

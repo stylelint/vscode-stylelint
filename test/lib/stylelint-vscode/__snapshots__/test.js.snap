@@ -88,11 +88,11 @@ Array [
     "range": Object {
       "end": Object {
         "character": 10,
-        "line": 5,
+        "line": 0,
       },
       "start": Object {
         "character": 10,
-        "line": 5,
+        "line": 0,
       },
     },
     "severity": 1,
@@ -129,11 +129,11 @@ Array [
     "message": "At-rule without name (CssSyntaxError)",
     "range": Object {
       "end": Object {
-        "character": 7,
+        "character": 0,
         "line": 0,
       },
       "start": Object {
-        "character": 7,
+        "character": 0,
         "line": 0,
       },
     },

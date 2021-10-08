@@ -251,7 +251,6 @@ This extension contributes the following commands to the command palette:
 
 [postcss extension]: https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language
 [postcss syntax]: https://github.com/postcss/postcss#syntaxes
-[postcss-html]: https://www.npmjs.com/package/postcss-html
 [postcss-scss]: https://www.npmjs.com/package/postcss-scss
 
 <!-- Stylelint -->
