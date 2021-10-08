@@ -62,34 +62,10 @@
           "default": "",
           "description": "Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want stylelint to search for a configuration file."
         },
-        "stylelint.configOverrides": {
-          "type": [
-            "object",
-            "null"
-          ],
-          "default": null,
-          "description": "A partial stylelint config whose properties override the existing ones."
-        },
         "stylelint.configBasedir": {
           "type": "string",
           "default": "",
           "description": "A path to the directory that relative paths defining \"extends\" and \"plugins\" are relative to."
-        },
-        "stylelint.syntax": {
-          "type": "string",
-          "default": "",
-          "enum": [
-            "css",
-            "css-in-js",
-            "html",
-            "less",
-            "markdown",
-            "sass",
-            "scss",
-            "sugarss",
-            ""
-          ],
-          "description": "Specify a syntax. Only use this option if you want to force a specific syntax."
         },
         "stylelint.customSyntax": {
           "type": "string",
@@ -135,26 +111,7 @@
           },
           "default": [
             "css",
-            "html",
-            "javascript",
-            "javascriptreact",
-            "less",
-            "markdown",
-            "postcss",
-            "sass",
-            "scss",
-            "source.css.styled",
-            "source.markdown.math",
-            "styled-css",
-            "sugarss",
-            "svelte",
-            "typescript",
-            "typescriptreact",
-            "vue",
-            "vue-html",
-            "vue-postcss",
-            "xml",
-            "xsl"
+            "postcss"
           ],
           "description": "An array of language ids which should be validated by stylelint."
         },
@@ -166,9 +123,7 @@
           },
           "default": [
             "css",
-            "less",
-            "postcss",
-            "scss"
+            "postcss"
           ],
           "description": "An array of language ids which snippets are provided by stylelint."
         }
@@ -208,6 +163,8 @@
     "vscode-uri": "^3.0.2"
   },
   "devDependencies": {
+    "@stylelint/postcss-css-in-js": "^0.37.2",
+    "@stylelint/postcss-markdown": "^0.36.2",
     "@stylelint/prettier-config": "^2.0.0",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.1",
@@ -224,9 +181,12 @@
     "jest-runner-vscode": "^2.0.0",
     "npm-run-all": "^4.1.5",
     "p-wait-for": "^3.1.0",
+    "postcss": "^8.3.9",
+    "postcss-html": "^0.36.0",
     "postcss-sass": "^0.5.0",
+    "postcss-scss": "^4.0.1",
     "prettier": "^2.3.0",
-    "stylelint": "^13.13.1",
+    "stylelint": "git+https://git@github.com/stylelint/stylelint#v14",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "typescript": "^4.4.3",

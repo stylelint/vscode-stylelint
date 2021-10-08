@@ -48,11 +48,31 @@ const checkTypesVersion = async () => {
 };
 
 /**
+ * Gets the GitHub tag/commit for the given version of Stylelint.
+ * @param {string} lockfileVersion The version of stylelint from the package-lock.json file.
+ * @returns {string}
+ */
+const getTypesTagOrCommitHash = (lockfileVersion) => {
+	if (lockfileVersion.startsWith('git+')) {
+		const match = lockfileVersion.match(/#(.+)$/);
+
+		if (!match || !match[1]) {
+			throw new Error(`Could not find commit hash for ${lockfileVersion}`);
+		}
+
+		return match[1];
+	}
+
+	return lockfileVersion;
+};
+
+/**
  * Downloads the stylelint types file for the currently installed version of Stylelint.
  * @returns {Promise<void>}
  */
 const downloadTypes = async () => {
-	const typesURL = `https://raw.githubusercontent.com/stylelint/stylelint/${version}/types/stylelint/index.d.ts`;
+	const repoVersion = getTypesTagOrCommitHash(version);
+	const typesURL = `https://raw.githubusercontent.com/stylelint/stylelint/${repoVersion}/types/stylelint/index.d.ts`;
 
 	await fs.ensureDir(typesDir);
 

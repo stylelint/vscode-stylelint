@@ -169,7 +169,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should support CSS-in-JS 1`] = `
+exports[`stylelintVSCode() should support CSS-in-JS with customSyntax 1`] = `
 Array [
   Object {
     "code": "font-weight-notation",

@@ -13,27 +13,35 @@ const messages = stylelint.utils.ruleMessages(ruleName, {
  * @typedef {import('stylelint').PostcssResult} PostCSSResult
  */
 
-module.exports = stylelint.createPlugin(ruleName, (/** @type {any} */ primaryOption) => {
-	return function (
-		/** @type {PostCSSRoot} */ postcssRoot,
-		/** @type {PostCSSResult} */ postcssResult,
-	) {
-		const validOptions = stylelint.utils.validateOptions(postcssResult, ruleName, {
-			actual: primaryOption,
-		});
+module.exports = stylelint.createPlugin(
+	ruleName,
+	// TODO: Workaround for bad typings upstream
+	/** @type {import('stylelint').StylelintRule} */ (
+		/** @type {unknown} */ (
+			(/** @type {any} */ primaryOption) => {
+				return (
+					/** @type {PostCSSRoot} */ postcssRoot,
+					/** @type {PostCSSResult} */ postcssResult,
+				) => {
+					const validOptions = stylelint.utils.validateOptions(postcssResult, ruleName, {
+						actual: primaryOption,
+					});
 
-		if (!validOptions) {
-			return;
-		}
+					if (!validOptions) {
+						return;
+					}
 
-		stylelint.utils.report({
-			ruleName,
-			result: postcssResult,
-			message: messages.expected,
-			node: postcssRoot,
-			index: 5,
-		});
-	};
-});
+					stylelint.utils.report({
+						ruleName,
+						result: postcssResult,
+						message: messages.expected,
+						node: postcssRoot,
+						index: 5,
+					});
+				};
+			}
+		)
+	),
+);
 
 module.exports.messages = messages;
