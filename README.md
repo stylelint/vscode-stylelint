@@ -7,7 +7,7 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension to l
 
 ![screenshot](media/screenshot.png)
 
-> **Notice:** 1.x of this extension has breaking changes from 0.x versions, including, but not limited to, changes to which documents are linted by default. See the [migration section](#Migrating-from-vscode-stylelint-0.x/Stylelint-13.x) for more information.
+> **Notice:** 1.x of this extension has breaking changes from 0.x versions, including, but not limited to, changes to which documents are linted by default. See the [migration section](#migrating-from-vscode-stylelint-0xstylelint-13x) for more information.
 
 The extension first looks for a copy of stylelint installed in the open workspace folder, then for a globally installed version if it can't find one.
 
@@ -61,7 +61,7 @@ The 0.x versions of this extension, which used Stylelint 13.x and prior, support
 In current versions of the extension, the extension only supports validating CSS and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
 
 - Install the PostCSS syntax for the language you want to validate into your workspace (e.g. [postcss-html](https://www.npmjs.com/package/postcss-html) or [postcss-scss](https://www.npmjs.com/package/postcss-scss)).
-- Configure Stylelint to use the syntax by providing it with the module name in the [`customSyntax` option](https://stylelint.io/user-guide/usage/options/#customsyntax) using overrides (or use the corresponding option [in this extension's settings](#stylelint.customSyntax)).
+- Configure Stylelint to use the syntax by providing it with the module name in the [`customSyntax` option](https://stylelint.io/user-guide/usage/options/#customsyntax) using overrides (or use the corresponding option [in this extension's settings](#stylelintcustomsyntax)).
 
   Example Stylelint config:
 
@@ -76,7 +76,7 @@ In current versions of the extension, the extension only supports validating CSS
   };
   ```
 
-- [Add the language identifiers](#stylelint.validate) for the documents you want to validate to the extension's workspace or user settings.
+- [Add the language identifiers](#stylelintvalidate) for the documents you want to validate to the extension's workspace or user settings.
 
   Example VS Code config:
 
