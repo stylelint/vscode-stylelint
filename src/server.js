@@ -51,14 +51,10 @@ const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 let config;
 /** @type {string} */
 let configFile;
-/** @type {StylelintConfiguration} */
-let configOverrides;
 /** @type {string} */
 let configBasedir;
 /** @type {PackageManager} */
 let packageManager;
-/** @type { "css-in-js" | "html" | "less" | "markdown" | "sass" | "scss" | "sugarss" | undefined } */
-let syntax;
 /** @type {string} */
 let customSyntax;
 /** @type {boolean} */
@@ -110,10 +106,6 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 			: configFile;
 	}
 
-	if (configOverrides) {
-		options.configOverrides = configOverrides;
-	}
-
 	if (ignoreDisables) {
 		options.ignoreDisables = ignoreDisables;
 	}
@@ -124,10 +116,6 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 
 	if (reportInvalidScopeDisables) {
 		options.reportInvalidScopeDisables = reportInvalidScopeDisables;
-	}
-
-	if (syntax) {
-		options.syntax = syntax;
 	}
 
 	if (customSyntax) {
@@ -375,10 +363,8 @@ connection.onDidChangeConfiguration(({ settings }) => {
 	const oldValidateLanguages = validateLanguages || [];
 
 	config = settings.stylelint.config;
-	configOverrides = settings.stylelint.configOverrides;
 	configFile = settings.stylelint.configFile;
 	configBasedir = settings.stylelint.configBasedir;
-	syntax = settings.stylelint.syntax || undefined;
 	customSyntax = settings.stylelint.customSyntax;
 	ignoreDisables = settings.stylelint.ignoreDisables;
 	reportNeedlessDisables = settings.stylelint.reportNeedlessDisables;

@@ -1,5 +1,7 @@
 declare module 'stylelint' {
-	import { Comment, Result, ResultMessage, Root, Syntax, WarningOptions, Warning } from 'postcss';
+	import { Comment, Result, Message, Root, Syntax, WarningOptions, Warning } from 'postcss';
+	import { GlobbyOptions } from 'globby';
+	import { cosmiconfig } from 'cosmiconfig';
 
 	export type Severity = 'warning' | 'error';
 
@@ -16,6 +18,17 @@ declare module 'stylelint' {
 		| [NonNullable<T>, O];
 	export type StylelintConfigRules = {
 		[ruleName: string]: StylelintConfigRuleSettings<any, Object>;
+	};
+	export type StylelintConfigOverride = Pick<
+		StylelintConfig,
+		| 'plugins'
+		| 'pluginFunctions'
+		| 'processors'
+		| 'processorFunctions'
+		| 'rules'
+		| 'defaultSeverity'
+	> & {
+		files: string | string[];
 	};
 
 	export type DisableOptions = {
@@ -43,6 +56,8 @@ declare module 'stylelint' {
 		reportNeedlessDisables?: DisableSettings;
 		reportInvalidScopeDisables?: DisableSettings;
 		reportDescriptionlessDisables?: DisableSettings;
+		overrides?: StylelintConfigOverride[];
+		customSyntax?: CustomSyntax;
 	};
 
 	// A meta-type that returns a union over all properties of `T` whose values
@@ -52,7 +67,12 @@ declare module 'stylelint' {
 	}[keyof T];
 	export type DisablePropertyName = PropertyNamesOfType<StylelintConfig, DisableSettings>;
 
-	export type CosmiconfigResult = { config: StylelintConfig; filepath: string };
+	// This type has the same properties as `CosmiconfigResult` from `cosmiconfig`.
+	export type StylelintCosmiconfigResult = {
+		config: StylelintConfig;
+		filepath: string;
+		isEmpty?: boolean;
+	} | null;
 
 	export type DisabledRange = {
 		comment: Comment;
@@ -80,6 +100,7 @@ declare module 'stylelint' {
 		stylelintError?: boolean;
 		disableWritingFix?: boolean;
 		config?: StylelintConfig;
+		ruleDisableFix?: boolean;
 	};
 
 	type EmptyResult = {
@@ -92,7 +113,7 @@ declare module 'stylelint' {
 				};
 			};
 		};
-		messages: ResultMessage[];
+		messages: Message[];
 		opts: undefined;
 	};
 
@@ -127,7 +148,6 @@ declare module 'stylelint' {
 		config?: StylelintConfig;
 		configFile?: string;
 		configBasedir?: string;
-		configOverrides?: StylelintConfig;
 		ignoreDisables?: boolean;
 		ignorePath?: string;
 		reportInvalidScopeDisables?: boolean;
@@ -138,13 +158,22 @@ declare module 'stylelint' {
 		fix?: boolean;
 	};
 
-	export type StylelintPluginContext = { fix?: boolean; newline?: string };
+	export type StylelintPluginContext = {
+		fix?: boolean | undefined;
+		newline?: string | undefined;
+	};
 
-	export type StylelintRule = (
-		primaryOption: any,
-		secondaryOptions: object,
+	export type StylelintRuleMessages = Record<string, string | ((...args: any[]) => string)>;
+
+	export type StylelintRule<P = any, S = any> = ((
+		primaryOption: P,
+		secondaryOptions: Record<string, S>,
 		context: StylelintPluginContext,
-	) => (root: Root, result: PostcssResult) => Promise<void> | void;
+	) => (root: Root, result: PostcssResult) => Promise<void> | void) & {
+		ruleName: string;
+		messages: StylelintRuleMessages;
+		primaryOptionArray?: boolean;
+	};
 
 	export type GetPostcssOptions = {
 		code?: string;
@@ -159,31 +188,27 @@ declare module 'stylelint' {
 
 	export type StylelintInternalApi = {
 		_options: StylelintStandaloneOptions;
-		_extendExplorer: {
-			search: (s: string) => Promise<null | CosmiconfigResult>;
-			load: (s: string) => Promise<null | CosmiconfigResult>;
-		};
-		_fullExplorer: {
-			search: (s: string) => Promise<null | CosmiconfigResult>;
-			load: (s: string) => Promise<null | CosmiconfigResult>;
-		};
-		_configCache: Map<string, Object>;
-		_specifiedConfigCache: Map<StylelintConfig, Object>;
+		_extendExplorer: ReturnType<typeof cosmiconfig>;
+		_specifiedConfigCache: Map<StylelintConfig, Promise<StylelintCosmiconfigResult>>;
 		_postcssResultCache: Map<string, Result>;
 
 		_getPostcssResult: (options?: GetPostcssOptions) => Promise<Result>;
 		_lintSource: (options: GetLintSourceOptions) => Promise<PostcssResult>;
-		_createStylelintResult: Function;
-		_createEmptyPostcssResult?: Function;
+		_createStylelintResult: (
+			postcssResult: PostcssResult,
+			filePath?: string,
+		) => Promise<StylelintResult>;
 
-		getConfigForFile: (s?: string) => Promise<{ config: StylelintConfig; filepath: string } | null>;
+		getConfigForFile: (
+			searchPath?: string,
+			filePath?: string,
+		) => Promise<StylelintCosmiconfigResult>;
 		isPathIgnored: (s?: string) => Promise<boolean>;
-		lintSource: Function;
 	};
 
 	export type StylelintStandaloneOptions = {
 		files?: string | Array<string>;
-		globbyOptions?: Object;
+		globbyOptions?: GlobbyOptions;
 		cache?: boolean;
 		cacheLocation?: string;
 		code?: string;
@@ -191,8 +216,6 @@ declare module 'stylelint' {
 		config?: StylelintConfig;
 		configFile?: string;
 		configBasedir?: string;
-		configOverrides?: StylelintConfig;
-		printConfig?: string;
 		ignoreDisables?: boolean;
 		ignorePath?: string;
 		ignorePattern?: string[];
@@ -200,12 +223,14 @@ declare module 'stylelint' {
 		reportNeedlessDisables?: boolean;
 		reportInvalidScopeDisables?: boolean;
 		maxWarnings?: number;
+		/** @deprecated Use `customSyntax` instead. */
 		syntax?: string;
 		customSyntax?: CustomSyntax;
 		formatter?: FormatterIdentifier;
 		disableDefaultIgnores?: boolean;
 		fix?: boolean;
 		allowEmptyInput?: boolean;
+		quiet?: boolean;
 	};
 
 	export type StylelintCssSyntaxError = {
@@ -253,11 +278,6 @@ declare module 'stylelint' {
 		rule: string;
 		start: number;
 		end?: number;
-
-		// This is for backwards-compatibility with formatters that were written
-		// when this name was used instead of `rule`. It should be avoided for new
-		// formatters.
-		unusedRule: string;
 	};
 
 	export type RangeType = DisabledRange & { used?: boolean };
@@ -299,4 +319,8 @@ declare module 'stylelint' {
 	};
 
 	export type StylelintDisableOptionsReport = Array<StylelintDisableReportEntry>;
+
+	export type PostcssPluginOptions =
+		| Omit<StylelintStandaloneOptions, 'syntax' | 'customSyntax'>
+		| StylelintConfig;
 }

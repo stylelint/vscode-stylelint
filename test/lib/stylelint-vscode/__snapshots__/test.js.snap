@@ -88,11 +88,11 @@ Array [
     "range": Object {
       "end": Object {
         "character": 10,
-        "line": 5,
+        "line": 0,
       },
       "start": Object {
         "character": 10,
-        "line": 5,
+        "line": 0,
       },
     },
     "severity": 1,
@@ -129,11 +129,11 @@ Array [
     "message": "At-rule without name (CssSyntaxError)",
     "range": Object {
       "end": Object {
-        "character": 7,
+        "character": 0,
         "line": 0,
       },
       "start": Object {
-        "character": 7,
+        "character": 0,
         "line": 0,
       },
     },
@@ -169,7 +169,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should support CSS-in-JS 1`] = `
+exports[`stylelintVSCode() should support CSS-in-JS with customSyntax 1`] = `
 Array [
   Object {
     "code": "font-weight-notation",

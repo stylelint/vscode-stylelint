@@ -19,10 +19,6 @@ const createDocument = (
 	);
 
 describe('stylelintVSCode()', () => {
-	beforeAll(() => {
-		process.chdir(resolve(__dirname, '../../..'));
-	});
-
 	test('should be resolved with diagnostics when it lints CSS successfully', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(createDocument(null, 'css', '  a[id="id"]{}'), {
@@ -48,35 +44,49 @@ describe('stylelintVSCode()', () => {
 
 	test('should be resolved with one diagnostic when the CSS is broken', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(
-			createDocument(
-				'markdown.md',
-				'markdown',
-				`# Title
+		// TODO: Restore once postcss-markdown is PostCSS 8 compatible
+		// 		const result = await stylelintVSCode(
+		// 			createDocument(
+		// 				'markdown.md',
+		// 				'markdown',
+		// 				`# Title
 
-# Code block
+		// # Code block
 
-\`\`\`css
-          a{
-\`\`\`
-`,
-			),
-			{
-				config: {
-					rules: {
-						indentation: ['tab'],
-					},
+		// \`\`\`css
+		//           a{
+		// \`\`\`
+		// `,
+		// 			),
+		// 			{
+		// 				config: {
+		// 					customSyntax: 'postcss-markdown',
+		// 					rules: {
+		// 						indentation: ['tab'],
+		// 					},
+		// 				},
+		// 			},
+		// 		);
+		const result = await stylelintVSCode(createDocument('scss.scss', 'scss', '          a{\n'), {
+			config: {
+				customSyntax: 'postcss-scss',
+				rules: {
+					indentation: ['tab'],
 				},
 			},
-		);
+		});
 
 		expect(result.diagnostics).toMatchSnapshot();
 	});
 
 	test('should be resolved even if no configs are defined', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(createDocument(null, 'plaintext', '<style>a{}</style>'), {
-			syntax: 'html',
+		// TODO: Restore once postcss-html is PostCSS 8 compatible
+		// const result = await stylelintVSCode(createDocument(null, 'plaintext', '<style>a{}</style>'), {
+		// 	customSyntax: 'postcss-html',
+		// });
+		const result = await stylelintVSCode(createDocument(null, 'plaintext', 'a{}'), {
+			customSyntax: 'postcss-scss',
 		});
 
 		expect(result.diagnostics).toEqual([]);
@@ -94,22 +104,7 @@ describe('stylelintVSCode()', () => {
 		expect(result.diagnostics).toEqual([]);
 	});
 
-	test('should support non-standard CSS syntax with `syntax` option', async () => {
-		expect.assertions(1);
-		const result = await stylelintVSCode(
-			createDocument('single-line-comment.scss', 'scss', '//Hi'),
-			{
-				syntax: 'scss',
-				config: {
-					rules: {},
-				},
-			},
-		);
-
-		expect(result.diagnostics).toEqual([]);
-	});
-
-	test('should support CSS-in-JS', async () => {
+	test('should support CSS-in-JS with customSyntax', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
 			createDocument(
@@ -123,7 +118,10 @@ font: normal
 \`;`,
 			),
 			{
-				config: { rules: { 'font-weight-notation': ['numeric'] } },
+				config: {
+					customSyntax: '@stylelint/postcss-css-in-js',
+					rules: { 'font-weight-notation': ['numeric'] },
+				},
 			},
 		);
 
@@ -179,7 +177,13 @@ a { color: #000 }
 
 	test('should check CSS syntax even if no rule is provided', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(createDocument('at.xsl', 'xsl', '<style>@</style>'));
+		// TODO: Restore once postcss-html is PostCSS 8 compatible
+		// const result = await stylelintVSCode(createDocument('at.xsl', 'xsl', '<style>@</style>'), {
+		// 	customSyntax: 'postcss-html',
+		// });
+		const result = await stylelintVSCode(createDocument('at.scss', 'scss', '@'), {
+			customSyntax: 'postcss-scss',
+		});
 
 		expect(result.diagnostics).toMatchSnapshot();
 	});
@@ -227,10 +231,6 @@ a { color: #000 }
 });
 
 describe('stylelintVSCode() with a configuration file', () => {
-	beforeAll(() => {
-		process.chdir(__dirname);
-	});
-
 	test('should adhere to configuration file settings', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(
@@ -245,18 +245,7 @@ const what: string = "is this";
 }} />;
 `,
 			),
-			{
-				configOverrides: {
-					rules: {
-						'property-no-unknown': [
-							true,
-							{
-								ignoreProperties: 'what',
-							},
-						],
-					},
-				},
-			},
+			{ configFile: join(__dirname, 'no-unknown.config.js') },
 		);
 
 		expect(result.diagnostics).toMatchSnapshot();
@@ -264,10 +253,6 @@ const what: string = "is this";
 });
 
 describe('stylelintVSCode() with autofix', () => {
-	beforeAll(() => {
-		process.chdir(resolve(__dirname, '../../..'));
-	});
-
 	test('autofix should work properly if configs are defined', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(createDocument(null, 'css', 'a\n{\ncolor:red;\n}'), {
@@ -291,6 +276,7 @@ describe('stylelintVSCode() with autofix', () => {
 	test('JS file autofix should not change the content if no rules are defined', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(createDocument('no-rules.js', 'javascript', '"a"'), {
+			customSyntax: '@stylelint/postcss-css-in-js',
 			config: {},
 			fix: true,
 		});

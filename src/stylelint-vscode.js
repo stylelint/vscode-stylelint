@@ -23,7 +23,6 @@ const stylelintWarningToVscodeDiagnostic = require('./warnings-to-diagnostics');
  * @property {({ diagnostic: Diagnostic, range: DisableReportRange })[]} [invalidScopeDisables]
  * @typedef { import('stylelint').StylelintStandaloneOptions } BaseStylelintLinterOptions
  * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
- * @typedef { "css-in-js" | "html"  | "less"  | "markdown"  | "sass"   | "scss" | "sugarss" } SyntaxType
  * @typedef { {unusedRule:string,start:number,end:?number} } DisableReportRange
  * @typedef { { source?: string, ranges: DisableReportRange[] } } StylelintDisableReportEntry
  * @typedef { import('./warnings-to-diagnostics').RuleDocUrlProvider } RuleDocUrlProvider
@@ -38,41 +37,6 @@ class InvalidOptionError extends Error {
 		super(reasons.join('\n'));
 		this.reasons = reasons;
 	}
-}
-
-// https://github.com/stylelint/stylelint/blob/12.0.1/lib/getPostcssResult.js#L82-L88
-/** @type {Set<SyntaxType> } */
-const SUPPORTED_SYNTAXES = new Set([
-	'css-in-js',
-	'html',
-	'less',
-	'markdown',
-	'sass',
-	'scss',
-	'sugarss',
-]);
-
-/** @type {Map<string, SyntaxType> } */
-const LANGUAGE_EXTENSION_EXCEPTION_PAIRS = new Map([
-	['javascript', 'css-in-js'],
-	['javascriptreact', 'css-in-js'],
-	['source.css.styled', 'css-in-js'],
-	['source.markdown.math', 'markdown'],
-	['styled-css', 'css-in-js'],
-	['svelte', 'html'],
-	['typescript', 'css-in-js'],
-	['typescriptreact', 'css-in-js'],
-	['vue-html', 'html'],
-	['xml', 'html'],
-	['xsl', 'html'],
-]);
-
-/**
- * @param {string} lang
- * @returns {lang is SyntaxType}
- */
-function isSupportedSyntax(lang) {
-	return SUPPORTED_SYNTAXES.has(/** @type {SyntaxType} */ (lang));
 }
 
 /**
@@ -186,22 +150,8 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 
 	if (codeFilename) {
 		priorOptions.codeFilename = codeFilename;
-	} else {
-		if (!has(options, 'syntax')) {
-			if (isSupportedSyntax(textDocument.languageId)) {
-				priorOptions.syntax = textDocument.languageId;
-			} else {
-				const syntax = LANGUAGE_EXTENSION_EXCEPTION_PAIRS.get(textDocument.languageId);
-
-				if (syntax) {
-					priorOptions.syntax = syntax;
-				}
-			}
-		}
-
-		if (!at(options, 'config.rules')[0]) {
-			priorOptions.config = { rules: {} };
-		}
+	} else if (!at(options, 'config.rules')[0]) {
+		priorOptions.config = { rules: {} };
 	}
 
 	const stylelint = await resolveStylelint({ ...serverOptions, textDocument });

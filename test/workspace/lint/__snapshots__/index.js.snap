@@ -24,30 +24,6 @@ Array [
 ]
 `;
 
-exports[`vscode-stylelint lint test should work on markdown 1`] = `
-Array [
-  Object {
-    "code": "indentation",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
-    },
-    "message": "Expected indentation of 4 spaces (indentation)",
-    "range": Object {
-      "end": Object {
-        "character": 2,
-        "line": 4,
-      },
-      "start": Object {
-        "character": 2,
-        "line": 4,
-      },
-    },
-    "severity": 1,
-    "source": "stylelint",
-  },
-]
-`;
-
 exports[`vscode-stylelint lint test should work on scss 1`] = `
 Array [
   Object {
