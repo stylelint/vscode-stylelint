@@ -3,7 +3,6 @@
 const path = require('path');
 const pathIsInside = require('path-is-inside');
 const { at, has, map, stubString } = require('lodash');
-const { Diagnostic, DiagnosticSeverity, Position, Range } = require('vscode-languageserver-types');
 const { execSync } = require('child_process');
 const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
@@ -22,96 +21,38 @@ class InvalidOptionError extends Error {
 
 /**
  * @param {stylelint.LinterResult} resultContainer
- * @param {lsp.TextDocument} textDocument
  * @param {RuleDocUrlProvider} ruleDocUrlProvider
  * @returns {StylelintVSCodeResult}
  */
-function processResults(resultContainer, textDocument, ruleDocUrlProvider) {
+function processResults(resultContainer, ruleDocUrlProvider) {
 	const { results } = resultContainer;
-	/** @type {stylelint.DisableReportEntry[]} */
-	// @ts-expect-error -- The stylelint type is old.
-	const needlessDisables = resultContainer.needlessDisables;
-	/** @type {stylelint.DisableReportEntry[]} */
-	// @ts-expect-error -- The stylelint type is old.
-	const invalidScopeDisables = resultContainer.invalidScopeDisables;
 
-	// https://github.com/stylelint/stylelint/blob/12.0.1/lib/standalone.js#L128-L134
-	if (
-		results.length === 0 &&
-		(!needlessDisables || needlessDisables.length === 0) &&
-		(!invalidScopeDisables || invalidScopeDisables.length === 0)
-	) {
-		return {
-			diagnostics: [],
-		};
+	if (results.length === 0) {
+		return { diagnostics: [] };
 	}
 
 	const [{ invalidOptionWarnings, warnings, ignored }] = results;
 
 	if (ignored) {
-		return {
-			diagnostics: [],
-		};
+		return { diagnostics: [] };
 	}
 
 	if (invalidOptionWarnings.length !== 0) {
 		throw new InvalidOptionError(map(invalidOptionWarnings, 'text'));
 	}
 
-	const diagnostics = [];
-	let needlessDisableResults;
-	let invalidScopeDisableResults;
-
-	const needlessDisableSourceReport = needlessDisables && needlessDisables[0];
-
-	if (needlessDisableSourceReport) {
-		needlessDisableResults = [];
-
-		for (const range of needlessDisableSourceReport.ranges) {
-			const diagnostic = stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocument);
-
-			diagnostics.push(diagnostic);
-			needlessDisableResults.push({
-				range,
-				diagnostic,
-			});
-		}
-	}
-
-	const invalidScopeDisableSourceReport = invalidScopeDisables && invalidScopeDisables[0];
-
-	if (invalidScopeDisableSourceReport) {
-		invalidScopeDisableResults = [];
-
-		for (const range of invalidScopeDisableSourceReport.ranges) {
-			const diagnostic = stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocument);
-
-			diagnostics.push(diagnostic);
-			invalidScopeDisableResults.push({
-				range,
-				diagnostic,
-			});
-		}
-	}
-
-	diagnostics.push(
-		...warnings.map((warning) => stylelintWarningToVscodeDiagnostic(warning, ruleDocUrlProvider)),
+	const diagnostics = warnings.map((warning) =>
+		stylelintWarningToVscodeDiagnostic(warning, ruleDocUrlProvider),
 	);
 
 	if (has(resultContainer, 'output') && resultContainer.output) {
 		return {
 			diagnostics,
 			output: resultContainer.output,
-			...(needlessDisableResults ? { needlessDisables: needlessDisableResults } : {}),
-			...(invalidScopeDisableResults ? { invalidScopeDisables: invalidScopeDisableResults } : {}),
 		};
 	}
 
-	return {
-		diagnostics,
-		...(needlessDisableResults ? { needlessDisables: needlessDisableResults } : {}),
-		...(invalidScopeDisableResults ? { invalidScopeDisables: invalidScopeDisableResults } : {}),
-	};
+	return { diagnostics };
 }
 
 /**
@@ -163,7 +104,6 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 						rules: {},
 					},
 				}),
-				textDocument,
 				createRuleDocUrlProvider(stylelint),
 			);
 		}
@@ -171,7 +111,7 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 		throw err;
 	}
 
-	return processResults(resultContainer, textDocument, createRuleDocUrlProvider(stylelint));
+	return processResults(resultContainer, createRuleDocUrlProvider(stylelint));
 };
 
 /**
@@ -344,48 +284,4 @@ function globalPathGet(packageManager = 'npm', trace) {
 	}
 
 	return undefined;
-}
-
-/**
- * @param {stylelint.DisableReportRange} range
- * @param {lsp.TextDocument} textDocument
- * @returns {Diagnostic}
- */
-function stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocument) {
-	let message = `unused rule: ${range.rule}, start line: ${range.start}`;
-	const startPosition = convertStartPosition(range);
-	const endPosition = convertEndPosition(range, textDocument);
-
-	if (range.end !== undefined) {
-		message += `, end line: ${range.end}`;
-	}
-
-	return Diagnostic.create(
-		Range.create(startPosition, endPosition),
-		message,
-		DiagnosticSeverity.Warning,
-		range.rule,
-		'stylelint',
-	);
-}
-
-/**
- * @param {stylelint.DisableReportRange} range
- * @returns {Position}
- */
-function convertStartPosition(range) {
-	return Position.create(range.start - 1, 0);
-}
-
-/**
- * @param {stylelint.DisableReportRange} range
- * @param {lsp.TextDocument} textDocument
- * @returns {Position}
- */
-function convertEndPosition(range, textDocument) {
-	if (range.end) {
-		return textDocument.positionAt(textDocument.offsetAt(Position.create(range.end, 0)) - 1);
-	}
-
-	return textDocument.positionAt(textDocument.getText().length);
 }
