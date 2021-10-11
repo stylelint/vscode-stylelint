@@ -2,7 +2,6 @@
 
 const path = require('path');
 const pathIsInside = require('path-is-inside');
-const { at, has, map, stubString } = require('lodash');
 const { execSync } = require('child_process');
 const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
@@ -38,14 +37,14 @@ function processResults(resultContainer, ruleDocUrlProvider) {
 	}
 
 	if (invalidOptionWarnings.length !== 0) {
-		throw new InvalidOptionError(map(invalidOptionWarnings, 'text'));
+		throw new InvalidOptionError(invalidOptionWarnings.map((warning) => warning.text));
 	}
 
 	const diagnostics = warnings.map((warning) =>
 		stylelintWarningToVscodeDiagnostic(warning, ruleDocUrlProvider),
 	);
 
-	if (has(resultContainer, 'output') && resultContainer.output) {
+	if (Object.prototype.hasOwnProperty.call(resultContainer, 'output') && resultContainer.output) {
 		return {
 			diagnostics,
 			output: resultContainer.output,
@@ -65,14 +64,14 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 	/** @type {stylelint.LinterOptions} */
 	const priorOptions = {
 		code: textDocument.getText(),
-		formatter: stubString,
+		formatter: () => '',
 	};
 	const codeFilename = Files.uriToFilePath(textDocument.uri);
 	let resultContainer;
 
 	if (codeFilename) {
 		priorOptions.codeFilename = codeFilename;
-	} else if (!at(options, 'config.rules')[0]) {
+	} else if (!options?.config?.rules) {
 		priorOptions.config = { rules: {} };
 	}
 
