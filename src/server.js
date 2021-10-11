@@ -26,28 +26,13 @@ const {
 } = require('vscode-languageserver/node');
 const { TextDocument } = require('vscode-languageserver-textdocument');
 
-/**
- * @typedef { import('vscode-languageserver').DocumentUri } DocumentUri
- * @typedef { import('vscode-languageserver').Diagnostic } Diagnostic
- * @typedef { import('vscode-languageserver').CompletionItem } CompletionItem
- * @typedef { import('vscode-languageserver').CompletionParams } CompletionParams
- * @typedef { import('./stylelint-vscode').DisableReportRange } DisableReportRange
- * @typedef { import('stylelint').StylelintConfig } StylelintConfiguration
- * @typedef { import('stylelint').StylelintStandaloneOptions } BaseStylelintLinterOptions
- * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
- * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
- * @typedef { import('./stylelint-vscode').StylelintVSCodeOption } StylelintVSCodeOption
- * @typedef { Error & { reasons: string[] } } InvalidOptionError
- * @typedef { Error & { code: 78 } } ConfigurationError
- */
-
 const CommandIds = {
 	applyAutoFix: 'stylelint.applyAutoFix',
 };
 
 const StylelintSourceFixAll = `${CodeActionKind.SourceFixAll}.stylelint`;
 
-/** @type {StylelintConfiguration} */
+/** @type {stylelint.Config} */
 let config;
 /** @type {string} */
 let configFile;
@@ -74,23 +59,22 @@ const connection = createConnection(ProposedFeatures.all);
 const documents = new TextDocuments(TextDocument);
 
 /**
- * @type {Map<DocumentUri, Diagnostic[]>}
+ * @type {Map<lsp.DocumentUri, lsp.Diagnostic[]>}
  */
 const documentDiagnostics = new Map();
 /**
- * @type {Map<DocumentUri, ({ diagnostic: Diagnostic, range: DisableReportRange })[]>}
+ * @type {Map<lsp.DocumentUri, DisableReport[]>}
  */
 const needlessDisableReports = new Map();
 /**
- * @type {Map<DocumentUri, ({ diagnostic: Diagnostic, range: DisableReportRange })[]>}
+ * @type {Map<lsp.DocumentUri, DisableReport[]>}
  */
 const invalidScopeDisableReports = new Map();
 
 /**
- *
  * @param {TextDocument} document
- * @param {StylelintLinterOptions} baseOptions
- * @returns {Promise<StylelintLinterOptions>}
+ * @param {Partial<stylelint.LinterOptions>} baseOptions
+ * @returns {Promise<Partial<stylelint.LinterOptions>>}
  */
 async function buildStylelintOptions(document, baseOptions = {}) {
 	const options = { ...baseOptions };
@@ -152,10 +136,10 @@ async function buildStylelintOptions(document, baseOptions = {}) {
 
 /**
  * @param {TextDocument} document
- * @returns {Promise<StylelintVSCodeOption>}
+ * @returns {Promise<StylelintVSCodeOptions>}
  */
 async function buildStylelintVSCodeOptions(document) {
-	/** @type {StylelintVSCodeOption} */
+	/** @type {StylelintVSCodeOptions} */
 	const options = { connection, packageManager };
 
 	if (stylelintPath) {
@@ -190,7 +174,7 @@ function handleError(err) {
 		return;
 	}
 
-	// https://github.com/stylelint/stylelint/blob/10.0.1/lib/utils/configurationError.js#L10
+	// https://github.com/stylelint/stylelint/blob/551dcb5/lib/utils/configurationError.js#L12
 	if (/** @type {ConfigurationError} */ (err)?.code === 78) {
 		connection.window.showErrorMessage(`stylelint: ${err.message}`);
 
@@ -238,12 +222,12 @@ async function validate(document) {
 
 /**
  * @param {TextDocument} document
- * @param {import('vscode-languageserver').FormattingOptions?} formattingOptions Formatting options to use.
+ * @param {lsp.FormattingOptions?} formattingOptions Formatting options to use.
  * Overriden by stylelint configuration.
  * @returns {Promise<TextEdit[]>}
  */
 async function getFixes(document, formattingOptions = null) {
-	/** @type {Partial<import('stylelint').StylelintStandaloneOptions>} */
+	/** @type {Partial<stylelint.LinterOptions>} */
 	const baseOptions = { fix: true };
 
 	// If formatting options were provided, translate them to their corresponding rules.
@@ -331,7 +315,7 @@ let registerFormatterDynamically = false;
 
 /**
  * A promise that resolves to the disposable for the dynamically registered document formatter.
- * @type {Promise<import('vscode-languageserver').Disposable> | undefined}
+ * @type {Promise<lsp.Disposable> | undefined}
  */
 let formatterRegistration;
 
@@ -543,8 +527,8 @@ connection.onCodeAction(async (params) => {
 					if (edits.length > 0) {
 						results.push(
 							CodeAction.create(
-								needlessDisable.range.unusedRule !== 'all'
-									? `Remove unused stylelint comment directive for ${needlessDisable.range.unusedRule} rule`
+								needlessDisable.range.rule !== 'all'
+									? `Remove unused stylelint comment directive for ${needlessDisable.range.rule} rule`
 									: `Remove unused stylelint comment directive.`,
 								{ documentChanges: [TextDocumentEdit.create(textDocumentIdentifer, edits)] },
 								CodeActionKind.QuickFix,
@@ -632,8 +616,8 @@ function replaceEdits(document, newText) {
 }
 
 /**
- * @param {CompletionParams} params
- * @returns {CompletionItem[]}
+ * @param {lsp.CompletionParams} params
+ * @returns {lsp.CompletionItem[]}
  */
 function onCompletion(params) {
 	const uri = params.textDocument.uri;
@@ -687,7 +671,7 @@ function onCompletion(params) {
 	nextLineRules.delete('');
 	nextLineRules.delete('CssSyntaxError');
 
-	/** @type {CompletionItem[]} */
+	/** @type {lsp.CompletionItem[]} */
 	const results = [];
 
 	const disableKind = getStyleLintDisableKind(document, params.position);
@@ -739,7 +723,7 @@ function onCompletion(params) {
 /**
  * @param { 'stylelint-disable-line' | 'stylelint-disable-next-line' } kind
  * @param {string} rule
- * @returns {CompletionItem}
+ * @returns {lsp.CompletionItem}
  */
 function createDisableLineCompletionItem(kind, rule = '') {
 	return {
@@ -759,7 +743,7 @@ function createDisableLineCompletionItem(kind, rule = '') {
 }
 
 /**
- * @returns {CompletionItem}
+ * @returns {lsp.CompletionItem}
  */
 function createDisableEnableCompletionItem() {
 	return {
@@ -807,7 +791,7 @@ function getStyleLintDisableKind(document, position) {
 
 /**
  * @param {TextDocument} document
- * @param {DisableReportRange} range
+ * @param {stylelint.DisableReportRange} range
  * @returns {TextEdit[]}
  */
 function createRemoveCommentDirectiveTextEdits(document, range) {
@@ -913,7 +897,7 @@ function createRemoveCommentDirectiveTextEdits(document, range) {
 }
 
 /**
- * @param {Diagnostic} diagnostic
+ * @param {lsp.Diagnostic} diagnostic
  * @returns {string}
  */
 function computeKey(diagnostic) {
@@ -931,16 +915,16 @@ function escapeRegExp(value) {
 }
 
 /**
- * @param {DisableReportRange} range
+ * @param {stylelint.DisableReportRange} range
  * @param {string} text
  * @param {string} directive
  * @returns {string}
  */
 function removeCommentDirective(range, text, directive) {
-	if (range.unusedRule !== 'all') {
+	if (range.rule !== 'all') {
 		// `/* directive rulename */`
 		let newText = text.replace(
-			new RegExp(`\\/\\*\\s*${directive}\\s+${escapeRegExp(range.unusedRule)}\\s*\\*\\/`),
+			new RegExp(`\\/\\*\\s*${directive}\\s+${escapeRegExp(range.rule)}\\s*\\*\\/`),
 			removesReplacer,
 		);
 
@@ -952,7 +936,7 @@ function removeCommentDirective(range, text, directive) {
 		newText = text.replace(
 			new RegExp(
 				`(\\/\\*\\s*${directive}\\s+[\\s\\S]*)\\s*,\\s*${escapeRegExp(
-					range.unusedRule,
+					range.rule,
 				)}([\\s\\S]*\\*\\/)`,
 			),
 			removesReplacer,
@@ -966,7 +950,7 @@ function removeCommentDirective(range, text, directive) {
 		newText = text.replace(
 			new RegExp(
 				`(\\/\\*\\s*${directive}\\s+[\\s\\S]*)${escapeRegExp(
-					range.unusedRule,
+					range.rule,
 				)}\\s*,\\s*([\\s\\S]*\\*\\/)`,
 			),
 			removesReplacer,

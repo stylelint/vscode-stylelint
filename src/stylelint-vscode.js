@@ -3,31 +3,11 @@
 const path = require('path');
 const pathIsInside = require('path-is-inside');
 const { at, has, map, stubString } = require('lodash');
-const { Diagnostic, DiagnosticSeverity, Position, Range } = require('vscode-languageserver-types');
 const { execSync } = require('child_process');
 const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
 
 const stylelintWarningToVscodeDiagnostic = require('./warnings-to-diagnostics');
-
-/**
- * @typedef { import('stylelint').StylelintPublicAPI } StylelintModule
- * @typedef { import('vscode-languageserver-textdocument').TextDocument } TextDocument
- * @typedef { import('vscode-languageserver').Connection } Connection
- * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
- * @typedef { {connection?: Connection, packageManager?: PackageManager, stylelintPath?: string } } StylelintVSCodeOption
- * @typedef {object} StylelintVSCodeResult
- * @property {Diagnostic[]} diagnostics
- * @property {string} [output]
- * @property {({ diagnostic: Diagnostic, range: DisableReportRange })[]} [needlessDisables]
- * @property {({ diagnostic: Diagnostic, range: DisableReportRange })[]} [invalidScopeDisables]
- * @typedef { import('stylelint').StylelintStandaloneOptions } BaseStylelintLinterOptions
- * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
- * @typedef { {unusedRule:string,start:number,end:?number} } DisableReportRange
- * @typedef { { source?: string, ranges: DisableReportRange[] } } StylelintDisableReportEntry
- * @typedef { import('./warnings-to-diagnostics').RuleDocUrlProvider } RuleDocUrlProvider
- * @typedef { (message: string, verbose?: string) => void } TracerFn
- */
 
 class InvalidOptionError extends Error {
 	/**
@@ -40,107 +20,49 @@ class InvalidOptionError extends Error {
 }
 
 /**
- * @param {import('stylelint').StylelintStandaloneReturnValue} resultContainer
- * @param {TextDocument} textDocument
+ * @param {stylelint.LinterResult} resultContainer
  * @param {RuleDocUrlProvider} ruleDocUrlProvider
  * @returns {StylelintVSCodeResult}
  */
-function processResults(resultContainer, textDocument, ruleDocUrlProvider) {
+function processResults(resultContainer, ruleDocUrlProvider) {
 	const { results } = resultContainer;
-	/** @type {StylelintDisableReportEntry[]} */
-	// @ts-expect-error -- The stylelint type is old.
-	const needlessDisables = resultContainer.needlessDisables;
-	/** @type {StylelintDisableReportEntry[]} */
-	// @ts-expect-error -- The stylelint type is old.
-	const invalidScopeDisables = resultContainer.invalidScopeDisables;
 
-	// https://github.com/stylelint/stylelint/blob/12.0.1/lib/standalone.js#L128-L134
-	if (
-		results.length === 0 &&
-		(!needlessDisables || needlessDisables.length === 0) &&
-		(!invalidScopeDisables || invalidScopeDisables.length === 0)
-	) {
-		return {
-			diagnostics: [],
-		};
+	if (results.length === 0) {
+		return { diagnostics: [] };
 	}
 
 	const [{ invalidOptionWarnings, warnings, ignored }] = results;
 
 	if (ignored) {
-		return {
-			diagnostics: [],
-		};
+		return { diagnostics: [] };
 	}
 
 	if (invalidOptionWarnings.length !== 0) {
 		throw new InvalidOptionError(map(invalidOptionWarnings, 'text'));
 	}
 
-	const diagnostics = [];
-	let needlessDisableResults;
-	let invalidScopeDisableResults;
-
-	const needlessDisableSourceReport = needlessDisables && needlessDisables[0];
-
-	if (needlessDisableSourceReport) {
-		needlessDisableResults = [];
-
-		for (const range of needlessDisableSourceReport.ranges) {
-			const diagnostic = stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocument);
-
-			diagnostics.push(diagnostic);
-			needlessDisableResults.push({
-				range,
-				diagnostic,
-			});
-		}
-	}
-
-	const invalidScopeDisableSourceReport = invalidScopeDisables && invalidScopeDisables[0];
-
-	if (invalidScopeDisableSourceReport) {
-		invalidScopeDisableResults = [];
-
-		for (const range of invalidScopeDisableSourceReport.ranges) {
-			const diagnostic = stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocument);
-
-			diagnostics.push(diagnostic);
-			invalidScopeDisableResults.push({
-				range,
-				diagnostic,
-			});
-		}
-	}
-
-	diagnostics.push(
-		...warnings.map((warning) => stylelintWarningToVscodeDiagnostic(warning, ruleDocUrlProvider)),
+	const diagnostics = warnings.map((warning) =>
+		stylelintWarningToVscodeDiagnostic(warning, ruleDocUrlProvider),
 	);
 
 	if (has(resultContainer, 'output') && resultContainer.output) {
 		return {
 			diagnostics,
 			output: resultContainer.output,
-			...(needlessDisableResults ? { needlessDisables: needlessDisableResults } : {}),
-			...(invalidScopeDisableResults ? { invalidScopeDisables: invalidScopeDisableResults } : {}),
 		};
 	}
 
-	return {
-		diagnostics,
-		...(needlessDisableResults ? { needlessDisables: needlessDisableResults } : {}),
-		...(invalidScopeDisableResults ? { invalidScopeDisables: invalidScopeDisableResults } : {}),
-	};
+	return { diagnostics };
 }
 
 /**
- * @param {TextDocument} textDocument
- * @param {StylelintLinterOptions} options
- * @param {StylelintVSCodeOption} serverOptions
+ * @param {lsp.TextDocument} textDocument
+ * @param {stylelint.LinterOptions} options
+ * @param {StylelintVSCodeOptions} serverOptions
  * @returns {Promise<StylelintVSCodeResult>}
  */
 module.exports = async function stylelintVSCode(textDocument, options = {}, serverOptions = {}) {
-	/** @type {StylelintLinterOptions} */
+	/** @type {stylelint.LinterOptions} */
 	const priorOptions = {
 		code: textDocument.getText(),
 		formatter: stubString,
@@ -182,7 +104,6 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 						rules: {},
 					},
 				}),
-				textDocument,
 				createRuleDocUrlProvider(stylelint),
 			);
 		}
@@ -190,12 +111,12 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 		throw err;
 	}
 
-	return processResults(resultContainer, textDocument, createRuleDocUrlProvider(stylelint));
+	return processResults(resultContainer, createRuleDocUrlProvider(stylelint));
 };
 
 /**
- * @param {StylelintVSCodeOption & {textDocument: TextDocument} } options
- * @returns {Promise<StylelintModule | undefined>}
+ * @param {StylelintVSCodeOptions & {textDocument: lsp.TextDocument} } options
+ * @returns {Promise<stylelint.PublicApi | undefined>}
  */
 async function resolveStylelint({
 	connection,
@@ -282,7 +203,7 @@ async function resolveStylelint({
 }
 
 /**
- * @param {StylelintModule} stylelint
+ * @param {stylelint.PublicApi} stylelint
  * @returns {RuleDocUrlProvider}
  */
 function createRuleDocUrlProvider(stylelint) {
@@ -296,8 +217,8 @@ function createRuleDocUrlProvider(stylelint) {
 }
 
 /**
- * @param {TextDocument} document
- * @param {Connection} [connection]
+ * @param {lsp.TextDocument} document
+ * @param {lsp.Connection} [connection]
  * @returns {Promise<string | undefined>}
  */
 async function getWorkspaceFolder(document, connection) {
@@ -363,48 +284,4 @@ function globalPathGet(packageManager = 'npm', trace) {
 	}
 
 	return undefined;
-}
-
-/**
- * @param {DisableReportRange} range
- * @param {TextDocument} textDocument
- * @returns {Diagnostic}
- */
-function stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocument) {
-	let message = `unused rule: ${range.unusedRule}, start line: ${range.start}`;
-	const startPosition = convertStartPosition(range);
-	const endPosition = convertEndPosition(range, textDocument);
-
-	if (range.end !== undefined) {
-		message += `, end line: ${range.end}`;
-	}
-
-	return Diagnostic.create(
-		Range.create(startPosition, endPosition),
-		message,
-		DiagnosticSeverity.Warning,
-		range.unusedRule,
-		'stylelint',
-	);
-}
-
-/**
- * @param {DisableReportRange} range
- * @returns {Position}
- */
-function convertStartPosition(range) {
-	return Position.create(range.start - 1, 0);
-}
-
-/**
- * @param {DisableReportRange} range
- * @param {TextDocument} textDocument
- * @returns {Position}
- */
-function convertEndPosition(range, textDocument) {
-	if (range.end) {
-		return textDocument.positionAt(textDocument.offsetAt(Position.create(range.end, 0)) - 1);
-	}
-
-	return textDocument.positionAt(textDocument.getText().length);
 }

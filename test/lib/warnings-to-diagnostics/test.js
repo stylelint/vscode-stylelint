@@ -1,6 +1,6 @@
 'use strict';
 
-const { lint } = /** @type {import('stylelint').StylelintPublicAPI} */ (require('stylelint'));
+const { lint } = require('stylelint');
 
 const fn = require('../../../src/warnings-to-diagnostics');
 

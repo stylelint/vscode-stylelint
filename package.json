@@ -165,6 +165,7 @@
   "devDependencies": {
     "@stylelint/postcss-css-in-js": "^0.37.2",
     "@stylelint/prettier-config": "^2.0.0",
+    "@types/eslint": "^7.28.1",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.1",
     "@types/lodash": "^4.14.151",
@@ -200,7 +201,6 @@
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
-    "lint:stylelint-types": "node scripts/stylelint-types.js",
     "lint:types": "tsc",
     "test": "npm run bundle && jest",
     "test:lib": "jest --projects test/lib",

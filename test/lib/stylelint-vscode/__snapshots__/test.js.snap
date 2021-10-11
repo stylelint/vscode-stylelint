@@ -108,11 +108,11 @@ Array [
     "message": "Unclosed bracket (CssSyntaxError)",
     "range": Object {
       "end": Object {
-        "character": 19,
+        "character": 12,
         "line": 0,
       },
       "start": Object {
-        "character": 19,
+        "character": 12,
         "line": 0,
       },
     },
