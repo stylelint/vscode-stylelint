@@ -48,6 +48,8 @@ _You can see or change the current document's language in the bottom-right corne
 
 ### ⚠️ Stylelint 13.x and Prior is No Longer Supported
 
+> See also: [Stylelint 14 migration guide]
+
 vscode-stylelint 1.x expects to use Stylelint 14 at minimum. Usage with prior versions of Stylelint is not supported nor recommended. If you want to continue using this extension, upgrade your copy of Stylelint to version 14 or later.
 
 The `syntax` and `configOverrides` options have been removed from Stylelint 14 and this extension. See the [following section](#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for information on how to use different syntaxes.
@@ -258,6 +260,7 @@ This extension contributes the following commands to the command palette:
 [stylelint]: https://stylelint.io/
 [stylelint getting started guide]: https://stylelint.io/user-guide/get-started
 [stylelint configuration file]: https://stylelint.io/user-guide/configuration
+[stylelint 14 migration guide]: https://github.com/stylelint/stylelint/blob/v14/docs/migration-guide/to-14.md
 [`customsyntax`]: https://stylelint.io/user-guide/usage/options/#customsyntax
 [`config`]: https://stylelint.io/user-guide/usage/node-api#config
 [`configfile`]: https://stylelint.io/user-guide/usage/options#configfile
