@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.87.6](https://github.com/stylelint/vscode-stylelint/compare/v0.87.5...v0.87.6) (2021-10-04)
+
+### Fixed
+
+- Fixed bug where two duplicate document formatters would be shown for documents in supported languages ([#251](https://github.com/stylelint/vscode-stylelint/pull/251)).
+
 ## [0.87.5](https://github.com/stylelint/vscode-stylelint/compare/v0.87.4...v0.87.5) (2021-09-30)
 
 ### Fixed
