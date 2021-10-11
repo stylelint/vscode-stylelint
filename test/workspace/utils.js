@@ -4,47 +4,18 @@ const { languages } = require('vscode');
 const { URI } = require('vscode-uri');
 
 /**
- * @typedef {import('vscode').Uri} Uri
- * @typedef {import('vscode').Range} Range
- * @typedef {import('vscode').Position} Position
- * @typedef {import('vscode').Diagnostic} VSCodeDiagnostic
- * @typedef {import('vscode').DiagnosticRelatedInformation} VSCodeDiagnosticRelatedInformation
- * @typedef {import('vscode-languageserver').Diagnostic} LSPDiagnostic
- * @typedef {import('vscode-languageserver').DiagnosticSeverity} DiagnosticSeverity
- * @typedef {import('vscode-languageserver').CodeDescription} CodeDescription
- * @typedef {import('vscode-languageserver').DiagnosticRelatedInformation} LSPDiagnosticRelatedInformation
- * @typedef {{code?: string | number, codeDescription?: CodeDescription}} CodePart
- */
-
-/**
- * @template {Record<any, any>} T
- * @template {keyof T} K
- * @typedef {Partial<T> & Pick<T, K>} OptionalExcept
- */
-
-/**
- * @typedef {OptionalExcept<Position, 'line' | 'character'>} PartialPosition
- * @typedef {{ start: PartialPosition, end?: PartialPosition }} PartialRange
- * @typedef {{ location: { range: PartialRange, uri: string }, message: string }} PartialRelatedInformation
- * @typedef {Omit<LSPDiagnostic, 'range' | 'relatedInformation'> &
- *   { range: PartialRange, relatedInformation?: PartialRelatedInformation[] }
- * } PartialLSPDiagnostic
- */
-
-/**
  * Converts a VS Code diagnostic to a partial LSP diagnostic.
- * @template {Record<any, any>} T
- * @param {VSCodeDiagnostic} message
- * @returns {PartialLSPDiagnostic}
+ * @param {vscode.Diagnostic} message
+ * @returns {tests.Diagnostic}
  */
 function normalizeDiagnostic(message) {
 	const { code, codeDescription } = normalizeCode(message);
 
-	/** @type {PartialLSPDiagnostic} */
+	/** @type {tests.Diagnostic} */
 	const diagnostic = {
 		message: message.message,
 		range: normalizeRange(message.range),
-		severity: /** @type {DiagnosticSeverity} */ (message.severity + 1),
+		severity: /** @type {lsp.DiagnosticSeverity} */ (message.severity + 1),
 	};
 
 	if (code !== undefined) {
@@ -71,19 +42,19 @@ function normalizeDiagnostic(message) {
 }
 
 /**
- * @param {Uri} uri
- * @returns {VSCodeDiagnostic[]}
+ * @param {vscode.Uri} uri
+ * @returns {vscode.Diagnostic[]}
  */
 function getStylelintDiagnostics(uri) {
 	return languages.getDiagnostics(uri).filter((d) => d.source === 'stylelint');
 }
 
 /**
- * @param {PartialRange} range
- * @returns {PartialRange}
+ * @param {tests.Range} range
+ * @returns {tests.Range}
  */
 function normalizeRange(range) {
-	/** @type {PartialRange} */
+	/** @type {tests.Range} */
 	const obj = {
 		start: {
 			line: range.start.line,
@@ -102,8 +73,8 @@ function normalizeRange(range) {
 }
 
 /**
- * @param {VSCodeDiagnosticRelatedInformation[]} relatedInformation
- * @returns {PartialRelatedInformation[]}
+ * @param {vscode.DiagnosticRelatedInformation[]} relatedInformation
+ * @returns {tests.DiagnosticRelatedInformation[]}
  */
 function normalizeRelatedInformation(relatedInformation) {
 	return relatedInformation.map(({ location, message }) => ({
@@ -116,8 +87,8 @@ function normalizeRelatedInformation(relatedInformation) {
 }
 
 /**
- * @param {VSCodeDiagnostic} message
- * @returns {CodePart}
+ * @param {vscode.Diagnostic} message
+ * @returns {tests.CodePart}
  */
 function normalizeCode(message) {
 	return !message.code || typeof message.code === 'string' || typeof message.code === 'number'

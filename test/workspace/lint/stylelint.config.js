@@ -1,9 +1,6 @@
 'use strict';
 
-/** @typedef {import('stylelint').StylelintConfig} StylelintConfig */
-
-// TODO: Workaround for bad typings upstream
-/** @type {StylelintConfig & { overrides: StylelintConfig }} */
+/** @type {stylelint.Config} */
 const config = {
 	rules: {
 		indentation: [4],

@@ -8,10 +8,7 @@ const {
 const { workspace, commands: Commands, window: Window } = require('vscode');
 
 /**
- * @typedef {import('vscode').ExtensionContext} ExtensionContext
- */
-/**
- * @param {ExtensionContext} context
+ * @param {vscode.ExtensionContext} context
  */
 exports.activate = ({ subscriptions }) => {
 	const serverPath = require.resolve('./server.js');

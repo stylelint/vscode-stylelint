@@ -6,11 +6,12 @@ const { pathToFileURL } = require('url');
 const createTextDocument = require('vscode-languageserver').TextDocument.create;
 const stylelintVSCode = require('../../../src/stylelint-vscode');
 
-const createDocument = (
-	/** @type {string | null} */ uri,
-	/** @type {string} */ languageId,
-	/** @type {string} */ contents,
-) =>
+/**
+ * @param {string | null} uri
+ * @param {string} languageId
+ * @param {string} contents
+ */
+const createDocument = (uri, languageId, contents) =>
 	createTextDocument(
 		uri ? pathToFileURL(resolve(__dirname, '..', uri)).toString() : 'Untitled:Untitled',
 		languageId,
@@ -36,7 +37,10 @@ describe('stylelintVSCode()', () => {
 	test('should be resolved with an empty array when no errors and warnings are reported', async () => {
 		expect.assertions(1);
 		const result = await stylelintVSCode(createDocument(null, 'scss', ''), {
-			config: { rules: { indentation: [2] } },
+			config: {
+				customSyntax: 'postcss-scss',
+				rules: { indentation: [2] },
+			},
 		});
 
 		expect(result.diagnostics).toEqual([]);
@@ -168,9 +172,7 @@ a { color: #000 }
 
 	test('should check CSS syntax even if no configuration is provided', async () => {
 		expect.assertions(1);
-		const result = await stylelintVSCode(
-			createDocument('unclosed.xml', 'xml', '<style>a{color:rgba(}</style>'),
-		);
+		const result = await stylelintVSCode(createDocument('unclosed.css', 'css', 'a{color:rgba(}'));
 
 		expect(result.diagnostics).toMatchSnapshot();
 	});
@@ -289,6 +291,7 @@ describe('stylelintVSCode() with autofix', () => {
 		const result = await stylelintVSCode(
 			createDocument('should-be-ignored.js', 'javascript', '"a"'),
 			{
+				customSyntax: '@stylelint/postcss-css-in-js',
 				config: {
 					rules: {},
 					ignoreFiles: '**/*-ignored.js',

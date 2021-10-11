@@ -2,18 +2,11 @@
 
 const { Diagnostic, DiagnosticSeverity, Position, Range } = require('vscode-languageserver-types');
 
-/**
- * @typedef { import('stylelint').Severity } Severity
- * @typedef { { line: number, column: number, rule: string, severity: Severity, text: string } } Warning
- * @typedef { import('vscode-languageserver-types').URI } URI
- * @typedef { (rule: string) => (URI | null | undefined) } RuleDocUrlProvider
- */
-
 /** @type {RuleDocUrlProvider} */
 const NOOP_RULE_DOC_URL_PROVIDER = () => undefined;
 
 /**
- * @param {Warning} warning
+ * @param {stylelint.Warning} warning
  * @param {RuleDocUrlProvider} [ruleDocUrlProvider]
  * @returns {Diagnostic}
  */
@@ -24,7 +17,7 @@ module.exports = function stylelintWarningToVscodeDiagnostic(
 	const position = Position.create(warning.line - 1, warning.column - 1);
 
 	/**
-	 * @type {URI | null | undefined}
+	 * @type {lsp.URI | null | undefined}
 	 */
 	const ruleDocUrl = ruleDocUrlProvider(warning.rule);
 

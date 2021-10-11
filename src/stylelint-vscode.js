@@ -10,25 +10,6 @@ const { URI } = require('vscode-uri');
 
 const stylelintWarningToVscodeDiagnostic = require('./warnings-to-diagnostics');
 
-/**
- * @typedef { import('stylelint').StylelintPublicAPI } StylelintModule
- * @typedef { import('vscode-languageserver-textdocument').TextDocument } TextDocument
- * @typedef { import('vscode-languageserver').Connection } Connection
- * @typedef { "npm" | "yarn" | "pnpm" } PackageManager
- * @typedef { {connection?: Connection, packageManager?: PackageManager, stylelintPath?: string } } StylelintVSCodeOption
- * @typedef {object} StylelintVSCodeResult
- * @property {Diagnostic[]} diagnostics
- * @property {string} [output]
- * @property {({ diagnostic: Diagnostic, range: DisableReportRange })[]} [needlessDisables]
- * @property {({ diagnostic: Diagnostic, range: DisableReportRange })[]} [invalidScopeDisables]
- * @typedef { import('stylelint').StylelintStandaloneOptions } BaseStylelintLinterOptions
- * @typedef { Partial<BaseStylelintLinterOptions> } StylelintLinterOptions
- * @typedef { {unusedRule:string,start:number,end:?number} } DisableReportRange
- * @typedef { { source?: string, ranges: DisableReportRange[] } } StylelintDisableReportEntry
- * @typedef { import('./warnings-to-diagnostics').RuleDocUrlProvider } RuleDocUrlProvider
- * @typedef { (message: string, verbose?: string) => void } TracerFn
- */
-
 class InvalidOptionError extends Error {
 	/**
 	 * @param {string[]} reasons
@@ -40,17 +21,17 @@ class InvalidOptionError extends Error {
 }
 
 /**
- * @param {import('stylelint').StylelintStandaloneReturnValue} resultContainer
- * @param {TextDocument} textDocument
+ * @param {stylelint.LinterResult} resultContainer
+ * @param {lsp.TextDocument} textDocument
  * @param {RuleDocUrlProvider} ruleDocUrlProvider
  * @returns {StylelintVSCodeResult}
  */
 function processResults(resultContainer, textDocument, ruleDocUrlProvider) {
 	const { results } = resultContainer;
-	/** @type {StylelintDisableReportEntry[]} */
+	/** @type {stylelint.DisableReportEntry[]} */
 	// @ts-expect-error -- The stylelint type is old.
 	const needlessDisables = resultContainer.needlessDisables;
-	/** @type {StylelintDisableReportEntry[]} */
+	/** @type {stylelint.DisableReportEntry[]} */
 	// @ts-expect-error -- The stylelint type is old.
 	const invalidScopeDisables = resultContainer.invalidScopeDisables;
 
@@ -134,13 +115,13 @@ function processResults(resultContainer, textDocument, ruleDocUrlProvider) {
 }
 
 /**
- * @param {TextDocument} textDocument
- * @param {StylelintLinterOptions} options
- * @param {StylelintVSCodeOption} serverOptions
+ * @param {lsp.TextDocument} textDocument
+ * @param {stylelint.LinterOptions} options
+ * @param {StylelintVSCodeOptions} serverOptions
  * @returns {Promise<StylelintVSCodeResult>}
  */
 module.exports = async function stylelintVSCode(textDocument, options = {}, serverOptions = {}) {
-	/** @type {StylelintLinterOptions} */
+	/** @type {stylelint.LinterOptions} */
 	const priorOptions = {
 		code: textDocument.getText(),
 		formatter: stubString,
@@ -194,8 +175,8 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 };
 
 /**
- * @param {StylelintVSCodeOption & {textDocument: TextDocument} } options
- * @returns {Promise<StylelintModule | undefined>}
+ * @param {StylelintVSCodeOptions & {textDocument: lsp.TextDocument} } options
+ * @returns {Promise<stylelint.PublicApi | undefined>}
  */
 async function resolveStylelint({
 	connection,
@@ -282,7 +263,7 @@ async function resolveStylelint({
 }
 
 /**
- * @param {StylelintModule} stylelint
+ * @param {stylelint.PublicApi} stylelint
  * @returns {RuleDocUrlProvider}
  */
 function createRuleDocUrlProvider(stylelint) {
@@ -296,8 +277,8 @@ function createRuleDocUrlProvider(stylelint) {
 }
 
 /**
- * @param {TextDocument} document
- * @param {Connection} [connection]
+ * @param {lsp.TextDocument} document
+ * @param {lsp.Connection} [connection]
  * @returns {Promise<string | undefined>}
  */
 async function getWorkspaceFolder(document, connection) {
@@ -366,12 +347,12 @@ function globalPathGet(packageManager = 'npm', trace) {
 }
 
 /**
- * @param {DisableReportRange} range
- * @param {TextDocument} textDocument
+ * @param {stylelint.DisableReportRange} range
+ * @param {lsp.TextDocument} textDocument
  * @returns {Diagnostic}
  */
 function stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocument) {
-	let message = `unused rule: ${range.unusedRule}, start line: ${range.start}`;
+	let message = `unused rule: ${range.rule}, start line: ${range.start}`;
 	const startPosition = convertStartPosition(range);
 	const endPosition = convertEndPosition(range, textDocument);
 
@@ -383,13 +364,13 @@ function stylelintDisableOptionsReportRangeToVscodeDiagnostic(range, textDocumen
 		Range.create(startPosition, endPosition),
 		message,
 		DiagnosticSeverity.Warning,
-		range.unusedRule,
+		range.rule,
 		'stylelint',
 	);
 }
 
 /**
- * @param {DisableReportRange} range
+ * @param {stylelint.DisableReportRange} range
  * @returns {Position}
  */
 function convertStartPosition(range) {
@@ -397,8 +378,8 @@ function convertStartPosition(range) {
 }
 
 /**
- * @param {DisableReportRange} range
- * @param {TextDocument} textDocument
+ * @param {stylelint.DisableReportRange} range
+ * @param {lsp.TextDocument} textDocument
  * @returns {Position}
  */
 function convertEndPosition(range, textDocument) {
