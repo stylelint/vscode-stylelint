@@ -1,10 +1,11 @@
 'use strict';
 
+const os = require('os');
 const path = require('path');
 const pathIsInside = require('path-is-inside');
-const { execSync } = require('child_process');
 const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
+const { getGlobalPathResolver } = require('./utils/packages');
 
 const stylelintWarningToVscodeDiagnostic = require('./warnings-to-diagnostics');
 
@@ -66,7 +67,14 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 		code: textDocument.getText(),
 		formatter: () => '',
 	};
-	const codeFilename = Files.uriToFilePath(textDocument.uri);
+	const { fsPath } = URI.parse(textDocument.uri);
+
+	// Workaround for Stylelint treating paths as case-sensitive on Windows
+	// If the drive letter is lowercase, we need to convert it to uppercase
+	// See https://github.com/stylelint/stylelint/issues/5594
+	// TODO: Remove once fixed upstream
+	const codeFilename =
+		os.platform() === 'win32' ? fsPath.replace(/^[a-z]:/, (match) => match.toUpperCase()) : fsPath;
 	let resultContainer;
 
 	if (codeFilename) {
@@ -113,6 +121,9 @@ module.exports = async function stylelintVSCode(textDocument, options = {}, serv
 	return processResults(resultContainer, createRuleDocUrlProvider(stylelint));
 };
 
+/** @type {GlobalPathResolver | undefined} */
+let globalPathResolver;
+
 /**
  * @param {StylelintVSCodeOptions & {textDocument: lsp.TextDocument} } options
  * @returns {Promise<stylelint.PublicApi | undefined>}
@@ -153,7 +164,14 @@ async function resolveStylelint({
 	let stylelint;
 
 	try {
-		const resolvedGlobalPackageManagerPath = globalPathGet(packageManager, trace);
+		if (!globalPathResolver) {
+			globalPathResolver = getGlobalPathResolver();
+		}
+
+		/** @type {string | undefined} */
+		const resolvedGlobalPackageManagerPath = packageManager
+			? await globalPathResolver.resolve(packageManager, trace)
+			: undefined;
 		const uri = URI.parse(textDocument.uri);
 
 		let cwd;
@@ -235,51 +253,6 @@ async function getWorkspaceFolder(document, connection) {
 				}
 			}
 		}
-	}
-
-	return undefined;
-}
-
-/**
- * @type { { [key in PackageManager]: { cache?: string, get: (trace: TracerFn) => string | undefined } } }
- */
-const globalPaths = {
-	yarn: {
-		cache: undefined,
-		get(trace) {
-			return Files.resolveGlobalYarnPath(trace);
-		},
-	},
-	npm: {
-		cache: undefined,
-		get(trace) {
-			return Files.resolveGlobalNodePath(trace);
-		},
-	},
-	pnpm: {
-		cache: undefined,
-		get() {
-			const pnpmPath = execSync('pnpm root -g').toString().trim();
-
-			return pnpmPath;
-		},
-	},
-};
-
-/**
- * @param {PackageManager} packageManager
- * @param {TracerFn} trace
- * @returns {string | undefined}
- */
-function globalPathGet(packageManager = 'npm', trace) {
-	const pm = globalPaths[packageManager];
-
-	if (pm) {
-		if (pm.cache === undefined) {
-			pm.cache = pm.get(trace);
-		}
-
-		return pm.cache;
 	}
 
 	return undefined;
