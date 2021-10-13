@@ -64,6 +64,9 @@ jobs:
       - name: Run lib tests
         run: npm run test:lib -- --coverage
 
+      - name: Run unit tests
+        run: npm run test:unit -- --coverage
+
       - name: Run VS Code tests (Linux)
         if: runner.os == 'Linux'
         run: xvfb-run -a npm run test:workspace -- --silent

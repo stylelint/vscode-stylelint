@@ -2,7 +2,11 @@
 
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
-	projects: ['<rootDir>/test/lib/jest.config.js', '<rootDir>/test/workspace/jest.config.js'],
+	projects: [
+		'<rootDir>/test/lib/jest.config.js',
+		'<rootDir>/test/unit/jest.config.js',
+		'<rootDir>/test/workspace/jest.config.js',
+	],
 };
 
 module.exports = config;

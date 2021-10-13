@@ -1,14 +1,16 @@
-const fs = require('fs').promises;
+'use strict';
+
+const fs = require('fs/promises');
 const path = require('path');
 
 /**
- * Walks up the file tree from the current directory until it finds a
- * directory containing `package.json`. Resolves to `undefined` if no such
+ * Walks up the file tree from the given directory until it finds a directory
+ * containing a file named `package.json`. Resolves to `undefined` if no such
  * directory is found.
  * @param {string} directory The directory to start from.
  * @returns {Promise<string | undefined>}
  */
-async function resolvePackageDirectory(directory) {
+async function findPackageRoot(directory) {
 	let currentDirectory = directory;
 
 	// eslint-disable-next-line no-constant-condition
@@ -16,9 +18,19 @@ async function resolvePackageDirectory(directory) {
 		const manifestPath = path.join(currentDirectory, 'package.json');
 
 		try {
-			await fs.access(manifestPath);
+			const stat = await fs.stat(manifestPath);
 
-			return currentDirectory;
+			if (stat.isFile()) {
+				return currentDirectory;
+			}
+
+			const parent = path.dirname(currentDirectory);
+
+			if (!path.relative(parent, currentDirectory)) {
+				return undefined;
+			}
+
+			currentDirectory = parent;
 		} catch (error) {
 			if (/** @type {{code?: string}} */ (error).code === 'ENOENT') {
 				const parent = path.dirname(currentDirectory);
@@ -36,5 +48,5 @@ async function resolvePackageDirectory(directory) {
 }
 
 module.exports = {
-	resolvePackageDirectory,
+	findPackageRoot,
 };

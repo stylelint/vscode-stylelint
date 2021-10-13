@@ -201,6 +201,7 @@
     "lint:types": "tsc",
     "test": "npm run bundle && jest",
     "test:lib": "jest --projects test/lib",
+    "test:unit": "jest --projects test/unit",
     "test:workspace": "npm run bundle && jest --projects test/workspace",
     "vscode:prepublish": "npm run bundle-base -- --minify"
   },
