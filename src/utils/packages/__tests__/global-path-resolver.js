@@ -4,30 +4,23 @@ jest.mock('path');
 jest.mock('os');
 jest.mock('../../processes');
 
-/** @typedef {typeof import('../global-path-resolver').getGlobalPathResolver} getGlobalPathResolver */
+const mockedOS = /** @type {tests.mocks.OSModule} */ (require('os'));
+const mockedPath = /** @type {tests.mocks.PathModule} */ (require('path'));
+const mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
+const { getGlobalPathResolver } = require('../global-path-resolver');
 
 /**
  * @param {'posix' | 'win32'} platform
  */
 const mockPlatform = (platform) => {
-	const mockedOS = /** @type {tests.mocks.OSModule} */ (require('os'));
-
 	mockedOS.__mockPlatform(platform === 'win32' ? 'win32' : 'linux');
-
-	const mockedPath = /** @type {tests.mocks.PathModule} */ (require('path'));
-
 	mockedPath.__mockPlatform(platform);
 };
 
 describe('Global Package Manager Path Resolver', () => {
 	describe('Non-Windows', () => {
-		/** @type {getGlobalPathResolver} */
-		let getGlobalPathResolver;
-
 		beforeAll(() => {
 			mockPlatform('posix');
-
-			const mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
 
 			mockedProcesses.__resetMockedProcesses();
 
@@ -44,8 +37,6 @@ describe('Global Package Manager Path Resolver', () => {
 			);
 
 			mockedProcesses.__mockProcess('pnpm', ['root', '-g'], ['/path/to/pnpm/global/dir']);
-
-			getGlobalPathResolver = require('../global-path-resolver').getGlobalPathResolver;
 		});
 
 		it('should resolve the yarn global package directory', async () => {
@@ -71,13 +62,8 @@ describe('Global Package Manager Path Resolver', () => {
 	});
 
 	describe('Windows', () => {
-		/** @type {getGlobalPathResolver} */
-		let getGlobalPathResolver;
-
 		beforeAll(() => {
 			mockPlatform('win32');
-
-			const mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
 
 			mockedProcesses.__resetMockedProcesses();
 
@@ -94,8 +80,6 @@ describe('Global Package Manager Path Resolver', () => {
 			);
 
 			mockedProcesses.__mockProcess('pnpm', ['root', '-g'], ['C:\\path\\to\\pnpm\\global\\dir']);
-
-			getGlobalPathResolver = require('../global-path-resolver').getGlobalPathResolver;
 		});
 
 		it('should resolve the yarn global package directory', async () => {
@@ -121,16 +105,8 @@ describe('Global Package Manager Path Resolver', () => {
 	});
 
 	describe('Caching', () => {
-		/** @type {getGlobalPathResolver} */
-		let getGlobalPathResolver;
-
-		/** @type {tests.mocks.Processes} */
-		let mockedProcesses;
-
 		beforeAll(() => {
 			mockPlatform('posix');
-
-			mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
 
 			mockedProcesses.__resetMockedProcesses();
 
@@ -147,8 +123,6 @@ describe('Global Package Manager Path Resolver', () => {
 			);
 
 			mockedProcesses.__mockProcess('pnpm', ['root', '-g'], ['/path/to/pnpm/global/dir']);
-
-			getGlobalPathResolver = require('../global-path-resolver').getGlobalPathResolver;
 		});
 
 		beforeEach(() => {
@@ -185,17 +159,10 @@ describe('Global Package Manager Path Resolver', () => {
 
 	describe('Error handling', () => {
 		describe('Missing commands', () => {
-			/** @type {getGlobalPathResolver} */
-			let getGlobalPathResolver;
-
 			beforeAll(() => {
 				mockPlatform('posix');
 
-				const mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
-
 				mockedProcesses.__resetMockedProcesses();
-
-				getGlobalPathResolver = require('../global-path-resolver').getGlobalPathResolver;
 			});
 
 			it('should throw an error if yarn cannot be found', async () => {
@@ -218,24 +185,14 @@ describe('Global Package Manager Path Resolver', () => {
 		});
 
 		describe('Bad output', () => {
-			/** @type {getGlobalPathResolver} */
-			let getGlobalPathResolver;
-
-			/** @type {tests.mocks.Processes} */
-			let mockedProcesses;
-
 			beforeAll(() => {
 				mockPlatform('posix');
-
-				mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
 
 				mockedProcesses.__resetMockedProcesses();
 
 				mockedProcesses.__mockProcess('npm', ['config', 'get', 'prefix'], ['']);
 
 				mockedProcesses.__mockProcess('pnpm', ['root', '-g'], ['']);
-
-				getGlobalPathResolver = require('../global-path-resolver').getGlobalPathResolver;
 			});
 
 			it('should resolve to undefined for yarn', async () => {
@@ -271,20 +228,9 @@ describe('Global Package Manager Path Resolver', () => {
 		});
 
 		describe('Non-zero exit codes', () => {
-			/** @type {getGlobalPathResolver} */
-			let getGlobalPathResolver;
-
 			beforeAll(() => {
-				const mockedOS = /** @type {tests.mocks.OSModule} */ (require('os'));
-
 				mockedOS.__mockPlatform('linux');
-
-				const mockedPath = /** @type {tests.mocks.PathModule} */ (require('path'));
-
 				mockedPath.__mockPlatform('posix');
-
-				const mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
-
 				mockedProcesses.__resetMockedProcesses();
 
 				mockedProcesses.__mockProcess(
@@ -302,8 +248,6 @@ describe('Global Package Manager Path Resolver', () => {
 				);
 
 				mockedProcesses.__mockProcess('pnpm', ['root', '-g'], ['/path/to/pnpm/global/dir'], 1);
-
-				getGlobalPathResolver = require('../global-path-resolver').getGlobalPathResolver;
 			});
 
 			it('should throw an error if yarn returns a non-zero exit code', async () => {
@@ -327,8 +271,6 @@ describe('Global Package Manager Path Resolver', () => {
 
 		describe('Unsupported package managers', () => {
 			it('should resolve to undefined when passed an unsupported package manager name', async () => {
-				const getGlobalPathResolver = require('../global-path-resolver').getGlobalPathResolver;
-
 				const globalPath = await getGlobalPathResolver().resolve(
 					/** @type {any} */ ('unsupported'),
 				);

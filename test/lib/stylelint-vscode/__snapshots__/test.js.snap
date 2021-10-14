@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`stylelintVSCode() should be resolved with diagnostics when it lints CSS successfully 1`] = `
+exports[`StylelintRunner should be resolved with diagnostics when it lints CSS successfully 1`] = `
 Array [
   Object {
     "code": "string-quotes",
@@ -43,7 +43,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should be resolved with diagnostics when the rules include unknown rules 1`] = `
+exports[`StylelintRunner should be resolved with diagnostics when the rules include unknown rules 1`] = `
 Array [
   Object {
     "code": "this-rule-does-not-exist",
@@ -80,7 +80,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should be resolved with one diagnostic when the CSS is broken 1`] = `
+exports[`StylelintRunner should be resolved with one diagnostic when the CSS is broken 1`] = `
 Array [
   Object {
     "code": "CssSyntaxError",
@@ -101,7 +101,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should check CSS syntax even if no configuration is provided 1`] = `
+exports[`StylelintRunner should check CSS syntax even if no configuration is provided 1`] = `
 Array [
   Object {
     "code": "CssSyntaxError",
@@ -122,7 +122,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should check CSS syntax even if no rule is provided 1`] = `
+exports[`StylelintRunner should check CSS syntax even if no rule is provided 1`] = `
 Array [
   Object {
     "code": "CssSyntaxError",
@@ -143,12 +143,12 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should reject with a reason when it takes incorrect options 1`] = `
+exports[`StylelintRunner should reject with a reason when it takes incorrect options 1`] = `
 "Invalid option name \\"bar\\" for rule \\"at-rule-empty-line-before\\"
 Invalid option value \\"foo\\" for rule \\"color-hex-case\\""
 `;
 
-exports[`stylelintVSCode() should support \`processors\` option 1`] = `
+exports[`StylelintRunner should support \`processors\` option 1`] = `
 Array [
   Object {
     "code": "CssSyntaxError",
@@ -169,7 +169,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() should support CSS-in-JS with customSyntax 1`] = `
+exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
 Array [
   Object {
     "code": "font-weight-notation",
@@ -212,7 +212,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() with a configuration file should adhere to configuration file settings 1`] = `
+exports[`StylelintRunner with a configuration file should adhere to configuration file settings 1`] = `
 Array [
   Object {
     "code": "length-zero-no-unit",
@@ -236,7 +236,7 @@ Array [
 ]
 `;
 
-exports[`stylelintVSCode() with autofix autofix should work if there are errors that cannot be autofixed 1`] = `
+exports[`StylelintRunner with autofix autofix should work if there are errors that cannot be autofixed 1`] = `
 Object {
   "diagnostics": Array [
     Object {
@@ -268,7 +268,7 @@ unknown {
 }
 `;
 
-exports[`stylelintVSCode() with autofix autofix should work if there is syntax errors in css 1`] = `
+exports[`StylelintRunner with autofix autofix should work if there is syntax errors in css 1`] = `
 "
 .a {
 	width: 100%;
@@ -277,14 +277,14 @@ exports[`stylelintVSCode() with autofix autofix should work if there is syntax e
 "
 `;
 
-exports[`stylelintVSCode() with autofix autofix should work properly if configs are defined 1`] = `
+exports[`StylelintRunner with autofix autofix should work properly if configs are defined 1`] = `
 "a
 {
   color:red;
 }"
 `;
 
-exports[`stylelintVSCode() with customSyntax autofix should work properly if customSyntax is defined 1`] = `
+exports[`StylelintRunner with customSyntax autofix should work properly if customSyntax is defined 1`] = `
 Object {
   "diagnostics": Array [],
   "output": "a
@@ -292,7 +292,7 @@ Object {
 }
 `;
 
-exports[`stylelintVSCode() with customSyntax should work properly if customSyntax is defined 1`] = `
+exports[`StylelintRunner with customSyntax should work properly if customSyntax is defined 1`] = `
 Object {
   "diagnostics": Array [
     Object {
@@ -318,7 +318,7 @@ Object {
 }
 `;
 
-exports[`stylelintVSCode() with reportInvalidScopeDisables should work properly if reportInvalidScopeDisables is true 1`] = `
+exports[`StylelintRunner with reportInvalidScopeDisables should work properly if reportInvalidScopeDisables is true 1`] = `
 Object {
   "diagnostics": Array [
     Object {
@@ -373,7 +373,7 @@ Object {
 }
 `;
 
-exports[`stylelintVSCode() with reportNeedlessDisables should work properly if reportNeedlessDisables is true 1`] = `
+exports[`StylelintRunner with reportNeedlessDisables should work properly if reportNeedlessDisables is true 1`] = `
 Object {
   "diagnostics": Array [
     Object {
@@ -463,7 +463,7 @@ Object {
 }
 `;
 
-exports[`stylelintVSCode() with stylelintPath should work properly if custom path is defined in stylelintPath 1`] = `
+exports[`StylelintRunner with stylelintPath should work properly if custom path is defined in stylelintPath 1`] = `
 Object {
   "diagnostics": Array [
     Object {
@@ -486,7 +486,7 @@ Object {
 }
 `;
 
-exports[`stylelintVSCode() with stylelintPath should work properly if stylelintPath is defined 1`] = `
+exports[`StylelintRunner with stylelintPath should work properly if stylelintPath is defined 1`] = `
 Object {
   "diagnostics": Array [
     Object {

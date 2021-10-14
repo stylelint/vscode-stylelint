@@ -2,22 +2,15 @@
 
 jest.mock('child_process');
 
+const mockedChildProcess = /** @type {tests.mocks.ChildProcessModule} */ (require('child_process'));
+const { runProcessFindLine } = require('../processes');
+
 describe('runProcessFindLine', () => {
-	/** @type {typeof import('../processes').runProcessFindLine} */
-	let runProcessFindLine;
-
-	/** @type {tests.mocks.ChildProcessModule} */
-	let mockedChildProcess;
-
 	beforeAll(() => {
-		mockedChildProcess = /** @type {tests.mocks.ChildProcessModule} */ (require('child_process'));
-
 		mockedChildProcess.__mockProcess('foo', ['bar'], 0, 'from\nstdout');
 		mockedChildProcess.__mockProcess('foo', ['baz'], 0, 'multi\nline\noutput\n');
 		mockedChildProcess.__mockProcess('foo', ['qux'], 1, undefined, 'from\nstderr');
 		mockedChildProcess.__mockProcess('foo', ['quz'], 'SIGHUP', undefined, 'from\nstderr');
-
-		runProcessFindLine = require('../processes').runProcessFindLine;
 	});
 
 	it('should run the process and return the line when it is found', async () => {

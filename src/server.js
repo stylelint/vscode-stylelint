@@ -6,7 +6,7 @@ const diff = require('fast-diff');
 const parseUri = require('vscode-uri').URI.parse;
 const pathIsInside = require('path-is-inside');
 const { findPackageRoot } = require('./utils/packages');
-const stylelintVSCode = require('./stylelint-vscode');
+const { StylelintRunner } = require('./utils/stylelint');
 const {
 	createConnection,
 	ProposedFeatures,
@@ -56,6 +56,7 @@ let validateLanguages;
 let snippetLanguages;
 
 const connection = createConnection(ProposedFeatures.all);
+const runner = new StylelintRunner(connection);
 const documents = new TextDocuments(TextDocument);
 
 /**
@@ -196,7 +197,7 @@ async function validate(document) {
 	const options = await buildStylelintOptions(document);
 
 	try {
-		const result = await stylelintVSCode(
+		const result = await runner.lintDocument(
 			document,
 			options,
 			await buildStylelintVSCodeOptions(document),
@@ -207,14 +208,6 @@ async function validate(document) {
 			diagnostics: result.diagnostics,
 		});
 		documentDiagnostics.set(document.uri, result.diagnostics);
-
-		if (result.needlessDisables) {
-			needlessDisableReports.set(document.uri, result.needlessDisables);
-		}
-
-		if (result.invalidScopeDisables) {
-			invalidScopeDisableReports.set(document.uri, result.invalidScopeDisables);
-		}
 	} catch (err) {
 		handleError(err);
 	}
@@ -254,7 +247,7 @@ async function getFixes(document, formattingOptions = null) {
 	const options = await buildStylelintOptions(document, baseOptions);
 
 	try {
-		const result = await stylelintVSCode(
+		const result = await runner.lintDocument(
 			document,
 			options,
 			await buildStylelintVSCodeOptions(document),

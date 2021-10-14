@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StylelintRunner should return processed lint results from Stylelint with configured rules 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "block-no-empty",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/block-no-empty",
+      },
+      "message": "Unexpected empty block (block-no-empty)",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;
+
+exports[`StylelintRunner should return processed lint results from Stylelint without configured rules 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "CssSyntaxError",
+      "message": "Unclosed block (CssSyntaxError)",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;
+
+exports[`StylelintRunner should throw errors thrown by Stylelint 1`] = `"You must pass stylelint a \`files\` glob or a \`code\` string, though not both"`;

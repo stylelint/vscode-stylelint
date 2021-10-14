@@ -1,6 +1,7 @@
 'use strict';
 
 module.exports = {
-	...require('./global-path-resolver'),
 	...require('./find-package-root'),
+	...require('./global-path-resolver'),
+	...require('./stylelint-resolver'),
 };

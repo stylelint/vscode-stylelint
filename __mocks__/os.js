@@ -1,6 +1,6 @@
 'use strict';
 
-const os = jest.createMockFromModule('os');
+const os = jest.requireActual('os');
 
 /**
  * Mock platform.

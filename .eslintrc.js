@@ -15,6 +15,14 @@ const config = {
 		'node/no-missing-require': ['error', { allowModules: ['vscode'] }],
 		'require-jsdoc': 'error',
 	},
+	overrides: [
+		{
+			files: ['**/__tests__/**/*'],
+			rules: {
+				'node/no-unpublished-require': 'off',
+			},
+		},
+	],
 };
 
 module.exports = config;

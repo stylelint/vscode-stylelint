@@ -63,7 +63,7 @@ declare namespace tests {
 			stderr: NodeJS.ReadableStream;
 		}
 
-		type ChildProcessModule = typeof import('child_process') & {
+		type ChildProcessModule = jest.Mocked<typeof import('child_process')> & {
 			__setDelay(exitDelay?: number, stdoutDelay?: number, stderrDelay?: number): void;
 			__mockProcess(
 				command: string,
@@ -75,16 +75,34 @@ declare namespace tests {
 			__resetMockedProcesses(): void;
 		};
 
-		type OSModule = typeof import('os') & {
+		type OSModule = jest.Mocked<typeof import('os')> & {
 			__mockPlatform(platform: NodeJS.Platform): void;
 		};
 
-		type PathModule = typeof import('path') & {
+		type PathModule = jest.Mocked<typeof import('path')> & {
 			__mockPlatform(platform: 'posix' | 'win32'): void;
 		};
 
-		type Processes = typeof import('../src/utils/processes') & {
-			runProcessFindLine: jest.Mock<typeof import('../src/utils/processes').runProcessFindLine>;
+		namespace VSCodeLanguageServerModule {
+			type Node = jest.Mocked<typeof import('vscode-languageserver/node')> & {
+				Files: {
+					__mockResolution: (
+						packageName: string,
+						resolver: (globalModulesPath?: string, cwd?: string, trace?: TracerFn) => any,
+					) => void;
+					__resetMockedResolutions: () => void;
+				};
+			};
+		}
+
+		type GlobalPathResolver = jest.Mocked<
+			typeof import('../src/utils/packages/global-path-resolver')
+		> & {
+			__mockPath: (packageManager: PackageManager, path: string) => void;
+			__resetMockedPaths: () => void;
+		};
+
+		type Processes = jest.Mocked<typeof import('../src/utils/processes')> & {
 			__mockProcess(command: string, args: string[], lines: string[], exitCode?: number): void;
 			__resetMockedProcesses(): void;
 		};
@@ -128,6 +146,4 @@ type StylelintVSCodeOptions = {
 type StylelintVSCodeResult = {
 	diagnostics: lsp.Diagnostic[];
 	output?: string;
-	needlessDisables?: DisableReport[];
-	invalidScopeDisables?: DisableReport[];
 };
