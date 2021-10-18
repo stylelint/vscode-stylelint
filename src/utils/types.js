@@ -1,5 +1,23 @@
 'use strict';
 
+const { CodeActionKind: VSCodeActionKind } = require('vscode-languageserver-types');
+
+/**
+ * Command IDs
+ * @enum {string}
+ */
+const CommandId = {
+	ApplyAutoFix: 'stylelint.applyAutoFix',
+};
+
+/**
+ * Code action kinds
+ * @enum {string}
+ */
+const CodeActionKind = {
+	StylelintSourceFixAll: `${VSCodeActionKind.SourceFixAll}.stylelint`,
+};
+
 /**
  * Error thrown when a rule's option is invalid.
  */
@@ -14,5 +32,7 @@ class InvalidOptionError extends Error {
 }
 
 module.exports = {
+	CommandId,
+	CodeActionKind,
 	InvalidOptionError,
 };

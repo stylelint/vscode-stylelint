@@ -1,18 +1,25 @@
 'use strict';
 
 jest.mock('os');
+jest.mock('path');
 jest.mock('vscode-uri', () => ({
 	URI: {
 		parse: jest.fn((/** @type {string} */ str) => ({ fsPath: str })),
 	},
 }));
 jest.mock('../../packages/stylelint-resolver');
+jest.mock('../../documents');
 
 const stylelint = require('stylelint');
 
 const mockedOS = /** @type {tests.mocks.OSModule} */ (require('os'));
+const mockedPath = /** @type {tests.mocks.PathModule} */ (require('path'));
 const resolver = /** @type {jest.Mocked<typeof import('../../packages/stylelint-resolver')>} */ (
 	require('../../packages/stylelint-resolver')
+);
+
+const mockedDocuments = /** @type {jest.Mocked<typeof import('../../documents')>} */ (
+	require('../../documents')
 );
 
 const { StylelintRunner } = require('../stylelint-runner');
@@ -21,7 +28,7 @@ const { StylelintRunner } = require('../stylelint-runner');
 
 /**
  * @param {FakeLintFunction} [lint]
- * @param {(serverOptions: StylelintVSCodeOptions, document: lsp.TextDocument) => Promise<{lint: FakeLintFunction}>} [resolve]
+ * @param {(serverOptions: ResolverOptions, document: lsp.TextDocument) => Promise<{lint: FakeLintFunction}>} [resolve]
  * @returns {() => import('../../packages/stylelint-resolver').StylelintResolver}
  */
 const createMockResolver = (lint, resolve) =>
@@ -48,6 +55,7 @@ const mockConnection = /** @type {any} */ ({});
 describe('StylelintRunner', () => {
 	beforeEach(() => {
 		mockedOS.__mockPlatform('linux');
+		mockedPath.__mockPlatform('posix');
 	});
 
 	test('should return no diagnostics if Stylelint cannot be resolved', async () => {
@@ -94,15 +102,7 @@ describe('StylelintRunner', () => {
 
 		resolver.StylelintResolver.mockImplementation(
 			createMockResolver(async (options) => {
-				expect(options).toEqual({
-					code: 'a {}',
-					codeFilename: '/path/to/file.scss',
-					config: {
-						customSyntax: 'postcss-scss',
-					},
-					fix: true,
-					formatter: expect.any(Function),
-				});
+				expect(options).toMatchSnapshot();
 
 				expect(/** @type {stylelint.Formatter} */ (options.formatter)?.([])).toBe('');
 
@@ -184,8 +184,82 @@ describe('StylelintRunner', () => {
 		);
 	});
 
+	test('with stylelintPath, if the path is absolute, should call the resolver with the path', async () => {
+		expect.assertions(1);
+
+		mockedDocuments.getWorkspaceFolder.mockResolvedValueOnce('/workspace');
+
+		resolver.StylelintResolver.mockImplementation(
+			createMockResolver(undefined, async (serverOptions) => {
+				expect(serverOptions).toEqual({
+					stylelintPath: '/path/to/stylelint',
+				});
+
+				return {
+					lint: async () => ({ results: [] }),
+				};
+			}),
+		);
+
+		await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {}', '/path/to/file.css'),
+			undefined,
+			{ stylelintPath: '/path/to/stylelint' },
+		);
+	});
+
+	test('with stylelintPath, if the path is relative, should make it absolute using the workspace path', async () => {
+		expect.assertions(1);
+
+		mockedDocuments.getWorkspaceFolder.mockResolvedValueOnce('/workspace');
+
+		resolver.StylelintResolver.mockImplementation(
+			createMockResolver(undefined, async (serverOptions) => {
+				expect(serverOptions).toEqual({
+					stylelintPath: '/workspace/path/to/stylelint',
+				});
+
+				return {
+					lint: async () => ({ results: [] }),
+				};
+			}),
+		);
+
+		await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {}', '/path/to/file.css'),
+			undefined,
+			{ stylelintPath: 'path/to/stylelint' },
+		);
+	});
+
+	test('with stylelintPath, if the path is relative and no workspace folder is found, should keep the path relative', async () => {
+		expect.assertions(1);
+
+		mockedDocuments.getWorkspaceFolder.mockResolvedValueOnce(undefined);
+
+		resolver.StylelintResolver.mockImplementation(
+			createMockResolver(undefined, async (serverOptions) => {
+				expect(serverOptions).toEqual({
+					stylelintPath: 'path/to/stylelint',
+				});
+
+				return {
+					lint: async () => ({ results: [] }),
+				};
+			}),
+		);
+
+		await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {}', '/path/to/file.css'),
+			undefined,
+			{ stylelintPath: 'path/to/stylelint' },
+		);
+	});
+
 	test('should return processed lint results from Stylelint without configured rules', async () => {
 		expect.assertions(1);
+
+		mockedPath.__mockPlatform();
 
 		resolver.StylelintResolver.mockImplementation(
 			createMockResolver(undefined, async () => stylelint),
@@ -200,6 +274,8 @@ describe('StylelintRunner', () => {
 
 	test('should return processed lint results from Stylelint with configured rules', async () => {
 		expect.assertions(1);
+
+		mockedPath.__mockPlatform();
 
 		resolver.StylelintResolver.mockImplementation(
 			createMockResolver(undefined, async () => stylelint),
@@ -216,6 +292,8 @@ describe('StylelintRunner', () => {
 	test('should throw errors thrown by Stylelint', async () => {
 		expect.assertions(1);
 
+		mockedPath.__mockPlatform();
+
 		resolver.StylelintResolver.mockImplementation(
 			createMockResolver(undefined, async () => stylelint),
 		);
@@ -229,5 +307,36 @@ describe('StylelintRunner', () => {
 				},
 			),
 		).rejects.toThrowErrorMatchingSnapshot();
+	});
+
+	test('should log if a logger is provided', async () => {
+		expect.assertions(2);
+
+		const mockLogger = /** @type {winston.Logger} */ (
+			/** @type {unknown} */ ({
+				info: jest.fn(),
+				warn: jest.fn(),
+				error: jest.fn(),
+				debug: jest.fn(),
+				isDebugEnabled: jest.fn(() => true),
+			})
+		);
+
+		mockedPath.__mockPlatform();
+
+		resolver.StylelintResolver.mockImplementation(
+			createMockResolver(undefined, async () => stylelint),
+		);
+
+		await new StylelintRunner(mockConnection, mockLogger).lintDocument(
+			createMockDocument('a {}', '/path/to/file.css'),
+			{ config: { rules: { 'block-no-empty': true } } },
+		);
+
+		expect(mockLogger.debug).toHaveBeenCalledTimes(1);
+		expect(mockLogger.debug).toHaveBeenCalledWith(
+			expect.stringMatching(/^Running stylelint/),
+			expect.any(Object),
+		);
 	});
 });

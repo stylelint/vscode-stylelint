@@ -1,5 +1,24 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`StylelintRunner should call stylelint.lint with the document path and given options 1`] = `
+Object {
+  "code": "a {}",
+  "codeFilename": "/path/to/file.scss",
+  "config": Object {
+    "customSyntax": "postcss-scss",
+  },
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "fix": true,
+  "formatter": [Function],
+  "ignoreDisables": undefined,
+  "ignorePath": "/.stylelintignore",
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+}
+`;
+
 exports[`StylelintRunner should return processed lint results from Stylelint with configured rules 1`] = `
 Object {
   "diagnostics": Array [

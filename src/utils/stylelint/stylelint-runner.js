@@ -1,38 +1,79 @@
 'use strict';
 
 const os = require('os');
+const path = require('path');
 const { URI } = require('vscode-uri');
-const { StylelintResolver } = require('../packages/stylelint-resolver');
+const { StylelintResolver } = require('../packages');
+const { getWorkspaceFolder } = require('../documents');
 const { processLinterResult } = require('./process-linter-result');
+const { buildStylelintOptions } = require('./build-stylelint-options');
 
 /**
  * Runs Stylelint in VS Code.
  */
 class StylelintRunner {
 	/**
-	 * @param {lsp.Connection} [connection]
+	 * The language server connection.
+	 * @type {lsp.Connection | undefined}
 	 */
-	constructor(connection) {
-		/** @private */
-		this._stylelintResolver = new StylelintResolver(connection);
+	#connection;
+
+	/**
+	 * The logger to use, if any.
+	 * @type {winston.Logger | undefined}
+	 */
+	#logger;
+
+	/**
+	 * The Stylelint resolver.
+	 * @type {StylelintResolver}
+	 */
+	#stylelintResolver;
+
+	/**
+	 * @param {lsp.Connection} [connection]
+	 * @param {winston.Logger} [logger]
+	 */
+	constructor(connection, logger) {
+		this.#connection = connection;
+		this.#logger = logger;
+		this.#stylelintResolver = new StylelintResolver(connection, logger);
 	}
 
 	/**
 	 * Lints the given document using Stylelint. The linting result is then
 	 * converted to LSP diagnostics and returned.
-	 * @param {lsp.TextDocument} textDocument
-	 * @param {stylelint.LinterOptions} linterOptions
-	 * @param {StylelintVSCodeOptions} serverOptions
-	 * @returns {Promise<StylelintVSCodeResult>}
+	 * @param {lsp.TextDocument} document
+	 * @param {stylelint.LinterOptions} [linterOptions]
+	 * @param {ExtensionOptions} [extensionOptions]
+	 * @returns {Promise<LintDiagnostics>}
 	 */
-	async lintDocument(textDocument, linterOptions = {}, serverOptions = {}) {
-		const stylelint = await this._stylelintResolver.resolve(serverOptions, textDocument);
+	async lintDocument(document, linterOptions = {}, extensionOptions = {}) {
+		const workspaceFolder =
+			this.#connection && (await getWorkspaceFolder(this.#connection, document));
+
+		const resolverOptions = { ...extensionOptions };
+
+		if (resolverOptions?.stylelintPath && workspaceFolder) {
+			const { stylelintPath } = resolverOptions;
+
+			if (!path.isAbsolute(stylelintPath)) {
+				resolverOptions.stylelintPath = path.join(workspaceFolder, stylelintPath);
+			}
+		}
+
+		const stylelint = await this.#stylelintResolver.resolve(resolverOptions, document);
 
 		if (!stylelint) {
+			this.#logger?.info('No stylelint found with which to lint document', {
+				uri: document.uri,
+				options: resolverOptions,
+			});
+
 			return { diagnostics: [] };
 		}
 
-		const { fsPath } = URI.parse(textDocument.uri);
+		const { fsPath } = URI.parse(document.uri);
 
 		// Workaround for Stylelint treating paths as case-sensitive on Windows
 		// If the drive letter is lowercase, we need to convert it to uppercase
@@ -45,8 +86,13 @@ class StylelintRunner {
 
 		/** @type {stylelint.LinterOptions} */
 		const options = {
-			...linterOptions,
-			code: textDocument.getText(),
+			...(await buildStylelintOptions(
+				document.uri,
+				workspaceFolder,
+				linterOptions,
+				extensionOptions,
+			)),
+			code: document.getText(),
 			formatter: () => '',
 		};
 
@@ -54,6 +100,10 @@ class StylelintRunner {
 			options.codeFilename = codeFilename;
 		} else if (!linterOptions?.config?.rules) {
 			options.config = { rules: {} };
+		}
+
+		if (this.#logger?.isDebugEnabled()) {
+			this.#logger?.debug('Running stylelint', { options: { ...options, code: '...' } });
 		}
 
 		try {

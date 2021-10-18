@@ -4,13 +4,13 @@ const path = jest.requireActual('path');
 
 /**
  * Mock platform.
- * @type {'posix' | 'win32'}
+ * @type {'posix' | 'win32' | undefined}
  */
-let mockPlatform = 'posix';
+let mockPlatform = undefined;
 
 /**
- * Sets the mock platform.
- * @param {'posix' | 'win32'} platform
+ * Sets the mock platform. A value of `undefined` will use the actual platform.
+ * @param {'posix' | 'win32'} [platform]
  * @returns {void}
  */
 const __mockPlatform = (platform) => {
@@ -21,6 +21,10 @@ const pathProxy = new Proxy(path, {
 	get(_, name) {
 		if (name === '__mockPlatform') {
 			return __mockPlatform;
+		}
+
+		if (!mockPlatform) {
+			return path[name];
 		}
 
 		if (mockPlatform === 'win32') {

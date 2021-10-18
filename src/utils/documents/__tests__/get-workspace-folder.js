@@ -12,7 +12,7 @@ jest.mock('vscode-uri', () => ({
 	},
 }));
 
-const { getWorkspaceFolder } = require('../documents');
+const { getWorkspaceFolder } = require('../get-workspace-folder');
 
 /**
  * @param {string[] | null} [workspaceFolders]
@@ -39,27 +39,27 @@ describe('getWorkspaceFolder', () => {
 		const connection = createMockConnection(['/home/user/directory', '/home/user/project']);
 		const document = createMockTextDocument('/home/user/project/file.js');
 
-		expect(await getWorkspaceFolder(document, connection)).toBe('/home/user/project');
+		expect(await getWorkspaceFolder(connection, document)).toBe('/home/user/project');
 	});
 
 	test('should return undefined when no workspace folder is applicable', async () => {
 		const connection = createMockConnection(['/home/user/directory']);
 		const document = createMockTextDocument('/home/user/file.js');
 
-		expect(await getWorkspaceFolder(document, connection)).toBeUndefined();
+		expect(await getWorkspaceFolder(connection, document)).toBeUndefined();
 	});
 
 	test('should return undefined when no workspace folders are returned by the connection', async () => {
 		const connection = createMockConnection();
 		const document = createMockTextDocument('/home/user/file.js');
 
-		expect(await getWorkspaceFolder(document, connection)).toBeUndefined();
+		expect(await getWorkspaceFolder(connection, document)).toBeUndefined();
 	});
 
 	test('should return undefined when the document has no FS path', async () => {
 		const connection = createMockConnection(['/home/user/project']);
 		const document = createMockTextDocument('');
 
-		expect(await getWorkspaceFolder(document, connection)).toBeUndefined();
+		expect(await getWorkspaceFolder(connection, document)).toBeUndefined();
 	});
 });

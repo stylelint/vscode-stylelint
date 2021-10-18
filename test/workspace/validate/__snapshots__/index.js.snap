@@ -1,25 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.validate" should be ignored lint and autofix on css 1`] = `
-"/* prettier-ignore */
-a {
-  color: red;
-}
-"
-`;
-
-exports[`vscode-stylelint with "stylelint.validate" should be ignored lint and autofix on markdown 1`] = `
-"# title
-
-\`\`\`css
-a {
-  color: red;
-}
-\`\`\`
-"
-`;
-
-exports[`vscode-stylelint with "stylelint.validate" should be ignored lint and autofix on scss 1`] = `
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and autofix scss 1`] = `
 Array [
   Object {
     "code": "indentation",
@@ -43,10 +24,29 @@ Array [
 ]
 `;
 
-exports[`vscode-stylelint with "stylelint.validate" should be ignored lint and autofix on scss 2`] = `
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and autofix scss 2`] = `
 "/* prettier-ignore */
 a {
     color: red;
 }
+"
+`;
+
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] shouldn't lint or fix css 1`] = `
+"/* prettier-ignore */
+a {
+  color: red;
+}
+"
+`;
+
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] shouldn't lint or fix markdown 1`] = `
+"# title
+
+\`\`\`css
+a {
+  color: red;
+}
+\`\`\`
 "
 `;

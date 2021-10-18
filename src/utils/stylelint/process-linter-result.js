@@ -14,7 +14,7 @@ const { InvalidOptionError } = require('../types');
  * Stylelint.
  * @param {stylelint.PublicApi} stylelint The Stylelint instance that was used.
  * @param {stylelint.LinterResult} result The results returned by Stylelint.
- * @returns {StylelintVSCodeResult}
+ * @returns {LintDiagnostics}
  */
 function processLinterResult(stylelint, { results, output }) {
 	if (results.length === 0) {

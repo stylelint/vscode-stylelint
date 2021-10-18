@@ -7,7 +7,7 @@ const { workspace, window, commands } = require('vscode');
 
 const { normalizeDiagnostic, getStylelintDiagnostics } = require('../utils');
 
-describe('vscode-stylelint with "stylelint.validate"', () => {
+describe('vscode-stylelint with "stylelint.validate" set to ["scss"]', () => {
 	beforeAll(async () => {
 		await pWaitFor(
 			async () => {
@@ -21,7 +21,7 @@ describe('vscode-stylelint with "stylelint.validate"', () => {
 		);
 	});
 
-	it('should be ignored lint and autofix on css', async () => {
+	it("shouldn't lint or fix css", async () => {
 		// Open the './test.css' file.
 		const cssDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.css'));
 
@@ -40,7 +40,7 @@ describe('vscode-stylelint with "stylelint.validate"', () => {
 		expect(cssDocument.getText()).toMatchSnapshot();
 	});
 
-	it('should be ignored lint and autofix on scss', async () => {
+	it('should lint and autofix scss', async () => {
 		// Open the './test.scss' file.
 		const scssDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.scss'));
 
@@ -59,7 +59,7 @@ describe('vscode-stylelint with "stylelint.validate"', () => {
 		expect(scssDocument.getText()).toMatchSnapshot();
 	});
 
-	it('should be ignored lint and autofix on markdown', async () => {
+	it("shouldn't lint or fix markdown", async () => {
 		// Open the './test.md' file.
 		const mdDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.md'));
 

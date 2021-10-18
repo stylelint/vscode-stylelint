@@ -1,0 +1,38 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Bundle Extension (Watch)",
+			"type": "shell",
+			"isBackground": true,
+			"command": "npm run bundle-watch",
+			"problemMatcher": [
+				{
+					"source": "esbuild",
+					"applyTo": "closedDocuments",
+					"severity": "error",
+					"fileLocation": "relative",
+					"pattern": [
+						{
+							"regexp": "> (.*?):([0-9]+):([0-9]+): (warning|error): (.+)$",
+							"file": 1,
+							"line": 2,
+							"column": 3,
+							"severity": 4,
+							"message": 5
+						}
+					],
+					"background": {
+						"activeOnStart": true,
+						"beginsPattern": {
+							"regexp": "\\[watch\\] build started"
+						},
+						"endsPattern": {
+							"regexp": "\\[watch\\] build finished"
+						}
+					}
+				}
+			]
+		}
+	]
+}

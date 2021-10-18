@@ -12,11 +12,31 @@ const { getGlobalPathResolver } = require('./global-path-resolver');
  */
 class StylelintResolver {
 	/**
-	 * @param {lsp.Connection} [connection] The language server connection.
+	 * The language server connection.
+	 * @type {lsp.Connection | undefined}
 	 */
-	constructor(connection) {
-		this._globalPathResolver = getGlobalPathResolver();
-		this._connection = connection;
+	#connection;
+
+	/**
+	 * The logger to use, if any.
+	 * @type {winston.Logger | undefined}
+	 */
+	#logger;
+
+	/**
+	 * The global path resolver.
+	 * @type {GlobalPathResolver}
+	 */
+	#globalPathResolver;
+
+	/**
+	 * @param {lsp.Connection} [connection] The language server connection.
+	 * @param {winston.Logger} [logger] The logger to use.
+	 */
+	constructor(connection, logger) {
+		this.#connection = connection;
+		this.#logger = logger;
+		this.#globalPathResolver = getGlobalPathResolver();
 	}
 
 	/**
@@ -26,16 +46,16 @@ class StylelintResolver {
 	 * @param {boolean} showMessage Whether to show the message to the user in a notification.
 	 * @returns {void}
 	 */
-	_logError(message, showMessage = true) {
-		if (!this._connection) {
+	#logError(message, showMessage = true) {
+		if (!this.#connection) {
 			return;
 		}
 
 		if (showMessage) {
-			this._connection.window.showErrorMessage(`stylelint: ${message}`);
+			this.#connection.window.showErrorMessage(`stylelint: ${message}`);
 		}
 
-		this._connection.console.error(message);
+		this.#connection.console.error(message);
 	}
 
 	/**
@@ -47,7 +67,7 @@ class StylelintResolver {
 	 * @param {string} stylelintPath
 	 * @returns {stylelint.PublicApi | undefined}
 	 */
-	_resolveFromPath(stylelintPath) {
+	#resolveFromPath(stylelintPath) {
 		const errorMessage = `Failed to load stylelint from "stylelintPath": ${stylelintPath}.`;
 
 		let stylelint;
@@ -55,7 +75,7 @@ class StylelintResolver {
 		try {
 			stylelint = require(stylelintPath);
 		} catch (err) {
-			this._logError(errorMessage);
+			this.#logError(errorMessage);
 			throw err;
 		}
 
@@ -63,7 +83,7 @@ class StylelintResolver {
 			return stylelint;
 		}
 
-		this._logError(errorMessage);
+		this.#logError(errorMessage);
 
 		return undefined;
 	}
@@ -81,12 +101,13 @@ class StylelintResolver {
 	 * @param {PackageManager} [packageManager]
 	 * @returns {Promise<stylelint.PublicApi | undefined>}
 	 */
-	async _resolveFromModules(textDocument, packageManager) {
-		const connection = this._connection;
+	async #resolveFromModules(textDocument, packageManager) {
+		const connection = this.#connection;
 
 		/** @type {TracerFn} */
 		const trace = connection
 			? (message, verbose) => {
+					this.#logger?.debug(message, { verbose });
 					connection.tracer.log(message, verbose);
 			  }
 			: () => undefined;
@@ -97,7 +118,7 @@ class StylelintResolver {
 		try {
 			/** @type {string | undefined} */
 			const globalModulesPath = packageManager
-				? await this._globalPathResolver.resolve(packageManager, trace)
+				? await this.#globalPathResolver.resolve(packageManager, trace)
 				: undefined;
 
 			const documentURI = URI.parse(textDocument.uri);
@@ -105,14 +126,14 @@ class StylelintResolver {
 			const cwd =
 				documentURI.scheme === 'file'
 					? path.dirname(documentURI.fsPath)
-					: await getWorkspaceFolder(textDocument, connection);
+					: connection && (await getWorkspaceFolder(connection, textDocument));
 
 			const stylelintPath = await Files.resolve('stylelint', globalModulesPath, cwd, trace);
 
 			stylelint = require(stylelintPath);
 
 			if (stylelint && typeof stylelint.lint !== 'function') {
-				this._logError('stylelint.lint is not a function.');
+				this.#logError('stylelint.lint is not a function.');
 
 				return undefined;
 			}
@@ -139,17 +160,17 @@ class StylelintResolver {
 	 *
 	 * If a connection is available, errors will be logged through it and module
 	 * resolution through `node_modules` will be traced through it.
-	 * @param {StylelintVSCodeOptions} options
+	 * @param {ResolverOptions} options
 	 * @param {lsp.TextDocument} textDocument
 	 * @returns {Promise<stylelint.PublicApi | undefined>}
 	 */
 	async resolve({ packageManager, stylelintPath }, textDocument) {
 		const stylelint =
-			(stylelintPath ? this._resolveFromPath(stylelintPath) : null) ??
-			(await this._resolveFromModules(textDocument, packageManager));
+			(stylelintPath ? this.#resolveFromPath(stylelintPath) : null) ??
+			(await this.#resolveFromModules(textDocument, packageManager));
 
 		if (!stylelint) {
-			this._logError(
+			this.#logError(
 				'Failed to load stylelint either globally or from the current workspace.',
 				false,
 			);

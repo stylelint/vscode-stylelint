@@ -11,7 +11,7 @@ const { workspace, commands: Commands, window: Window } = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 exports.activate = ({ subscriptions }) => {
-	const serverPath = require.resolve('./server.js');
+	const serverPath = require.resolve('./start-server.js');
 
 	const client = new LanguageClient(
 		'stylelint',
