@@ -21,6 +21,15 @@ const createMockConnection = () =>
 		tracer: { log: jest.fn() },
 	});
 
+/** @returns {winston.Logger} */
+const createMockLogger = () =>
+	/** @type {any} */ ({
+		debug: jest.fn(),
+		info: jest.fn(),
+		warn: jest.fn(),
+		error: jest.fn(),
+	});
+
 /** @returns {lsp.TextDocument} */
 const createMockTextDocument = (nonFileURI = false) =>
 	/** @type {any} */ ({
@@ -98,26 +107,29 @@ describe('StylelintResolver', () => {
 
 	test('should resolve to undefined for custom Stylelint paths pointing to modules without a lint function', async () => {
 		const connection = createMockConnection();
-		const stylelintResolver = new StylelintResolver(connection);
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
 		const stylelint = await stylelintResolver.resolve(
 			{ stylelintPath: badStylelintPath },
 			createMockTextDocument(),
 		);
 
 		expect(stylelint).toBeUndefined();
-		expect(connection.console.error).toHaveBeenCalledTimes(2);
+		expect(logger.warn).toHaveBeenCalledTimes(1);
+		expect(logger.error).toHaveBeenCalledTimes(1);
 		expect(connection.window.showErrorMessage).toHaveBeenCalledTimes(1);
 		expect(connection.tracer.log).not.toHaveBeenCalled();
 	});
 
 	test('should throw on invalid custom Stylelint paths', async () => {
 		const connection = createMockConnection();
-		const stylelintResolver = new StylelintResolver(connection);
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
 
 		await expect(
 			stylelintResolver.resolve({ stylelintPath: './does-not-exist' }, createMockTextDocument()),
 		).rejects.toThrowErrorMatchingSnapshot();
-		expect(connection.console.error).toHaveBeenCalledTimes(1);
+		expect(logger.error).toHaveBeenCalledTimes(1);
 		expect(connection.window.showErrorMessage).toHaveBeenCalledTimes(1);
 		expect(connection.tracer.log).not.toHaveBeenCalled();
 	});
@@ -200,11 +212,12 @@ describe('StylelintResolver', () => {
 		mockedFiles.__resetMockedResolutions();
 
 		const connection = createMockConnection();
-		const stylelintResolver = new StylelintResolver(connection);
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
 		const stylelint = await stylelintResolver.resolve({}, createMockTextDocument());
 
 		expect(stylelint).toBeUndefined();
-		expect(connection.console.error).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledTimes(1);
 		expect(connection.window.showErrorMessage).not.toHaveBeenCalled();
 		expect(connection.tracer.log).not.toHaveBeenCalled();
 	});

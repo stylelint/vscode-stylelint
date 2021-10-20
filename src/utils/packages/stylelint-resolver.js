@@ -41,21 +41,16 @@ class StylelintResolver {
 
 	/**
 	 * Logs an error message through the connection if one is available.
-	 * @private
 	 * @param {string} message The message to log.
-	 * @param {boolean} showMessage Whether to show the message to the user in a notification.
 	 * @returns {void}
 	 */
-	#logError(message, showMessage = true) {
+	#logError(message) {
 		if (!this.#connection) {
 			return;
 		}
 
-		if (showMessage) {
-			this.#connection.window.showErrorMessage(`stylelint: ${message}`);
-		}
-
-		this.#connection.console.error(message);
+		this.#connection.window.showErrorMessage(`stylelint: ${message}`);
+		this.#logger?.error(message);
 	}
 
 	/**
@@ -63,7 +58,6 @@ class StylelintResolver {
 	 * occurs, it will be logged through the connection and thrown. If the
 	 * resolved module does not have a lint function, an error will be logged
 	 * and `undefined` will be returned.
-	 * @private
 	 * @param {string} stylelintPath
 	 * @returns {stylelint.PublicApi | undefined}
 	 */
@@ -170,10 +164,7 @@ class StylelintResolver {
 			(await this.#resolveFromModules(textDocument, packageManager));
 
 		if (!stylelint) {
-			this.#logError(
-				'Failed to load stylelint either globally or from the current workspace.',
-				false,
-			);
+			this.#logger?.warn('Failed to load stylelint either globally or from the current workspace.');
 
 			return undefined;
 		}
