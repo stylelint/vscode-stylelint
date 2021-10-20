@@ -61,7 +61,7 @@ exports.activate = ({ subscriptions }) => {
 
 			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
 				Window.showErrorMessage(
-					'Failed to apply stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
+					'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
 				);
 			});
 		}),

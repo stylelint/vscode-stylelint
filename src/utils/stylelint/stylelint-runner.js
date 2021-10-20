@@ -65,7 +65,7 @@ class StylelintRunner {
 		const stylelint = await this.#stylelintResolver.resolve(resolverOptions, document);
 
 		if (!stylelint) {
-			this.#logger?.info('No stylelint found with which to lint document', {
+			this.#logger?.info('No Stylelint found with which to lint document', {
 				uri: document.uri,
 				options: resolverOptions,
 			});
@@ -103,7 +103,7 @@ class StylelintRunner {
 		}
 
 		if (this.#logger?.isDebugEnabled()) {
-			this.#logger?.debug('Running stylelint', { options: { ...options, code: '...' } });
+			this.#logger?.debug('Running Stylelint', { options: { ...options, code: '...' } });
 		}
 
 		try {
@@ -114,7 +114,7 @@ class StylelintRunner {
 				(err.message.startsWith('No configuration provided for') ||
 					err.message.includes('No rules found within configuration'))
 			) {
-				// Check only CSS syntax errors without applying any stylelint rules
+				// Check only CSS syntax errors without applying any Stylelint rules
 				return processLinterResult(
 					stylelint,
 					await stylelint.lint({ ...options, config: { rules: {} } }),

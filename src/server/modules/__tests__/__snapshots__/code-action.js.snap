@@ -42,7 +42,7 @@ Array [
       ],
     },
     "kind": "source.fixAll.stylelint",
-    "title": "Fix all stylelint auto-fixable problems",
+    "title": "Fix all Stylelint auto-fixable problems",
   },
 ]
 `;
@@ -76,7 +76,7 @@ Array [
       ],
     },
     "kind": "source.fixAll.stylelint",
-    "title": "Fix all stylelint auto-fixable problems",
+    "title": "Fix all Stylelint auto-fixable problems",
   },
 ]
 `;
@@ -110,7 +110,7 @@ Array [
       ],
     },
     "kind": "source.fixAll.stylelint",
-    "title": "Fix all stylelint auto-fixable problems",
+    "title": "Fix all Stylelint auto-fixable problems",
   },
 ]
 `;

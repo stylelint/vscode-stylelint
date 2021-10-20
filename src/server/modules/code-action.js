@@ -94,7 +94,7 @@ class CodeActionModule {
 
 			const actions = [
 				CodeAction.create(
-					`Fix all stylelint auto-fixable problems`,
+					`Fix all Stylelint auto-fixable problems`,
 					{ documentChanges: [TextDocumentEdit.create(identifier, edits)] },
 					StylelintCodeActionKind.StylelintSourceFixAll,
 				),

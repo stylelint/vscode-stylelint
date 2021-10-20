@@ -335,7 +335,7 @@ describe('StylelintRunner', () => {
 
 		expect(mockLogger.debug).toHaveBeenCalledTimes(1);
 		expect(mockLogger.debug).toHaveBeenCalledWith(
-			expect.stringMatching(/^Running stylelint/),
+			expect.stringMatching(/^Running Stylelint/),
 			expect.any(Object),
 		);
 	});

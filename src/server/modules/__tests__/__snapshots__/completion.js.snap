@@ -31,7 +31,7 @@ Array [
 exports[`CompletionModule with diagnostics at the next line, should return disable comment completions for rule 1`] = `
 Array [
   Object {
-    "detail": "Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -44,7 +44,7 @@ Array [
     "label": "stylelint-disable-line",
   },
   Object {
-    "detail": "Turn off stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -57,7 +57,7 @@ Array [
     "label": "stylelint-disable-next-line",
   },
   Object {
-    "detail": "Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -87,7 +87,7 @@ Array [
 exports[`CompletionModule with diagnostics at the same line, should return disable comment completions for rule 1`] = `
 Array [
   Object {
-    "detail": "Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -100,7 +100,7 @@ Array [
     "label": "stylelint-disable-line",
   },
   Object {
-    "detail": "Turn off stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -113,7 +113,7 @@ Array [
     "label": "stylelint-disable-next-line",
   },
   Object {
-    "detail": "Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -133,7 +133,7 @@ Array [
 exports[`CompletionModule with needless disables reported for a diagnostic, should return generic completions 1`] = `
 Array [
   Object {
-    "detail": "Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -146,7 +146,7 @@ Array [
     "label": "stylelint-disable-line",
   },
   Object {
-    "detail": "Turn off stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -159,7 +159,7 @@ Array [
     "label": "stylelint-disable-next-line",
   },
   Object {
-    "detail": "Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -181,7 +181,7 @@ exports[`CompletionModule with no diagnostics at same or next line and cursor in
 exports[`CompletionModule with no diagnostics at the same or next line, should return generic completions 1`] = `
 Array [
   Object {
-    "detail": "Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -194,7 +194,7 @@ Array [
     "label": "stylelint-disable-line",
   },
   Object {
-    "detail": "Turn off stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -207,7 +207,7 @@ Array [
     "label": "stylelint-disable-next-line",
   },
   Object {
-    "detail": "Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -227,7 +227,7 @@ Array [
 exports[`CompletionModule without diagnostics, should return generic completions 1`] = `
 Array [
   Object {
-    "detail": "Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -240,7 +240,7 @@ Array [
     "label": "stylelint-disable-line",
   },
   Object {
-    "detail": "Turn off stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -253,7 +253,7 @@ Array [
     "label": "stylelint-disable-next-line",
   },
   Object {
-    "detail": "Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -273,7 +273,7 @@ Array [
 exports[`CompletionModule without the validator module, should return generic completions 1`] = `
 Array [
   Object {
-    "detail": "Turn off stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -286,7 +286,7 @@ Array [
     "label": "stylelint-disable-line",
   },
   Object {
-    "detail": "Turn off stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css
@@ -299,7 +299,7 @@ Array [
     "label": "stylelint-disable-next-line",
   },
   Object {
-    "detail": "Turn off all stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)",
     "documentation": Object {
       "kind": "markdown",
       "value": "\`\`\`css

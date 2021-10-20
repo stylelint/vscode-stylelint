@@ -4,7 +4,7 @@
   "license": "MIT",
   "description": "Modern CSS/SCSS/Less linter",
   "main": "dist/index.js",
-  "displayName": "stylelint",
+  "displayName": "Stylelint",
   "publisher": "stylelint",
   "repository": "https://github.com/stylelint/vscode-stylelint",
   "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
@@ -47,7 +47,7 @@
         "stylelint.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Control whether stylelint is enabled for CSS/SCSS/Less files or not."
+          "description": "Control whether Stylelint is enabled for CSS/SCSS/Less files or not."
         },
         "stylelint.config": {
           "type": [
@@ -55,7 +55,7 @@
             "null"
           ],
           "default": null,
-          "description": "A stylelint configuration object."
+          "description": "A Stylelint configuration object."
         },
         "stylelint.configFile": {
           "type": "string",
@@ -90,7 +90,7 @@
         "stylelint.stylelintPath": {
           "type": "string",
           "default": "",
-          "description": "Supply a custom path to the stylelint module."
+          "description": "Supply a custom path to the Stylelint module."
         },
         "stylelint.packageManager": {
           "scope": "resource",
