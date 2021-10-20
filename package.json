@@ -1,6 +1,6 @@
 {
   "name": "vscode-stylelint",
-  "version": "0.87.6",
+  "version": "1.0.0",
   "license": "MIT",
   "description": "Modern CSS/SCSS/Less linter",
   "main": "dist/index.js",
