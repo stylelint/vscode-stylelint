@@ -25,7 +25,7 @@ class LanguageServerTransport extends TransportStream {
 	}
 
 	/**
-	 * @param {{[LEVEL]: string, [MESSAGE]: any}} info
+	 * @param {winston.Logform.TransformableInfo & {[key: string | symbol]: any}} info
 	 * @param {() => void} callback
 	 */
 	log(info, callback) {

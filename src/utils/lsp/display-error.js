@@ -28,7 +28,7 @@ function displayError(connection, err) {
 		return;
 	}
 
-	connection.window.showErrorMessage((err.stack || '').replace(/\n/gu, ' '));
+	connection.window.showErrorMessage((err.stack || err.message).replace(/\n/gu, ' '));
 }
 
 module.exports = {

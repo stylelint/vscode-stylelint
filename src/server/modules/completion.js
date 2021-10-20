@@ -1,8 +1,10 @@
 'use strict';
 
 const { CompletionItemKind } = require('vscode-languageserver-types');
-const { getDisableType } = require('../utils/documents');
-const { createDisableCompletionItem } = require('../utils/lsp');
+const { getDisableType } = require('../../utils/documents');
+const { createDisableCompletionItem } = require('../../utils/lsp');
+const { DisableReportRuleNames } = require('../../utils/types');
+const { DisableMetadataLookupTable } = require('../../utils/stylelint');
 
 /**
  * @implements {LanguageServerModule}
@@ -57,17 +59,10 @@ class CompletionModule {
 	 * @returns {boolean}
 	 */
 	#shouldComplete(document) {
-		return this.#context.options.validate.includes(document.languageId);
-	}
-
-	/**
-	 * @param {lsp.Diagnostic} diagnostic
-	 * @returns {string}
-	 */
-	#computeKey(diagnostic) {
-		const range = diagnostic.range;
-
-		return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}`;
+		return (
+			this.#context.options.validate.includes(document.languageId) &&
+			this.#context.options.snippet.includes(document.languageId)
+		);
 	}
 
 	/**
@@ -81,23 +76,12 @@ class CompletionModule {
 
 		const document = this.#context.documents.get(uri);
 
-		const shouldComplete = document && this.#shouldComplete(document);
-
-		if (
-			!document ||
-			!shouldComplete ||
-			!this.#context.options.snippet.includes(document.languageId)
-		) {
+		if (!document || !this.#shouldComplete(document)) {
 			if (this.#logger?.isDebugEnabled()) {
 				if (!document) {
 					this.#logger.debug('Unknown document, ignoring', { uri });
-				} else if (!shouldComplete) {
-					this.#logger.debug('Document should not be validated, ignoring', {
-						uri,
-						language: document.languageId,
-					});
 				} else {
-					this.#logger.debug('Snippets not enabled for language, ignoring', {
+					this.#logger.debug('Snippets or validation not enabled for language, ignoring', {
 						uri,
 						language: document.languageId,
 					});
@@ -128,73 +112,70 @@ class CompletionModule {
 			return items;
 		}
 
-		/** @type {Set<string>} */
-		const needlessDisablesKeys = new Set();
-
 		const thisLineRules = new Set();
 		const nextLineRules = new Set();
 
-		for (const diagnostic of diagnostics) {
-			if (needlessDisablesKeys.has(this.#computeKey(diagnostic))) {
+		const disableTable = new DisableMetadataLookupTable(diagnostics);
+
+		for (const { code, range } of diagnostics) {
+			if (
+				!code ||
+				typeof code !== 'string' ||
+				code === 'CssSyntaxError' ||
+				disableTable.find({
+					type: DisableReportRuleNames.Needless,
+					rule: code,
+					range,
+				}).size > 0
+			) {
 				continue;
 			}
 
-			const start = diagnostic.range.start;
-
-			const rule = diagnostic.code ?? '';
-
-			if (start.line === position.line) {
-				thisLineRules.add(rule);
-			} else if (start.line === position.line + 1) {
-				nextLineRules.add(rule);
+			if (range.start.line === position.line) {
+				thisLineRules.add(code);
+			} else if (range.start.line === position.line + 1) {
+				nextLineRules.add(code);
 			}
 		}
-
-		thisLineRules.delete('');
-		thisLineRules.delete('CssSyntaxError');
-		nextLineRules.delete('');
-		nextLineRules.delete('CssSyntaxError');
 
 		/** @type {lsp.CompletionItem[]} */
 		const results = [];
 
-		const disableKind = getDisableType(document, position);
+		const disableType = getDisableType(document, position);
 
-		if (disableKind) {
-			if (disableKind === 'stylelint-disable-line') {
-				for (const rule of thisLineRules) {
-					results.push({
-						label: rule,
-						kind: CompletionItemKind.Snippet,
-						detail: `disable ${rule} rule. (stylelint)`,
-					});
-				}
-			} else if (
-				disableKind === 'stylelint-disable' ||
-				disableKind === 'stylelint-disable-next-line'
-			) {
-				for (const rule of nextLineRules) {
-					results.push({
-						label: rule,
-						kind: CompletionItemKind.Snippet,
-						detail: `disable ${rule} rule. (stylelint)`,
-					});
-				}
+		if (disableType === 'stylelint-disable-line') {
+			for (const rule of thisLineRules) {
+				results.push({
+					label: rule,
+					kind: CompletionItemKind.Snippet,
+					detail: `disable ${rule} rule. (stylelint)`,
+				});
+			}
+		} else if (
+			disableType === 'stylelint-disable' ||
+			disableType === 'stylelint-disable-next-line'
+		) {
+			for (const rule of nextLineRules) {
+				results.push({
+					label: rule,
+					kind: CompletionItemKind.Snippet,
+					detail: `disable ${rule} rule. (stylelint)`,
+				});
 			}
 		} else {
-			if (thisLineRules.size === 1) {
-				results.push(createDisableCompletionItem('stylelint-disable-line', [...thisLineRules][0]));
-			} else {
-				results.push(createDisableCompletionItem('stylelint-disable-line'));
-			}
+			results.push(
+				createDisableCompletionItem(
+					'stylelint-disable-line',
+					thisLineRules.size === 1 ? thisLineRules.values().next().value : undefined,
+				),
+			);
 
-			if (nextLineRules.size === 1) {
-				results.push(
-					createDisableCompletionItem('stylelint-disable-next-line', [...nextLineRules][0]),
-				);
-			} else {
-				results.push(createDisableCompletionItem('stylelint-disable-next-line'));
-			}
+			results.push(
+				createDisableCompletionItem(
+					'stylelint-disable-next-line',
+					nextLineRules.size === 1 ? nextLineRules.values().next().value : undefined,
+				),
+			);
 
 			results.push(createDisableCompletionItem('stylelint-disable'));
 		}

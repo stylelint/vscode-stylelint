@@ -4,8 +4,6 @@ const { LEVEL, MESSAGE } = require('triple-beam');
 
 const { LanguageServerFormatter } = require('../language-server-formatter');
 
-// Test winston formatter
-
 const mockConnection = /** @type {lsp.Connection} */ (
 	/** @type {any} */ ({
 		console: {
@@ -36,7 +34,7 @@ const createMockInfo = (message, level, data = {}) => {
 
 describe('languageServerFormatter', () => {
 	beforeAll(() => {
-		jest.useFakeTimers('modern');
+		jest.useFakeTimers();
 	});
 
 	afterAll(() => {

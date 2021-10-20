@@ -1,7 +1,7 @@
 'use strict';
 
 const { DocumentFormattingRequest } = require('vscode-languageserver-protocol');
-const { formattingOptionsToRules } = require('../utils/stylelint');
+const { formattingOptionsToRules } = require('../../utils/stylelint');
 
 /**
  * @implements {LanguageServerModule}
@@ -82,9 +82,7 @@ class FormatterModule {
 				return null;
 			}
 
-			/** @type { { uri: string } } */
-			const identifier = textDocument;
-			const uri = identifier.uri;
+			const { uri } = textDocument;
 			const document = this.#context.documents.get(uri);
 
 			if (!document || !this.#shouldFormat(document)) {

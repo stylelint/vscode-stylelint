@@ -207,10 +207,11 @@
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
     "lint:types": "tsc",
+    "lint:unit-tests": "node scripts/enforce-unit-tests-per-file.js",
     "test": "npm run bundle && jest",
-    "test:lib": "jest --projects test/lib",
+    "test:e2e": "npm run bundle && jest --projects test/e2e",
+    "test:integration": "jest --projects test/integration",
     "test:unit": "jest --projects test/unit",
-    "test:workspace": "npm run bundle && jest --projects test/workspace",
     "vscode:prepublish": "npm run bundle-base -- --minify"
   },
   "prettier": "@stylelint/prettier-config"

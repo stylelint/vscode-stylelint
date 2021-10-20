@@ -1,3 +1,5 @@
+'use strict';
+
 jest.mock('path');
 jest.mock('vscode-uri', () => ({
 	URI: {

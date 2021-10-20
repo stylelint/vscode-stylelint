@@ -19,6 +19,17 @@ const CodeActionKind = {
 };
 
 /**
+ * Disable report rule names
+ * @enum {string}
+ */
+const DisableReportRuleNames = {
+	Needless: '--report-needless-disables',
+	InvalidScope: '--report-invalid-scope-disables',
+	Descriptionless: '--report-descriptionless-disables',
+	Illegal: 'reportDisables',
+};
+
+/**
  * Error thrown when a rule's option is invalid.
  */
 class InvalidOptionError extends Error {
@@ -34,5 +45,6 @@ class InvalidOptionError extends Error {
 module.exports = {
 	CommandId,
 	CodeActionKind,
+	DisableReportRuleNames,
 	InvalidOptionError,
 };

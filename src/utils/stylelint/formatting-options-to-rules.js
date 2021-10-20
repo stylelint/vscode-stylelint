@@ -20,6 +20,7 @@ function formattingOptionsToRules({
 	trimTrailingWhitespace,
 }) {
 	// NOTE: There is no equivalent rule for trimFinalNewlines, so it is not respected.
+	// TODO: Create respective rule upstream?
 
 	/** @type {FormattingRules} */
 	const rules = {

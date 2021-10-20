@@ -61,16 +61,16 @@ jobs:
       - name: Download VS Code
         run: npm run download-vscode
 
-      - name: Run lib tests
-        run: npm run test:lib -- --coverage
-
       - name: Run unit tests
         run: npm run test:unit -- --coverage
 
-      - name: Run VS Code tests (Linux)
-        if: runner.os == 'Linux'
-        run: xvfb-run -a npm run test:workspace -- --silent
+      - name: Run integration tests
+        run: npm run test:integration -- --coverage
 
-      - name: Run VS Code tests (non-Linux)
+      - name: Run end-to-end tests (Linux)
+        if: runner.os == 'Linux'
+        run: xvfb-run -a npm run test:e2e -- --silent
+
+      - name: Run end-to-end tests (non-Linux)
         if: runner.os != 'Linux'
-        run: npm run test:workspace -- --silent
+        run: npm run test:e2e -- --silent

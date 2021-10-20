@@ -28,6 +28,7 @@ declare namespace lsp {
 	export import InitializeParams = vscodeLanguageServer.InitializeParams;
 	export import InitializeResult = vscodeLanguageServer.InitializeResult;
 	export import Position = vscodeLanguageServerTypes.Position;
+	export import Range = vscodeLanguageServerTypes.Range;
 	export import RemoteConsole = vscodeLanguageServer.RemoteConsole;
 	export import TextDocument = vscodeLanguageServerTextDocument.TextDocument;
 	export import TextDocuments = vscodeLanguageServer.TextDocuments;
@@ -261,7 +262,7 @@ interface DidChangeValidateLanguagesParams {
  * is used for the {@link lsp.DidChangeConfigurationNotification}.
  */
 interface DidChangeConfigurationParams {
-	settings: ExtensionOptions;
+	settings: LanguageServerOptions;
 }
 
 /**
@@ -290,6 +291,8 @@ interface LanguageServerModule {
 	 * validated have changed.
 	 */
 	onDidChangeValidateLanguages?: (params: DidChangeValidateLanguagesParams) => void;
+
+	[key: string | symbol]: any;
 }
 
 /**
@@ -302,11 +305,16 @@ interface LanguageServerModuleConstructor {
 	 * string.
 	 */
 	id: string;
-	new (params: { context: LanguageServerContext; logger?: winston.Logger }): LanguageServerModule;
+	new (params: LanguageServerModuleConstructorParameters): LanguageServerModule;
 }
 
-type LanguageServerModuleConstructorParameters =
-	ConstructorParameters<LanguageServerModuleConstructor>[0];
+/**
+ * Parameters for the {@link LanguageServerModuleConstructor} constructor.
+ */
+type LanguageServerModuleConstructorParameters = {
+	context: LanguageServerContext;
+	logger?: winston.Logger;
+};
 
 /**
  * Language server event handler names.
@@ -325,6 +333,26 @@ type LanguageServerHandlerParameters = {
  */
 type LanguageServerHandlerReturnValues = {
 	[key in LanguageServerHandlers]: ReturnType<Required<LanguageServerModule>[key]>;
+};
+
+/**
+ * Language server constructor parameters.
+ */
+type LanguageServerConstructorParameters = {
+	/**
+	 * The language server connection.
+	 */
+	connection: lsp.Connection;
+
+	/**
+	 * The logger to use.
+	 */
+	logger?: winston.Logger;
+
+	/**
+	 * The modules to load.
+	 */
+	modules?: LanguageServerModuleConstructor[];
 };
 
 /**

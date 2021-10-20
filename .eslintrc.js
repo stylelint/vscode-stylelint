@@ -17,8 +17,7 @@ const config = {
 		es2020: true,
 	},
 	rules: {
-		'node/no-unsupported-features/es-syntax': ['error', { version: '>=14.16.0' }],
-		'node/no-unsupported-features/node-builtins': ['error', { version: '>=14.16.0' }],
+		strict: ['error', 'safe'],
 		'node/no-missing-require': ['error', { allowModules: ['vscode'] }],
 		'require-jsdoc': 'error',
 	},

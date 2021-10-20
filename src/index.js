@@ -6,6 +6,7 @@ const {
 	ExecuteCommandRequest,
 } = require('vscode-languageclient/node');
 const { workspace, commands: Commands, window: Window } = require('vscode');
+const { CommandId } = require('./utils/types');
 
 /**
  * @param {vscode.ExtensionContext} context
@@ -51,7 +52,8 @@ exports.activate = ({ subscriptions }) => {
 				version: textEditor.document.version,
 			};
 			const params = {
-				command: 'stylelint.applyAutoFix',
+				command: CommandId.ApplyAutoFix,
+				// TODO: Remove once fix is released
 				// https://github.com/microsoft/TypeScript/issues/43362
 				/* prettier-ignore */
 				'arguments': [textDocument],

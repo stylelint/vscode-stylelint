@@ -1,7 +1,7 @@
 'use strict';
 
 const { CodeActionKind, CodeAction, TextDocumentEdit } = require('vscode-languageserver-types');
-const { CodeActionKind: StylelintCodeActionKind } = require('../utils/types');
+const { CodeActionKind: StylelintCodeActionKind } = require('../../utils/types');
 
 /**
  * @implements {LanguageServerModule}

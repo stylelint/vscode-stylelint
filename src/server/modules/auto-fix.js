@@ -1,7 +1,7 @@
 'use strict';
 
 const { WorkspaceChange } = require('vscode-languageserver-protocol');
-const { CommandId } = require('../utils/types');
+const { CommandId } = require('../../utils/types');
 
 /**
  * @implements {LanguageServerModule}

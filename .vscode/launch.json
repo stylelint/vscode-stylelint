@@ -9,10 +9,10 @@
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceRoot}",
-				"${workspaceRoot}/test/workspace/stylelint-path",
-				// "${workspaceRoot}/fixture.css",
+				"${workspaceRoot}/fixture.css",
 				"--trace-warnings"
 			],
+			"env": { "NODE_ENV": "development" },
 			"stopOnEntry": false
 		},
 		{

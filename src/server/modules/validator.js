@@ -102,6 +102,7 @@ class ValidatorModule {
 	}
 
 	/**
+	 * Returns the diagnostics for the given document.
 	 * @param {string} uri
 	 * @returns {lsp.Diagnostic[]}
 	 */
@@ -122,11 +123,13 @@ class ValidatorModule {
 	onDidRegisterHandlers() {
 		this.#logger?.debug('Registering handlers');
 
-		this.#context.connection.onDidChangeWatchedFiles(() => void this.#validateAll());
+		this.#context.connection.onDidChangeWatchedFiles(async () => await this.#validateAll());
 
 		this.#logger?.debug('onDidChangeWatchedFiles handler registered');
 
-		this.#context.documents.onDidChangeContent(({ document }) => void this.#validate(document));
+		this.#context.documents.onDidChangeContent(
+			async ({ document }) => await this.#validate(document),
+		);
 
 		this.#logger?.debug('onDidChangeContent handler registered');
 
@@ -139,12 +142,12 @@ class ValidatorModule {
 	}
 
 	/**
-	 * @returns {void}
+	 * @returns {Promise<void>}
 	 */
-	onDidChangeConfiguration() {
+	async onDidChangeConfiguration() {
 		this.#logger?.debug('Received onDidChangeConfiguration');
 
-		void this.#validateAll();
+		await this.#validateAll();
 	}
 
 	/**

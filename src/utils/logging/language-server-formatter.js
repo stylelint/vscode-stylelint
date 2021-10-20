@@ -40,40 +40,39 @@ class LanguageServerFormatter {
 			messageParts.push(`[${info.component}]`);
 		}
 
-		messageParts.push(info[MESSAGE]);
-
-		let appended = false;
-
-		/** @param {string[]} keys */
-		const parseKeys = (keys) => {
-			for (const key of keys) {
-				if (key === 'level' || key === 'message') {
-					continue;
-				}
-
-				if (Object.hasOwnProperty.call(info, key)) {
-					if (!appended) {
-						messageParts.push('|');
-						appended = true;
-					}
-
-					messageParts.push(`${key}: ${JSON.stringify(info[key])}`);
-
-					delete info[key];
-				}
-			}
-		};
-
-		if (this.options.preferredKeyOrder) {
-			parseKeys(this.options.preferredKeyOrder);
-		}
+		messageParts.push(info.message);
 
 		delete info.component;
 		delete info.timestamp;
 
-		parseKeys(Object.keys(info));
+		const keys = new Set(Object.keys({ ...info }));
+		const postMessageParts = [];
 
-		const message = messageParts.join(' ');
+		if (this.options.preferredKeyOrder) {
+			for (const key of this.options.preferredKeyOrder) {
+				if (keys.has(key)) {
+					postMessageParts.push(`${key}: ${JSON.stringify(info[key])}`);
+
+					keys.delete(key);
+					delete info[key];
+				}
+			}
+		}
+
+		for (const key of keys) {
+			if (key === 'level' || key === 'message') {
+				continue;
+			}
+
+			postMessageParts.push(`${key}: ${JSON.stringify(info[key])}`);
+
+			delete info[key];
+		}
+
+		const message =
+			postMessageParts.length > 0
+				? `${messageParts.join(' ')} | ${postMessageParts.join(' ')}`
+				: messageParts.join(' ');
 
 		info[MESSAGE] = message;
 		info.message = message;

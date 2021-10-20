@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CodeActionModule onInitialize should return results 1`] = `
+Object {
+  "capabilities": Object {
+    "codeActionProvider": Object {
+      "codeActionKinds": Array [
+        "quickfix",
+        "source.fixAll.stylelint",
+      ],
+    },
+  },
+}
+`;
+
+exports[`CodeActionModule with action kind CodeActionKind.Source, should create code actions 1`] = `
+Array [
+  Object {
+    "edit": Object {
+      "documentChanges": Array [
+        Object {
+          "edits": Array [
+            Object {
+              "newText": "text",
+              "range": Object {
+                "end": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": Object {
+            "uri": "foo",
+            "version": undefined,
+          },
+        },
+      ],
+    },
+    "kind": "source.fixAll.stylelint",
+    "title": "Fix all stylelint auto-fixable problems",
+  },
+]
+`;
+
+exports[`CodeActionModule with action kind CodeActionKind.SourceFixAll, should create code actions 1`] = `
+Array [
+  Object {
+    "edit": Object {
+      "documentChanges": Array [
+        Object {
+          "edits": Array [
+            Object {
+              "newText": "text",
+              "range": Object {
+                "end": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": Object {
+            "uri": "foo",
+            "version": undefined,
+          },
+        },
+      ],
+    },
+    "kind": "source.fixAll.stylelint",
+    "title": "Fix all stylelint auto-fixable problems",
+  },
+]
+`;
+
+exports[`CodeActionModule with action kind StylelintCodeActionKind.StylelintSourceFixAll, should create code actions 1`] = `
+Array [
+  Object {
+    "edit": Object {
+      "documentChanges": Array [
+        Object {
+          "edits": Array [
+            Object {
+              "newText": "text",
+              "range": Object {
+                "end": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": Object {
+            "uri": "foo",
+            "version": undefined,
+          },
+        },
+      ],
+    },
+    "kind": "source.fixAll.stylelint",
+    "title": "Fix all stylelint auto-fixable problems",
+  },
+]
+`;
