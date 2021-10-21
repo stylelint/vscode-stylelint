@@ -208,7 +208,7 @@
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
-    "lint:types": "tsc",
+    "lint:types": "tsc -b",
     "lint:unit-tests": "node scripts/enforce-unit-tests-per-file.js",
     "test": "npm run bundle && jest",
     "test:e2e": "npm run bundle && jest --projects test/e2e",
