@@ -8,6 +8,7 @@ const { getFixes } = require('../utils/documents');
 const { displayError } = require('../utils/lsp');
 const { deepAssign } = require('../utils/objects');
 const { StylelintRunner } = require('../utils/stylelint');
+const { StylelintResolver } = require('../utils/packages');
 
 /** @type {LanguageServerOptions} */
 const defaultOptions = {
@@ -37,6 +38,12 @@ class StylelintLanguageServer {
 	 * @type {LanguageServerOptions}
 	 */
 	#options;
+
+	/**
+	 * The resolver used to resolve the Stylelint package.
+	 * @type {StylelintResolver}
+	 */
+	#resolver;
 
 	/**
 	 * The runner used to run Stylelint.
@@ -70,7 +77,8 @@ class StylelintLanguageServer {
 		this.#connection = connection;
 		this.#logger = logger?.child({ component: 'language-server' });
 		this.#options = defaultOptions;
-		this.#runner = new StylelintRunner(connection, this.#logger);
+		this.#resolver = new StylelintResolver(connection, this.#logger);
+		this.#runner = new StylelintRunner(connection, this.#logger, this.#resolver);
 		this.#documents = new TextDocuments(TextDocument);
 		this.#context = {
 			connection: this.#connection,
@@ -81,6 +89,7 @@ class StylelintLanguageServer {
 			getFixes: this.#getFixes.bind(this),
 			displayError: this.#displayError.bind(this),
 			lintDocument: this.#lintDocument.bind(this),
+			resolveStylelint: this.#resolveStylelint.bind(this),
 		};
 
 		const contextReadOnlyProxy = new Proxy(this.#context, {
@@ -140,6 +149,35 @@ class StylelintLanguageServer {
 	 */
 	#displayError(error) {
 		displayError(this.#connection, error);
+	}
+
+	/**
+	 * Resolves the Stylelint package for the given document.
+	 * @param {lsp.TextDocument} document
+	 * @returns {Promise<StylelintResolutionResult | undefined>}
+	 */
+	async #resolveStylelint(document) {
+		this.#logger?.debug('Resolving Stylelint', { uri: document.uri });
+
+		try {
+			const result = await this.#resolver.resolve(this.#options, document);
+
+			if (result) {
+				this.#logger?.debug('Stylelint resolved', {
+					uri: document.uri,
+					resolvedPath: result.resolvedPath,
+				});
+			} else {
+				this.#logger?.warn('Failed to resolve Stylelint', { uri: document.uri });
+			}
+
+			return result;
+		} catch (error) {
+			this.#displayError(error);
+			this.#logger?.error('Error resolving Stylelint', { uri: document.uri, error });
+
+			return undefined;
+		}
 	}
 
 	/**

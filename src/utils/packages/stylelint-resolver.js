@@ -5,6 +5,7 @@ const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
 const { getWorkspaceFolder } = require('../documents');
 const { getGlobalPathResolver } = require('./global-path-resolver');
+const { getFirstResolvedValue, lazyCallAsync } = require('../../utils/functions');
 
 /**
  * Utility for resolving the path to the Stylelint package. Each instance caches
@@ -54,27 +55,53 @@ class StylelintResolver {
 	}
 
 	/**
+	 * If the given path is absolute, returns it. Otherwise, if a connection is
+	 * available, returns the path resolved to the document's workspace folder.
+	 * If no connection is available, returns the path as-is.
+	 * @param {string} stylelintPath
+	 * @param {() => Promise<string | undefined>} getWorkspaceFolderFn
+	 */
+	async #getRequirePath(stylelintPath, getWorkspaceFolderFn) {
+		if (!this.#connection || path.isAbsolute(stylelintPath)) {
+			return stylelintPath;
+		}
+
+		const workspaceFolder = await getWorkspaceFolderFn();
+
+		return workspaceFolder ? path.join(workspaceFolder, stylelintPath) : stylelintPath;
+	}
+
+	/**
 	 * Attempts to resolve the stylelint package from a path. If an error
 	 * occurs, it will be logged through the connection and thrown. If the
 	 * resolved module does not have a lint function, an error will be logged
 	 * and `undefined` will be returned.
-	 * @param {string} stylelintPath
-	 * @returns {stylelint.PublicApi | undefined}
+	 * @param {string | undefined} stylelintPath
+	 * @param {() => Promise<string | undefined>} getWorkspaceFolderFn
+	 * @returns {Promise<StylelintResolutionResult | undefined>}
 	 */
-	#resolveFromPath(stylelintPath) {
-		const errorMessage = `Failed to load stylelint from "stylelintPath": ${stylelintPath}.`;
-
-		let stylelint;
-
-		try {
-			stylelint = require(stylelintPath);
-		} catch (err) {
-			this.#logError(errorMessage);
-			throw err;
+	async #resolveFromPath(stylelintPath, getWorkspaceFolderFn) {
+		if (!stylelintPath) {
+			return undefined;
 		}
 
-		if (stylelint && typeof stylelint.lint === 'function') {
-			return stylelint;
+		const errorMessage = `Failed to load stylelint from "stylelintPath": ${stylelintPath}.`;
+
+		try {
+			const requirePath = await this.#getRequirePath(stylelintPath, getWorkspaceFolderFn);
+
+			const stylelint = require(requirePath);
+
+			if (stylelint && typeof stylelint.lint === 'function') {
+				return {
+					stylelint,
+					resolvedPath: requirePath,
+				};
+			}
+		} catch (err) {
+			this.#logError(errorMessage);
+
+			throw err;
 		}
 
 		this.#logError(errorMessage);
@@ -92,10 +119,11 @@ class StylelintResolver {
 	 * and `undefined` will be returned.
 	 * @private
 	 * @param {lsp.TextDocument} textDocument
+	 * @param {() => Promise<string | undefined>} getWorkspaceFolderFn
 	 * @param {PackageManager} [packageManager]
-	 * @returns {Promise<stylelint.PublicApi | undefined>}
+	 * @returns {Promise<StylelintResolutionResult | undefined>}
 	 */
-	async #resolveFromModules(textDocument, packageManager) {
+	async #resolveFromModules(textDocument, getWorkspaceFolderFn, packageManager) {
 		const connection = this.#connection;
 
 		/** @type {TracerFn} */
@@ -105,9 +133,6 @@ class StylelintResolver {
 					connection.tracer.log(message, verbose);
 			  }
 			: () => undefined;
-
-		/** @type {stylelint.PublicApi | undefined} */
-		let stylelint;
 
 		try {
 			/** @type {string | undefined} */
@@ -120,22 +145,27 @@ class StylelintResolver {
 			const cwd =
 				documentURI.scheme === 'file'
 					? path.dirname(documentURI.fsPath)
-					: connection && (await getWorkspaceFolder(connection, textDocument));
+					: await getWorkspaceFolderFn();
 
 			const stylelintPath = await Files.resolve('stylelint', globalModulesPath, cwd, trace);
 
-			stylelint = require(stylelintPath);
+			const stylelint = require(stylelintPath);
 
 			if (stylelint && typeof stylelint.lint !== 'function') {
 				this.#logError('stylelint.lint is not a function.');
 
 				return undefined;
 			}
+
+			return {
+				stylelint,
+				resolvedPath: stylelintPath,
+			};
 		} catch {
 			// ignore
 		}
 
-		return stylelint;
+		return undefined;
 	}
 
 	/**
@@ -156,12 +186,18 @@ class StylelintResolver {
 	 * resolution through `node_modules` will be traced through it.
 	 * @param {ResolverOptions} options
 	 * @param {lsp.TextDocument} textDocument
-	 * @returns {Promise<stylelint.PublicApi | undefined>}
+	 * @returns {Promise<StylelintResolutionResult | undefined>}
 	 */
 	async resolve({ packageManager, stylelintPath }, textDocument) {
-		const stylelint =
-			(stylelintPath ? this.#resolveFromPath(stylelintPath) : null) ??
-			(await this.#resolveFromModules(textDocument, packageManager));
+		const getWorkspaceFolderFn = lazyCallAsync(
+			async () => this.#connection && (await getWorkspaceFolder(this.#connection, textDocument)),
+		);
+
+		const stylelint = await getFirstResolvedValue(
+			async () => this.#resolveFromPath(stylelintPath, getWorkspaceFolderFn),
+			async () =>
+				await this.#resolveFromModules(textDocument, getWorkspaceFolderFn, packageManager),
+		);
 
 		if (!stylelint) {
 			this.#logger?.warn('Failed to load stylelint either globally or from the current workspace.');

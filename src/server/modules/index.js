@@ -5,5 +5,6 @@ module.exports = {
 	...require('./code-action'),
 	...require('./completion'),
 	...require('./formatter'),
+	...require('./old-stylelint-warning'),
 	...require('./validator'),
 };

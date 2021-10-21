@@ -3,6 +3,7 @@
 jest.mock('../../utils/lsp');
 jest.mock('../../utils/stylelint');
 jest.mock('../../utils/documents');
+jest.mock('../../utils/packages');
 
 const { displayError } = /** @type {jest.Mocked<typeof import('../../utils/lsp')>} */ (
 	require('../../utils/lsp')
@@ -14,6 +15,10 @@ const { StylelintRunner } = /** @type {jest.Mocked<typeof import('../../utils/st
 
 const { getFixes } = /** @type {jest.Mocked<typeof import('../../utils/documents')>} */ (
 	require('../../utils/documents')
+);
+
+const { StylelintResolver } = /** @type {jest.Mocked<typeof import('../../utils/packages')>} */ (
+	require('../../utils/packages')
 );
 
 const { StylelintLanguageServer } = require('../server');
@@ -685,6 +690,178 @@ describe('StylelintLanguageServer', () => {
 		expect(mockLogger.error).toHaveBeenCalledWith('Error getting fixes', {
 			uri: 'file:///test.css',
 			error,
+		});
+	});
+
+	test('should allow modules to resolve the Stylelint package for a given document using context.resolveStylelintPackage', async () => {
+		/** @type {Promise<any> | undefined} */
+		let promise;
+
+		StylelintResolver.mockImplementation(
+			() =>
+				/** @type {any} */ ({
+					resolve: async () => ({
+						stylelint: { fake: 'package' },
+						resolvedPath: 'fake/path',
+					}),
+				}),
+		);
+
+		const document = /** @type {lsp.TextDocument} */ (
+			/** @type {any} */ ({
+				uri: 'file:///test.css',
+			})
+		);
+
+		class TestModule {
+			static id = 'test-module';
+
+			/**
+			 * @param {LanguageServerModuleConstructorParameters} params
+			 */
+			constructor({ context }) {
+				this.context = context;
+			}
+
+			onInitialize() {
+				promise = this.context.resolveStylelint(document);
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			/** @type {any} */ ({ capabilities: {} }),
+			/** @type {any} */ ({}),
+			/** @type {any} */ ({}),
+		);
+
+		expect(await promise).toStrictEqual({
+			stylelint: { fake: 'package' },
+			resolvedPath: 'fake/path',
+		});
+	});
+
+	test('should display and log errors thrown when resolving the Stylelint package', async () => {
+		const error = new Error('test');
+
+		/** @type {Promise<any> | undefined} */
+		let promise;
+
+		StylelintResolver.mockImplementation(
+			() =>
+				/** @type {any} */ ({
+					resolve: async () => {
+						throw error;
+					},
+				}),
+		);
+
+		const document = /** @type {lsp.TextDocument} */ (
+			/** @type {any} */ ({
+				uri: 'file:///test.css',
+			})
+		);
+
+		class TestModule {
+			static id = 'test-module';
+
+			/**
+			 * @param {LanguageServerModuleConstructorParameters} params
+			 */
+			constructor({ context }) {
+				this.context = context;
+			}
+
+			onInitialize() {
+				promise = this.context.resolveStylelint(document);
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			/** @type {any} */ ({ capabilities: {} }),
+			/** @type {any} */ ({}),
+			/** @type {any} */ ({}),
+		);
+
+		expect(await promise).toBeUndefined();
+		expect(displayError).toHaveBeenCalledWith(mockConnection, error);
+		expect(mockLogger.error).toHaveBeenCalledWith('Error resolving Stylelint', {
+			uri: 'file:///test.css',
+			error,
+		});
+	});
+
+	test('should log when Stylelint cannot be resolved', async () => {
+		/** @type {Promise<any> | undefined} */
+		let promise;
+
+		StylelintResolver.mockImplementation(
+			() =>
+				/** @type {any} */ ({
+					resolve: async () => {
+						return undefined;
+					},
+				}),
+		);
+
+		const document = /** @type {lsp.TextDocument} */ (
+			/** @type {any} */ ({
+				uri: 'file:///test.css',
+			})
+		);
+
+		class TestModule {
+			static id = 'test-module';
+
+			/**
+			 * @param {LanguageServerModuleConstructorParameters} params
+			 */
+			constructor({ context }) {
+				this.context = context;
+			}
+
+			onInitialize() {
+				promise = this.context.resolveStylelint(document);
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			/** @type {any} */ ({ capabilities: {} }),
+			/** @type {any} */ ({}),
+			/** @type {any} */ ({}),
+		);
+
+		expect(await promise).toBeUndefined();
+		expect(mockLogger.warn).toHaveBeenCalledWith('Failed to resolve Stylelint', {
+			uri: 'file:///test.css',
 		});
 	});
 });

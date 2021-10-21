@@ -1,7 +1,6 @@
 'use strict';
 
 const os = require('os');
-const path = require('path');
 const { URI } = require('vscode-uri');
 const { StylelintResolver } = require('../packages');
 const { getWorkspaceFolder } = require('../documents');
@@ -33,11 +32,12 @@ class StylelintRunner {
 	/**
 	 * @param {lsp.Connection} [connection]
 	 * @param {winston.Logger} [logger]
+	 * @param {StylelintResolver} [resolver]
 	 */
-	constructor(connection, logger) {
+	constructor(connection, logger, resolver) {
 		this.#connection = connection;
 		this.#logger = logger;
-		this.#stylelintResolver = new StylelintResolver(connection, logger);
+		this.#stylelintResolver = resolver ?? new StylelintResolver(connection, logger);
 	}
 
 	/**
@@ -52,26 +52,18 @@ class StylelintRunner {
 		const workspaceFolder =
 			this.#connection && (await getWorkspaceFolder(this.#connection, document));
 
-		const resolverOptions = { ...extensionOptions };
+		const result = await this.#stylelintResolver.resolve(extensionOptions, document);
 
-		if (resolverOptions?.stylelintPath && workspaceFolder) {
-			const { stylelintPath } = resolverOptions;
-
-			if (!path.isAbsolute(stylelintPath)) {
-				resolverOptions.stylelintPath = path.join(workspaceFolder, stylelintPath);
-			}
-		}
-
-		const stylelint = await this.#stylelintResolver.resolve(resolverOptions, document);
-
-		if (!stylelint) {
+		if (!result) {
 			this.#logger?.info('No Stylelint found with which to lint document', {
 				uri: document.uri,
-				options: resolverOptions,
+				options: extensionOptions,
 			});
 
 			return { diagnostics: [] };
 		}
+
+		const { stylelint } = result;
 
 		const { fsPath } = URI.parse(document.uri);
 

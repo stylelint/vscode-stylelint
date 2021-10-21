@@ -34,6 +34,7 @@ Object {
         "postcss",
       ],
     },
+    "resolveStylelint": [Function],
     "runner": StylelintRunner {
       "lintDocument": [MockFunction],
     },

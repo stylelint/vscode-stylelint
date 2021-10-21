@@ -58,7 +58,7 @@ declare namespace tests {
 	namespace mocks {
 		type FileSystemTree = { [path: string]: FileSystemEntry };
 		type FileSystemEntry = string | FileSystemTree | Error | undefined;
-		type FSPromisesModule = typeof import('fs/promises') & {
+		type FSPromisesModule = jest.Mocked<typeof import('fs/promises')> & {
 			__mockFileSystem(tree: FileSystemTree): void;
 		};
 
@@ -236,6 +236,14 @@ type LintDiagnostics = {
 	 * Raw output from Stylelint, if any.
 	 */
 	output?: string;
+};
+
+/**
+ * Stylelint package resolution result.
+ */
+type StylelintResolutionResult = {
+	stylelint: stylelint.PublicApi;
+	resolvedPath: string;
 };
 
 /**
@@ -421,6 +429,12 @@ interface LanguageServerContext {
 		document: lsp.TextDocument,
 		linterOptions?: Partial<stylelint.LinterOptions>,
 	): Promise<LintDiagnostics | undefined>;
+
+	/**
+	 * Resolves the Stylelint package to be used for the given document.
+	 * @param document The document to resolve the package for.
+	 */
+	resolveStylelint(document: lsp.TextDocument): Promise<StylelintResolutionResult | undefined>;
 }
 
 /**
