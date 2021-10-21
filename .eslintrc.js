@@ -20,6 +20,7 @@ const config = {
 		strict: ['error', 'safe'],
 		'node/no-missing-require': ['error', { allowModules: ['vscode'] }],
 		'require-jsdoc': 'error',
+		'no-warning-comments': ['warn', { terms: ['todo'], location: 'start' }],
 	},
 	overrides: [
 		{
