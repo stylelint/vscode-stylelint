@@ -23,19 +23,24 @@ body:
       label: Code Snippet
       description: Provide a code snippet that reproduces the bug.
       placeholder: |
+        ```css
         .foo {
           color: pink;
         }
-      render: css
+        ```
   - type: textarea
     id: extension-config
     attributes:
       label: Extension Configuration
       description: What vscode-stylelint configuration is needed to reproduce the bug?
       placeholder: |
-        .foo {
-          color: pink;
+        {
+          "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js",
+          "editor.codeActionsOnSave": {
+            "source.fixAll.stylelint": true
+          }
         }
+      render: json
   - type: textarea
     id: actual-behaviour
     attributes:
