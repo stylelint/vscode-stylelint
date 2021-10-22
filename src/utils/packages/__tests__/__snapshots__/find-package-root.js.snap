@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`findPackageRoot should throw when encountering a file system error other than ENOENT 1`] = `"EACCES: permission denied, open 'foo/bar/baz'"`;
+exports[`findPackageRoot with custom root file should throw when encountering a file system error other than ENOENT 1`] = `"EACCES: permission denied, open 'foo/bar/baz'"`;
+
+exports[`findPackageRoot with defaults should throw when encountering a file system error other than ENOENT 1`] = `"EACCES: permission denied, open 'foo/bar/baz'"`;

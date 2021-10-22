@@ -8,14 +8,16 @@ const path = require('path');
  * containing a file named `package.json`. Resolves to `undefined` if no such
  * directory is found.
  * @param {string} directory The directory to start from.
+ * @param {string} rootFile The file to use to determine when the project root
+ * has been reached. Defaults to `package.json`.
  * @returns {Promise<string | undefined>}
  */
-async function findPackageRoot(directory) {
+async function findPackageRoot(directory, rootFile = 'package.json') {
 	let currentDirectory = directory;
 
 	// eslint-disable-next-line no-constant-condition
 	while (true) {
-		const manifestPath = path.join(currentDirectory, 'package.json');
+		const manifestPath = path.join(currentDirectory, rootFile);
 
 		try {
 			const stat = await fs.stat(manifestPath);

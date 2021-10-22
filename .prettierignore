@@ -6,5 +6,7 @@ coverage
 /.vscode-test/**
 /test/**/*.css
 /package.json
+.pnp.*
+.yarn
 # Unignore config files like .prettierrc.js, because they're ignored by default
 !.*rc.js

@@ -1,11 +1,15 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs/promises');
 const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
 const { getWorkspaceFolder } = require('../documents');
+const { findPackageRoot } = require('./find-package-root');
 const { getGlobalPathResolver } = require('./global-path-resolver');
-const { getFirstResolvedValue, lazyCallAsync } = require('../../utils/functions');
+const { getFirstResolvedValue, lazyCallAsync } = require('../functions');
+const { createRequire } = require('module');
+const process = require('process');
 
 /**
  * Utility for resolving the path to the Stylelint package. Each instance caches
@@ -52,6 +56,101 @@ class StylelintResolver {
 
 		this.#connection.window.showErrorMessage(`stylelint: ${message}`);
 		this.#logger?.error(message);
+	}
+
+	/**
+	 * Tries to resolve the Stylelint package using Plug-n-Play. If the package
+	 * cannot be resolved, `undefined` will be returned.
+	 * @param {string | undefined} cwd
+	 * @returns {Promise<StylelintResolutionResult | undefined>}
+	 */
+	async #requirePnP(cwd) {
+		if (!cwd) {
+			return undefined;
+		}
+
+		const root = await findPackageRoot(cwd, 'yarn.lock');
+
+		if (!root) {
+			this.#logger?.debug(`Could not find the package root`, { cwd });
+
+			return undefined;
+		}
+
+		const pnpPath = path.join(root, '.pnp.cjs');
+
+		try {
+			if (!(await fs.stat(pnpPath)).isFile()) {
+				this.#logger?.debug(`Could not find a PnP loader`, { path: root });
+
+				return undefined;
+			}
+		} catch (error) {
+			this.#logger?.debug(`Could not find a PnP loader`, { path: root, error });
+
+			return undefined;
+		}
+
+		if (!process.versions.pnp) {
+			try {
+				require(pnpPath).setup();
+			} catch (error) {
+				this.#logger?.warn(`Could not setup PnP`, { path: pnpPath, error });
+
+				return undefined;
+			}
+		}
+
+		const stylelintPath = path.join(root, 'node_modules/stylelint');
+
+		try {
+			const rootRelativeRequire = createRequire(pnpPath);
+			const stylelint = rootRelativeRequire('stylelint');
+
+			const result = {
+				stylelint,
+				resolvedPath: stylelintPath,
+			};
+
+			this.#logger?.debug(`Resolved Stylelint using PnP`, {
+				path: pnpPath,
+			});
+
+			return result;
+		} catch (error) {
+			this.#logger?.warn(`Could not load Stylelint using PnP`, { path: root, error });
+
+			return undefined;
+		}
+	}
+
+	/**
+	 * Tries to resolve the Stylelint package from `node_modules`. If the
+	 * package cannot be resolved, `undefined` will be returned.
+	 * @param {string | undefined} cwd
+	 * @param {string | undefined} globalModulesPath
+	 * @param {TracerFn} trace
+	 * @returns {Promise<StylelintResolutionResult | undefined>}
+	 */
+	async #requireNode(cwd, globalModulesPath, trace) {
+		try {
+			const stylelintPath = await Files.resolve('stylelint', globalModulesPath, cwd, trace);
+
+			const result = {
+				stylelint: require(stylelintPath),
+				resolvedPath: stylelintPath,
+			};
+
+			this.#logger?.debug(`Resolved Stylelint from node_modules`, {
+				path: stylelintPath,
+			});
+
+			return result;
+		} catch (error) {
+			this.#logger?.warn(`Could not load Stylelint from node_modules`, { error });
+
+			return undefined;
+		}
 	}
 
 	/**
@@ -147,20 +246,22 @@ class StylelintResolver {
 					? path.dirname(documentURI.fsPath)
 					: await getWorkspaceFolderFn();
 
-			const stylelintPath = await Files.resolve('stylelint', globalModulesPath, cwd, trace);
+			const result = await getFirstResolvedValue(
+				async () => await this.#requirePnP(cwd),
+				async () => await this.#requireNode(cwd, globalModulesPath, trace),
+			);
 
-			const stylelint = require(stylelintPath);
+			if (!result) {
+				return undefined;
+			}
 
-			if (stylelint && typeof stylelint.lint !== 'function') {
+			if (typeof result.stylelint?.lint !== 'function') {
 				this.#logError('stylelint.lint is not a function.');
 
 				return undefined;
 			}
 
-			return {
-				stylelint,
-				resolvedPath: stylelintPath,
-			};
+			return result;
 		} catch {
 			// ignore
 		}
@@ -194,7 +295,7 @@ class StylelintResolver {
 		);
 
 		const stylelint = await getFirstResolvedValue(
-			async () => this.#resolveFromPath(stylelintPath, getWorkspaceFolderFn),
+			async () => await this.#resolveFromPath(stylelintPath, getWorkspaceFolderFn),
 			async () =>
 				await this.#resolveFromModules(textDocument, getWorkspaceFolderFn, packageManager),
 		);
