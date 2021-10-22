@@ -354,6 +354,114 @@ describe('StylelintLanguageServer', () => {
 		expect(options).toMatchSnapshot();
 	});
 
+	test('should receive updates to settings from the client and pass them to modules', () => {
+		/**
+		 * @type {LanguageServerOptions | undefined}
+		 */
+		let options;
+
+		class TestModule {
+			static id = 'test-module';
+
+			/**
+			 * @param {DidChangeConfigurationParams} params
+			 */
+			onDidChangeConfiguration({ settings }) {
+				options = settings;
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			/** @type {any} */ ({ capabilities: {} }),
+			/** @type {any} */ ({}),
+			/** @type {any} */ ({}),
+		);
+
+		const onDidChangeConfigurationHandler =
+			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
+
+		onDidChangeConfigurationHandler({ settings: { stylelint: {} } });
+
+		onDidChangeConfigurationHandler({
+			settings: {
+				stylelint: {
+					config: {
+						rules: {
+							'block-no-empty': true,
+						},
+					},
+					ignoreDisables: true,
+				},
+			},
+		});
+
+		expect(options).toMatchSnapshot();
+	});
+
+	test('should fire onDidChangeValidateLanguages when first settings are sent to server', () => {
+		/**
+		 * @type {LanguageServerOptions | undefined}
+		 */
+		let options;
+
+		/**
+		 * @type {DidChangeValidateLanguagesParams | undefined}
+		 */
+		let languageParams;
+
+		class TestModule {
+			static id = 'test-module';
+
+			/**
+			 * @param {DidChangeConfigurationParams} params
+			 */
+			onDidChangeConfiguration({ settings }) {
+				options = settings;
+			}
+
+			/**
+			 * @param {DidChangeValidateLanguagesParams} params
+			 */
+			onDidChangeValidateLanguages(params) {
+				languageParams = params;
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			/** @type {any} */ ({ capabilities: {} }),
+			/** @type {any} */ ({}),
+			/** @type {any} */ ({}),
+		);
+
+		const onDidChangeConfigurationHandler =
+			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
+
+		onDidChangeConfigurationHandler({ settings: { stylelint: {} } });
+
+		expect(options).toMatchSnapshot();
+		expect(languageParams).toMatchSnapshot();
+	});
+
 	test('should fire onDidChangeValidateLanguages when validate option changes', () => {
 		/**
 		 * @type {LanguageServerOptions | undefined}
@@ -401,6 +509,8 @@ describe('StylelintLanguageServer', () => {
 
 		const onDidChangeConfigurationHandler =
 			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
+
+		onDidChangeConfigurationHandler({ settings: { stylelint: {} } });
 
 		onDidChangeConfigurationHandler({
 			settings: {

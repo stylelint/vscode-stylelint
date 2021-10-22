@@ -2,7 +2,7 @@
   "name": "vscode-stylelint",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "Modern CSS/SCSS/Less linter",
+  "description": "Modern CSS/Less/SCSS linter",
   "main": "dist/index.js",
   "displayName": "Stylelint",
   "publisher": "stylelint",
@@ -114,6 +114,7 @@
           },
           "default": [
             "css",
+            "less",
             "postcss"
           ],
           "description": "An array of language ids which should be validated by stylelint."
@@ -126,6 +127,7 @@
           },
           "default": [
             "css",
+            "less",
             "postcss"
           ],
           "description": "An array of language ids which snippets are provided by stylelint."

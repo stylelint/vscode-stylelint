@@ -208,6 +208,41 @@ Object {
 }
 `;
 
+exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when first settings are sent to server 1`] = `
+Object {
+  "config": undefined,
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "ignoreDisables": undefined,
+  "packageManager": "npm",
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+  "snippet": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+  "stylelintPath": undefined,
+  "validate": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when first settings are sent to server 2`] = `
+Object {
+  "languages": Set {
+    "css",
+    "less",
+    "postcss",
+  },
+  "removedLanguages": Set {},
+}
+`;
+
 exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when validate option changes 1`] = `
 Object {
   "config": undefined,
@@ -257,6 +292,34 @@ Object {
   "configFile": undefined,
   "customSyntax": undefined,
   "ignoreDisables": undefined,
+  "packageManager": "npm",
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+  "snippet": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+  "stylelintPath": undefined,
+  "validate": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer should receive updates to settings from the client and pass them to modules 1`] = `
+Object {
+  "config": Object {
+    "rules": Object {
+      "block-no-empty": true,
+    },
+  },
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "ignoreDisables": true,
   "packageManager": "npm",
   "reportInvalidScopeDisables": undefined,
   "reportNeedlessDisables": undefined,
