@@ -4,7 +4,10 @@
 const config = {
 	testMatch: ['<rootDir>/*/test.[jt]s?(x)'],
 	verbose: true,
-	modulePathIgnorePatterns: ['<rootDir>/../../.vscode-test'],
+	modulePathIgnorePatterns: [
+		'<rootDir>/../../.vscode-test',
+		'<rootDir>/../e2e/yarn-[^/]+/stylelint',
+	],
 };
 
 module.exports = config;
