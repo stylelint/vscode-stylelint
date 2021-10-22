@@ -38,7 +38,7 @@ For example, the following entries in `.vscode/settings.json` would disable the 
 
 > See the [Stylelint getting started guide] for more information.
 
-Once you create a [Stylelint configuration file] or configure [the Stylelint extension's settings](#extension-settings), Stylelint will automatically validate CSS and [PostCSS][postcss extension] documents (those with [language identifiers] `css` and `postcss`, respectively).
+Once you create a [Stylelint configuration file] or configure [the Stylelint extension's settings](#extension-settings), Stylelint will automatically validate CSS, [Less], and [PostCSS][postcss extension] documents (those with [language identifiers] `css`, `less`, `postcss`, respectively).
 
 <img width="430" alt="Screenshot of UI to select a language identifier" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/main/media/language.png">
 
@@ -169,7 +169,7 @@ Sets the Stylelint [`reportInvalidScopeDisables`] option. If `true`, Stylelint r
 ### `stylelint.validate`
 
 > Type: `string[]`  
-> Default: `["css","postcss"]`
+> Default: `["css", "less", "postcss"]`
 
 An array of language identifiers specifying which files to validate.
 
@@ -190,7 +190,7 @@ Controls the package manager to be used to resolve the Stylelint library. This s
 ### `stylelint.snippet`
 
 > Type: `string[]`  
-> Default: `["css","postcss"]`
+> Default: `["css", "less", "postcss"]`
 
 An array of language identifiers specifying which files to enable snippets for.
 
