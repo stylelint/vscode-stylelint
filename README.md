@@ -64,7 +64,7 @@ Starting with 1.x, vscode-stylelint will depend on having a copy of Stylelint in
 
 The 0.x versions of this extension, which used Stylelint 13.x and prior, supported validating many different languages out of the box without any additional configuration. However, this added a lot of complexity and resulted in many cases of unwanted or unexpected behaviour.
 
-In current versions of the extension, the extension only supports validating CSS and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
+In current versions of the extension, the extension only supports validating CSS, Less, and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
 
 1. Install the PostCSS syntax for the language you want to validate into your workspace, e.g. [postcss-scss].
 1. Configure Stylelint to use the syntax by providing the module name in the [`customSyntax`] option using overrides (or use the [corresponding option](#stylelintcustomsyntax) in this extension's settings).
