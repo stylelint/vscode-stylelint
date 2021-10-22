@@ -23,7 +23,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Opening a workspace with a version of Stylelint older than v14.0.0 will now show a warning message once with a link to the [migration guide](https://github.com/stylelint/vscode-stylelint#migrating-from-vscode-stylelint-0xstylelint-13x).
 
-### Changes
+### Changed
 
 - Updated [vscode-languageserver](https://github.com/Microsoft/vscode-languageserver-node) to v7, conforming to LSP v3.16.0.
 - Extension re-architected to be more modular and easier to test ([#265](https://github.com/stylelint/vscode-stylelint/pull/265)).
