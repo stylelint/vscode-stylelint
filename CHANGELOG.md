@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- If Stylelint is installed in a workspace using [Yarn](https://yarnpkg.com/) with [Plug-n-Play](https://yarnpkg.com/features/pnp), it can now be resolved without the need for Yarn's [editor SDKs](https://yarnpkg.com/getting-started/editor-sdks). ([#273](https://github.com/stylelint/vscode-stylelint/issues/273)).
+
 ## [1.0.1](https://github.com/stylelint/vscode-stylelint/compare/v1.0.0...v1.0.1) (2021-10-22)
 
 ## Fixed
