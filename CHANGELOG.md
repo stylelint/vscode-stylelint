@@ -10,8 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Dropped support for Stylelint 13 and prior; only Stylelint 14 is supported now. See the [migration guide](README.md#%EF%B8%8F-stylelint-13x-and-prior-is-no-longer-supported) for more details.
 - Removed bundled copy of Stylelint; local or global installation is now required. See the [migration guide](README.md#%EF%B8%8F-stylelint-is-no-longer-bundled) for more details.
-- Validation and completion now only works for documents with language identifiers `css`, `less`, and `postcss` by default. See the [migration guide](README.md#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for more details.
-- `stylelint.syntax` configuration option removed; use `stylelint.customSyntax` instead. See the [migration guide](README.md#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for more details.
+- Validation and completion now only works for documents with language identifiers `css`, `less`, and `postcss` by default. See the [migration guide](README.md#%EF%B8%8F-only-css-less-and-postcss-are-validated-by-default) for more details.
+- `stylelint.syntax` configuration option removed; use `stylelint.customSyntax` instead. See the [migration guide](README.md#%EF%B8%8F-only-css-less-and-postcss-are-validated-by-default) for more details.
 
 ### Added
 
