@@ -3,9 +3,9 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
 	projects: [
-		'<rootDir>/test/lib/jest.config.js',
 		'<rootDir>/test/unit/jest.config.js',
-		'<rootDir>/test/workspace/jest.config.js',
+		'<rootDir>/test/integration/jest.config.js',
+		'<rootDir>/test/e2e/jest.config.js',
 	],
 };
 

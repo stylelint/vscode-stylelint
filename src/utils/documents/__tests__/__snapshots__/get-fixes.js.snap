@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getFixes should return edits if Stylelint made changes 1`] = `
+Array [
+  Object {
+    "newText": "",
+    "range": Object {
+      "end": Object {
+        "character": 4,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 3,
+        "line": 2,
+      },
+    },
+  },
+  Object {
+    "newText": "  ",
+    "range": Object {
+      "end": Object {
+        "character": 4,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 4,
+        "line": 2,
+      },
+    },
+  },
+  Object {
+    "newText": "",
+    "range": Object {
+      "end": Object {
+        "character": 3,
+        "line": 8,
+      },
+      "start": Object {
+        "character": 3,
+        "line": 5,
+      },
+    },
+  },
+  Object {
+    "newText": "",
+    "range": Object {
+      "end": Object {
+        "character": 4,
+        "line": 9,
+      },
+      "start": Object {
+        "character": 3,
+        "line": 9,
+      },
+    },
+  },
+  Object {
+    "newText": "  ",
+    "range": Object {
+      "end": Object {
+        "character": 4,
+        "line": 9,
+      },
+      "start": Object {
+        "character": 4,
+        "line": 9,
+      },
+    },
+  },
+  Object {
+    "newText": "",
+    "range": Object {
+      "end": Object {
+        "character": 4,
+        "line": 10,
+      },
+      "start": Object {
+        "character": 3,
+        "line": 10,
+      },
+    },
+  },
+  Object {
+    "newText": "  ",
+    "range": Object {
+      "end": Object {
+        "character": 4,
+        "line": 10,
+      },
+      "start": Object {
+        "character": 4,
+        "line": 10,
+      },
+    },
+  },
+]
+`;

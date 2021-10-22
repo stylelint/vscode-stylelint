@@ -1,0 +1,52 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and autofix scss 1`] = `
+Array [
+  Object {
+    "code": "indentation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
+    },
+    "message": "Expected indentation of 4 spaces (indentation)",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and autofix scss 2`] = `
+"/* prettier-ignore */
+a {
+    color: red;
+}
+"
+`;
+
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] shouldn't lint or fix css 1`] = `
+"/* prettier-ignore */
+a {
+  color: red;
+}
+"
+`;
+
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] shouldn't lint or fix markdown 1`] = `
+"# title
+
+\`\`\`css
+a {
+  color: red;
+}
+\`\`\`
+"
+`;

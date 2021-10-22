@@ -1,19 +1,9 @@
 {
-	"compilerOptions": {
-		"target": "ES2020",
-		"module": "commonjs",
-		"lib": ["es2020"],
-		"allowJs": true,
-		"checkJs": true,
-		"noEmit": true,
-		"strict": true,
-		"noImplicitThis": true,
-		"noImplicitAny": true,
-		"alwaysStrict": true,
-		"esModuleInterop": true,
-		"resolveJsonModule": true,
-		"typeRoots": ["./types", "./node_modules/@types"]
-	},
-	"include": ["src/**/*", "test/**/*", "__mocks__/**/*", "scripts/**/*", "types/*.d.ts"],
-	"exclude": ["**/coverage"]
+	"include": [],
+	"files": [],
+	"references": [
+		{ "path": "./tsconfig.src.json" },
+		{ "path": "./tsconfig.scripts.json" },
+		{ "path": "./tsconfig.test.json" }
+	]
 }

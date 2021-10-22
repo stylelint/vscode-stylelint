@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"target": "ES2020",
+		"module": "commonjs",
+		"lib": ["es2020"],
+		"allowJs": true,
+		"checkJs": true,
+		"noEmit": true,
+		"strict": true,
+		"noImplicitThis": true,
+		"noImplicitAny": true,
+		"alwaysStrict": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true
+	}
+}

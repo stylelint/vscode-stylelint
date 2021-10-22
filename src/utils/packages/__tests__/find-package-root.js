@@ -3,19 +3,10 @@
 jest.mock('fs/promises');
 
 const { createError } = require('../../../../test/mockSystemErrors');
+const mockedFS = /** @type {tests.mocks.FSPromisesModule} */ (require('fs/promises'));
+const findPackageRoot = require('../find-package-root').findPackageRoot;
 
 describe('findPackageRoot', () => {
-	/** @type {tests.mocks.FSPromisesModule} */
-	let mockedFS;
-
-	/** @type {typeof import('../find-package-root').findPackageRoot} */
-	let findPackageRoot;
-
-	beforeAll(() => {
-		mockedFS = /** @type {tests.mocks.FSPromisesModule} */ (require('fs/promises'));
-		findPackageRoot = require('../find-package-root').findPackageRoot;
-	});
-
 	it('should resolve the package directory when package.json is present', async () => {
 		mockedFS.__mockFileSystem({
 			foo: {

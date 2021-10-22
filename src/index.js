@@ -6,12 +6,13 @@ const {
 	ExecuteCommandRequest,
 } = require('vscode-languageclient/node');
 const { workspace, commands: Commands, window: Window } = require('vscode');
+const { CommandId } = require('./utils/types');
 
 /**
  * @param {vscode.ExtensionContext} context
  */
 exports.activate = ({ subscriptions }) => {
-	const serverPath = require.resolve('./server.js');
+	const serverPath = require.resolve('./start-server.js');
 
 	const client = new LanguageClient(
 		'stylelint',
@@ -51,7 +52,8 @@ exports.activate = ({ subscriptions }) => {
 				version: textEditor.document.version,
 			};
 			const params = {
-				command: 'stylelint.applyAutoFix',
+				command: CommandId.ApplyAutoFix,
+				// TODO: Remove once fix is released
 				// https://github.com/microsoft/TypeScript/issues/43362
 				/* prettier-ignore */
 				'arguments': [textDocument],
@@ -59,7 +61,7 @@ exports.activate = ({ subscriptions }) => {
 
 			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
 				Window.showErrorMessage(
-					'Failed to apply stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
+					'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
 				);
 			});
 		}),

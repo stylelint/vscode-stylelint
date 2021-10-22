@@ -85,6 +85,7 @@ eggs
 parts
 lib64
 .sass-cache
+*.tsbuildinfo
 
 # -------------------------------------------------
 # Your own project's ignores

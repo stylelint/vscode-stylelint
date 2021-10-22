@@ -11,7 +11,7 @@ const args = new Set(process.argv.slice(2));
 
 /** @returns {Promise<void>} */
 async function bundle() {
-	const entryPoints = ['src/index.js', 'src/server.js'];
+	const entryPoints = ['src/index.js', 'src/start-server.js'];
 
 	for (const item of await glob('dist/*', { cwd: rootDir })) {
 		await fs.remove(item);

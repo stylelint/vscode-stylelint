@@ -36,7 +36,7 @@ e.g. "Yes"
 
 e.g. `0.84.0`
 
-> Which version of stylelint are you using?
+> Which version of Stylelint are you using?
 
 e.g. `13.2.0`
 
@@ -52,4 +52,4 @@ e.g. "No warnings to be flagged."
 
 e.g. "The following warnings were flagged:"
 
-<!-- If the bug can be reproduced using the stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the stylelint issue tracker (https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.md) instead. -->
+<!-- If the bug can be reproduced using the Stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the Stylelint issue tracker (https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.md) instead. -->
