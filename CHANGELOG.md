@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0](https://github.com/stylelint/vscode-stylelint/compare/v0.87.6...v1.0.0) (2021-10-21)
 
 ### Breaking Changes
 
@@ -13,9 +13,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Validation and completion now only works for documents with language identifiers `css`, `less`, and `postcss` by default. See the [migration guide](README.md#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for more details.
 - `stylelint.syntax` configuration option removed; use `stylelint.customSyntax` instead. See the [migration guide](README.md#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for more details.
 
+### Added
+
+- Opening a workspace with a version of Stylelint older than v14.0.0 will now show a warning message once with a link to the [migration guide](https://github.com/stylelint/vscode-stylelint#migrating-from-vscode-stylelint-0xstylelint-13x).
+
 ### Changes
 
 - Updated [vscode-languageserver](https://github.com/Microsoft/vscode-languageserver-node) to v7, conforming to LSP v3.16.0.
+- Extension re-architected to be more modular and easier to test ([#265](https://github.com/stylelint/vscode-stylelint/pull/265)).
 
 ## [0.87.6](https://github.com/stylelint/vscode-stylelint/compare/v0.87.5...v0.87.6) (2021-10-04)
 
