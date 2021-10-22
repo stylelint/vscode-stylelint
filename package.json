@@ -6,7 +6,10 @@
   "main": "dist/index.js",
   "displayName": "Stylelint",
   "publisher": "stylelint",
-  "repository": "https://github.com/stylelint/vscode-stylelint",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stylelint/vscode-stylelint.git"
+  },
   "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
   "bugs": "https://github.com/stylelint/vscode-stylelint/issues",
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
