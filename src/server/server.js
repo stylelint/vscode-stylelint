@@ -70,6 +70,12 @@ class StylelintLanguageServer {
 	#modules = new Map();
 
 	/**
+	 * Whether or not the server has sent its first configuration change to
+	 * modules.
+	 */
+	#hasSentInitialConfiguration = false;
+
+	/**
 	 * Creates a new Stylelint language server.
 	 * @param {LanguageServerConstructorParameters} params
 	 */
@@ -376,7 +382,7 @@ class StylelintLanguageServer {
 			}
 		}
 
-		if (changed) {
+		if (changed || !this.#hasSentInitialConfiguration) {
 			if (this.#logger?.isDebugEnabled()) {
 				this.#logger?.debug('Languages that should be validated changed', {
 					languages: [...validateLanguageSet],
@@ -391,6 +397,8 @@ class StylelintLanguageServer {
 		}
 
 		this.#invokeHandlers('onDidChangeConfiguration', { settings: this.#options });
+
+		this.#hasSentInitialConfiguration = true;
 	}
 }
 
