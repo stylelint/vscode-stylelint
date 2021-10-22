@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`processLinterResult should return diagnostics for each warning 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "unit-no-unknown",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/unit-no-unknown",
+      },
+      "message": "unit-no-unknown",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "at-rule-no-unknown",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/at-rule-no-unknown",
+      },
+      "message": "at-rule-no-unknown",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "alpha-value-notation",
+      "message": "alpha-value-notation",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;
+
+exports[`processLinterResult should return output if given 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "unit-no-unknown",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/unit-no-unknown",
+      },
+      "message": "unit-no-unknown",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+  "output": "Output",
+}
+`;
+
+exports[`processLinterResult should throw if invalid option results are given 1`] = `
+"Warning 1
+Warning 2"
+`;

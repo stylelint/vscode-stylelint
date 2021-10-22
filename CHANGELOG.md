@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1](https://github.com/stylelint/vscode-stylelint/compare/v1.0.0...v1.0.1) (2021-10-22)
+
+## Fixed
+
+- [Less](https://lesscss.org/) is now correctly linted by default ([#270](https://github.com/stylelint/vscode-stylelint/pull/270)).
+
+## [1.0.0](https://github.com/stylelint/vscode-stylelint/compare/v0.87.6...v1.0.0) (2021-10-21)
+
+### Breaking Changes
+
+- Dropped support for Stylelint 13 and prior; only Stylelint 14 is supported now. See the [migration guide](README.md#%EF%B8%8F-stylelint-13x-and-prior-is-no-longer-supported) for more details.
+- Removed bundled copy of Stylelint; local or global installation is now required. See the [migration guide](README.md#%EF%B8%8F-stylelint-is-no-longer-bundled) for more details.
+- Validation and completion now only works for documents with language identifiers `css`, `less`, and `postcss` by default. See the [migration guide](README.md#%EF%B8%8F-only-css-less-and-postcss-are-validated-by-default) for more details.
+- `stylelint.syntax` configuration option removed; use `stylelint.customSyntax` instead. See the [migration guide](README.md#%EF%B8%8F-only-css-less-and-postcss-are-validated-by-default) for more details.
+
+### Added
+
+- Opening a workspace with a version of Stylelint older than v14.0.0 will now show a warning message once with a link to the [migration guide](https://github.com/stylelint/vscode-stylelint#migrating-from-vscode-stylelint-0xstylelint-13x).
+
+### Changed
+
+- Updated [vscode-languageserver](https://github.com/Microsoft/vscode-languageserver-node) to v7, conforming to LSP v3.16.0.
+- Extension re-architected to be more modular and easier to test ([#265](https://github.com/stylelint/vscode-stylelint/pull/265)).
+
 ## [0.87.6](https://github.com/stylelint/vscode-stylelint/compare/v0.87.5...v0.87.6) (2021-10-04)
 
 ### Fixed

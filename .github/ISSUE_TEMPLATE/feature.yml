@@ -1,0 +1,41 @@
+name: "\U0001F680 Feature Suggestion"
+description: Suggest a new feature for the project
+title: '[Feature]: '
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new feature!
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What problem does this feature solve?
+      description: Describe the use case(s) for this feature and what problem it solves.
+      placeholder: e.g. This feature makes it easier to...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: How does this feature solve the problem?
+      description: Describe how this feature could be implemented and what the behaviour would look like.
+      placeholder: e.g. A new option is added to extension settings that...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What are some alternatives to this feature?
+      description: Describe alternative solutions or features that you may have considered.
+      placeholder: e.g. Alternately, Stylelint could be changed to...
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this feature request, you agree to follow our [Code of Conduct](https://github.com/stylelint/vscode-stylelint/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow vscode-stylelint's Code of Conduct
+          required: true

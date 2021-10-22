@@ -9,14 +9,9 @@ const rootDir = path.resolve(__dirname, '..');
 
 const args = new Set(process.argv.slice(2));
 
+/** @returns {Promise<void>} */
 async function bundle() {
-	const entryPoints = [
-		'src/index.js',
-		'src/server.js',
-		// Necessary because bundler cannot recognize lazy loads in
-		// https://github.com/stylelint/stylelint/blob/13.13.1/lib/syntaxes/index.js#L9-L15
-		...(await glob('node_modules/stylelint/lib/syntaxes/syntax-*.js')),
-	];
+	const entryPoints = ['src/index.js', 'src/start-server.js'];
 
 	for (const item of await glob('dist/*', { cwd: rootDir })) {
 		await fs.remove(item);

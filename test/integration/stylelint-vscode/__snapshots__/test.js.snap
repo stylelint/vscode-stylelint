@@ -1,0 +1,513 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StylelintRunner should be resolved with diagnostics when it lints CSS successfully 1`] = `
+Array [
+  Object {
+    "code": "string-quotes",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/string-quotes",
+    },
+    "message": "Expected single quotes (string-quotes)",
+    "range": Object {
+      "end": Object {
+        "character": 7,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 7,
+        "line": 0,
+      },
+    },
+    "severity": 2,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "indentation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
+    },
+    "message": "Expected indentation of 0 tabs (indentation)",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner should be resolved with diagnostics when the rules include unknown rules 1`] = `
+Array [
+  Object {
+    "code": "this-rule-does-not-exist",
+    "message": "Unknown rule this-rule-does-not-exist.",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "this-rule-also-does-not-exist",
+    "message": "Unknown rule this-rule-also-does-not-exist.",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner should be resolved with one diagnostic when the CSS is broken 1`] = `
+Array [
+  Object {
+    "code": "CssSyntaxError",
+    "message": "Unclosed block (CssSyntaxError)",
+    "range": Object {
+      "end": Object {
+        "character": 10,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 10,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner should check CSS syntax even if no configuration is provided 1`] = `
+Array [
+  Object {
+    "code": "CssSyntaxError",
+    "message": "Unclosed bracket (CssSyntaxError)",
+    "range": Object {
+      "end": Object {
+        "character": 12,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 12,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner should check CSS syntax even if no rule is provided 1`] = `
+Array [
+  Object {
+    "code": "CssSyntaxError",
+    "message": "At-rule without name (CssSyntaxError)",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner should reject with a reason when it takes incorrect options 1`] = `
+"Invalid option name \\"bar\\" for rule \\"at-rule-empty-line-before\\"
+Invalid option value \\"foo\\" for rule \\"color-hex-case\\""
+`;
+
+exports[`StylelintRunner should support \`processors\` option 1`] = `
+Array [
+  Object {
+    "code": "CssSyntaxError",
+    "message": "Unclosed string (CssSyntaxError)",
+    "range": Object {
+      "end": Object {
+        "character": 9,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 9,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
+Array [
+  Object {
+    "code": "font-weight-notation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
+    },
+    "message": "Expected numeric font-weight notation (font-weight-notation)",
+    "range": Object {
+      "end": Object {
+        "character": 29,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 29,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "font-weight-notation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
+    },
+    "message": "Expected numeric font-weight notation (font-weight-notation)",
+    "range": Object {
+      "end": Object {
+        "character": 6,
+        "line": 4,
+      },
+      "start": Object {
+        "character": 6,
+        "line": 4,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner with a configuration file should adhere to configuration file settings 1`] = `
+Array [
+  Object {
+    "code": "length-zero-no-unit",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/length-zero-no-unit",
+    },
+    "message": "Unexpected unit (length-zero-no-unit)",
+    "range": Object {
+      "end": Object {
+        "character": 10,
+        "line": 3,
+      },
+      "start": Object {
+        "character": 10,
+        "line": 3,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner with autofix autofix should work if there are errors that cannot be autofixed 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "selector-type-no-unknown",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
+      },
+      "message": "Unexpected unknown type selector \\"unknown\\" (selector-type-no-unknown)",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+  "output": "
+unknown {
+  width: 100%;
+  height: 100%;
+}
+",
+}
+`;
+
+exports[`StylelintRunner with autofix autofix should work if there is syntax errors in css 1`] = `
+"
+.a {
+	width: 100%;
+	height: 100%
+}
+"
+`;
+
+exports[`StylelintRunner with autofix autofix should work properly if configs are defined 1`] = `
+"a
+{
+  color:red;
+}"
+`;
+
+exports[`StylelintRunner with customSyntax autofix should work properly if customSyntax is defined 1`] = `
+Object {
+  "diagnostics": Array [],
+  "output": "a
+  color:red",
+}
+`;
+
+exports[`StylelintRunner with customSyntax should work properly if customSyntax is defined 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "indentation",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/indentation",
+      },
+      "message": "Expected indentation of 2 spaces (indentation)",
+      "range": Object {
+        "end": Object {
+          "character": 3,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 3,
+          "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;
+
+exports[`StylelintRunner with reportInvalidScopeDisables should work properly if reportInvalidScopeDisables is true 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "--report-invalid-scope-disables",
+      "message": "Rule \\"foo\\" isn't enabled",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "--report-invalid-scope-disables",
+      "message": "Rule \\"foo\\" isn't enabled",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 3,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 3,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "--report-invalid-scope-disables",
+      "message": "Rule \\"foo\\" isn't enabled",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 5,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;
+
+exports[`StylelintRunner with reportNeedlessDisables should work properly if reportNeedlessDisables is true 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "indentation",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/indentation",
+      },
+      "message": "Expected indentation of 4 spaces (indentation)",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
+      "range": Object {
+        "end": Object {
+          "character": 2,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 2,
+          "line": 2,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 6,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 6,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
+      "range": Object {
+        "end": Object {
+          "character": 16,
+          "line": 13,
+        },
+        "start": Object {
+          "character": 16,
+          "line": 13,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    Object {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for \\"indentation\\"",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 16,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 16,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;
+
+exports[`StylelintRunner with stylelintPath should work properly if custom path is defined in stylelintPath 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "fake",
+      "message": "Fake result",
+      "range": Object {
+        "end": Object {
+          "character": 0,
+          "line": 0,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;
+
+exports[`StylelintRunner with stylelintPath should work properly if stylelintPath is defined 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "indentation",
+      "codeDescription": Object {
+        "href": "https://stylelint.io/user-guide/rules/indentation",
+      },
+      "message": "Expected indentation of 2 spaces (indentation)",
+      "range": Object {
+        "end": Object {
+          "character": 3,
+          "line": 1,
+        },
+        "start": Object {
+          "character": 3,
+          "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+  ],
+}
+`;

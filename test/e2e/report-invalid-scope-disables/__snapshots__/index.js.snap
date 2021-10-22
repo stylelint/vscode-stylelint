@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vscode-stylelint with "stylelint.reportInvalidScopeDisables" should work if "stylelint.reportInvalidScopeDisables" is enabled 1`] = `
+Array [
+  Object {
+    "code": "--report-invalid-scope-disables",
+    "message": "Rule \\"foo\\" isn't enabled",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "--report-invalid-scope-disables",
+    "message": "Rule \\"foo\\" isn't enabled",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+  Object {
+    "code": "--report-invalid-scope-disables",
+    "message": "Rule \\"foo\\" isn't enabled",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 4,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 4,
+      },
+    },
+    "severity": 1,
+    "source": "stylelint",
+  },
+]
+`;

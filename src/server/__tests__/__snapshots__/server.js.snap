@@ -1,0 +1,338 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StylelintLanguageServer should accept server modules 1`] = `
+Object {
+  "context": Object {
+    "connection": Object {
+      "listen": [MockFunction],
+      "onDidChangeConfiguration": [MockFunction],
+      "onDidChangeWatchedFiles": [MockFunction],
+      "onInitialize": [MockFunction],
+      "sendDiagnostics": [MockFunction],
+    },
+    "displayError": [Function],
+    "documents": TextDocuments {
+      "all": [MockFunction],
+      "get": [MockFunction],
+      "keys": [MockFunction],
+      "listen": [MockFunction],
+      "onWillSaveWaitUntil": [MockFunction],
+    },
+    "getFixes": [Function],
+    "getModule": [Function],
+    "lintDocument": [Function],
+    "options": Object {
+      "packageManager": "npm",
+      "snippet": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+      "validate": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+    },
+    "resolveStylelint": [Function],
+    "runner": StylelintRunner {
+      "lintDocument": [MockFunction],
+    },
+  },
+  "logger": Object {
+    "child": [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {
+            "component": "language-server",
+          },
+        ],
+        Array [
+          Object {
+            "component": "language-server:test-module",
+          },
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": [Circular],
+        },
+        Object {
+          "type": "return",
+          "value": [Circular],
+        },
+      ],
+    },
+    "debug": [MockFunction],
+    "error": [MockFunction],
+    "info": [MockFunction] {
+      "calls": Array [
+        Array [
+          "Registering module",
+          Object {
+            "module": "test-module",
+          },
+        ],
+        Array [
+          "Module registered",
+          Object {
+            "module": "test-module",
+          },
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    },
+    "isDebugEnabled": [MockFunction],
+    "warn": [MockFunction],
+  },
+}
+`;
+
+exports[`StylelintLanguageServer should allow modules to get fixes for documents using context.getFixes 1`] = `
+Array [
+  Array [
+    Object {},
+    Object {
+      "uri": "file:///test.css",
+    },
+    Object {
+      "maxWarnings": 1,
+    },
+    Object {
+      "packageManager": "npm",
+      "snippet": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+      "validate": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+    },
+  ],
+  Array [
+    Object {},
+    Object {
+      "uri": "file:///test.css",
+    },
+    Object {},
+    Object {
+      "packageManager": "npm",
+      "snippet": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+      "validate": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`StylelintLanguageServer should allow modules to lint documents using context.lintDocument 1`] = `
+Array [
+  Array [
+    Object {
+      "uri": "file:///test.css",
+    },
+    Object {
+      "maxWarnings": 1,
+    },
+    Object {
+      "packageManager": "npm",
+      "snippet": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+      "validate": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+    },
+  ],
+  Array [
+    Object {
+      "uri": "file:///test.css",
+    },
+    Object {},
+    Object {
+      "packageManager": "npm",
+      "snippet": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+      "validate": Array [
+        "css",
+        "less",
+        "postcss",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`StylelintLanguageServer should combine initialization results from modules 1`] = `
+Object {
+  "capabilities": Object {
+    "callHierarchyProvider": true,
+    "textDocumentSync": Object {
+      "change": 1,
+      "openClose": true,
+    },
+    "typeDefinitionProvider": true,
+    "workspace": Object {
+      "workspaceFolders": Object {
+        "supported": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when first settings are sent to server 1`] = `
+Object {
+  "config": undefined,
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "ignoreDisables": undefined,
+  "packageManager": "npm",
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+  "snippet": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+  "stylelintPath": undefined,
+  "validate": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when first settings are sent to server 2`] = `
+Object {
+  "languages": Set {
+    "css",
+    "less",
+    "postcss",
+  },
+  "removedLanguages": Set {},
+}
+`;
+
+exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when validate option changes 1`] = `
+Object {
+  "config": undefined,
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "ignoreDisables": undefined,
+  "packageManager": "npm",
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+  "snippet": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+  "stylelintPath": undefined,
+  "validate": Array [
+    "css",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when validate option changes 2`] = `
+Object {
+  "languages": Set {
+    "css",
+  },
+  "removedLanguages": Set {
+    "less",
+    "postcss",
+  },
+}
+`;
+
+exports[`StylelintLanguageServer should not accept modules with a non-string ID 1`] = `"Module IDs must be strings"`;
+
+exports[`StylelintLanguageServer should not accept modules with duplicate IDs 1`] = `"Module with ID \\"test-module\\" already registered"`;
+
+exports[`StylelintLanguageServer should not accept modules without an ID 1`] = `"Modules must have an ID"`;
+
+exports[`StylelintLanguageServer should prevent modules from modifying context properties 1`] = `"Cannot set read-only property"`;
+
+exports[`StylelintLanguageServer should receive settings from the client and pass them to modules with defaults 1`] = `
+Object {
+  "config": undefined,
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "ignoreDisables": undefined,
+  "packageManager": "npm",
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+  "snippet": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+  "stylelintPath": undefined,
+  "validate": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer should receive updates to settings from the client and pass them to modules 1`] = `
+Object {
+  "config": Object {
+    "rules": Object {
+      "block-no-empty": true,
+    },
+  },
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "ignoreDisables": true,
+  "packageManager": "npm",
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+  "snippet": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+  "stylelintPath": undefined,
+  "validate": Array [
+    "css",
+    "less",
+    "postcss",
+  ],
+}
+`;
