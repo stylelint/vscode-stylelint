@@ -1,0 +1,86 @@
+name: "\U0001F41B Bug Report"
+description: File a bug report
+title: '[Bug]: '
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report!
+
+        >**NOTE:** If the bug can be reproduced using the Stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the [Stylelint issue tracker](https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.md) instead.
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: How did you encounter this bug?
+      description: Describe how this bug can be reproduced.
+      placeholder: e.g. Expressions with empty object literals cause an error.
+    validations:
+      required: true
+  - type: textarea
+    id: code-snippet
+    attributes:
+      label: Code Snippet
+      description: Provide a code snippet that reproduces the bug.
+      placeholder: |
+        .foo {
+          color: pink;
+        }
+      render: css
+  - type: textarea
+    id: extension-config
+    attributes:
+      label: Extension Configuration
+      description: What vscode-stylelint configuration is needed to reproduce the bug?
+      placeholder: |
+        .foo {
+          color: pink;
+        }
+  - type: textarea
+    id: actual-behaviour
+    attributes:
+      label: Actual Behaviour
+      description: What happens currently and how is it wrong?
+      placeholder: e.g. The editor shows an error message…
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behaviour
+    attributes:
+      label: Expected Behaviour
+      description: What did you expect to happen?
+      placeholder: e.g. The editor should lint without errors.
+    validations:
+      required: true
+  - type: input
+    id: stylelint-version
+    attributes:
+      label: Stylelint Version
+      description: Get the version of Stylelint you're using by running `npx stylelint -v`, `yarn stylelint -v`, etc.
+      placeholder: e.g. v14.0.0
+    validations:
+      required: true
+  - type: input
+    id: extension-version
+    attributes:
+      label: vscode-stylelint Version
+      description: You can find the extension's version in VS Code's extension panel.
+      placeholder: e.g. v1.0.0
+    validations:
+      required: true
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: Get the version of Node.js you're using by running `node -v`
+      placeholder: e.g. v16.9.0
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/stylelint/vscode-stylelint/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow vscode-stylelint's Code of Conduct
+          required: true
