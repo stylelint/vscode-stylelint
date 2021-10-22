@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ❓ Looking for Stylelint?
+    url: https://github.com/stylelint/stylelint/issues
+    about: If what you are trying to submit or discuss has to do with Stylelint itself, visit the Stylelint issue tracker.
