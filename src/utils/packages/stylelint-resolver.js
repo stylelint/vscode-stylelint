@@ -59,6 +59,32 @@ class StylelintResolver {
 	}
 
 	/**
+	 * Tries to find the PnP loader in the given directory. If the loader cannot
+	 * be found, `undefined` will be returned.
+	 * @param {string} directory
+	 * @returns {Promise<string | undefined>}
+	 */
+	async #findPnPLoader(directory) {
+		const pnpFilenames = ['.pnp.cjs', '.pnp.js'];
+
+		for (const filename of pnpFilenames) {
+			const pnpPath = path.join(directory, filename);
+
+			try {
+				if ((await fs.stat(pnpPath)).isFile()) {
+					return pnpPath;
+				}
+			} catch (error) {
+				this.#logger?.debug('Did not find PnP loader at tested path', { path: pnpPath, error });
+			}
+		}
+
+		this.#logger?.debug('Could not find a PnP loader', { path: directory });
+
+		return undefined;
+	}
+
+	/**
 	 * Tries to resolve the Stylelint package using Plug-n-Play. If the package
 	 * cannot be resolved, `undefined` will be returned.
 	 * @param {string | undefined} cwd
@@ -72,22 +98,14 @@ class StylelintResolver {
 		const root = await findPackageRoot(cwd, 'yarn.lock');
 
 		if (!root) {
-			this.#logger?.debug(`Could not find the package root`, { cwd });
+			this.#logger?.debug('Could not find the package root', { cwd });
 
 			return undefined;
 		}
 
-		const pnpPath = path.join(root, '.pnp.cjs');
+		const pnpPath = await this.#findPnPLoader(root);
 
-		try {
-			if (!(await fs.stat(pnpPath)).isFile()) {
-				this.#logger?.debug(`Could not find a PnP loader`, { path: root });
-
-				return undefined;
-			}
-		} catch (error) {
-			this.#logger?.debug(`Could not find a PnP loader`, { path: root, error });
-
+		if (!pnpPath) {
 			return undefined;
 		}
 
@@ -95,7 +113,7 @@ class StylelintResolver {
 			try {
 				require(pnpPath).setup();
 			} catch (error) {
-				this.#logger?.warn(`Could not setup PnP`, { path: pnpPath, error });
+				this.#logger?.warn('Could not setup PnP', { path: pnpPath, error });
 
 				return undefined;
 			}
@@ -112,13 +130,13 @@ class StylelintResolver {
 				resolvedPath: stylelintPath,
 			};
 
-			this.#logger?.debug(`Resolved Stylelint using PnP`, {
+			this.#logger?.debug('Resolved Stylelint using PnP', {
 				path: pnpPath,
 			});
 
 			return result;
 		} catch (error) {
-			this.#logger?.warn(`Could not load Stylelint using PnP`, { path: root, error });
+			this.#logger?.warn('Could not load Stylelint using PnP', { path: root, error });
 
 			return undefined;
 		}
@@ -141,13 +159,13 @@ class StylelintResolver {
 				resolvedPath: stylelintPath,
 			};
 
-			this.#logger?.debug(`Resolved Stylelint from node_modules`, {
+			this.#logger?.debug('Resolved Stylelint from node_modules', {
 				path: stylelintPath,
 			});
 
 			return result;
 		} catch (error) {
-			this.#logger?.warn(`Could not load Stylelint from node_modules`, { error });
+			this.#logger?.warn('Could not load Stylelint from node_modules', { error });
 
 			return undefined;
 		}

@@ -64,6 +64,7 @@ const goodStylelintPath = path.join(__dirname, 'stylelint.js');
 const badStylelintPath = path.join(__dirname, 'bad-stylelint.js');
 
 const pnpPath = path.join(__dirname, '.pnp.cjs');
+const pnpJSPath = path.join(__dirname, '.pnp.js');
 
 /** @type {{[packageManager in PackageManager]: string}} */
 const mockGlobalPaths = {
@@ -78,15 +79,15 @@ jest.mock(
 	{ virtual: true },
 );
 jest.mock(require('path').join(__dirname, 'bad-stylelint.js'), () => ({}), { virtual: true });
-jest.mock(
-	require('path').join(__dirname, '.pnp.cjs'),
-	() => ({
-		setup: jest.fn(),
-	}),
-	{ virtual: true },
-);
+jest.mock(require('path').join(__dirname, '.pnp.cjs'), () => ({ setup: jest.fn() }), {
+	virtual: true,
+});
+jest.mock(require('path').join(__dirname, '.pnp.js'), () => ({ setup: jest.fn() }), {
+	virtual: true,
+});
 
 const mockedPnP = /** @type {jest.Mocked<{ setup: () => void }>} */ (require(pnpPath));
+const mockedJSPnP = /** @type {jest.Mocked<{ setup: () => void }>} */ (require(pnpJSPath));
 
 const { Files: mockedFiles } = /** @type {tests.mocks.VSCodeLanguageServerModule.Node} */ (
 	require('vscode-languageserver/node')
@@ -125,12 +126,15 @@ mockedGlobalPathResolver.__mockPath('yarn', mockGlobalPaths.yarn);
 mockedGlobalPathResolver.__mockPath('npm', mockGlobalPaths.npm);
 mockedGlobalPathResolver.__mockPath('pnpm', mockGlobalPaths.pnpm);
 
+const mockedFSStat = mockedFS.stat.getMockImplementation();
+
 describe('StylelintResolver', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 		path.__mockPlatform();
 		mockCWD = path.join('/fake', 'cwd');
 		mockPnPVersion = undefined;
+		mockedFS.stat.mockImplementation(mockedFSStat);
 		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 	});
 
@@ -328,6 +332,30 @@ describe('StylelintResolver', () => {
 		expect(result?.stylelint?.lint({})).toBe('from pnp');
 	});
 
+	test('should resolve workspace Stylelint modules using a PnP loader named .pnp.js (Yarn 2)', async () => {
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValueOnce(__dirname);
+		mockedFS.stat.mockImplementation(
+			async (filePath) =>
+				/** @type {any} */ (
+					filePath.toString().endsWith('.pnp.js') ? { isFile: () => true } : new Error('Not found!')
+				),
+		);
+		mockedModule.createRequire.mockImplementation(
+			() => /** @type {any} */ (() => ({ lint: () => 'from pnp' })),
+		);
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedJSPnP.setup).toHaveBeenCalledTimes(1);
+		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', { path: pnpJSPath });
+		expect(result?.resolvedPath).toBe(path.join(__dirname, 'node_modules/stylelint'));
+		expect(result?.stylelint?.lint({})).toBe('from pnp');
+	});
+
 	test('should not try to setup PnP if it is already setup', async () => {
 		mockCWD = path.join('/fake', 'pnp');
 		findPackageRoot.mockResolvedValueOnce(__dirname);
@@ -408,7 +436,6 @@ describe('StylelintResolver', () => {
 		expect(mockedPnP.setup).not.toHaveBeenCalled();
 		expect(logger.debug).toHaveBeenCalledWith('Could not find a PnP loader', {
 			path: __dirname,
-			error,
 		});
 		expect(result).toBeUndefined();
 	});
