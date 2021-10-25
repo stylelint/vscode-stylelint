@@ -50,7 +50,7 @@
         "stylelint.enable": {
           "type": "boolean",
           "default": true,
-          "description": "Control whether Stylelint is enabled for CSS/SCSS/Less files or not."
+          "description": "Control whether Stylelint is enabled or not."
         },
         "stylelint.config": {
           "type": [
