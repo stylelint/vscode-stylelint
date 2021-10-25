@@ -69,7 +69,8 @@ The 0.x versions of this extension, which used Stylelint 13.x and prior, support
 In current versions of the extension, the extension only supports validating CSS, Less, and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
 
 1. Install the PostCSS syntax for the language you want to validate into your workspace, e.g. [postcss-scss].
-<!-- cspell:disable-next-line -->
+   <!-- prettier-ignore -->
+   <!-- cspell:disable-next-line -->
 1. Configure Stylelint to use the syntax by providing the module name in the [`customSyntax`] option using overrides (or use the [corresponding option](#stylelintcustomsyntax) in this extension's settings).
 
    Example Stylelint config:
@@ -85,7 +86,8 @@ In current versions of the extension, the extension only supports validating CSS
    };
    ```
 
-<!-- cspell:disable-next-line -->
+    <!-- prettier-ignore -->
+    <!-- cspell:disable-next-line -->
 
 1. Add the [language identifiers] for the documents you want to validate to the extension's workspace or user settings using the [`stylelint.validate`](#stylelintvalidate) option.
 
