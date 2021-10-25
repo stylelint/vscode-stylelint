@@ -98,7 +98,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - [f7a2fcd](https://github.com/stylelint/vscode-stylelint/commit/f7a2fcdaf7958b1ea0595f9c91eb9a38079a9198) Add "stylelint.reportNeedlessDisables" option
 - [34388c0](https://github.com/stylelint/vscode-stylelint/pull/53/commits/34388c05b25397ec5a34bd751da4fc3742c57594) Add "stylelint.stylelintPath" option for Yarn 2 compatibility
-- [6eb4473](https://github.com/stylelint/vscode-stylelint/pull/69/commits/6eb4473b10dc4f9dae7fb6a98345d469eb23a34a) Fix autofix when there are errors that cannot be autofixed
+- [6eb4473](https://github.com/stylelint/vscode-stylelint/pull/69/commits/6eb4473b10dc4f9dae7fb6a98345d469eb23a34a) Fix auto-fix when there are errors that cannot be auto-fixed
 - [4b62566](https://github.com/stylelint/vscode-stylelint/pull/71/commits/4b6256659c0c074660cce82accf6dc1d10076788) Fix missing `snippets` folder from extension package
 - [b71f453](https://github.com/stylelint/vscode-stylelint/commit/b71f4535d1e801576b463513e27a24f0a0c784df) Add snippets support for Less files
 
@@ -109,7 +109,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ## [0.81.0](https://github.com/stylelint/vscode-stylelint/compare/v0.80.0...v0.81.0) (2020-02-03)
 
 - [0fd9975](https://github.com/stylelint/vscode-stylelint/commit/0fd9975d9b74cbe83674b64a0e2f2c59453ea0a7) Added `stylelint-disable` snippets
-- [5f01e54](https://github.com/stylelint/vscode-stylelint/commit/5f01e5471720303e68ece4b7a778ff1283d27db1) Fixes an autofix issue where content was removed on save
+- [5f01e54](https://github.com/stylelint/vscode-stylelint/commit/5f01e5471720303e68ece4b7a778ff1283d27db1) Fixes an auto-fix issue where content was removed on save
 
 ## [0.80.0](https://github.com/stylelint/vscode-stylelint/compare/v0.71.0...v0.80.0) (2020-01-05)
 
@@ -118,11 +118,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [0.71.0](https://github.com/stylelint/vscode-stylelint/compare/v0.70.0...v0.71.0) (2020-01-04)
 
-- [1a07e95](https://github.com/stylelint/vscode-stylelint/commit/1a07e95ea3d3616f026786589fd1299b79f3fa84) Fixes an autofix issue where a missing config would cause unintended changes on save
+- [1a07e95](https://github.com/stylelint/vscode-stylelint/commit/1a07e95ea3d3616f026786589fd1299b79f3fa84) Fixes an auto-fix issue where a missing config would cause unintended changes on save
 
 ## [0.70.0](https://github.com/stylelint/vscode-stylelint/compare/v0.60.0...v0.70.0) (2019-12-28)
 
-- [9d55b07](https://github.com/stylelint/vscode-stylelint/commit/9d55b07aa98fee34d9b80ed322aacd5f24621272) Add support for autofix
+- [9d55b07](https://github.com/stylelint/vscode-stylelint/commit/9d55b07aa98fee34d9b80ed322aacd5f24621272) Add support for auto-fix
 - [e5307d9](https://github.com/stylelint/vscode-stylelint/commit/e5307d9b362cd43c0ac34fbff109b95129188039) Update stylelint from v10.0.1 to v12.0.0
 
 ---
@@ -160,7 +160,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### [0.48.1](https://github.com/stylelint/vscode-stylelint/tree/v0.48.1) (2019-04-20)
 
 - [42ff71a](https://github.com/stylelint/vscode-stylelint/commit/42ff71a) test on macOS Mojave https://blog.travis-ci.com/2019-02-12-xcode-10-2-beta-2-is-now-available
-- [3e0f07c](https://github.com/stylelint/vscode-stylelint/commit/3e0f07c) stop using File.uriToFilePath() in favor of its successor [vscode-uri](https://github.com/Microsoft/vscode-languageserver-node/commit/8291f55041ea023c4acefa73d8f25f5384aa6426#diff-09d95316ed411f4fa4015c4888d3a43dR12)
+- [3e0f07c](https://github.com/stylelint/vscode-stylelint/commit/3e0f07c) stop using File.uriToFilePath() in favour of its successor [vscode-uri](https://github.com/Microsoft/vscode-languageserver-node/commit/8291f55041ea023c4acefa73d8f25f5384aa6426#diff-09d95316ed411f4fa4015c4888d3a43dR12)
 - [3e0f07c](https://github.com/stylelint/vscode-stylelint/commit/3e0f07c) Use the `vscode-uri` npm module which provides a more complete implementation of handling VS Code URIs. close https://github.com/shinnn/vscode-stylelint/pull/267
 - [2be1633](https://github.com/stylelint/vscode-stylelint/commit/2be1633) stop installing libgconf-2.so.4
 
@@ -248,6 +248,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - [9561e78](https://github.com/stylelint/vscode-stylelint/commit/9561e78) update dependencies and devDependencies
 - [e8b4220](https://github.com/stylelint/vscode-stylelint/commit/e8b4220) restricting language services to local files (#172). to adapt to Live Share feature https://github.com/shinnn/vscode-stylelint/pull/172
+    <!-- cspell:disable-next-line -->
 - [169759f](https://github.com/stylelint/vscode-stylelint/commit/169759f) correct spelling: "editting" → "editing" (#163)
 
 ### [0.36.0](https://github.com/stylelint/vscode-stylelint/tree/v0.36.0) (2018-04-02)
@@ -319,7 +320,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### [v0.28.0](https://github.com/stylelint/vscode-stylelint/tree/v0.28.0) (2017-07-21)
 
-- [ba710ee](https://github.com/stylelint/vscode-stylelint/commit/ba710ee) update dependenciesdue to https://github.com/Microsoft/vscode-vsce/commit/e0dff61012b5d2bb8c088b9c799bd4ad0e68dcec
+- [ba710ee](https://github.com/stylelint/vscode-stylelint/commit/ba710ee) update dependencies due to https://github.com/Microsoft/vscode-vsce/commit/e0dff61012b5d2bb8c088b9c799bd4ad0e68dcec
 - [3c18f04](https://github.com/stylelint/vscode-stylelint/commit/3c18f04) add PNG icon for Marketplace, due to https://github.com/Microsoft/vscode-vsce/commit/e0dff61012b5d2bb8c088b9c799bd4ad0e68dcec
 - [c6b68c3](https://github.com/stylelint/vscode-stylelint/commit/c6b68c3) update stylelint-vscode from [v5 to v6](https://github.com/shinnn/stylelint-vscode/compare/v5.2.3...v6.0.0)
 
@@ -402,6 +403,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - [a5fa5b5](https://github.com/stylelint/vscode-stylelint/commit/a5fa5b5) show the latest build status on README
 - [b601c53](https://github.com/stylelint/vscode-stylelint/commit/b601c53) Add onDidClose handler (#32) fix #29
 - [07df9ea](https://github.com/stylelint/vscode-stylelint/commit/07df9ea) test on [Travis CI](https://travis-ci.org/shinnn/vscode-stylelint)
+    <!-- cspell:disable-next-line -->
 - [e38df24](https://github.com/stylelint/vscode-stylelint/commit/e38df24) update ESLint to ^3.10.0 ESLint now supports a new `codeframe` formatter.
 - [a7383d1](https://github.com/stylelint/vscode-stylelint/commit/a7383d1) update dependencies
 - [adcf87b](https://github.com/stylelint/vscode-stylelint/commit/adcf87b) mention how to disable the built-in CSS linter (#39)

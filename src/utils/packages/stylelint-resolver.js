@@ -169,7 +169,7 @@ class StylelintResolver {
 	}
 
 	/**
-	 * Attempts to resolve the `stylelint` package from the following lcoations,
+	 * Attempts to resolve the `stylelint` package from the following locations,
 	 * in order:
 	 *
 	 * 1. `options.stylelintPath`, if provided.

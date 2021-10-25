@@ -14,6 +14,7 @@ describe('vscode-stylelint with "stylelint.validate" set to ["scss"]', () => {
 				const names = await commands.getCommands();
 
 				return (
+					// cspell:disable-next-line
 					names.includes('stylelint.executeAutofix') && names.includes('stylelint.applyAutoFix')
 				);
 			},
@@ -33,14 +34,15 @@ describe('vscode-stylelint with "stylelint.validate" set to ["scss"]', () => {
 		// Check the result.
 		expect(getStylelintDiagnostics(cssDocument.uri)).toEqual([]);
 
-		// Execute the Autofix command.
+		// Execute the Auto-fix command.
+		// cspell:disable-next-line
 		await commands.executeCommand('stylelint.executeAutofix');
 
 		// Check the result.
 		expect(cssDocument.getText()).toMatchSnapshot();
 	});
 
-	it('should lint and autofix scss', async () => {
+	it('should lint and auto-fix scss', async () => {
 		// Open the './test.scss' file.
 		const scssDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.scss'));
 
@@ -52,7 +54,8 @@ describe('vscode-stylelint with "stylelint.validate" set to ["scss"]', () => {
 		// Check the result.
 		expect(getStylelintDiagnostics(scssDocument.uri).map(normalizeDiagnostic)).toMatchSnapshot();
 
-		// Execute the Autofix command.
+		// Execute the Auto-fix command.
+		// cspell:disable-next-line
 		await commands.executeCommand('stylelint.executeAutofix');
 
 		// Check the result.
@@ -71,7 +74,8 @@ describe('vscode-stylelint with "stylelint.validate" set to ["scss"]', () => {
 		// Check the result.
 		expect(getStylelintDiagnostics(mdDocument.uri)).toEqual([]);
 
-		// Execute the Autofix command.
+		// Execute the Auto-fix command.
+		// cspell:disable-next-line
 		await commands.executeCommand('stylelint.executeAutofix');
 
 		// Check the result.

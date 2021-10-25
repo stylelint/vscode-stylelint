@@ -236,7 +236,7 @@ Array [
 ]
 `;
 
-exports[`StylelintRunner with autofix autofix should work if there are errors that cannot be autofixed 1`] = `
+exports[`StylelintRunner with auto-fix auto-fix should work if there are errors that cannot be auto-fixed 1`] = `
 Object {
   "diagnostics": Array [
     Object {
@@ -268,7 +268,7 @@ unknown {
 }
 `;
 
-exports[`StylelintRunner with autofix autofix should work if there is syntax errors in css 1`] = `
+exports[`StylelintRunner with auto-fix auto-fix should work if there is syntax errors in css 1`] = `
 "
 .a {
 	width: 100%;
@@ -277,14 +277,14 @@ exports[`StylelintRunner with autofix autofix should work if there is syntax err
 "
 `;
 
-exports[`StylelintRunner with autofix autofix should work properly if configs are defined 1`] = `
+exports[`StylelintRunner with auto-fix auto-fix should work properly if configs are defined 1`] = `
 "a
 {
   color:red;
 }"
 `;
 
-exports[`StylelintRunner with customSyntax autofix should work properly if customSyntax is defined 1`] = `
+exports[`StylelintRunner with customSyntax auto-fix should work properly if customSyntax is defined 1`] = `
 Object {
   "diagnostics": Array [],
   "output": "a

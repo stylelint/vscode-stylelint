@@ -7,7 +7,7 @@ const { findPackageRoot } = require('../packages');
 
 /**
  * Given a document URI, base options, and extension options, builds a Stylelint
- * options object. Extension options supercede base options.
+ * options object. Extension options supersede base options.
  * @param {string} uri
  * @param {string} [workspaceFolder]
  * @param {Partial<stylelint.LinterOptions>} [baseOptions]

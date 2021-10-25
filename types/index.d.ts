@@ -108,7 +108,7 @@ type GlobalPathResolverCache = {
 };
 
 /**
- * Sisable directive comment types.
+ * Disable directive comment types.
  */
 type DisableType = 'stylelint-disable' | 'stylelint-disable-line' | 'stylelint-disable-next-line';
 

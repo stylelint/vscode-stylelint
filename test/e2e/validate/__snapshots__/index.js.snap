@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and autofix scss 1`] = `
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and auto-fix scss 1`] = `
 Array [
   Object {
     "code": "indentation",
@@ -24,7 +24,7 @@ Array [
 ]
 `;
 
-exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and autofix scss 2`] = `
+exports[`vscode-stylelint with "stylelint.validate" set to ["scss"] should lint and auto-fix scss 2`] = `
 "/* prettier-ignore */
 a {
     color: red;

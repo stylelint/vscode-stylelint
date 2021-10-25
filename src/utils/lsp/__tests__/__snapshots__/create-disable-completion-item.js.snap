@@ -84,7 +84,7 @@ Object {
 }
 `;
 
-exports[`createDisableCompletionItem should create a stylelint-disablenext--line completion item for a specific rule 1`] = `
+exports[`createDisableCompletionItem should create a stylelint-disable-next-line completion item for a specific rule 1`] = `
 Object {
   "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)",
   "documentation": Object {
