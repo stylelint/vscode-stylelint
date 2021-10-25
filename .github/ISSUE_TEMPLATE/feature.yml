@@ -1,7 +1,7 @@
 name: "\U0001F680 Feature Suggestion"
 description: Suggest a new feature for the project
 title: '[Feature]: '
-labels: [enhancement]
+labels: ['type: enhancement']
 body:
   - type: markdown
     attributes:
