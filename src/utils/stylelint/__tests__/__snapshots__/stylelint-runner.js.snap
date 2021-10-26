@@ -39,7 +39,7 @@ Object {
         },
       },
       "severity": 1,
-      "source": "stylelint",
+      "source": "Stylelint",
     },
   ],
 }
@@ -62,7 +62,7 @@ Object {
         },
       },
       "severity": 1,
-      "source": "stylelint",
+      "source": "Stylelint",
     },
   ],
 }

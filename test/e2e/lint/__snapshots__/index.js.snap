@@ -19,7 +19,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
 ]
 `;
@@ -43,7 +43,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
 ]
 `;

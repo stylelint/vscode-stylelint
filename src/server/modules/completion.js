@@ -148,7 +148,7 @@ class CompletionModule {
 				results.push({
 					label: rule,
 					kind: CompletionItemKind.Snippet,
-					detail: `disable ${rule} rule. (stylelint)`,
+					detail: `disable ${rule} rule. (Stylelint)`,
 				});
 			}
 		} else if (
@@ -159,7 +159,7 @@ class CompletionModule {
 				results.push({
 					label: rule,
 					kind: CompletionItemKind.Snippet,
-					detail: `disable ${rule} rule. (stylelint)`,
+					detail: `disable ${rule} rule. (Stylelint)`,
 				});
 			}
 		} else {
