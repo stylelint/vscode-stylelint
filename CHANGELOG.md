@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [1.0.2](https://github.com/stylelint/vscode-stylelint/compare/v1.0.1...v1.0.2) (2021-10-26)
+
 ### Fixed
 
 - [Less](https://lesscss.org/) is no longer linted by default. It was added as a default due to an oversight in the previous release. Only documents with language identifiers `css` and `postcss` will be linted by default. ([#280](https://github.com/stylelint/vscode-stylelint/pull/280))
