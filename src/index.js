@@ -40,7 +40,7 @@ exports.activate = ({ subscriptions }) => {
 	);
 
 	subscriptions.push(
-		// cspell:ignore Autofix
+		// cspell:disable-next-line
 		Commands.registerCommand('stylelint.executeAutofix', async () => {
 			const textEditor = Window.activeTextEditor;
 
