@@ -57,6 +57,19 @@ body:
       placeholder: e.g. The editor should lint without errors.
     validations:
       required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Start VS Code using `NODE_ENV=development vscode` on macOS/*nix or `cmd /C "set NODE_ENV=development&&code"`
+        on Windows, then reproduce your issue. Select Stylelint in the Output window drop-down, then copy and paste
+        the relevant logs into the text area below.
+
+        ![Screenshot of the Output window](https://user-images.githubusercontent.com/9868643/139115502-ff3daa37-1793-47da-9ef9-70c5706f018a.png)
+      placeholder: 'Logs should look like: [Debug - 4:20:34 p.m.] [language-server] Error occurred while…'
+    validations:
+      required: false
   - type: input
     id: stylelint-version
     attributes:
