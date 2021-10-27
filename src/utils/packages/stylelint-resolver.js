@@ -50,7 +50,7 @@ class StylelintResolver {
 			return;
 		}
 
-		this.#connection.window.showErrorMessage(`stylelint: ${message}`);
+		this.#connection.window.showErrorMessage(`Stylelint: ${message}`);
 		this.#logger?.error(message);
 	}
 
@@ -72,7 +72,7 @@ class StylelintResolver {
 	}
 
 	/**
-	 * Attempts to resolve the stylelint package from a path. If an error
+	 * Attempts to resolve the Stylelint package from a path. If an error
 	 * occurs, it will be logged through the connection and thrown. If the
 	 * resolved module does not have a lint function, an error will be logged
 	 * and `undefined` will be returned.
@@ -85,7 +85,7 @@ class StylelintResolver {
 			return undefined;
 		}
 
-		const errorMessage = `Failed to load stylelint from "stylelintPath": ${stylelintPath}.`;
+		const errorMessage = `Failed to load Stylelint from "stylelintPath": ${stylelintPath}.`;
 
 		try {
 			const requirePath = await this.#getRequirePath(stylelintPath, getWorkspaceFolderFn);
@@ -110,7 +110,7 @@ class StylelintResolver {
 	}
 
 	/**
-	 * Attempts to resolve the stylelint package from the given document's
+	 * Attempts to resolve the Stylelint package from the given document's
 	 * workspace folder or the global `node_modules` directory for the given
 	 * package manager. Resolution will be traced through the connection.
 	 *
@@ -200,7 +200,7 @@ class StylelintResolver {
 		);
 
 		if (!stylelint) {
-			this.#logger?.warn('Failed to load stylelint either globally or from the current workspace.');
+			this.#logger?.warn('Failed to load Stylelint either globally or from the current workspace.');
 
 			return undefined;
 		}

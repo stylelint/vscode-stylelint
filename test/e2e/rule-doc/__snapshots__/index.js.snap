@@ -16,7 +16,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "color-no-invalid-hex",
@@ -35,7 +35,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "indentation",
@@ -54,7 +54,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
 ]
 `;

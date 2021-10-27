@@ -36,11 +36,11 @@ describe('displayError', () => {
 		expect(mockConnection.window.showErrorMessage).toHaveBeenCalledTimes(2);
 		expect(mockConnection.window.showErrorMessage).toHaveBeenNthCalledWith(
 			1,
-			'stylelint: reason 1',
+			'Stylelint: reason 1',
 		);
 		expect(mockConnection.window.showErrorMessage).toHaveBeenNthCalledWith(
 			2,
-			'stylelint: reason 2',
+			'Stylelint: reason 2',
 		);
 	});
 
@@ -48,7 +48,7 @@ describe('displayError', () => {
 		displayError(mockConnection, Object.assign(new Error('test message'), { code: 78 }));
 
 		expect(mockConnection.window.showErrorMessage).toHaveBeenCalledTimes(1);
-		expect(mockConnection.window.showErrorMessage).toHaveBeenCalledWith('stylelint: test message');
+		expect(mockConnection.window.showErrorMessage).toHaveBeenCalledWith('Stylelint: test message');
 	});
 
 	test('for errors, should display the stack with newlines replaced with spaces', () => {

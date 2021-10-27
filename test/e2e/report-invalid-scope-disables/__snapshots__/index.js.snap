@@ -16,7 +16,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "--report-invalid-scope-disables",
@@ -32,7 +32,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "--report-invalid-scope-disables",
@@ -48,7 +48,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
 ]
 `;

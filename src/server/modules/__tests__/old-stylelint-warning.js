@@ -322,6 +322,32 @@ describe('OldStylelintWarningModule', () => {
 		expect(mockContext.connection.window.showWarningMessage).not.toHaveBeenCalled();
 	});
 
+	test('if Stylelint version is 14.x with a label, should not warn', async () => {
+		getWorkspaceFolder.mockResolvedValue('/path');
+		findPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
+		mockContext.resolveStylelint.mockResolvedValue({
+			stylelint: {},
+			resolvedPath: '/path/node_modules/stylelint',
+		});
+		mockContext.options.validate = ['bar'];
+		fs.readFile.mockResolvedValue('{"version": "14.0.0-sdk"}');
+
+		const module = new OldStylelintWarningModule(getParams(true));
+
+		module.onInitialize(/** @type {any} */ ({ capabilities: {} }));
+
+		module.onDidRegisterHandlers();
+
+		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
+
+		await handler({
+			document: { uri: 'foo', languageId: 'bar' },
+		});
+
+		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
+		expect(mockContext.connection.window.showWarningMessage).not.toHaveBeenCalled();
+	});
+
 	test('without openDocument support, if Stylelint version is less than 14.x, should warn and provide link to migration guide', async () => {
 		getWorkspaceFolder.mockResolvedValue('/path');
 		findPackageRoot.mockResolvedValue('/path/node_modules/stylelint');

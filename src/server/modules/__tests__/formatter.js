@@ -3,11 +3,13 @@
 const { DocumentFormattingRequest } = require('vscode-languageserver-protocol');
 const { Position, TextEdit } = require('vscode-languageserver-types');
 
+const { Notification } = require('../../../utils/types');
 const { FormatterModule } = require('../formatter');
 
 const mockContext = {
 	connection: {
 		onDocumentFormatting: jest.fn(),
+		sendNotification: jest.fn(),
 		client: { register: jest.fn() },
 	},
 	documents: { get: jest.fn() },
@@ -215,7 +217,7 @@ describe('FormatterModule', () => {
 		);
 	});
 
-	test("with no debug log level, onDidChangeValidateLanguages shouldn't log languages", () => {
+	test("with no debug log level, onDidChangeValidateLanguages shouldn't log languages", async () => {
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 		const module = new FormatterModule(getParams(true));
 
@@ -229,7 +231,7 @@ describe('FormatterModule', () => {
 			}),
 		);
 
-		module.onDidChangeValidateLanguages({
+		await module.onDidChangeValidateLanguages({
 			languages: new Set(['foo']),
 			removedLanguages: new Set(),
 		});
@@ -238,7 +240,7 @@ describe('FormatterModule', () => {
 		expect(mockLogger.debug).not.toHaveBeenCalledWith('Registering formatter for languages');
 	});
 
-	test("without client dynamic registration support, onDidChangeValidateLanguages shouldn't register a formatter", () => {
+	test("without client dynamic registration support, onDidChangeValidateLanguages shouldn't register a formatter", async () => {
 		const module = new FormatterModule(getParams(true));
 
 		module.onInitialize(
@@ -251,7 +253,7 @@ describe('FormatterModule', () => {
 			}),
 		);
 
-		module.onDidChangeValidateLanguages({
+		await module.onDidChangeValidateLanguages({
 			languages: new Set(['foo']),
 			removedLanguages: new Set(),
 		});
@@ -259,7 +261,7 @@ describe('FormatterModule', () => {
 		expect(mockContext.connection.client.register).not.toHaveBeenCalled();
 	});
 
-	test('with client dynamic registration support, onDidChangeValidateLanguages should register a formatter', () => {
+	test('with client dynamic registration support, onDidChangeValidateLanguages should register a formatter', async () => {
 		const module = new FormatterModule(getParams(true));
 
 		module.onInitialize(
@@ -272,7 +274,7 @@ describe('FormatterModule', () => {
 			}),
 		);
 
-		module.onDidChangeValidateLanguages({
+		await module.onDidChangeValidateLanguages({
 			languages: new Set(['foo']),
 			removedLanguages: new Set(),
 		});
@@ -283,7 +285,7 @@ describe('FormatterModule', () => {
 		);
 	});
 
-	test('without languages to validate, onDidChangeValidateLanguages should register a formatter', () => {
+	test('when a formatter is registered, a notification should be sent', async () => {
 		const module = new FormatterModule(getParams(true));
 
 		module.onInitialize(
@@ -296,7 +298,31 @@ describe('FormatterModule', () => {
 			}),
 		);
 
-		module.onDidChangeValidateLanguages({
+		await module.onDidChangeValidateLanguages({
+			languages: new Set(['foo']),
+			removedLanguages: new Set(),
+		});
+
+		expect(mockContext.connection.sendNotification).toHaveBeenCalledWith(
+			Notification.DidRegisterDocumentFormattingEditProvider,
+			{},
+		);
+	});
+
+	test('without languages to validate, onDidChangeValidateLanguages should register a formatter', async () => {
+		const module = new FormatterModule(getParams(true));
+
+		module.onInitialize(
+			/** @type {any} */ ({
+				capabilities: {
+					textDocument: {
+						formatting: { dynamicRegistration: true },
+					},
+				},
+			}),
+		);
+
+		await module.onDidChangeValidateLanguages({
 			languages: new Set(),
 			removedLanguages: new Set(),
 		});
@@ -304,15 +330,11 @@ describe('FormatterModule', () => {
 		expect(mockContext.connection.client.register).not.toHaveBeenCalled();
 	});
 
-	test('when a formatter was already registered, onDidChangeValidateLanguages should dispose the old registration', () => {
+	test('when a formatter was already registered, onDidChangeValidateLanguages should dispose the old registration', async () => {
 		mockLogger.isDebugEnabled.mockReturnValue(true);
-		const fakePromise = (/** @type {any} */ resolutionValue) => ({
-			then: (/** @type {Function} */ resolve) => resolve(resolutionValue),
-		});
+		const mockRegistration = { dispose: jest.fn() };
 
-		const mockRegistration = { dispose: jest.fn(() => fakePromise()) };
-
-		mockContext.connection.client.register.mockReturnValueOnce(fakePromise(mockRegistration));
+		mockContext.connection.client.register.mockResolvedValueOnce(mockRegistration);
 
 		const module = new FormatterModule(getParams(true));
 
@@ -326,12 +348,12 @@ describe('FormatterModule', () => {
 			}),
 		);
 
-		module.onDidChangeValidateLanguages({
+		await module.onDidChangeValidateLanguages({
 			languages: new Set(['foo']),
 			removedLanguages: new Set(),
 		});
 
-		module.onDidChangeValidateLanguages({
+		await module.onDidChangeValidateLanguages({
 			languages: new Set(['bar']),
 			removedLanguages: new Set(['foo']),
 		});

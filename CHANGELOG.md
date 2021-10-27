@@ -4,11 +4,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- The extension no longer blocks VS Code's startup. Thanks to [@robole](https://github.com/robole) for the idea. ([#257](https://github.com/stylelint/vscode-stylelint/pull/257))
+
+## [1.0.2](https://github.com/stylelint/vscode-stylelint/compare/v1.0.1...v1.0.2) (2021-10-26)
+
+### Fixed
+
+- [Less](https://lesscss.org/) is no longer linted by default. It was added as a default due to an oversight in the previous release. Only documents with language identifiers `css` and `postcss` will be linted by default. ([#280](https://github.com/stylelint/vscode-stylelint/pull/280))
+
 ## [1.0.1](https://github.com/stylelint/vscode-stylelint/compare/v1.0.0...v1.0.1) (2021-10-22)
 
 ### Fixed
 
-- [Less](https://lesscss.org/) is now correctly linted by default ([#270](https://github.com/stylelint/vscode-stylelint/pull/270)).
+- ~~[Less](https://lesscss.org/) is now correctly linted by default ([#270](https://github.com/stylelint/vscode-stylelint/pull/270)).~~
 
 ## [1.0.0](https://github.com/stylelint/vscode-stylelint/compare/v0.87.6...v1.0.0) (2021-10-21)
 
@@ -16,8 +28,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Dropped support for Stylelint 13 and prior; only Stylelint 14 is supported now. See the [migration guide](README.md#%EF%B8%8F-stylelint-13x-and-prior-is-no-longer-supported) for more details.
 - Removed bundled copy of Stylelint; local or global installation is now required. See the [migration guide](README.md#%EF%B8%8F-stylelint-is-no-longer-bundled) for more details.
-- Validation and completion now only works for documents with language identifiers `css`, `less`, and `postcss` by default. See the [migration guide](README.md#%EF%B8%8F-only-css-less-and-postcss-are-validated-by-default) for more details.
-- `stylelint.syntax` configuration option removed; use `stylelint.customSyntax` instead. See the [migration guide](README.md#%EF%B8%8F-only-css-less-and-postcss-are-validated-by-default) for more details.
+- Validation and completion now only works for documents with language identifiers `css` and `postcss` by default. See the [migration guide](README.md#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for more details.
+- `stylelint.syntax` configuration option removed; use `stylelint.customSyntax` instead. See the [migration guide](README.md#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for more details.
 
 ### Added
 
