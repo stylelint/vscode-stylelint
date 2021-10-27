@@ -92,6 +92,20 @@ body:
       placeholder: e.g. v16.9.0
     validations:
       required: true
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: What operating system are you using and what is its version?
+      placeholder: e.g. macOS 10.15.7
+    validations:
+      required: true
+  - type: input
+    id: wsl
+    attributes:
+      label: Windows Subsystem for Linux
+      description: If you are running VS Code on Windows Subsystem for Linux (WSL), please specify what version of WSL and Windows you are using.
+      placeholder: e.g. WSL 2, Windows 11 21H2
   - type: checkboxes
     id: terms
     attributes:
