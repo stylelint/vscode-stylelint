@@ -15,7 +15,7 @@ function displayError(connection, err) {
 
 	if (/** @type {InvalidOptionError} */ (err)?.reasons) {
 		for (const reason of /** @type {InvalidOptionError} */ (err)?.reasons) {
-			connection.window.showErrorMessage(`stylelint: ${reason}`);
+			connection.window.showErrorMessage(`Stylelint: ${reason}`);
 		}
 
 		return;
@@ -23,7 +23,7 @@ function displayError(connection, err) {
 
 	// https://github.com/stylelint/stylelint/blob/551dcb5/lib/utils/configurationError.js#L12
 	if (/** @type {ConfigurationError} */ (err)?.code === 78) {
-		connection.window.showErrorMessage(`stylelint: ${err.message}`);
+		connection.window.showErrorMessage(`Stylelint: ${err.message}`);
 
 		return;
 	}

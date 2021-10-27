@@ -20,7 +20,7 @@ function activate({ subscriptions }) {
 	const api = new events.EventEmitter();
 
 	const client = new LanguageClient(
-		'stylelint',
+		'Stylelint',
 		{
 			run: {
 				module: serverPath,
@@ -34,7 +34,7 @@ function activate({ subscriptions }) {
 		},
 		{
 			documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
-			diagnosticCollectionName: 'stylelint',
+			diagnosticCollectionName: 'Stylelint',
 			synchronize: {
 				configurationSection: 'stylelint',
 				fileEvents: workspace.createFileSystemWatcher(

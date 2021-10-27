@@ -19,7 +19,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "--report-needless-disables",
@@ -35,7 +35,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "--report-needless-disables",
@@ -51,7 +51,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "--report-needless-disables",
@@ -67,7 +67,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "--report-needless-disables",
@@ -83,7 +83,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
   Object {
     "code": "--report-needless-disables",
@@ -99,7 +99,7 @@ Array [
       },
     },
     "severity": 1,
-    "source": "stylelint",
+    "source": "Stylelint",
   },
 ]
 `;

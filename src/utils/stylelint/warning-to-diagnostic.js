@@ -25,7 +25,7 @@ const { Diagnostic, DiagnosticSeverity, Position, Range } = require('vscode-lang
  * // {
  * //   message: 'Unexpected named color "red" (color-named)',
  * //   severity: 1,
- * //   source: 'stylelint',
+ * //   source: 'Stylelint',
  * //   range: {
  * //     start: {
  * //       line: 0,
@@ -53,7 +53,7 @@ function warningToDiagnostic(warning, rules) {
 		warning.text,
 		DiagnosticSeverity[warning.severity === 'warning' ? 'Warning' : 'Error'],
 		warning.rule,
-		'stylelint',
+		'Stylelint',
 	);
 
 	if (ruleDocUrl) {

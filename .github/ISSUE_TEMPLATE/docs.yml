@@ -1,0 +1,33 @@
+name: "\U0001F4DD Documentation Issue"
+description: Report an issue with the documentation.
+title: '[Docs]: '
+labels: ['type: documentation']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report an issue with the documentation!
+  - type: textarea
+    id: use-case
+    attributes:
+      label: What could use improvement?
+      description: Describe the problem with the documentation or what could be improved.
+      placeholder: e.g. The settings documentation is not up to date.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: How can the documentation be improved to solve this problem?
+      description: Describe how this feature could be implemented and what the behaviour would look like.
+      placeholder: e.g. Add the new setting `stylelint.newSetting` to the readme.
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this feature request, you agree to follow our [Code of Conduct](https://github.com/stylelint/vscode-stylelint/blob/main/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow vscode-stylelint's Code of Conduct
+          required: true

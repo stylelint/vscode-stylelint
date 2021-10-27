@@ -546,7 +546,7 @@ describe('StylelintLanguageServer', () => {
 
 		expect(mockLogger.debug).toHaveBeenCalledWith('Languages that should be validated changed', {
 			languages: ['css'],
-			removedLanguages: ['less', 'postcss'],
+			removedLanguages: ['postcss'],
 		});
 	});
 
@@ -574,7 +574,7 @@ describe('StylelintLanguageServer', () => {
 			'Languages that should be validated changed',
 			{
 				languages: ['css'],
-				removedLanguages: ['less', 'postcss'],
+				removedLanguages: ['postcss'],
 			},
 		);
 	});

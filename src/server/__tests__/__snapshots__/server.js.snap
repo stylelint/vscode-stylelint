@@ -25,12 +25,10 @@ Object {
       "packageManager": "npm",
       "snippet": Array [
         "css",
-        "less",
         "postcss",
       ],
       "validate": Array [
         "css",
-        "less",
         "postcss",
       ],
     },
@@ -112,12 +110,10 @@ Array [
       "packageManager": "npm",
       "snippet": Array [
         "css",
-        "less",
         "postcss",
       ],
       "validate": Array [
         "css",
-        "less",
         "postcss",
       ],
     },
@@ -132,12 +128,10 @@ Array [
       "packageManager": "npm",
       "snippet": Array [
         "css",
-        "less",
         "postcss",
       ],
       "validate": Array [
         "css",
-        "less",
         "postcss",
       ],
     },
@@ -158,12 +152,10 @@ Array [
       "packageManager": "npm",
       "snippet": Array [
         "css",
-        "less",
         "postcss",
       ],
       "validate": Array [
         "css",
-        "less",
         "postcss",
       ],
     },
@@ -177,12 +169,10 @@ Array [
       "packageManager": "npm",
       "snippet": Array [
         "css",
-        "less",
         "postcss",
       ],
       "validate": Array [
         "css",
-        "less",
         "postcss",
       ],
     },
@@ -220,13 +210,11 @@ Object {
   "reportNeedlessDisables": undefined,
   "snippet": Array [
     "css",
-    "less",
     "postcss",
   ],
   "stylelintPath": undefined,
   "validate": Array [
     "css",
-    "less",
     "postcss",
   ],
 }
@@ -236,7 +224,6 @@ exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when f
 Object {
   "languages": Set {
     "css",
-    "less",
     "postcss",
   },
   "removedLanguages": Set {},
@@ -255,7 +242,6 @@ Object {
   "reportNeedlessDisables": undefined,
   "snippet": Array [
     "css",
-    "less",
     "postcss",
   ],
   "stylelintPath": undefined,
@@ -271,7 +257,6 @@ Object {
     "css",
   },
   "removedLanguages": Set {
-    "less",
     "postcss",
   },
 }
@@ -297,13 +282,11 @@ Object {
   "reportNeedlessDisables": undefined,
   "snippet": Array [
     "css",
-    "less",
     "postcss",
   ],
   "stylelintPath": undefined,
   "validate": Array [
     "css",
-    "less",
     "postcss",
   ],
 }
@@ -325,13 +308,11 @@ Object {
   "reportNeedlessDisables": undefined,
   "snippet": Array [
     "css",
-    "less",
     "postcss",
   ],
   "stylelintPath": undefined,
   "validate": Array [
     "css",
-    "less",
     "postcss",
   ],
 }

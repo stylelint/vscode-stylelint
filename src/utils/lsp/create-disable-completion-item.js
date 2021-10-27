@@ -25,7 +25,7 @@ function createDisableCompletionItem(disableType, rule = '') {
 			rule || 'rule'
 		}} */`;
 		item.detail =
-			'Turn off all Stylelint or individual rules, after which you do not need to re-enable stylelint. (stylelint)';
+			'Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)';
 		item.documentation = {
 			kind: MarkupKind.Markdown,
 			value: `\`\`\`css\n/* stylelint-disable ${rule || 'rule'} */\n/* stylelint-enable ${
@@ -36,8 +36,8 @@ function createDisableCompletionItem(disableType, rule = '') {
 		item.insertText = `/* ${disableType} \${0:${rule || 'rule'}} */`;
 		item.detail =
 			disableType === 'stylelint-disable-line'
-				? 'Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (stylelint)'
-				: 'Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (stylelint)';
+				? 'Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)'
+				: 'Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)';
 		item.documentation = {
 			kind: MarkupKind.Markdown,
 			value: `\`\`\`css\n/* ${disableType} ${rule || 'rule'} */\n\`\`\``,
