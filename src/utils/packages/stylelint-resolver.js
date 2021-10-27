@@ -119,10 +119,20 @@ class StylelintResolver {
 			}
 		}
 
-		const stylelintPath = path.join(root, 'node_modules/stylelint');
-
 		try {
 			const rootRelativeRequire = createRequire(pnpPath);
+
+			const stylelintEntryPath = rootRelativeRequire.resolve('stylelint');
+			const stylelintPath = await findPackageRoot(stylelintEntryPath);
+
+			if (!stylelintPath) {
+				this.#logger?.warn('Failed to find the Stylelint package root', {
+					path: stylelintEntryPath,
+				});
+
+				return undefined;
+			}
+
 			const stylelint = rootRelativeRequire('stylelint');
 
 			const result = {

@@ -4,16 +4,16 @@ const fs = require('fs/promises');
 const path = require('path');
 
 /**
- * Walks up the file tree from the given directory until it finds a directory
+ * Walks up the file tree from the given path until it finds a directory
  * containing a file named `package.json`. Resolves to `undefined` if no such
  * directory is found.
- * @param {string} directory The directory to start from.
+ * @param {string} startPath The path to start from.
  * @param {string} rootFile The file to use to determine when the project root
  * has been reached. Defaults to `package.json`.
  * @returns {Promise<string | undefined>}
  */
-async function findPackageRoot(directory, rootFile = 'package.json') {
-	let currentDirectory = directory;
+async function findPackageRoot(startPath, rootFile = 'package.json') {
+	let currentDirectory = startPath;
 
 	// eslint-disable-next-line no-constant-condition
 	while (true) {

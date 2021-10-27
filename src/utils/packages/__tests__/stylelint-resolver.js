@@ -126,15 +126,14 @@ mockedGlobalPathResolver.__mockPath('yarn', mockGlobalPaths.yarn);
 mockedGlobalPathResolver.__mockPath('npm', mockGlobalPaths.npm);
 mockedGlobalPathResolver.__mockPath('pnpm', mockGlobalPaths.pnpm);
 
-const mockedFSStat = mockedFS.stat.getMockImplementation();
-
 describe('StylelintResolver', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
 		path.__mockPlatform();
 		mockCWD = path.join('/fake', 'cwd');
 		mockPnPVersion = undefined;
-		mockedFS.stat.mockImplementation(mockedFSStat);
+		mockedFS.stat.mockReset();
+		findPackageRoot.mockReset();
 		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 	});
 
@@ -315,10 +314,13 @@ describe('StylelintResolver', () => {
 
 	test('should resolve workspace Stylelint modules using PnP', async () => {
 		mockCWD = path.join('/fake', 'pnp');
-		findPackageRoot.mockResolvedValueOnce(__dirname);
+		findPackageRoot.mockResolvedValue(__dirname);
 		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
 		mockedModule.createRequire.mockImplementation(
-			() => /** @type {any} */ (() => ({ lint: () => 'from pnp' })),
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
 		);
 
 		const connection = createMockConnection();
@@ -328,13 +330,13 @@ describe('StylelintResolver', () => {
 
 		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
 		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', { path: pnpPath });
-		expect(result?.resolvedPath).toBe(path.join(__dirname, 'node_modules/stylelint'));
+		expect(result?.resolvedPath).toBe(__dirname);
 		expect(result?.stylelint?.lint({})).toBe('from pnp');
 	});
 
 	test('should resolve workspace Stylelint modules using a PnP loader named .pnp.js (Yarn 2)', async () => {
 		mockCWD = path.join('/fake', 'pnp');
-		findPackageRoot.mockResolvedValueOnce(__dirname);
+		findPackageRoot.mockResolvedValue(__dirname);
 		mockedFS.stat.mockImplementation(
 			async (filePath) =>
 				/** @type {any} */ (
@@ -342,7 +344,10 @@ describe('StylelintResolver', () => {
 				),
 		);
 		mockedModule.createRequire.mockImplementation(
-			() => /** @type {any} */ (() => ({ lint: () => 'from pnp' })),
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
 		);
 
 		const connection = createMockConnection();
@@ -352,16 +357,19 @@ describe('StylelintResolver', () => {
 
 		expect(mockedJSPnP.setup).toHaveBeenCalledTimes(1);
 		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', { path: pnpJSPath });
-		expect(result?.resolvedPath).toBe(path.join(__dirname, 'node_modules/stylelint'));
+		expect(result?.resolvedPath).toBe(__dirname);
 		expect(result?.stylelint?.lint({})).toBe('from pnp');
 	});
 
 	test('should not try to setup PnP if it is already setup', async () => {
 		mockCWD = path.join('/fake', 'pnp');
-		findPackageRoot.mockResolvedValueOnce(__dirname);
+		findPackageRoot.mockResolvedValue(__dirname);
 		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
 		mockedModule.createRequire.mockImplementation(
-			() => /** @type {any} */ (() => ({ lint: () => 'from pnp' })),
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
 		);
 		mockPnPVersion = '1.0.0';
 
@@ -378,13 +386,16 @@ describe('StylelintResolver', () => {
 		const error = new Error('PnP setup failed');
 
 		mockCWD = path.join('/fake', 'pnp');
-		findPackageRoot.mockResolvedValueOnce(__dirname);
+		findPackageRoot.mockResolvedValue(__dirname);
 		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
 		mockedPnP.setup.mockImplementationOnce(() => {
 			throw error;
 		});
 		mockedModule.createRequire.mockImplementation(
-			() => /** @type {any} */ (() => ({ lint: () => 'from pnp' })),
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
 		);
 		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 
@@ -400,10 +411,13 @@ describe('StylelintResolver', () => {
 
 	test("should resolve to undefined if PnP loader isn't a file and Stylelint can't be resolved from node_modules", async () => {
 		mockCWD = path.join('/fake', 'pnp');
-		findPackageRoot.mockResolvedValueOnce(__dirname);
+		findPackageRoot.mockResolvedValue(__dirname);
 		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => false }));
 		mockedModule.createRequire.mockImplementation(
-			() => /** @type {any} */ (() => ({ lint: () => 'from pnp' })),
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
 		);
 		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 
@@ -421,10 +435,13 @@ describe('StylelintResolver', () => {
 		const error = new Error('EACCES');
 
 		mockCWD = path.join('/fake', 'pnp');
-		findPackageRoot.mockResolvedValueOnce(__dirname);
+		findPackageRoot.mockResolvedValue(__dirname);
 		mockedFS.stat.mockRejectedValueOnce(error);
 		mockedModule.createRequire.mockImplementation(
-			() => /** @type {any} */ (() => ({ lint: () => 'from pnp' })),
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
 		);
 		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 
@@ -444,15 +461,22 @@ describe('StylelintResolver', () => {
 		const error = new Error('Cannot find module');
 
 		mockCWD = path.join('/fake', 'pnp');
-		findPackageRoot.mockResolvedValueOnce(__dirname);
+		findPackageRoot.mockResolvedValue(__dirname);
 		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
 		mockedPnP.setup.mockImplementationOnce(() => {
 			mockedModule.createRequire.mockImplementationOnce(
 				() =>
 					/** @type {any} */ (
-						() => {
-							throw error;
-						}
+						Object.assign(
+							() => {
+								throw error;
+							},
+							{
+								resolve: () => {
+									throw error;
+								},
+							},
+						)
 					),
 			);
 		});
@@ -466,6 +490,31 @@ describe('StylelintResolver', () => {
 		expect(logger.warn).toHaveBeenCalledWith('Could not load Stylelint using PnP', {
 			path: __dirname,
 			error,
+		});
+		expect(result).toBeUndefined();
+	});
+
+	test("should resolve to undefined if Stylelint path can't be determined using PnP", async () => {
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockImplementation(async (startPath) =>
+			startPath === path.join('/fake', 'cwd') ? __dirname : undefined,
+		);
+		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledWith('Failed to find the Stylelint package root', {
+			path: goodStylelintPath,
 		});
 		expect(result).toBeUndefined();
 	});

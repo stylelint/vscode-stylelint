@@ -21,6 +21,19 @@ describe('findPackageRoot', () => {
 			expect(await findPackageRoot('foo/bar/baz')).toBe('foo/bar');
 		});
 
+		it('should resolve the package directory when the starting path points to a file', async () => {
+			mockedFS.__mockFileSystem({
+				foo: {
+					bar: {
+						'package.json': '{}',
+						baz: '',
+					},
+				},
+			});
+
+			expect(await findPackageRoot('foo/bar/baz')).toBe('foo/bar');
+		});
+
 		it("should not resolve when package.json isn't in the tree", async () => {
 			mockedFS.__mockFileSystem({
 				foo: {
@@ -89,6 +102,19 @@ describe('findPackageRoot', () => {
 					bar: {
 						'yarn.lock': '',
 						baz: {},
+					},
+				},
+			});
+
+			expect(await findPackageRoot('foo/bar/baz', 'yarn.lock')).toBe('foo/bar');
+		});
+
+		it('should resolve the package directory when the starting path points to a file', async () => {
+			mockedFS.__mockFileSystem({
+				foo: {
+					bar: {
+						'yarn.lock': '',
+						baz: '',
 					},
 				},
 			});
