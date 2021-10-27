@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - If Stylelint is installed in a workspace using [Yarn](https://yarnpkg.com/) with [Plug-n-Play](https://yarnpkg.com/features/pnp), it can now be resolved without the need for Yarn's [editor SDKs](https://yarnpkg.com/getting-started/editor-sdks). ([#273](https://github.com/stylelint/vscode-stylelint/issues/273)).
 
+### Fixed
+
+- Fixed a bug where Stylelint resolution would fail due to an `ENOTDIR` error ([#285](https://github.com/stylelint/vscode-stylelint/pull/285)).
+
 ### Changed
 
 - The extension no longer blocks VS Code's startup. Thanks to [@robole](https://github.com/robole) for the idea. ([#257](https://github.com/stylelint/vscode-stylelint/pull/257))

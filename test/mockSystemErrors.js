@@ -9,8 +9,9 @@ const util = require('util');
  * Mock file system error messages by code.
  */
 const errorMessages = {
-	ENOENT: "ENOENT: no such file or directory, open '%s'",
 	EACCES: "EACCES: permission denied, open '%s'",
+	ENOENT: "ENOENT: no such file or directory, open '%s'",
+	ENOTDIR: "ENOTDIR: not a directory, open '%s'",
 };
 
 /**
