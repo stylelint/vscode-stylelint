@@ -30,6 +30,25 @@ const DisableReportRuleNames = {
 };
 
 /**
+ * Language server notification names.
+ * @enum {string}
+ */
+const Notification = {
+	DidRegisterDocumentFormattingEditProvider:
+		'textDocument/didRegisterDocumentFormattingEditProvider',
+};
+
+/**
+ * Extension API event names.
+ * @enum {keyof ExtensionEvents}
+ */
+const ApiEvent = {
+	DidRegisterDocumentFormattingEditProvider: /** @type {keyof ExtensionEvents} */ (
+		'DidRegisterDocumentFormattingEditProvider'
+	),
+};
+
+/**
  * Error thrown when a rule's option is invalid.
  */
 class InvalidOptionError extends Error {
@@ -46,5 +65,7 @@ module.exports = {
 	CommandId,
 	CodeActionKind,
 	DisableReportRuleNames,
+	Notification,
+	ApiEvent,
 	InvalidOptionError,
 };

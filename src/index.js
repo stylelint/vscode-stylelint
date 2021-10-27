@@ -1,18 +1,23 @@
 'use strict';
 
+const events = require('events');
 const {
 	LanguageClient,
 	SettingMonitor,
 	ExecuteCommandRequest,
 } = require('vscode-languageclient/node');
 const { workspace, commands: Commands, window: Window } = require('vscode');
-const { CommandId } = require('./utils/types');
+const { CommandId, Notification, ApiEvent } = require('./utils/types');
 
 /**
  * @param {vscode.ExtensionContext} context
+ * @returns {ExtensionPublicApi}
  */
-exports.activate = ({ subscriptions }) => {
+function activate({ subscriptions }) {
 	const serverPath = require.resolve('./start-server.js');
+
+	/** @type {ExtensionPublicApi} */
+	const api = new events.EventEmitter();
 
 	const client = new LanguageClient(
 		'Stylelint',
@@ -38,6 +43,12 @@ exports.activate = ({ subscriptions }) => {
 			},
 		},
 	);
+
+	client.onReady().then(() => {
+		client.onNotification(Notification.DidRegisterDocumentFormattingEditProvider, () => {
+			api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider);
+		});
+	});
 
 	subscriptions.push(
 		Commands.registerCommand('stylelint.executeAutofix', async () => {
@@ -66,5 +77,12 @@ exports.activate = ({ subscriptions }) => {
 			});
 		}),
 	);
+
 	subscriptions.push(new SettingMonitor(client, 'stylelint.enable').start());
+
+	return api;
+}
+
+module.exports = {
+	activate,
 };

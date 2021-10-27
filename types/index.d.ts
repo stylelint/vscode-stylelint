@@ -392,3 +392,15 @@ type LanguageServerFormatterOptions = {
 	connection: lsp.Connection;
 	preferredKeyOrder?: string[];
 };
+
+/**
+ * VS Code extension event names.
+ */
+interface ExtensionEvents {
+	DidRegisterDocumentFormattingEditProvider: () => void;
+}
+
+/**
+ * VS Code extension public API.
+ */
+type ExtensionPublicApi = import('typed-emitter').default<ExtensionEvents>;

@@ -2,6 +2,7 @@
 
 const { DocumentFormattingRequest } = require('vscode-languageserver-protocol');
 const { formattingOptionsToRules } = require('../../utils/stylelint');
+const { Notification } = require('../../utils/types');
 
 /**
  * @implements {LanguageServerModule}
@@ -29,9 +30,8 @@ class FormatterModule {
 	#registerDynamically = false;
 
 	/**
-	 * A promise that resolves to the disposable for the dynamically registered
-	 * document formatter.
-	 * @type {Promise<lsp.Disposable> | undefined}
+	 * The disposable for the dynamically registered document formatter.
+	 * @type {lsp.Disposable | undefined}
 	 */
 	#registration = undefined;
 
@@ -120,9 +120,9 @@ class FormatterModule {
 
 	/**
 	 * @param {DidChangeValidateLanguagesParams} params
-	 * @returns {void}
+	 * @returns {Promise<void>}
 	 */
-	onDidChangeValidateLanguages({ languages }) {
+	async onDidChangeValidateLanguages({ languages }) {
 		if (this.#logger?.isDebugEnabled()) {
 			this.#logger?.debug('Received onDidChangeValidateLanguages', { languages: [...languages] });
 		}
@@ -134,11 +134,9 @@ class FormatterModule {
 			if (this.#registration) {
 				this.#logger?.debug('Disposing old formatter registration');
 
-				void this.#registration
-					.then((disposable) => disposable.dispose())
-					.then(() => {
-						this.#logger?.debug('Old formatter registration disposed');
-					});
+				this.#registration.dispose();
+
+				this.#logger?.debug('Old formatter registration disposed');
 			}
 
 			// If there are languages that should be validated, register a formatter for those
@@ -154,9 +152,14 @@ class FormatterModule {
 					this.#logger?.debug('Registering formatter for languages', { languages: [...languages] });
 				}
 
-				this.#registration = this.#context.connection.client.register(
+				this.#registration = await this.#context.connection.client.register(
 					DocumentFormattingRequest.type,
 					{ documentSelector },
+				);
+
+				this.#context.connection.sendNotification(
+					Notification.DidRegisterDocumentFormattingEditProvider,
+					{},
 				);
 
 				this.#logger?.debug('Formatter registered');
