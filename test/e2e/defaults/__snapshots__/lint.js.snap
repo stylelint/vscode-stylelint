@@ -1,7 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint lint test should work on css 1`] = `
+exports[`Linting should display rule documentation links when one is available 1`] = `
 Array [
+  Object {
+    "code": "plugin/foo-bar",
+    "message": "Bar (plugin/foo-bar)",
+    "range": Object {
+      "end": Object {
+        "character": 5,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 5,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+  Object {
+    "code": "color-no-invalid-hex",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
+    },
+    "message": "Unexpected invalid hex color \\"#y3\\" (color-no-invalid-hex)",
+    "range": Object {
+      "end": Object {
+        "character": 11,
+        "line": 6,
+      },
+      "start": Object {
+        "character": 11,
+        "line": 6,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
   Object {
     "code": "indentation",
     "codeDescription": Object {
@@ -24,7 +59,7 @@ Array [
 ]
 `;
 
-exports[`vscode-stylelint lint test should work on scss 1`] = `
+exports[`Linting should lint CSS documents 1`] = `
 Array [
   Object {
     "code": "indentation",

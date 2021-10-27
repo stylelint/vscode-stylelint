@@ -17,7 +17,9 @@ function activate({ subscriptions }) {
 	const serverPath = require.resolve('./start-server.js');
 
 	/** @type {ExtensionPublicApi} */
-	const api = new events.EventEmitter();
+	const api = Object.assign(new events.EventEmitter(), {
+		formattingReady: false,
+	});
 
 	const client = new LanguageClient(
 		'Stylelint',
@@ -46,6 +48,7 @@ function activate({ subscriptions }) {
 
 	client.onReady().then(() => {
 		client.onNotification(Notification.DidRegisterDocumentFormattingEditProvider, () => {
+			api.formattingReady = true;
 			api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider);
 		});
 	});

@@ -403,4 +403,6 @@ interface ExtensionEvents {
 /**
  * VS Code extension public API.
  */
-type ExtensionPublicApi = import('typed-emitter').default<ExtensionEvents>;
+type ExtensionPublicApi = import('typed-emitter').default<ExtensionEvents> & {
+	formattingReady: boolean;
+};
