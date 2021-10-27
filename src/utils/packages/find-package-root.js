@@ -32,7 +32,10 @@ async function findPackageRoot(directory) {
 
 			currentDirectory = parent;
 		} catch (error) {
-			if (/** @type {{code?: string}} */ (error).code === 'ENOENT') {
+			if (
+				/** @type {{code?: string}} */ (error).code === 'ENOENT' ||
+				/** @type {{code?: string}} */ (error).code === 'ENOTDIR'
+			) {
 				const parent = path.dirname(currentDirectory);
 
 				if (!path.relative(parent, currentDirectory)) {

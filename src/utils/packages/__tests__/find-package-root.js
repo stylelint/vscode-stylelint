@@ -20,6 +20,32 @@ describe('findPackageRoot', () => {
 		expect(await findPackageRoot('foo/bar/baz')).toBe('foo/bar');
 	});
 
+	it('should resolve the package directory when starting with a file path', async () => {
+		mockedFS.__mockFileSystem({
+			foo: {
+				bar: {
+					'package.json': '{}',
+					baz: '',
+				},
+			},
+		});
+
+		expect(await findPackageRoot('foo/bar/baz')).toBe('foo/bar');
+	});
+
+	it('should resolve the package directory when starting with a file path on a platform that throws ENOTDIR', async () => {
+		mockedFS.__mockFileSystem({
+			foo: {
+				bar: {
+					'package.json': '{}',
+					baz: createError('ENOTDIR', 'foo/bar/baz', -20, 'stat'),
+				},
+			},
+		});
+
+		expect(await findPackageRoot('foo/bar/baz')).toBe('foo/bar');
+	});
+
 	it("should not resolve when package.json isn't in the tree", async () => {
 		mockedFS.__mockFileSystem({
 			foo: {
@@ -68,7 +94,7 @@ describe('findPackageRoot', () => {
 		expect(await findPackageRoot('foo/bar/baz')).toBeUndefined();
 	});
 
-	it('should throw when encountering a file system error other than ENOENT', async () => {
+	it('should throw when encountering a file system error other than ENOENT or ENOTDIR', async () => {
 		mockedFS.__mockFileSystem({
 			foo: {
 				bar: {
