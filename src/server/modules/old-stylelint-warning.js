@@ -132,10 +132,18 @@ class OldStylelintWarningModule {
 
 		const stylelintVersion = await this.#getStylelintVersion(document);
 
+		if (!stylelintVersion) {
+			return undefined;
+		}
+
 		try {
-			return stylelintVersion && semver.lt(stylelintVersion, '14.0.0')
-				? stylelintVersion
-				: undefined;
+			const coerced = semver.coerce(stylelintVersion);
+
+			if (!coerced) {
+				throw new Error(`Could not coerce version "${stylelintVersion}"`);
+			}
+
+			return semver.lt(coerced, '14.0.0') ? stylelintVersion : undefined;
 		} catch (error) {
 			this.#logger?.debug('Stylelint version could not be parsed', {
 				uri: document.uri,

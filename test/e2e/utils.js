@@ -46,7 +46,7 @@ function normalizeDiagnostic(message) {
  * @returns {vscode.Diagnostic[]}
  */
 function getStylelintDiagnostics(uri) {
-	return languages.getDiagnostics(uri).filter((d) => d.source === 'stylelint');
+	return languages.getDiagnostics(uri).filter((d) => d.source === 'Stylelint');
 }
 
 /**

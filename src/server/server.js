@@ -13,8 +13,8 @@ const { StylelintResolver } = require('../utils/packages');
 /** @type {LanguageServerOptions} */
 const defaultOptions = {
 	packageManager: 'npm',
-	validate: ['css', 'less', 'postcss'],
-	snippet: ['css', 'less', 'postcss'],
+	validate: ['css', 'postcss'],
+	snippet: ['css', 'postcss'],
 };
 
 /**
