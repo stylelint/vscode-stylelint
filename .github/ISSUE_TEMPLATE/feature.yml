@@ -1,7 +1,7 @@
-name: "\U0001F680 Feature Suggestion"
+name: "\U0001F680 Feature Request"
 description: Suggest a new feature for the project
 title: '[Feature]: '
-labels: ['type: enhancement']
+labels: ['Feature Request']
 body:
   - type: markdown
     attributes:
