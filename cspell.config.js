@@ -11,6 +11,7 @@ const config = {
 		'browserslist',
 		'caniuse',
 		'Descriptionless',
+		'ENOTDIR',
 		'esbuild',
 		'outdir',
 		'libgconf',

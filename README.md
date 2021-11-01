@@ -16,6 +16,8 @@ The official [Visual Studio Code] extension for [Stylelint]
 - [Installation](#installation)
   - [Disable VS Code's Built-In Linters (optional)](#disable-vs-codes-built-in-linters-optional)
 - [Usage](#usage)
+   <!-- prettier-ignore -->
+   <!-- cspell:disable-next-line -->
 - [Migrating from vscode-stylelint 0.x/Stylelint 13.x](#migrating-from-vscode-stylelint-0xstylelint-13x)
   - [⚠️ Stylelint 13.x and Prior is No Longer Supported](#%EF%B8%8F-stylelint-13x-and-prior-is-no-longer-supported)
   - [⚠️ Stylelint is No Longer Bundled](#%EF%B8%8F-stylelint-is-no-longer-bundled)
