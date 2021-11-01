@@ -175,7 +175,7 @@
   "devDependencies": {
     "@babel/core": "^7.15.8",
     "@babel/eslint-parser": "^7.16.0",
-    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-env": "^7.16.0",
     "@stylelint/postcss-css-in-js": "^0.37.2",
     "@stylelint/prettier-config": "^2.0.0",
     "@types/eslint": "^7.28.2",
