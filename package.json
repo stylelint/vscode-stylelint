@@ -13,7 +13,7 @@
   "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
   "bugs": "https://github.com/stylelint/vscode-stylelint/issues",
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
-  "icon": "media/stylelint.png",
+  "icon": "branding/logo.png",
   "engines": {
     "vscode": ">=1.56.0",
     "node": ">=14.16.0"
