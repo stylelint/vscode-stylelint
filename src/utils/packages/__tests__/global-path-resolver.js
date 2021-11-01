@@ -196,12 +196,12 @@ describe('Global Package Manager Path Resolver', () => {
 			});
 
 			it('should resolve to undefined for yarn', async () => {
-				mockedProcesses.__mockProcess('yarn', ['global', 'dir', '--json'], ['{badjson']);
+				mockedProcesses.__mockProcess('yarn', ['global', 'dir', '--json'], ['{bad json']);
 				let globalPath = await getGlobalPathResolver().resolve('yarn');
 
 				expect(globalPath).toBeUndefined();
 
-				mockedProcesses.__mockProcess('yarn', ['global', 'dir', '--json'], ['{"type":"notlog"}']);
+				mockedProcesses.__mockProcess('yarn', ['global', 'dir', '--json'], ['{"type":"not log"}']);
 				globalPath = await getGlobalPathResolver().resolve('yarn');
 
 				expect(globalPath).toBeUndefined();

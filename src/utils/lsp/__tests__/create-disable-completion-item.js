@@ -33,7 +33,7 @@ describe('createDisableCompletionItem', () => {
 		expect(result).toMatchSnapshot();
 	});
 
-	test('should create a stylelint-disablenext--line completion item for a specific rule', () => {
+	test('should create a stylelint-disable-next-line completion item for a specific rule', () => {
 		const result = createDisableCompletionItem('stylelint-disable-next-line', 'indentation');
 
 		expect(result).toMatchSnapshot();

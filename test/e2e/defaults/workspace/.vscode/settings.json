@@ -1,5 +1,6 @@
 {
 	"[css]": {
 		"editor.defaultFormatter": "stylelint.vscode-stylelint"
-	}
+	},
+	"css.validate": false
 }

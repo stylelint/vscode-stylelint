@@ -273,8 +273,8 @@ const what: string = "is this";
 	});
 });
 
-describe('StylelintRunner with autofix', () => {
-	test('autofix should work properly if configs are defined', async () => {
+describe('StylelintRunner with auto-fix', () => {
+	test('auto-fix should work properly if configs are defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(createDocument(null, 'css', 'a\n{\ncolor:red;\n}'), {
@@ -285,7 +285,7 @@ describe('StylelintRunner with autofix', () => {
 		expect(result.output).toMatchSnapshot();
 	});
 
-	test('autofix should only work properly for syntax errors if no rules are defined', async () => {
+	test('auto-fix should only work properly for syntax errors if no rules are defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a {'), {
@@ -296,7 +296,7 @@ describe('StylelintRunner with autofix', () => {
 		expect(result.output).toMatchInlineSnapshot(`"a {}"`);
 	});
 
-	test('JS file autofix should not change the content if no rules are defined', async () => {
+	test('JS file auto-fix should not change the content if no rules are defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(createDocument('no-rules.js', 'javascript', '"a"'), {
@@ -308,7 +308,7 @@ describe('StylelintRunner with autofix', () => {
 		expect(result.output).toMatchInlineSnapshot(`"\\"a\\""`);
 	});
 
-	test('autofix should ignore if the file matches the ignoreFiles', async () => {
+	test('auto-fix should ignore if the file matches the ignoreFiles', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(
@@ -326,7 +326,7 @@ describe('StylelintRunner with autofix', () => {
 		expect(result.output).toBeUndefined();
 	});
 
-	test('autofix should work if there is syntax errors in css', async () => {
+	test('auto-fix should work if there is syntax errors in css', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(
@@ -349,7 +349,7 @@ describe('StylelintRunner with autofix', () => {
 		expect(result.output).toMatchSnapshot();
 	});
 
-	test('autofix should ignore if there is syntax errors in scss', async () => {
+	test('auto-fix should ignore if there is syntax errors in scss', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(
@@ -373,7 +373,7 @@ describe('StylelintRunner with autofix', () => {
 		expect(result.output).toBeUndefined();
 	});
 
-	test('autofix should work if there are errors that cannot be autofixed', async () => {
+	test('auto-fix should work if there are errors that cannot be auto-fixed', async () => {
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(
 			createDocument(
@@ -413,7 +413,7 @@ describe('StylelintRunner with customSyntax', () => {
 		expect(result).toMatchSnapshot();
 	});
 
-	test('autofix should work properly if customSyntax is defined', async () => {
+	test('auto-fix should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(createDocument('test.css', 'css', 'a\n   color:red'), {

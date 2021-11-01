@@ -27,7 +27,7 @@ describe('getDisableDiagnosticRule', () => {
 		).toBe('block-no-empty');
 	});
 
-	test('should return rules for descriptionless disable diagnostics', () => {
+	test('should return rules for description-less disable diagnostics', () => {
 		expect(
 			getDisableDiagnosticRule({
 				message: 'Disable for "all" is missing a description',

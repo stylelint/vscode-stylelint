@@ -1,7 +1,7 @@
 name: "\U0001F4DD Documentation Issue"
 description: Report an issue with the documentation.
 title: '[Docs]: '
-labels: ['type: documentation']
+labels: ['Docs']
 body:
   - type: markdown
     attributes:

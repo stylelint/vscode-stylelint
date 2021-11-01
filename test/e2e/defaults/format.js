@@ -2,10 +2,12 @@
 
 const path = require('path');
 
+const pWaitFor = require('p-wait-for');
 const { workspace, commands, window, extensions } = require('vscode');
-const { ApiEvent } = require('../../../src/utils/types');
 
-describe('vscode-stylelint', () => {
+const workspaceDir = path.join(__dirname, 'workspace');
+
+describe('Document formatting', () => {
 	beforeAll(async () => {
 		const extension = extensions.getExtension('stylelint.vscode-stylelint');
 
@@ -15,25 +17,11 @@ describe('vscode-stylelint', () => {
 
 		const api = /** @type {ExtensionPublicApi} */ (extension.exports);
 
-		await /** @type {Promise<void>} */ (
-			new Promise((resolve, reject) => {
-				const timeout = setTimeout(
-					() =>
-						reject(new Error('Did not receive DidRegisterDocumentFormattingEditProvider event')),
-					2000,
-				);
-
-				api.on(ApiEvent.DidRegisterDocumentFormattingEditProvider, () => {
-					clearTimeout(timeout);
-					resolve();
-				});
-			})
-		);
+		await pWaitFor(() => api.formattingReady);
 	});
 
 	it('should format document using formatting options', async () => {
-		// Open the './test.css' file.
-		const cssDocument = await workspace.openTextDocument(path.resolve(__dirname, 'test.css'));
+		const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'format.css'));
 
 		const editor = await window.showTextDocument(cssDocument);
 

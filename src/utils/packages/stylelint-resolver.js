@@ -47,15 +47,17 @@ class StylelintResolver {
 	/**
 	 * Logs an error message through the connection if one is available.
 	 * @param {string} message The message to log.
+	 * @param {unknown} [error] The error to log.
 	 * @returns {void}
 	 */
-	#logError(message) {
-		if (!this.#connection) {
-			return;
+	#logError(message, error) {
+		if (this.#logger) {
+			this.#logger?.error(message, error && { error });
 		}
 
-		this.#connection.window.showErrorMessage(`Stylelint: ${message}`);
-		this.#logger?.error(message);
+		if (this.#connection) {
+			this.#connection.window.showErrorMessage(`Stylelint: ${message}`);
+		}
 	}
 
 	/**
@@ -226,7 +228,7 @@ class StylelintResolver {
 				};
 			}
 		} catch (err) {
-			this.#logError(errorMessage);
+			this.#logError(errorMessage, err);
 
 			throw err;
 		}
@@ -254,12 +256,10 @@ class StylelintResolver {
 		const connection = this.#connection;
 
 		/** @type {TracerFn} */
-		const trace = connection
-			? (message, verbose) => {
-					this.#logger?.debug(message, { verbose });
-					connection.tracer.log(message, verbose);
-			  }
-			: () => undefined;
+		const trace = (message, verbose) => {
+			this.#logger?.debug(message, { verbose });
+			connection?.tracer.log(message, verbose);
+		};
 
 		try {
 			/** @type {string | undefined} */
@@ -298,7 +298,7 @@ class StylelintResolver {
 	}
 
 	/**
-	 * Attempts to resolve the `stylelint` package from the following lcoations,
+	 * Attempts to resolve the `stylelint` package from the following locations,
 	 * in order:
 	 *
 	 * 1. `options.stylelintPath`, if provided.
@@ -323,9 +323,8 @@ class StylelintResolver {
 		);
 
 		const stylelint = await getFirstResolvedValue(
-			async () => await this.#resolveFromPath(stylelintPath, getWorkspaceFolderFn),
-			async () =>
-				await this.#resolveFromModules(textDocument, getWorkspaceFolderFn, packageManager),
+			() => this.#resolveFromPath(stylelintPath, getWorkspaceFolderFn),
+			() => this.#resolveFromModules(textDocument, getWorkspaceFolderFn, packageManager),
 		);
 
 		if (!stylelint) {
