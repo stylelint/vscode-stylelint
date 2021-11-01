@@ -2,7 +2,7 @@
   "name": "vscode-stylelint",
   "version": "1.0.3",
   "license": "MIT",
-  "description": "Modern CSS/Less/SCSS linter",
+  "description": "Official Stylelint extension for Visual Studio Code",
   "main": "dist/index.js",
   "displayName": "Stylelint",
   "publisher": "stylelint",
