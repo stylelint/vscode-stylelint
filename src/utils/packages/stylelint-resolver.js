@@ -161,8 +161,10 @@ class StylelintResolver {
 				stylelint,
 				resolvedPath: stylelintPath,
 			};
-		} catch {
-			// ignore
+		} catch (error) {
+			this.#logger?.debug('Failed to resolve Stylelint from global or workspace node_modules.', {
+				error,
+			});
 		}
 
 		return undefined;
