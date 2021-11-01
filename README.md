@@ -11,6 +11,20 @@ The official [Visual Studio Code] extension for [Stylelint]
 
 > **Notice:** 1.x of this extension has breaking changes from 0.x versions, including, but not limited to, changes to which documents are linted by default. See the [migration section](#migrating-from-vscode-stylelint-0xstylelint-13x) for more information.
 
+**Table of Contents**
+
+- [Installation](#installation)
+  - [Disable VS Code's Built-In Linters (optional)](#disable-vs-codes-built-in-linters-optional)
+- [Usage](#usage)
+- [Migrating from vscode-stylelint 0.x/Stylelint 13.x](#migrating-from-vscode-stylelint-0xstylelint-13x)
+  - [⚠️ Stylelint 13.x and Prior is No Longer Supported](#%EF%B8%8F-stylelint-13x-and-prior-is-no-longer-supported)
+  - [⚠️ Stylelint is No Longer Bundled](#%EF%B8%8F-stylelint-is-no-longer-bundled)
+  - [⚠️ Only CSS and PostCSS are Validated by Default](#%EF%B8%8F-only-css-and-postcss-are-validated-by-default)
+- [Extension Settings](#extension-settings)
+- [Commands](#commands)
+- [Troubleshooting](#troubleshooting)
+- [Licence](#licence)
+
 ## Installation
 
 1. Execute the `Extensions: Install Extensions` command from the [Command Palette].
@@ -243,6 +257,24 @@ You can also selectively enable and disable specific languages using VS Code's l
 This extension contributes the following commands to the command palette:
 
 - `Fix all auto-fixable problems`: applies Stylelint resolutions to all automatically fixable problems.
+
+## Troubleshooting
+
+vscode-stylelint writes logs to the VS Code output panel:
+
+![Screenshot of the Output window](https://user-images.githubusercontent.com/9868643/139115502-ff3daa37-1793-47da-9ef9-70c5706f018a.png)
+
+You can enable more verbose log output by running VS Code with the `NODE_ENV` environment variable set to `development`. You can do this on macOS and \*nix by running:
+
+```sh
+NODE_ENV=development code
+```
+
+And on Windows by running:
+
+```batch
+cmd /C "set NODE_ENV=development&&code"
+```
 
 ## Licence
 

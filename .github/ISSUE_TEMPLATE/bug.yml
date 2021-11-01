@@ -1,7 +1,7 @@
 name: "\U0001F41B Bug Report"
 description: File a bug report
 title: '[Bug]: '
-labels: ['type: bug']
+labels: ['Bug']
 body:
   - type: markdown
     attributes:
@@ -57,6 +57,17 @@ body:
       placeholder: e.g. The editor should lint without errors.
     validations:
       required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Start VS Code using `NODE_ENV=development code` on macOS/*nix or `cmd /C "set NODE_ENV=development&&code"` on Windows, then reproduce your issue. Select Stylelint in the Output window drop-down, then copy and paste the relevant logs into the text area below.
+
+        ![Screenshot of the Output window](https://user-images.githubusercontent.com/9868643/139115502-ff3daa37-1793-47da-9ef9-70c5706f018a.png)
+      placeholder: 'Logs should look like: [Debug - 4:20:34 p.m.] [language-server] Error occurred while…'
+    validations:
+      required: false
   - type: input
     id: stylelint-version
     attributes:
@@ -81,6 +92,20 @@ body:
       placeholder: e.g. v16.9.0
     validations:
       required: true
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: What operating system are you using and what is its version?
+      placeholder: e.g. macOS 10.15.7
+    validations:
+      required: true
+  - type: input
+    id: wsl
+    attributes:
+      label: Windows Subsystem for Linux
+      description: If you are running VS Code on Windows Subsystem for Linux (WSL), please specify what version of WSL and Windows you are using.
+      placeholder: e.g. WSL 2, Windows 11 21H2
   - type: checkboxes
     id: terms
     attributes:
