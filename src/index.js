@@ -51,6 +51,7 @@ function activate({ subscriptions }) {
 	});
 
 	subscriptions.push(
+		// cspell:disable-next-line
 		Commands.registerCommand('stylelint.executeAutofix', async () => {
 			const textEditor = Window.activeTextEditor;
 

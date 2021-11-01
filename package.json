@@ -79,7 +79,7 @@
         "stylelint.ignoreDisables": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore `styleline-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
+          "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
         },
         "stylelint.reportNeedlessDisables": {
           "type": "boolean",
@@ -185,6 +185,7 @@
     "@types/semver": "^7.3.9",
     "@types/vscode": "1.56.0",
     "@vscode/test-electron": "^1.6.2",
+    "cspell": "^5.12.3",
     "esbuild": "^0.13.12",
     "eslint": "^7.5.0",
     "eslint-config-stylelint": "^14.0.0",
@@ -215,6 +216,7 @@
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
+    "lint:spelling": "cspell lint --no-progress",
     "lint:types": "tsc -b",
     "lint:unit-tests": "node scripts/enforce-unit-tests-per-file.js",
     "test": "npm run bundle && jest",
