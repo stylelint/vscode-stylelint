@@ -54,6 +54,14 @@ describe('getFirstReturnValue', () => {
 		getFirstReturnValue(fn, fn, fn);
 		expect(fn).toHaveBeenCalledTimes(1);
 	});
+
+	test('if a function throws an error, it should be thrown', () => {
+		expect(() =>
+			getFirstReturnValue(() => {
+				throw new Error('foo');
+			}),
+		).toThrow('foo');
+	});
 });
 
 describe('getFirstResolvedValue', () => {
@@ -107,5 +115,13 @@ describe('getFirstResolvedValue', () => {
 
 		await getFirstResolvedValue(fn, fn, fn);
 		expect(fn).toHaveBeenCalledTimes(1);
+	});
+
+	test('if a function rejects, it should be rejected', async () => {
+		await expect(
+			getFirstResolvedValue(async () => {
+				throw new Error('foo');
+			}),
+		).rejects.toThrow('foo');
 	});
 });
