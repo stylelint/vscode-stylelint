@@ -187,7 +187,7 @@
     "@vscode/test-electron": "^1.6.2",
     "cspell": "^5.12.3",
     "esbuild": "^0.13.12",
-    "eslint": "^7.5.0",
+    "eslint": "^8.1.0",
     "eslint-config-stylelint": "^14.0.0",
     "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
