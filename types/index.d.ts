@@ -394,6 +394,29 @@ type LanguageServerFormatterOptions = {
 };
 
 /**
+ * Error log formatter constructor.
+ */
+type ErrorFormatterConstructor = {
+	new (): ErrorFormatter;
+};
+
+/**
+ * Error log formatter.
+ */
+type ErrorFormatter = winston.Logform.Format & {
+	/**
+	 * Formats a log object.
+	 * @param info The log object to format.
+	 */
+	transform(info: winston.Logform.TransformableInfo): winston.Logform.TransformableInfo;
+
+	/**
+	 * Unused.
+	 */
+	options: undefined;
+};
+
+/**
  * VS Code extension event names.
  */
 interface ExtensionEvents {

@@ -6,7 +6,11 @@ const { StylelintLanguageServer, modules } = require('./server');
 
 const connection = createConnection(ProposedFeatures.all);
 
-const { LanguageServerTransport, LanguageServerFormatter } = require('./utils/logging');
+const {
+	ErrorFormatter,
+	LanguageServerTransport,
+	LanguageServerFormatter,
+} = require('./utils/logging');
 
 const { NODE_ENV } = process.env;
 
@@ -16,10 +20,13 @@ const level = NODE_ENV === 'development' ? 'debug' : 'info';
 const transports = [
 	new LanguageServerTransport({
 		connection,
-		format: new LanguageServerFormatter({
-			connection,
-			preferredKeyOrder: ['module', 'uri', 'command'],
-		}),
+		format: winston.format.combine(
+			new ErrorFormatter(),
+			new LanguageServerFormatter({
+				connection,
+				preferredKeyOrder: ['module', 'uri', 'command'],
+			}),
+		),
 	}),
 ];
 
@@ -28,7 +35,11 @@ if (level === 'debug') {
 		new winston.transports.File({
 			filename: require('path').join(__dirname, '../stylelint-language-server.log'),
 			level,
-			format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+			format: winston.format.combine(
+				new ErrorFormatter(),
+				winston.format.timestamp(),
+				winston.format.json(),
+			),
 		}),
 	);
 }
