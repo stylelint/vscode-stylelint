@@ -290,8 +290,13 @@ class StylelintResolver {
 			}
 
 			return result;
-		} catch {
-			// ignore
+		} catch (error) {
+			this.#logger?.debug(
+				'Failed to resolve Stylelint from workspace or globally-installed packages.',
+				{
+					error,
+				},
+			);
 		}
 
 		return undefined;
