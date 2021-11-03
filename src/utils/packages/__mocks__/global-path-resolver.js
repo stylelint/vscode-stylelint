@@ -2,16 +2,17 @@
 
 const resolver = jest.createMockFromModule('../global-path-resolver');
 
-/** @type {Partial<{[packageManager in PackageManager]: string | undefined}>} */
+/** @type {Partial<{[packageManager in PackageManager]: string | Error | undefined}>} */
 let mockedPaths = {};
 
 /**
- * Mocks the global path for the given package manager.
+ * Mocks the global path for the given package manager. If an error is provided,
+ * the mock will throw the error when called with the given package manager.
  * @param {PackageManager} packageManager
- * @param {string} [globalPath]
+ * @param {string | Error} [globalPathOrError]
  */
-resolver.__mockPath = (packageManager, globalPath) => {
-	mockedPaths[packageManager] = globalPath;
+resolver.__mockPath = (packageManager, globalPathOrError) => {
+	mockedPaths[packageManager] = globalPathOrError;
 };
 
 /**
@@ -24,7 +25,13 @@ resolver.__resetMockedResolutions = () => {
 resolver.getGlobalPathResolver = jest.fn(() => ({
 	/** @param {PackageManager} packageManager */
 	async resolve(packageManager) {
-		return mockedPaths[packageManager];
+		const mocked = mockedPaths[packageManager];
+
+		if (mocked instanceof Error) {
+			throw mocked;
+		}
+
+		return mocked;
 	},
 }));
 

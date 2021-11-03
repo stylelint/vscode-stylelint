@@ -69,7 +69,7 @@ declare namespace tests {
 		type GlobalPathResolver = jest.Mocked<
 			typeof import('../src/utils/packages/global-path-resolver')
 		> & {
-			__mockPath: (packageManager: PackageManager, path: string) => void;
+			__mockPath: (packageManager: PackageManager, path?: string | Error) => void;
 			__resetMockedPaths: () => void;
 		};
 

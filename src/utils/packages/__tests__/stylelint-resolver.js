@@ -108,7 +108,7 @@ const mockGlobalFileResolution = (packageManager, stylelintPath) => {
 };
 
 /**
- * @param {string} stylelintPath
+ * @param {string} [stylelintPath]
  */
 const mockLocalFileResolution = (stylelintPath) => {
 	mockedFiles.__mockResolution('stylelint', (_, cwd, trace) => {
@@ -122,19 +122,19 @@ const mockedGlobalPathResolver = /** @type {tests.mocks.GlobalPathResolver} */ (
 	require('../global-path-resolver')
 );
 
-mockedGlobalPathResolver.__mockPath('yarn', mockGlobalPaths.yarn);
-mockedGlobalPathResolver.__mockPath('npm', mockGlobalPaths.npm);
-mockedGlobalPathResolver.__mockPath('pnpm', mockGlobalPaths.pnpm);
-
 describe('StylelintResolver', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
+		mockLocalFileResolution();
 		path.__mockPlatform();
 		mockCWD = path.join('/fake', 'cwd');
 		mockPnPVersion = undefined;
 		mockedFS.stat.mockReset();
 		findPackageRoot.mockReset();
 		Object.defineProperty(process.versions, 'pnp', { value: undefined });
+		mockedGlobalPathResolver.__mockPath('yarn', mockGlobalPaths.yarn);
+		mockedGlobalPathResolver.__mockPath('npm', mockGlobalPaths.npm);
+		mockedGlobalPathResolver.__mockPath('pnpm', mockGlobalPaths.pnpm);
 	});
 
 	test('should resolve valid custom Stylelint paths', async () => {
@@ -200,7 +200,7 @@ describe('StylelintResolver', () => {
 		expect(logger.warn).toHaveBeenCalledTimes(2);
 		expect(logger.error).toHaveBeenCalledTimes(1);
 		expect(connection.window.showErrorMessage).toHaveBeenCalledTimes(1);
-		expect(connection.tracer.log).not.toHaveBeenCalled();
+		expect(connection.tracer.log).toHaveBeenCalledTimes(1);
 	});
 
 	test('should throw on invalid custom Stylelint paths', async () => {
@@ -528,6 +528,49 @@ describe('StylelintResolver', () => {
 		const result = await stylelintResolver.resolve({}, createMockTextDocument(true));
 
 		expect(result).toBeUndefined();
+	});
+
+	test('should resolve to undefined if an error is thrown during global path resolution and no workspace module exists', async () => {
+		mockLocalFileResolution();
+
+		const error = new Error('error');
+
+		mockedGlobalPathResolver.__mockPath('yarn', error);
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve(
+			{ packageManager: 'yarn' },
+			createMockTextDocument(),
+		);
+
+		expect(result).toBeUndefined();
+		expect(logger.warn).toHaveBeenCalledWith('Failed to resolve global node_modules path', {
+			error,
+		});
+	});
+
+	test('should resolve workspace Stylelint if an error is thrown during global path resolution and a workspace module exists', async () => {
+		mockLocalFileResolution(goodStylelintPath);
+
+		const error = new Error('error');
+
+		mockedGlobalPathResolver.__mockPath('yarn', error);
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve(
+			{ packageManager: 'yarn' },
+			createMockTextDocument(),
+		);
+
+		expect(result?.resolvedPath).toBe(goodStylelintPath);
+		expect(result?.stylelint?.lint({})).toBe('good');
+		expect(logger.warn).toHaveBeenCalledWith('Failed to resolve global node_modules path', {
+			error,
+		});
 	});
 
 	test("should resolve to undefined if cwd can't be determined and Stylelint can't be resolved from node_modules", async () => {

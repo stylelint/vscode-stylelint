@@ -264,7 +264,11 @@ class StylelintResolver {
 		try {
 			/** @type {string | undefined} */
 			const globalModulesPath = packageManager
-				? await this.#globalPathResolver.resolve(packageManager, trace)
+				? await this.#globalPathResolver.resolve(packageManager, trace).catch((error) => {
+						this.#logger?.warn('Failed to resolve global node_modules path', { error });
+
+						return undefined;
+				  })
 				: undefined;
 
 			const documentURI = URI.parse(textDocument.uri);
