@@ -1,5 +1,7 @@
 'use strict';
 
+const { isIterableObject } = require('../iterables');
+
 /**
  * Takes an error and displays it in the UI using the given connection.
  * @param {lsp.Connection} connection The language server connection.
@@ -13,8 +15,8 @@ function displayError(connection, err) {
 		return;
 	}
 
-	if (/** @type {InvalidOptionError} */ (err)?.reasons) {
-		for (const reason of /** @type {InvalidOptionError} */ (err)?.reasons) {
+	if (isIterableObject(/** @type {InvalidOptionError} */ (err)?.reasons)) {
+		for (const reason of /** @type {InvalidOptionError} */ (err).reasons) {
 			connection.window.showErrorMessage(`Stylelint: ${reason}`);
 		}
 

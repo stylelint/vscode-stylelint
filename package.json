@@ -79,7 +79,7 @@
         "stylelint.ignoreDisables": {
           "type": "boolean",
           "default": false,
-          "description": "Ignore `styleline-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
+          "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
         },
         "stylelint.reportNeedlessDisables": {
           "type": "boolean",
@@ -173,9 +173,9 @@
     "winston-transport": "^4.4.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.15.8",
+    "@babel/core": "^7.16.0",
     "@babel/eslint-parser": "^7.16.0",
-    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-env": "^7.16.0",
     "@stylelint/postcss-css-in-js": "^0.37.2",
     "@stylelint/prettier-config": "^2.0.0",
     "@types/eslint": "^7.28.2",
@@ -185,9 +185,10 @@
     "@types/semver": "^7.3.9",
     "@types/vscode": "1.56.0",
     "@vscode/test-electron": "^1.6.2",
+    "cspell": "^5.12.3",
     "esbuild": "^0.13.12",
-    "eslint": "^7.5.0",
-    "eslint-config-stylelint": "^14.0.0",
+    "eslint": "^8.1.0",
+    "eslint-config-stylelint": "^15.0.0",
     "fast-glob": "^3.2.7",
     "fs-extra": "^10.0.0",
     "jest": "^27.3.1",
@@ -196,7 +197,7 @@
     "p-wait-for": "^3.1.0",
     "postcss": "^8.3.9",
     "postcss-sass": "^0.5.0",
-    "postcss-scss": "^4.0.1",
+    "postcss-scss": "^4.0.2",
     "prettier": "^2.3.0",
     "stylelint": "^14.0.1",
     "stylelint-processor-glamorous": "^0.3.0",
@@ -215,6 +216,7 @@
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
+    "lint:spelling": "cspell lint --no-progress",
     "lint:types": "tsc -b",
     "lint:unit-tests": "node scripts/enforce-unit-tests-per-file.js",
     "test": "npm run bundle && jest",

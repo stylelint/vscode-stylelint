@@ -7,6 +7,8 @@ The official [Visual Studio Code] extension for [Stylelint]
 
 ![Screenshot of Stylelint errors displayed in VS Code](media/screenshot.png)
 
+<!-- cspell:disable-next-line -->
+
 > **Notice:** 1.x of this extension has breaking changes from 0.x versions, including, but not limited to, changes to which documents are linted by default. See the [migration section](#migrating-from-vscode-stylelint-0xstylelint-13x) for more information.
 
 **Table of Contents**
@@ -14,6 +16,8 @@ The official [Visual Studio Code] extension for [Stylelint]
 - [Installation](#installation)
   - [Disable VS Code's Built-In Linters (optional)](#disable-vs-codes-built-in-linters-optional)
 - [Usage](#usage)
+   <!-- prettier-ignore -->
+   <!-- cspell:disable-next-line -->
 - [Migrating from vscode-stylelint 0.x/Stylelint 13.x](#migrating-from-vscode-stylelint-0xstylelint-13x)
   - [⚠️ Stylelint 13.x and Prior is No Longer Supported](#%EF%B8%8F-stylelint-13x-and-prior-is-no-longer-supported)
   - [⚠️ Stylelint is No Longer Bundled](#%EF%B8%8F-stylelint-is-no-longer-bundled)
@@ -81,6 +85,8 @@ The 0.x versions of this extension, which used Stylelint 13.x and prior, support
 In current versions of the extension, the extension only supports validating CSS and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
 
 1. Install the PostCSS syntax for the language you want to validate into your workspace, e.g. [postcss-scss].
+   <!-- prettier-ignore -->
+   <!-- cspell:disable-next-line -->
 1. Configure Stylelint to use the syntax by providing the module name in the [`customSyntax`] option using overrides (or use the [corresponding option](#stylelintcustomsyntax) in this extension's settings).
 
    Example Stylelint config:
@@ -95,6 +101,9 @@ In current versions of the extension, the extension only supports validating CSS
      ]
    };
    ```
+
+    <!-- prettier-ignore -->
+    <!-- cspell:disable-next-line -->
 
 1. Add the [language identifiers] for the documents you want to validate to the extension's workspace or user settings using the [`stylelint.validate`](#stylelintvalidate) option.
 
@@ -164,7 +173,7 @@ e.g.
 > Type: `boolean`  
 > Default: `false`
 
-Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `styleline-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
+Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
 
 ### `stylelint.reportNeedlessDisables`
 

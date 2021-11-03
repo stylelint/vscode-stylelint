@@ -108,7 +108,7 @@ type GlobalPathResolverCache = {
 };
 
 /**
- * Sisable directive comment types.
+ * Disable directive comment types.
  */
 type DisableType = 'stylelint-disable' | 'stylelint-disable-line' | 'stylelint-disable-next-line';
 
@@ -403,4 +403,6 @@ interface ExtensionEvents {
 /**
  * VS Code extension public API.
  */
-type ExtensionPublicApi = import('typed-emitter').default<ExtensionEvents>;
+type ExtensionPublicApi = import('typed-emitter').default<ExtensionEvents> & {
+	formattingReady: boolean;
+};

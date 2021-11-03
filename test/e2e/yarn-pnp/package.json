@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "stylelint": "link:./stylelint"
+  },
+  "packageManager": "yarn@3.0.2"
+}
