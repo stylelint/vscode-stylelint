@@ -2,15 +2,37 @@
 
 jest.mock('vscode-languageserver/node');
 jest.mock('../global-path-resolver');
+jest.mock('../find-package-root');
 jest.mock('path');
+jest.mock('fs/promises', () => jest.createMockFromModule('fs/promises'));
+jest.mock('module');
 
 const path = /** @type {tests.mocks.PathModule} */ (require('path'));
+
+const mockedFS = /** @type {jest.Mocked<typeof import('fs/promises')>} */ (require('fs/promises'));
+
+const mockedModule = /** @type {jest.Mocked<typeof import('module')>} */ (require('module'));
+
+const { findPackageRoot } = /** @type {jest.Mocked<typeof import('../find-package-root')>} */ (
+	require('../find-package-root')
+);
 
 /** @type {string | undefined} */
 let mockCWD = path.join('/fake', 'cwd');
 
+/** @type {string | undefined} */
+let mockPnPVersion = undefined;
+
 jest.mock('../../documents', () => ({
 	getWorkspaceFolder: jest.fn(async () => mockCWD),
+}));
+
+jest.mock('process', () => ({
+	versions: {
+		get pnp() {
+			return mockPnPVersion;
+		},
+	},
 }));
 
 const { StylelintResolver } = require('../stylelint-resolver');
@@ -41,6 +63,9 @@ const createMockTextDocument = (nonFileURI = false) =>
 const goodStylelintPath = path.join(__dirname, 'stylelint.js');
 const badStylelintPath = path.join(__dirname, 'bad-stylelint.js');
 
+const pnpPath = path.join(__dirname, '.pnp.cjs');
+const pnpJSPath = path.join(__dirname, '.pnp.js');
+
 /** @type {{[packageManager in PackageManager]: string}} */
 const mockGlobalPaths = {
 	yarn: path.join('/fake', 'yarn'),
@@ -54,6 +79,15 @@ jest.mock(
 	{ virtual: true },
 );
 jest.mock(require('path').join(__dirname, 'bad-stylelint.js'), () => ({}), { virtual: true });
+jest.mock(require('path').join(__dirname, '.pnp.cjs'), () => ({ setup: jest.fn() }), {
+	virtual: true,
+});
+jest.mock(require('path').join(__dirname, '.pnp.js'), () => ({ setup: jest.fn() }), {
+	virtual: true,
+});
+
+const mockedPnP = /** @type {jest.Mocked<{ setup: () => void }>} */ (require(pnpPath));
+const mockedJSPnP = /** @type {jest.Mocked<{ setup: () => void }>} */ (require(pnpJSPath));
 
 const { Files: mockedFiles } = /** @type {tests.mocks.VSCodeLanguageServerModule.Node} */ (
 	require('vscode-languageserver/node')
@@ -97,6 +131,10 @@ describe('StylelintResolver', () => {
 		jest.clearAllMocks();
 		path.__mockPlatform();
 		mockCWD = path.join('/fake', 'cwd');
+		mockPnPVersion = undefined;
+		mockedFS.stat.mockReset();
+		findPackageRoot.mockReset();
+		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 	});
 
 	test('should resolve valid custom Stylelint paths', async () => {
@@ -159,7 +197,7 @@ describe('StylelintResolver', () => {
 		);
 
 		expect(result).toBeUndefined();
-		expect(logger.warn).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledTimes(2);
 		expect(logger.error).toHaveBeenCalledTimes(1);
 		expect(connection.window.showErrorMessage).toHaveBeenCalledTimes(1);
 		expect(connection.tracer.log).not.toHaveBeenCalled();
@@ -269,9 +307,238 @@ describe('StylelintResolver', () => {
 		const result = await stylelintResolver.resolve({}, createMockTextDocument());
 
 		expect(result).toBeUndefined();
-		expect(logger.warn).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledTimes(2);
 		expect(connection.window.showErrorMessage).not.toHaveBeenCalled();
 		expect(connection.tracer.log).not.toHaveBeenCalled();
+	});
+
+	test('should resolve workspace Stylelint modules using PnP', async () => {
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValue(__dirname);
+		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
+		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', { path: pnpPath });
+		expect(result?.resolvedPath).toBe(__dirname);
+		expect(result?.stylelint?.lint({})).toBe('from pnp');
+	});
+
+	test('should resolve workspace Stylelint modules using a PnP loader named .pnp.js (Yarn 2)', async () => {
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValue(__dirname);
+		mockedFS.stat.mockImplementation(
+			async (filePath) =>
+				/** @type {any} */ (
+					filePath.toString().endsWith('.pnp.js') ? { isFile: () => true } : new Error('Not found!')
+				),
+		);
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedJSPnP.setup).toHaveBeenCalledTimes(1);
+		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', { path: pnpJSPath });
+		expect(result?.resolvedPath).toBe(__dirname);
+		expect(result?.stylelint?.lint({})).toBe('from pnp');
+	});
+
+	test('should not try to setup PnP if it is already setup', async () => {
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValue(__dirname);
+		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+		mockPnPVersion = '1.0.0';
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+
+		await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).toHaveBeenCalledTimes(0);
+	});
+
+	test("should resolve to undefined if PnP setup fails and Stylelint can't be resolved from node_modules", async () => {
+		const error = new Error('PnP setup failed');
+
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValue(__dirname);
+		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
+		mockedPnP.setup.mockImplementationOnce(() => {
+			throw error;
+		});
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+		Object.defineProperty(process.versions, 'pnp', { value: undefined });
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledWith('Could not setup PnP', { path: pnpPath, error });
+		expect(result).toBeUndefined();
+	});
+
+	test("should resolve to undefined if PnP loader isn't a file and Stylelint can't be resolved from node_modules", async () => {
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValue(__dirname);
+		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => false }));
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+		Object.defineProperty(process.versions, 'pnp', { value: undefined });
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).not.toHaveBeenCalled();
+		expect(logger.debug).toHaveBeenCalledWith('Could not find a PnP loader', { path: __dirname });
+		expect(result).toBeUndefined();
+	});
+
+	test("should resolve to undefined if PnP loader can't be found and Stylelint can't be resolved from node_modules", async () => {
+		const error = new Error('EACCES');
+
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValue(__dirname);
+		mockedFS.stat.mockRejectedValueOnce(error);
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+		Object.defineProperty(process.versions, 'pnp', { value: undefined });
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).not.toHaveBeenCalled();
+		expect(logger.debug).toHaveBeenCalledWith('Could not find a PnP loader', {
+			path: __dirname,
+		});
+		expect(result).toBeUndefined();
+	});
+
+	test("should resolve to undefined if Stylelint can't be required using PnP", async () => {
+		const error = new Error('Cannot find module');
+
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockResolvedValue(__dirname);
+		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
+		mockedPnP.setup.mockImplementationOnce(() => {
+			mockedModule.createRequire.mockImplementationOnce(
+				() =>
+					/** @type {any} */ (
+						Object.assign(
+							() => {
+								throw error;
+							},
+							{
+								resolve: () => {
+									throw error;
+								},
+							},
+						)
+					),
+			);
+		});
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledWith('Could not load Stylelint using PnP', {
+			path: __dirname,
+			error,
+		});
+		expect(result).toBeUndefined();
+	});
+
+	test("should resolve to undefined if Stylelint path can't be determined using PnP", async () => {
+		mockCWD = path.join('/fake', 'pnp');
+		findPackageRoot.mockImplementation(async (startPath) =>
+			startPath === path.join('/fake', 'cwd') ? __dirname : undefined,
+		);
+		mockedFS.stat.mockResolvedValueOnce(/** @type {any} */ ({ isFile: () => true }));
+		mockedModule.createRequire.mockImplementation(
+			() =>
+				/** @type {any} */ (
+					Object.assign(() => ({ lint: () => 'from pnp' }), { resolve: () => goodStylelintPath })
+				),
+		);
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument());
+
+		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
+		expect(logger.warn).toHaveBeenCalledWith('Failed to find the Stylelint package root', {
+			path: goodStylelintPath,
+		});
+		expect(result).toBeUndefined();
+	});
+
+	test('should resolve to undefined if an error is thrown during resolution', async () => {
+		findPackageRoot.mockRejectedValueOnce(new Error());
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument(true));
+
+		expect(result).toBeUndefined();
+	});
+
+	test("should resolve to undefined if cwd can't be determined and Stylelint can't be resolved from node_modules", async () => {
+		mockCWD = undefined;
+
+		const connection = createMockConnection();
+		const logger = createMockLogger();
+		const stylelintResolver = new StylelintResolver(connection, logger);
+		const result = await stylelintResolver.resolve({}, createMockTextDocument(true));
+
+		expect(result).toBeUndefined();
 	});
 
 	test('should work without a connection', async () => {
