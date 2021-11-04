@@ -4,16 +4,58 @@ const os = require('os');
 const path = require('path');
 const { runProcessFindLine } = require('../processes');
 
-/** @type {{[key in PackageManager]: (trace?: TracerFn, isWindows?: boolean) => Promise<string | undefined>}} */
-const resolvers = {
+/**
+ * Resolves the global `node_modules` path for different package managers.
+ */
+class GlobalPathResolver {
+	/**
+	 * The logger to use for tracing resolution.
+	 * @type {winston.Logger | undefined}
+	 */
+	#logger;
+
+	/**
+	 * The cache of resolved paths.
+	 * @type {{[key in PackageManager]: string | undefined}}
+	 */
+	#cache = {
+		yarn: undefined,
+		npm: undefined,
+		pnpm: undefined,
+	};
+
+	/**
+	 * Whether or not the current platform is Windows.
+	 * @type {boolean}
+	 */
+	#isWindows;
+
+	/**
+	 * The resolvers by package manager.
+	 * @type {{[key in PackageManager]: () => Promise<string | undefined>}}
+	 */
+	#resolvers = {
+		yarn: this.#yarn.bind(this),
+		npm: this.#npm.bind(this),
+		pnpm: this.#pnpm.bind(this),
+	};
+
+	/**
+	 * Instantiates a new global path resolver.
+	 * @param {winston.Logger} [logger] The logger to use for tracing resolution.
+	 */
+	constructor(logger) {
+		this.#logger = logger;
+		this.#isWindows = os.platform() === 'win32';
+	}
+
 	/**
 	 * Resolves the global `node_modules` path for Yarn.
 	 *
 	 * Note: Only Yarn 1.x is supported. Yarn 2.x and higher have removed
 	 * support for globally installed packages.
 	 */
-	async yarn(trace, isWindows) {
-		const tryTrace = trace ?? (() => undefined);
+	async #yarn() {
 		/** @param {string} line */
 		const tryParseLog = (line) => {
 			/** @type {{type: any, data: any}} */
@@ -31,7 +73,7 @@ const resolvers = {
 		const yarnGlobalPath = await runProcessFindLine(
 			'yarn',
 			['global', 'dir', '--json'],
-			isWindows ? { shell: true } : undefined,
+			this.#isWindows ? { shell: true } : undefined,
 			(line) => {
 				const log = tryParseLog(line);
 
@@ -41,30 +83,29 @@ const resolvers = {
 
 				const globalPath = path.join(log.data, 'node_modules');
 
-				tryTrace(`Yarn returned global path: "${globalPath}"`);
+				this.#logger?.debug('Yarn returned global node_modules path.', { path: globalPath });
 
 				return globalPath;
 			},
 		);
 
 		if (!yarnGlobalPath) {
-			tryTrace('"yarn global dir --json" did not return a path.');
+			this.#logger?.warn('"yarn global dir --json" did not return a path.');
 
 			return undefined;
 		}
 
 		return yarnGlobalPath;
-	},
+	}
 
 	/**
 	 * Resolves the global `node_modules` path for npm.
 	 */
-	async npm(trace, isWindows) {
-		const tryTrace = trace ?? (() => undefined);
+	async #npm() {
 		const npmGlobalPath = await runProcessFindLine(
 			'npm',
 			['config', 'get', 'prefix'],
-			isWindows ? { shell: true } : undefined,
+			this.#isWindows ? { shell: true } : undefined,
 			(line) => {
 				const trimmed = line.trim();
 
@@ -72,35 +113,33 @@ const resolvers = {
 					return undefined;
 				}
 
-				const globalPath =
-					os.platform() === 'win32'
-						? path.join(trimmed, 'node_modules')
-						: path.join(trimmed, 'lib/node_modules');
+				const globalPath = this.#isWindows
+					? path.join(trimmed, 'node_modules')
+					: path.join(trimmed, 'lib/node_modules');
 
-				tryTrace(`npm returned global path: "${globalPath}"`);
+				this.#logger?.debug('npm returned global node_modules path.', { path: globalPath });
 
 				return globalPath;
 			},
 		);
 
 		if (!npmGlobalPath) {
-			tryTrace('"npm config get prefix" did not return a path.');
+			this.#logger?.warn('"npm config get prefix" did not return a path.');
 
 			return undefined;
 		}
 
 		return npmGlobalPath;
-	},
+	}
 
 	/**
 	 * Resolves the global `node_modules` path for pnpm.
 	 */
-	async pnpm(trace, isWindows) {
-		const tryTrace = trace ?? (() => undefined);
+	async #pnpm() {
 		const pnpmGlobalPath = await runProcessFindLine(
 			'pnpm',
 			['root', '-g'],
-			isWindows ? { shell: true } : undefined,
+			this.#isWindows ? { shell: true } : undefined,
 			(line) => {
 				const trimmed = line.trim();
 
@@ -108,76 +147,73 @@ const resolvers = {
 					return undefined;
 				}
 
-				tryTrace(`pnpm returned global path: "${trimmed}"`);
+				this.#logger?.debug('pnpm returned global node_modules path.', { path: trimmed });
 
 				return trimmed;
 			},
 		);
 
 		if (!pnpmGlobalPath) {
-			tryTrace('"pnpm root -g" did not return a path.');
+			this.#logger?.warn('"pnpm root -g" did not return a path.');
 
 			return undefined;
 		}
 
 		return pnpmGlobalPath;
-	},
-};
+	}
 
-/**
- * Returns an object with a `resolve` method that takes as its first parameter
- * a supported package manager (`npm`, `yarn`, or `pnpm`) and as its second an
- * optional tracer function that will be used to trace the resolution process.
- *
- * On a successful resolution, the method returns a promise that resolves to the
- * package manager's global `node_modules` path. Paths are cached in the
- * resolver on the first successful resolution.
- *
- * When a path cannot be resolved, the promise resolves to `undefined`.
- *
- * @example
- * ```js
- * const resolver = getGlobalPathResolver();
- * const yarnGlobalPath = await resolver.resolve(
- *   'yarn',
- *   message => connection && connection.tracer.log(message)
- * );
- * ```
- * @returns {GlobalPathResolver}
- */
-function getGlobalPathResolver() {
-	/** @type {GlobalPathResolverCache} */
-	const cache = {};
+	/**
+	 * Attempts to resolve the global `node_modules` path for the given package
+	 * manager.
+	 *
+	 * On a successful resolution, the method returns a promise that resolves to the
+	 * package manager's global `node_modules` path. Paths are cached in the
+	 * resolver on the first successful resolution.
+	 *
+	 * When a path cannot be resolved, the promise resolves to `undefined`.
+	 *
+	 * @example
+	 * ```js
+	 * const resolver = getGlobalPathResolver();
+	 * const yarnGlobalPath = await resolver.resolve(
+	 *   'yarn',
+	 *   message => connection && connection.tracer.log(message)
+	 * );
+	 * ```
+	 * @param {PackageManager} packageManager The package manager to resolve the path for.
+	 * @returns {Promise<string | undefined>}
+	 */
+	async resolve(packageManager) {
+		const cached = this.#cache[packageManager];
 
-	return {
-		async resolve(packageManager, trace) {
-			const cached = cache[packageManager];
+		if (cached) {
+			return cached;
+		}
 
-			if (cached) {
-				return cached;
-			}
+		const resolver = this.#resolvers[packageManager];
 
-			const tryTrace = trace ?? (() => undefined);
-			const resolver = resolvers[packageManager];
+		if (!resolver) {
+			this.#logger?.warn('Unsupported package manager.', { packageManager });
 
-			if (!resolver) {
-				tryTrace(`Package manager "${packageManager}" is not supported.`);
+			return undefined;
+		}
 
-				return undefined;
-			}
-
-			const isWindows = os.platform() === 'win32';
-			const globalPath = await resolver(trace, isWindows);
+		try {
+			const globalPath = await resolver();
 
 			if (globalPath) {
-				cache[packageManager] = globalPath;
+				this.#cache[packageManager] = globalPath;
 			}
 
 			return globalPath;
-		},
-	};
+		} catch (error) {
+			this.#logger?.warn('Failed to resolve global node_modules path.', { packageManager, error });
+
+			return undefined;
+		}
+	}
 }
 
 module.exports = {
-	getGlobalPathResolver,
+	GlobalPathResolver,
 };

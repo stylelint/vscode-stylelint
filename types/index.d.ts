@@ -78,36 +78,6 @@ type ConfigurationError = Error & { code: 78 };
 type TracerFn = (message: string, verbose?: string) => void;
 
 /**
- * Global `node_modules` path resolver.
- */
-type GlobalPathResolver = {
-	/**
-	 * Resolves the global `node_modules` path for the given package manager.
-	 * When a path cannot be resolved, returns `undefined`. Traces resolution
-	 * using the given tracer if one is provided.
-	 *
-	 * Paths are cached in the resolver on the first successful resolution.
-	 *
-	 * @example
-	 * ```js
-	 * const pnpmGlobalPath = await resolver.resolve(
-	 *   'pnpm',
-	 *   message => connection && connection.tracer.log(message)
-	 * );
-	 * ```
-	 * @param {trace}
-	 */
-	resolve: (packageManager: PackageManager, trace?: TracerFn) => Promise<string | undefined>;
-};
-
-/**
- * The global `node_modules` path resolver cache.
- */
-type GlobalPathResolverCache = {
-	[packageManager: string]: string | undefined;
-};
-
-/**
  * Disable directive comment types.
  */
 type DisableType = 'stylelint-disable' | 'stylelint-disable-line' | 'stylelint-disable-next-line';

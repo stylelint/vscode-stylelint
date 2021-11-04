@@ -7,7 +7,16 @@ jest.mock('../../processes');
 const mockedOS = /** @type {tests.mocks.OSModule} */ (require('os'));
 const mockedPath = /** @type {tests.mocks.PathModule} */ (require('path'));
 const mockedProcesses = /** @type {tests.mocks.Processes} */ (require('../../processes'));
-const { getGlobalPathResolver } = require('../global-path-resolver');
+const { GlobalPathResolver } = require('../global-path-resolver');
+
+const mockLogger = /** @type {jest.Mocked<winston.Logger>} */ (
+	/** @type {any} */ ({
+		debug: jest.fn(),
+		error: jest.fn(),
+		info: jest.fn(),
+		warn: jest.fn(),
+	})
+);
 
 /**
  * @param {'posix' | 'win32'} platform
@@ -40,21 +49,21 @@ describe('Global Package Manager Path Resolver', () => {
 		});
 
 		it('should resolve the yarn global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('yarn');
 
 			expect(globalPath).toBe('/path/to/yarn/global/dir/node_modules');
 		});
 
 		it('should resolve the npm global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('npm');
 
 			expect(globalPath).toBe('/path/to/npm/global/dir/lib/node_modules');
 		});
 
 		it('should resolve the pnpm global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('pnpm');
 
 			expect(globalPath).toBe('/path/to/pnpm/global/dir');
@@ -83,21 +92,21 @@ describe('Global Package Manager Path Resolver', () => {
 		});
 
 		it('should resolve the yarn global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('yarn');
 
 			expect(globalPath).toBe('C:\\path\\to\\yarn\\global\\dir\\node_modules');
 		});
 
 		it('should resolve the npm global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('npm');
 
 			expect(globalPath).toBe('C:\\path\\to\\npm\\global\\dir\\node_modules');
 		});
 
 		it('should resolve the pnpm global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('pnpm');
 
 			expect(globalPath).toBe('C:\\path\\to\\pnpm\\global\\dir');
@@ -130,7 +139,7 @@ describe('Global Package Manager Path Resolver', () => {
 		});
 
 		it('should cache the yarn global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('yarn');
 			const globalPath2 = await resolver.resolve('yarn');
 
@@ -139,7 +148,7 @@ describe('Global Package Manager Path Resolver', () => {
 		});
 
 		it('should cache the npm global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('npm');
 			const globalPath2 = await resolver.resolve('npm');
 
@@ -148,7 +157,7 @@ describe('Global Package Manager Path Resolver', () => {
 		});
 
 		it('should cache the pnpm global package directory', async () => {
-			const resolver = getGlobalPathResolver();
+			const resolver = new GlobalPathResolver();
 			const globalPath = await resolver.resolve('pnpm');
 			const globalPath2 = await resolver.resolve('pnpm');
 
@@ -165,22 +174,50 @@ describe('Global Package Manager Path Resolver', () => {
 				mockedProcesses.__resetMockedProcesses();
 			});
 
-			it('should throw an error if yarn cannot be found', async () => {
-				const resolver = getGlobalPathResolver();
-
-				await expect(resolver.resolve('yarn')).rejects.toThrowErrorMatchingSnapshot();
+			beforeEach(() => {
+				jest.clearAllMocks();
 			});
 
-			it('should throw an error if npm cannot be found', async () => {
-				const resolver = getGlobalPathResolver();
+			it('should resolve to undefined if yarn cannot be found', async () => {
+				const resolver = new GlobalPathResolver(mockLogger);
+				const globalPath = await resolver.resolve('yarn');
 
-				await expect(resolver.resolve('npm')).rejects.toThrowErrorMatchingSnapshot();
+				expect(globalPath).toBeUndefined();
+				expect(mockLogger.warn).toHaveBeenLastCalledWith(
+					'Failed to resolve global node_modules path.',
+					{
+						packageManager: 'yarn',
+						error: expect.any(Error),
+					},
+				);
 			});
 
-			it('should throw an error if pnpm cannot be found', async () => {
-				const resolver = getGlobalPathResolver();
+			it('should resolve to undefined if npm cannot be found', async () => {
+				const resolver = new GlobalPathResolver(mockLogger);
+				const globalPath = await resolver.resolve('npm');
 
-				await expect(resolver.resolve('pnpm')).rejects.toThrowErrorMatchingSnapshot();
+				expect(globalPath).toBeUndefined();
+				expect(mockLogger.warn).toHaveBeenLastCalledWith(
+					'Failed to resolve global node_modules path.',
+					{
+						packageManager: 'npm',
+						error: expect.any(Error),
+					},
+				);
+			});
+
+			it('should resolve to undefined if pnpm cannot be found', async () => {
+				const resolver = new GlobalPathResolver(mockLogger);
+				const globalPath = await resolver.resolve('pnpm');
+
+				expect(globalPath).toBeUndefined();
+				expect(mockLogger.warn).toHaveBeenLastCalledWith(
+					'Failed to resolve global node_modules path.',
+					{
+						packageManager: 'pnpm',
+						error: expect.any(Error),
+					},
+				);
 			});
 		});
 
@@ -197,30 +234,30 @@ describe('Global Package Manager Path Resolver', () => {
 
 			it('should resolve to undefined for yarn', async () => {
 				mockedProcesses.__mockProcess('yarn', ['global', 'dir', '--json'], ['{bad json']);
-				let globalPath = await getGlobalPathResolver().resolve('yarn');
+				let globalPath = await new GlobalPathResolver().resolve('yarn');
 
 				expect(globalPath).toBeUndefined();
 
 				mockedProcesses.__mockProcess('yarn', ['global', 'dir', '--json'], ['{"type":"not log"}']);
-				globalPath = await getGlobalPathResolver().resolve('yarn');
+				globalPath = await new GlobalPathResolver().resolve('yarn');
 
 				expect(globalPath).toBeUndefined();
 
 				mockedProcesses.__mockProcess('yarn', ['global', 'dir', '--json'], ['']);
-				globalPath = await getGlobalPathResolver().resolve('yarn');
+				globalPath = await new GlobalPathResolver().resolve('yarn');
 
 				expect(globalPath).toBeUndefined();
 			});
 
 			it('should resolve to undefined for npm', async () => {
-				const resolver = getGlobalPathResolver();
+				const resolver = new GlobalPathResolver();
 				const globalPath = await resolver.resolve('npm');
 
 				expect(globalPath).toBeUndefined();
 			});
 
 			it('should resolve to undefined for pnpm', async () => {
-				const resolver = getGlobalPathResolver();
+				const resolver = new GlobalPathResolver();
 				const globalPath = await resolver.resolve('pnpm');
 
 				expect(globalPath).toBeUndefined();
@@ -250,28 +287,52 @@ describe('Global Package Manager Path Resolver', () => {
 				mockedProcesses.__mockProcess('pnpm', ['root', '-g'], ['/path/to/pnpm/global/dir'], 1);
 			});
 
-			it('should throw an error if yarn returns a non-zero exit code', async () => {
-				const resolver = getGlobalPathResolver();
+			it('should resolve to undefined if yarn returns a non-zero exit code', async () => {
+				const resolver = new GlobalPathResolver(mockLogger);
+				const globalPath = await resolver.resolve('yarn');
 
-				await expect(resolver.resolve('yarn')).rejects.toThrowErrorMatchingSnapshot();
+				expect(globalPath).toBeUndefined();
+				expect(mockLogger.warn).toHaveBeenLastCalledWith(
+					'Failed to resolve global node_modules path.',
+					{
+						packageManager: 'yarn',
+						error: expect.any(Error),
+					},
+				);
 			});
 
-			it('should throw an error if npm returns a non-zero exit code', async () => {
-				const resolver = getGlobalPathResolver();
+			it('should resolve to undefined if npm returns a non-zero exit code', async () => {
+				const resolver = new GlobalPathResolver(mockLogger);
+				const globalPath = await resolver.resolve('npm');
 
-				await expect(resolver.resolve('npm')).rejects.toThrowErrorMatchingSnapshot();
+				expect(globalPath).toBeUndefined();
+				expect(mockLogger.warn).toHaveBeenLastCalledWith(
+					'Failed to resolve global node_modules path.',
+					{
+						packageManager: 'npm',
+						error: expect.any(Error),
+					},
+				);
 			});
 
-			it('should throw an error if pnpm returns a non-zero exit code', async () => {
-				const resolver = getGlobalPathResolver();
+			it('should resolve to undefined if pnpm returns a non-zero exit code', async () => {
+				const resolver = new GlobalPathResolver(mockLogger);
+				const globalPath = await resolver.resolve('pnpm');
 
-				await expect(resolver.resolve('pnpm')).rejects.toThrowErrorMatchingSnapshot();
+				expect(globalPath).toBeUndefined();
+				expect(mockLogger.warn).toHaveBeenLastCalledWith(
+					'Failed to resolve global node_modules path.',
+					{
+						packageManager: 'pnpm',
+						error: expect.any(Error),
+					},
+				);
 			});
 		});
 
 		describe('Unsupported package managers', () => {
 			it('should resolve to undefined when passed an unsupported package manager name', async () => {
-				const globalPath = await getGlobalPathResolver().resolve(
+				const globalPath = await new GlobalPathResolver().resolve(
 					/** @type {any} */ ('unsupported'),
 				);
 

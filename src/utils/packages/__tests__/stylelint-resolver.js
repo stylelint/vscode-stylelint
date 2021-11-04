@@ -118,13 +118,20 @@ const mockLocalFileResolution = (stylelintPath) => {
 	});
 };
 
-const mockedGlobalPathResolver = /** @type {tests.mocks.GlobalPathResolver} */ (
-	require('../global-path-resolver')
-);
+const mockedGlobalPathResolver =
+	/** @type {jest.Mocked<typeof import('../global-path-resolver')>} */ (
+		require('../global-path-resolver')
+	);
 
-mockedGlobalPathResolver.__mockPath('yarn', mockGlobalPaths.yarn);
-mockedGlobalPathResolver.__mockPath('npm', mockGlobalPaths.npm);
-mockedGlobalPathResolver.__mockPath('pnpm', mockGlobalPaths.pnpm);
+mockedGlobalPathResolver.GlobalPathResolver.mockImplementation(
+	/** @type {any} */ (
+		() => ({
+			resolve: jest.fn(
+				async (/** @type {PackageManager} */ packageManager) => mockGlobalPaths[packageManager],
+			),
+		})
+	),
+);
 
 describe('StylelintResolver', () => {
 	beforeEach(() => {
