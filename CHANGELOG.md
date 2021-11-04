@@ -8,7 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Added
 
-- If Stylelint is installed in a workspace using [Yarn](https://yarnpkg.com/) with [Plug-n-Play](https://yarnpkg.com/features/pnp), it can now be resolved without the need for Yarn's [editor SDKs](https://yarnpkg.com/getting-started/editor-sdks). ([#273](https://github.com/stylelint/vscode-stylelint/issues/273)).
+- If Stylelint is installed in a workspace using [Yarn](https://yarnpkg.com/) with [Plug-n-Play](https://yarnpkg.com/features/pnp), it can now be resolved without the need for Yarn's [editor SDKs](https://yarnpkg.com/getting-started/editor-sdks). ([#273](https://github.com/stylelint/vscode-stylelint/pull/273)).
+- Errors encountered during Stylelint resolution from `node_modules` are now reported in the output window. ([#302](https://github.com/stylelint/vscode-stylelint/pull/302)).
+
+### Changed
+
+- The JSON schema URL now uses HTTPS. ([1a225ca](https://github.com/stylelint/vscode-stylelint/commit/1a225ca)).
+
+### Fixed
+
+- Logs with errors no longer are missing information such as `error.message` or `error.stack` ([#310](https://github.com/stylelint/vscode-stylelint/pull/310)).
+- Stylelint resolution no longer fails when running the configured package manager results in an error ([#314](https://github.com/stylelint/vscode-stylelint/pull/314)).
 
 ## [1.0.3](https://github.com/stylelint/vscode-stylelint/compare/v1.0.2...v1.0.3) (2021-10-27)
 
