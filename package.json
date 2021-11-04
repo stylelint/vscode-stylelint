@@ -162,6 +162,7 @@
     "fast-diff": "^1.2.0",
     "path-is-inside": "^1.0.2",
     "semver": "^7.3.5",
+    "serialize-error": "^8.1.0",
     "triple-beam": "^1.3.0",
     "vscode-languageclient": "^7.0.0",
     "vscode-languageserver": "^7.0.0",
