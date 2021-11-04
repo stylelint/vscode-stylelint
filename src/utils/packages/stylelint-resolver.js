@@ -6,7 +6,7 @@ const { Files } = require('vscode-languageserver/node');
 const { URI } = require('vscode-uri');
 const { getWorkspaceFolder } = require('../documents');
 const { findPackageRoot } = require('./find-package-root');
-const { getGlobalPathResolver } = require('./global-path-resolver');
+const { GlobalPathResolver } = require('./global-path-resolver');
 const { getFirstResolvedValue, lazyCallAsync } = require('../functions');
 const { createRequire } = require('module');
 const process = require('process');
@@ -41,7 +41,7 @@ class StylelintResolver {
 	constructor(connection, logger) {
 		this.#connection = connection;
 		this.#logger = logger;
-		this.#globalPathResolver = getGlobalPathResolver();
+		this.#globalPathResolver = new GlobalPathResolver(logger);
 	}
 
 	/**
@@ -255,16 +255,10 @@ class StylelintResolver {
 	async #resolveFromModules(textDocument, getWorkspaceFolderFn, packageManager) {
 		const connection = this.#connection;
 
-		/** @type {TracerFn} */
-		const trace = (message, verbose) => {
-			this.#logger?.debug(message, { verbose });
-			connection?.tracer.log(message, verbose);
-		};
-
 		try {
 			/** @type {string | undefined} */
 			const globalModulesPath = packageManager
-				? await this.#globalPathResolver.resolve(packageManager, trace)
+				? await this.#globalPathResolver.resolve(packageManager)
 				: undefined;
 
 			const documentURI = URI.parse(textDocument.uri);
@@ -276,7 +270,11 @@ class StylelintResolver {
 
 			const result = await getFirstResolvedValue(
 				async () => await this.#requirePnP(cwd),
-				async () => await this.#requireNode(cwd, globalModulesPath, trace),
+				async () =>
+					await this.#requireNode(cwd, globalModulesPath, (message, verbose) => {
+						this.#logger?.debug(message.replace(/\n/g, '  '), { verbose });
+						connection?.tracer.log(message, verbose);
+					}),
 			);
 
 			if (!result) {
@@ -293,9 +291,7 @@ class StylelintResolver {
 		} catch (error) {
 			this.#logger?.debug(
 				'Failed to resolve Stylelint from workspace or globally-installed packages.',
-				{
-					error,
-				},
+				{ error },
 			);
 		}
 
