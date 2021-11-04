@@ -100,7 +100,7 @@ class StylelintResolver {
 		const root = await findPackageRoot(cwd, 'yarn.lock');
 
 		if (!root) {
-			this.#logger?.debug('Could not find the package root', { cwd });
+			this.#logger?.debug('Could not find a Yarn lockfile', { cwd });
 
 			return undefined;
 		}
