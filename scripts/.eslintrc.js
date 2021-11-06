@@ -6,6 +6,7 @@ const config = {
 		'no-console': 'off',
 		'no-process-exit': 'off',
 		'node/no-unpublished-require': 'off',
+		'node/no-unpublished-import': 'off',
 	},
 };
 

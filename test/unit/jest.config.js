@@ -4,6 +4,8 @@
 const config = {
 	rootDir: '../..',
 	testMatch: ['<rootDir>/src/**/__tests__/**/*.[jt]s?(x)'],
+	preset: 'ts-jest',
+	globals: { 'ts-jest': { tsconfig: '<rootDir>/tsconfig.test.json' } },
 	verbose: true,
 	modulePathIgnorePatterns: ['<rootDir>/.vscode-test', '<rootDir>/test/e2e/yarn-[^/]+/stylelint'],
 	collectCoverage: true,
@@ -15,6 +17,7 @@ const config = {
 			statements: 100,
 		},
 	},
+	maxWorkers: 2,
 };
 
 module.exports = config;

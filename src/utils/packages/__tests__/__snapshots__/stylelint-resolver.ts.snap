@@ -1,0 +1,5 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`StylelintResolver should throw on invalid custom Stylelint paths 1`] = `"Cannot find module 'cwd/does-not-exist' from 'src/utils/packages/stylelint-resolver.ts'"`;
+
+exports[`StylelintResolver should work without a connection 1`] = `"Cannot find module './does-not-exist' from 'src/utils/packages/stylelint-resolver.ts'"`;
