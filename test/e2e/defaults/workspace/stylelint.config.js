@@ -1,6 +1,6 @@
 'use strict';
 
-/** @type {stylelint.Config} */
+/** @type {import('stylelint').Config} */
 const config = {
 	overrides: [
 		{
