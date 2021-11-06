@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [1.1.0](https://github.com/stylelint/vscode-stylelint/compare/v1.0.3...v1.1.0) (2021-11-06)
+
 ### Added
 
 - If Stylelint is installed in a workspace using [Yarn](https://yarnpkg.com/) with [Plug-n-Play](https://yarnpkg.com/features/pnp), it can now be resolved without the need for Yarn's [editor SDKs](https://yarnpkg.com/getting-started/editor-sdks). ([#273](https://github.com/stylelint/vscode-stylelint/pull/273)).
