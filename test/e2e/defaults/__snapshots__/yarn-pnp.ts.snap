@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Local Stylelint resolution should resolve to the locally installed copy of Stylelint 1`] = `
+exports[`PnP Stylelint resolution should resolve Stylelint using PnP 1`] = `
 Array [
   Object {
     "code": "fake",
-    "message": "Fake result from resolve-local",
+    "message": "Fake result from yarn-pnp",
     "range": Object {
       "end": Object {
         "character": 0,

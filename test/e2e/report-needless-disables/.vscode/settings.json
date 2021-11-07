@@ -1,6 +1,0 @@
-{
-	"stylelint.reportNeedlessDisables": true,
-	"editor.codeActionsOnSave": {
-		"source.fixAll.stylelint": false
-	}
-}

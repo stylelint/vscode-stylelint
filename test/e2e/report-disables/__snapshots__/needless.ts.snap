@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vscode-stylelint with "stylelint.reportNeedlessDisables" should work if "stylelint.reportNeedlessDisables" is enabled 1`] = `
+Array [
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 6,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 6,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 16,
+        "line": 14,
+      },
+      "start": Object {
+        "character": 16,
+        "line": 14,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"indentation\\"",
+    "range": Object {
+      "end": Object {
+        "character": 0,
+        "line": 17,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 17,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+  Object {
+    "code": "--report-needless-disables",
+    "message": "Needless disable for \\"unknown\\"",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+]
+`;

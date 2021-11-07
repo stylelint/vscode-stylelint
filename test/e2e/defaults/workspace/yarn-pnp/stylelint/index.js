@@ -10,7 +10,7 @@ module.exports = {
 							line: 1,
 							column: 1,
 							rule: 'fake',
-							text: 'Fake result from resolve-local',
+							text: 'Fake result from yarn-pnp',
 							severity: 'error',
 						},
 					],

@@ -7,7 +7,11 @@ const config = {
 	preset: 'ts-jest',
 	globals: { 'ts-jest': { tsconfig: '<rootDir>/tsconfig.test.json' } },
 	verbose: true,
-	modulePathIgnorePatterns: ['<rootDir>/.vscode-test', '<rootDir>/test/e2e/yarn-[^/]+/stylelint'],
+	modulePathIgnorePatterns: [
+		'<rootDir>/.vscode-test',
+		'<rootDir>/test/e2e/defaults/workspace/yarn-[^/]+/stylelint',
+		'<rootDir>/test/e2e/defaults/workspace/local-stylelint/node_modules',
+	],
 	collectCoverage: true,
 	coverageThreshold: {
 		global: {
