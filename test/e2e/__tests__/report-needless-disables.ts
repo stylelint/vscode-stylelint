@@ -1,15 +1,14 @@
 import path from 'path';
+
 import pWaitFor from 'p-wait-for';
 import { workspace, window } from 'vscode';
 
 import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-const workspaceDir = path.join(__dirname, 'workspace');
-
-describe('vscode-stylelint with "stylelint.configFile"', () => {
-	it('should work even if "stylelint.configFile" is defined', async () => {
+describe('vscode-stylelint with "stylelint.reportNeedlessDisables"', () => {
+	it('should work if "stylelint.reportNeedlessDisables" is enabled', async () => {
 		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'config-file.css'),
+			path.resolve(workspaceDir, 'report-disables/needless.css'),
 		);
 
 		await window.showTextDocument(cssDocument);
@@ -18,6 +17,10 @@ describe('vscode-stylelint with "stylelint.configFile"', () => {
 
 		const diagnostics = getStylelintDiagnostics(cssDocument.uri);
 
-		expect(diagnostics.map(normalizeDiagnostic)).toMatchSnapshot();
+		expect(
+			diagnostics
+				.map(normalizeDiagnostic)
+				.filter((diagnostic) => diagnostic?.code === '--report-needless-disables'),
+		).toMatchSnapshot();
 	});
 });

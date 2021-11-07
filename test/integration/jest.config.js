@@ -8,8 +8,8 @@ const config = {
 	verbose: true,
 	modulePathIgnorePatterns: [
 		'<rootDir>/../../.vscode-test',
-		'<rootDir>/../e2e/defaults/workspace/yarn-[^/]+/stylelint',
-		'<rootDir>/../e2e/defaults/workspace/local-stylelint/node_modules',
+		'<rootDir>/../e2e/workspace/defaults/yarn-[^/]+/stylelint',
+		'<rootDir>/../e2e/workspace/defaults/local-stylelint/node_modules',
 	],
 };
 

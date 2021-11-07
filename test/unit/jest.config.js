@@ -9,8 +9,8 @@ const config = {
 	verbose: true,
 	modulePathIgnorePatterns: [
 		'<rootDir>/.vscode-test',
-		'<rootDir>/test/e2e/defaults/workspace/yarn-[^/]+/stylelint',
-		'<rootDir>/test/e2e/defaults/workspace/local-stylelint/node_modules',
+		'<rootDir>/test/e2e/workspace/defaults/yarn-[^/]+/stylelint',
+		'<rootDir>/test/e2e/workspace/defaults/local-stylelint/node_modules',
 	],
 	collectCoverage: true,
 	coverageThreshold: {

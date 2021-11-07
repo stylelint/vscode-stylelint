@@ -9,7 +9,7 @@
 			"runtimeExecutable": "${execPath}",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceRoot}",
-				"${workspaceRoot}/fixture.css",
+				"${workspaceRoot}/test/e2e/workspace/workspace.code-workspace",
 				"--trace-warnings"
 			],
 			"env": { "NODE_ENV": "development" },

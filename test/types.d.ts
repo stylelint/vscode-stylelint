@@ -11,6 +11,11 @@ import type { TracerFn } from '../src/utils/packages';
 
 declare global {
 	/**
+	 * The test workspace directory.
+	 */
+	const workspaceDir: string;
+
+	/**
 	 * Types used in tests.
 	 */
 	namespace tests {

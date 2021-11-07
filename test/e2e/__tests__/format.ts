@@ -2,8 +2,6 @@ import path from 'path';
 import pWaitFor from 'p-wait-for';
 import { workspace, commands, window, extensions } from 'vscode';
 
-const workspaceDir = path.join(__dirname, 'workspace');
-
 describe('Document formatting', () => {
 	beforeAll(async () => {
 		const extension = extensions.getExtension('stylelint.vscode-stylelint');
@@ -18,7 +16,9 @@ describe('Document formatting', () => {
 	});
 
 	it('should format document using formatting options', async () => {
-		const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'format.css'));
+		const cssDocument = await workspace.openTextDocument(
+			path.resolve(workspaceDir, 'defaults/format.css'),
+		);
 
 		const editor = await window.showTextDocument(cssDocument);
 

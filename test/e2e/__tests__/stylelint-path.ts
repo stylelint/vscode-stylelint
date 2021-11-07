@@ -5,15 +5,14 @@ import { workspace, window } from 'vscode';
 
 import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-const workspaceDir = path.join(__dirname, 'workspace/local-stylelint');
-
-describe('Local Stylelint resolution', () => {
-	it('should resolve to the locally installed copy of Stylelint', async () => {
-		const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'test.css'));
+describe('vscode-stylelint with "stylelint.stylelintPath"', () => {
+	it('should work even if "stylelint.stylelintPath" is defined', async () => {
+		const cssDocument = await workspace.openTextDocument(
+			path.resolve(workspaceDir, 'stylelint-path/test.css'),
+		);
 
 		await window.showTextDocument(cssDocument);
 
-		// Wait for diagnostics result.
 		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
 
 		// Check the result.

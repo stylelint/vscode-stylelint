@@ -5,16 +5,18 @@ import { workspace, window } from 'vscode';
 
 import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-const workspaceDir = path.join(__dirname, 'workspace/yarn-2-pnp');
-
-describe('Yarn 2.x PnP Stylelint resolution', () => {
-	it('should resolve Stylelint using PnP', async () => {
-		const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'test.css'));
+describe('Local Stylelint resolution', () => {
+	it('should resolve to the locally installed copy of Stylelint', async () => {
+		const cssDocument = await workspace.openTextDocument(
+			path.resolve(workspaceDir, 'defaults/local-stylelint/test.css'),
+		);
 
 		await window.showTextDocument(cssDocument);
 
+		// Wait for diagnostics result.
 		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
 
+		// Check the result.
 		const diagnostics = getStylelintDiagnostics(cssDocument.uri);
 
 		expect(diagnostics.map(normalizeDiagnostic)).toMatchSnapshot();
