@@ -2,7 +2,11 @@
 
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
-	testMatch: ['<rootDir>/*/index.[jt]s?(x)', '<rootDir>/defaults/*.[jt]s?(x)'],
+	testMatch: [
+		'<rootDir>/*/index.[jt]s?(x)',
+		'<rootDir>/defaults/*.[jt]s?(x)',
+		'<rootDir>/report-disables/*.[jt]s?(x)',
+	],
 	preset: 'ts-jest',
 	globals: { 'ts-jest': { tsconfig: '<rootDir>/../../tsconfig.test.json' } },
 	testPathIgnorePatterns: ['.*jest-runner-vscode.config.js'],

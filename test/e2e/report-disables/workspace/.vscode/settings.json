@@ -1,5 +1,6 @@
 {
 	"stylelint.reportInvalidScopeDisables": true,
+	"stylelint.reportNeedlessDisables": true,
 	"editor.codeActionsOnSave": {
 		"source.fixAll.stylelint": false
 	}
