@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`vscode-stylelint with "stylelint.configFile" should work even if "stylelint.configFile" is defined 1`] = `
+Array [
+  Object {
+    "code": "block-no-empty",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/block-no-empty",
+    },
+    "message": "Unexpected empty block (block-no-empty)",
+    "range": Object {
+      "end": Object {
+        "character": 2,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+]
+`;

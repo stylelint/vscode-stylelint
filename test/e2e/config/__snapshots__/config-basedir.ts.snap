@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.configFile" should work even if "stylelint.configFile" is defined 1`] = `
+exports[`vscode-stylelint with "stylelint.configBasedir" should work even if "stylelint.configBasedir" is defined 1`] = `
 Array [
   Object {
     "code": "color-hex-case",
@@ -11,11 +11,11 @@ Array [
     "range": Object {
       "end": Object {
         "character": 9,
-        "line": 2,
+        "line": 1,
       },
       "start": Object {
         "character": 9,
-        "line": 2,
+        "line": 1,
       },
     },
     "severity": 1,
@@ -26,15 +26,15 @@ Array [
     "codeDescription": Object {
       "href": "https://stylelint.io/user-guide/rules/indentation",
     },
-    "message": "Expected indentation of 4 spaces (indentation)",
+    "message": "Expected indentation of 8 spaces (indentation)",
     "range": Object {
       "end": Object {
         "character": 2,
-        "line": 2,
+        "line": 1,
       },
       "start": Object {
         "character": 2,
-        "line": 2,
+        "line": 1,
       },
     },
     "severity": 1,

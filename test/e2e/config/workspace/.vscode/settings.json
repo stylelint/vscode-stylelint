@@ -1,0 +1,5 @@
+{
+	"stylelint.configBasedir": "basedir",
+	"stylelint.configFile": "${workspaceFolder}/config/stylelint.config.js",
+	"css.validate": false
+}

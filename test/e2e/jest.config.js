@@ -5,6 +5,7 @@ const config = {
 	testMatch: [
 		'<rootDir>/*/index.[jt]s?(x)',
 		'<rootDir>/defaults/*.[jt]s?(x)',
+		'<rootDir>/config/*.[jt]s?(x)',
 		'<rootDir>/report-disables/*.[jt]s?(x)',
 	],
 	preset: 'ts-jest',
