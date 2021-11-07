@@ -7,7 +7,11 @@ const config = {
 	globals: { 'ts-jest': { tsconfig: '<rootDir>/../../tsconfig.test.json' } },
 	testPathIgnorePatterns: ['.*jest-runner-vscode.config.js'],
 	verbose: true,
-	modulePathIgnorePatterns: ['<rootDir>/../../.vscode-test', '<rootDir>/yarn-[^/]+/stylelint'],
+	modulePathIgnorePatterns: [
+		'<rootDir>/../../.vscode-test',
+		'<rootDir>/defaults/workspace/yarn-[^/]+/stylelint',
+		'<rootDir>/defaults/workspace/local-stylelint/node_modules',
+	],
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	runner: 'vscode',
 };
