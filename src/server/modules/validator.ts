@@ -2,7 +2,6 @@ import type winston from 'winston';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type LSP from 'vscode-languageserver-protocol';
 import type {
-	DidChangeValidateLanguagesParams,
 	LanguageServerContext,
 	LanguageServerModuleConstructorParameters,
 	LanguageServerModule,
@@ -31,16 +30,26 @@ export class ValidatorModule implements LanguageServerModule {
 		this.#logger = logger;
 	}
 
-	#shouldValidate(document: TextDocument): boolean {
-		return this.#context.options.validate.includes(document.languageId);
+	async #shouldValidate(document: TextDocument): Promise<boolean> {
+		const options = await this.#context.getOptions(document.uri);
+
+		return options.validate.includes(document.languageId);
 	}
 
 	async #validate(document: TextDocument): Promise<void> {
-		if (!this.#shouldValidate(document)) {
-			this.#logger?.debug('Document should not be validated, ignoring', {
-				uri: document.uri,
-				language: document.languageId,
-			});
+		if (!(await this.#shouldValidate(document))) {
+			if (this.#documentDiagnostics.has(document.uri)) {
+				this.#logger?.debug('Document should not be validated, clearing diagnostics', {
+					uri: document.uri,
+					language: document.languageId,
+				});
+				this.#clearDiagnostics(document);
+			} else {
+				this.#logger?.debug('Document should not be validated, ignoring', {
+					uri: document.uri,
+					language: document.languageId,
+				});
+			}
 
 			return;
 		}
@@ -118,19 +127,5 @@ export class ValidatorModule implements LanguageServerModule {
 		this.#logger?.debug('Received onDidChangeConfiguration');
 
 		await this.#validateAll();
-	}
-
-	onDidChangeValidateLanguages({ removedLanguages }: DidChangeValidateLanguagesParams): void {
-		if (this.#logger?.isDebugEnabled()) {
-			this.#logger?.debug('Received onDidChangeValidateLanguages', {
-				removedLanguages: [...removedLanguages],
-			});
-		}
-
-		for (const document of this.#context.documents.all()) {
-			if (removedLanguages.has(document.languageId)) {
-				this.#clearDiagnostics(document);
-			}
-		}
 	}
 }

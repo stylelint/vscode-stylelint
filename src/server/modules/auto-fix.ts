@@ -27,8 +27,10 @@ export class AutoFixModule implements LanguageServerModule {
 		this.#logger = logger;
 	}
 
-	#shouldAutoFix(document: TextDocument): boolean {
-		return this.#context.options.validate.includes(document.languageId);
+	async #shouldAutoFix(document: TextDocument): Promise<boolean> {
+		const options = await this.#context.getOptions(document.uri);
+
+		return options.validate.includes(document.languageId);
 	}
 
 	onInitialize(): Partial<LSP.InitializeResult> {
@@ -55,7 +57,7 @@ export class AutoFixModule implements LanguageServerModule {
 			const uri = identifier.uri;
 			const document = this.#context.documents.get(uri);
 
-			if (!document || !this.#shouldAutoFix(document)) {
+			if (!document || !(await this.#shouldAutoFix(document))) {
 				if (this.#logger?.isDebugEnabled()) {
 					if (!document) {
 						this.#logger.debug('Unknown document, ignoring', { uri });

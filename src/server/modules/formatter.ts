@@ -1,15 +1,14 @@
-import { DocumentFormattingRequest } from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type LSP from 'vscode-languageserver-protocol';
+import * as LSP from 'vscode-languageserver-protocol';
 import { formattingOptionsToRules } from '../../utils/stylelint';
 import { Notification } from '../types';
 import type {
-	DidChangeValidateLanguagesParams,
 	LanguageServerContext,
 	LanguageServerModuleConstructorParameters,
 	LanguageServerModule,
 } from '../types';
 import type winston from 'winston';
+import { URI } from 'vscode-uri';
 
 export class FormatterModule implements LanguageServerModule {
 	static id = 'formatter';
@@ -31,17 +30,20 @@ export class FormatterModule implements LanguageServerModule {
 	#registerDynamically = false;
 
 	/**
-	 * The disposable for the dynamically registered document formatter.
+	 * Promises that resolve to the disposables for the dynamically registered
+	 * document formatters, by resource URI.
 	 */
-	#registration: LSP.Disposable | undefined = undefined;
+	#registrations = new Map<string, Promise<LSP.Disposable>>();
 
 	constructor({ context, logger }: LanguageServerModuleConstructorParameters) {
 		this.#context = context;
 		this.#logger = logger;
 	}
 
-	#shouldFormat(document: TextDocument): boolean {
-		return this.#context.options.validate.includes(document.languageId);
+	async #shouldFormat(document: TextDocument): Promise<boolean> {
+		const options = await this.#context.getOptions(document.uri);
+
+		return options.validate.includes(document.languageId);
 	}
 
 	onInitialize({ capabilities }: LSP.InitializeParams): Partial<LSP.InitializeResult> {
@@ -56,10 +58,72 @@ export class FormatterModule implements LanguageServerModule {
 		};
 	}
 
+	async #register(document: TextDocument): Promise<void> {
+		if (
+			!this.#registerDynamically ||
+			!(await this.#shouldFormat(document)) ||
+			this.#registrations.has(document.uri)
+		) {
+			return;
+		}
+
+		const { scheme, fsPath } = URI.parse(document.uri);
+
+		const pattern = (scheme === 'file' ? fsPath.replace(/\\/g, '/') : fsPath).replace(
+			/[[\]{}]/g,
+			'?',
+		);
+
+		const filter: LSP.DocumentFilter = { scheme, pattern };
+		const options: LSP.DocumentFormattingRegistrationOptions = { documentSelector: [filter] };
+
+		this.#logger?.debug('Registering formatter for document', { uri: document.uri, options });
+
+		this.#registrations.set(
+			document.uri,
+			this.#context.connection.client.register(LSP.DocumentFormattingRequest.type, options),
+		);
+
+		this.#context.connection.sendNotification(
+			Notification.DidRegisterDocumentFormattingEditProvider,
+		);
+	}
+
+	#deregister(uri: string): void {
+		if (!this.#registerDynamically) {
+			return;
+		}
+
+		const registration = this.#registrations.get(uri);
+
+		if (!registration) {
+			return;
+		}
+
+		this.#logger?.debug('Deregistering formatter for document', { uri });
+
+		registration.then(({ dispose }) => dispose());
+		this.#registrations.delete(uri);
+	}
+
+	#deregisterAll(): void {
+		if (!this.#registerDynamically) {
+			return;
+		}
+
+		for (const [uri, registration] of this.#registrations) {
+			this.#logger?.debug('Deregistering formatter for document', { uri });
+
+			registration.then(({ dispose }) => dispose());
+		}
+
+		this.#registrations.clear();
+	}
+
 	onDidRegisterHandlers(): void {
 		this.#logger?.debug('Registering onDocumentFormatting handler');
 
-		this.#context.connection.onDocumentFormatting(({ textDocument, options }) => {
+		this.#context.connection.onDocumentFormatting(async ({ textDocument, options }) => {
 			this.#logger?.debug('Received onDocumentFormatting', { textDocument, options });
 
 			if (!textDocument) {
@@ -71,7 +135,7 @@ export class FormatterModule implements LanguageServerModule {
 			const { uri } = textDocument;
 			const document = this.#context.documents.get(uri);
 
-			if (!document || !this.#shouldFormat(document)) {
+			if (!document || !(await this.#shouldFormat(document))) {
 				if (this.#logger?.isDebugEnabled()) {
 					if (!document) {
 						this.#logger.debug('Unknown document, ignoring', { uri });
@@ -102,52 +166,17 @@ export class FormatterModule implements LanguageServerModule {
 		});
 
 		this.#logger?.debug('onDocumentFormatting handler registered');
-	}
 
-	async onDidChangeValidateLanguages({
-		languages,
-	}: DidChangeValidateLanguagesParams): Promise<void> {
-		if (this.#logger?.isDebugEnabled()) {
-			this.#logger?.debug('Received onDidChangeValidateLanguages', { languages: [...languages] });
-		}
+		this.#context.documents.onDidOpen(({ document }) => this.#register(document));
+		this.#context.documents.onDidChangeContent(({ document }) => this.#register(document));
+		this.#context.documents.onDidSave(({ document }) => this.#register(document));
+		this.#context.documents.onDidClose(({ document }) => this.#deregister(document.uri));
 
-		// If dynamic registration is supported and the list of languages that should be validated
-		// has changed, then (re-)register the formatter.
-		if (this.#registerDynamically) {
-			// Dispose the old formatter registration if it exists.
-			if (this.#registration) {
-				this.#logger?.debug('Disposing old formatter registration');
-
-				this.#registration.dispose();
-
-				this.#logger?.debug('Old formatter registration disposed');
-			}
-
-			// If there are languages that should be validated, register a formatter for those
-			// languages.
-			if (languages.size > 0) {
-				const documentSelector = [];
-
-				for (const language of languages) {
-					documentSelector.push({ language });
-				}
-
-				if (this.#logger?.isDebugEnabled()) {
-					this.#logger?.debug('Registering formatter for languages', { languages: [...languages] });
-				}
-
-				this.#registration = await this.#context.connection.client.register(
-					DocumentFormattingRequest.type,
-					{ documentSelector },
-				);
-
-				this.#context.connection.sendNotification(
-					Notification.DidRegisterDocumentFormattingEditProvider,
-					{},
-				);
-
-				this.#logger?.debug('Formatter registered');
-			}
-		}
+		this.#context.connection.onNotification(LSP.DidChangeConfigurationNotification.type, () =>
+			this.#deregisterAll(),
+		);
+		this.#context.connection.onNotification(LSP.DidChangeWorkspaceFoldersNotification.type, () =>
+			this.#deregisterAll(),
+		);
 	}
 }

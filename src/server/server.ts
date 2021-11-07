@@ -1,8 +1,11 @@
 import { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
-import type { Connection } from 'vscode-languageserver';
+import type { Connection, TextDocumentChangeEvent } from 'vscode-languageserver';
 import type LSP from 'vscode-languageserver-protocol';
 import { TextDocuments } from 'vscode-languageserver/node';
-import { TextDocumentSyncKind } from 'vscode-languageserver-protocol';
+import {
+	DidChangeConfigurationNotification,
+	TextDocumentSyncKind,
+} from 'vscode-languageserver-protocol';
 // eslint-disable-next-line node/no-unpublished-import
 import type stylelint from 'stylelint';
 import type winston from 'winston';
@@ -42,9 +45,10 @@ export class StylelintLanguageServer {
 	#logger: winston.Logger | undefined;
 
 	/**
-	 * The language server options.
+	 * The global language server options, used if the client does not support
+	 * the `workspace/configuration` request.
 	 */
-	#options: LanguageServerOptions;
+	#globalOptions: LanguageServerOptions;
 
 	/**
 	 * The resolver used to resolve the Stylelint package.
@@ -72,27 +76,30 @@ export class StylelintLanguageServer {
 	#modules: Map<string, LanguageServerModule> = new Map();
 
 	/**
-	 * Whether or not the server has sent its first configuration change to
-	 * modules.
+	 * Whether or not the client supports the `workspace/configuration` request.
 	 */
-	#hasSentInitialConfiguration = false;
+	#hasConfigurationCapability = false;
+
+	/**
+	 * Configuration per resource.
+	 */
+	#scopedOptions = new Map<string, LanguageServerOptions>();
 
 	/**
 	 * Creates a new Stylelint language server.
-	 * @param {LanguageServerConstructorParameters} params
 	 */
 	constructor({ connection, logger, modules }: LanguageServerConstructorParameters) {
 		this.#connection = connection;
 		this.#logger = logger?.child({ component: 'language-server' });
-		this.#options = defaultOptions;
+		this.#globalOptions = defaultOptions;
 		this.#resolver = new StylelintResolver(connection, this.#logger);
 		this.#runner = new StylelintRunner(connection, this.#logger, this.#resolver);
 		this.#documents = new TextDocuments(TextDocument);
 		this.#context = {
 			connection: this.#connection,
 			documents: this.#documents,
-			options: this.#options,
 			runner: this.#runner,
+			getOptions: this.#getOptions.bind(this),
 			getModule: this.#getModule.bind(this),
 			getFixes: this.#getFixes.bind(this),
 			displayError: this.#displayError.bind(this),
@@ -144,16 +151,41 @@ export class StylelintLanguageServer {
 	start(): void {
 		this.#logger?.info('Starting language server');
 
-		this.#registerHandlers();
-
 		this.#documents.listen(this.#connection);
 		this.#connection.listen();
+
+		this.#registerHandlers();
 
 		this.#logger?.info('Language server started');
 	}
 
 	#displayError(error: unknown): void {
 		displayError(this.#connection, error);
+	}
+
+	async #getOptions(resource: string): Promise<LanguageServerOptions> {
+		if (!this.#hasConfigurationCapability) {
+			return this.#globalOptions;
+		}
+
+		const cached = this.#scopedOptions.get(resource);
+
+		if (cached) {
+			return cached;
+		}
+
+		const options = await this.#connection.workspace.getConfiguration({
+			scopeUri: resource,
+			section: 'stylelint',
+		});
+
+		const withDefaults = this.#getEffectiveOptions(options);
+
+		Object.freeze(withDefaults);
+
+		this.#scopedOptions.set(resource, withDefaults);
+
+		return withDefaults;
 	}
 
 	/**
@@ -163,7 +195,9 @@ export class StylelintLanguageServer {
 		this.#logger?.debug('Resolving Stylelint', { uri: document.uri });
 
 		try {
-			const result = await this.#resolver.resolve(this.#options, document);
+			const options = await this.#getOptions(document.uri);
+
+			const result = await this.#resolver.resolve(options, document);
 
 			if (result) {
 				this.#logger?.debug('Stylelint resolved', {
@@ -193,7 +227,9 @@ export class StylelintLanguageServer {
 		this.#logger?.debug('Linting document', { uri: document.uri, linterOptions });
 
 		try {
-			const results = await this.#runner.lintDocument(document, linterOptions, this.#options);
+			const options = await this.#getOptions(document.uri);
+
+			const results = await this.#runner.lintDocument(document, linterOptions, options);
 
 			this.#logger?.debug('Lint run complete', { uri: document.uri, results });
 
@@ -214,7 +250,9 @@ export class StylelintLanguageServer {
 		linterOptions: stylelint.LinterOptions = {},
 	): Promise<TextEdit[]> {
 		try {
-			const edits = await getFixes(this.#runner, document, linterOptions, this.#options);
+			const options = await this.#getOptions(document.uri);
+
+			const edits = await getFixes(this.#runner, document, linterOptions, options);
 
 			this.#logger?.debug('Fixes retrieved', { uri: document.uri, edits });
 
@@ -235,10 +273,11 @@ export class StylelintLanguageServer {
 	}
 
 	/**
-	 * Sets the language server options.
+	 * Returns a shallow copy of the given options with defaults set for options
+	 * that are not set. If no options are given, the default options are returned.
 	 */
-	#setOptions(options: Partial<LanguageServerOptions>): void {
-		this.#options = {
+	#getEffectiveOptions(options: Partial<LanguageServerOptions> = {}): LanguageServerOptions {
+		const withDefaults = {
 			config: options.config,
 			configBasedir: options.configBasedir,
 			configFile: options.configFile,
@@ -252,11 +291,7 @@ export class StylelintLanguageServer {
 			validate: options.validate ?? defaultOptions.validate,
 		};
 
-		Object.freeze(this.#options);
-
-		this.#context.options = this.#options;
-
-		this.#logger?.debug('Options updated', { options: this.#options });
+		return withDefaults;
 	}
 
 	/**
@@ -268,12 +303,16 @@ export class StylelintLanguageServer {
 		this.#logger?.info('Registering handlers');
 
 		this.#connection.onInitialize(this.#onInitialize.bind(this));
+		this.#logger?.debug('connection.onInitialize handler registered');
 
-		this.#logger?.debug('onInitialize handler registered');
+		this.#connection.onInitialized(this.#onInitialized.bind(this));
+		this.#logger?.debug('connection.onInitialized handler registered');
 
 		this.#connection.onDidChangeConfiguration(this.#onDidChangeConfiguration.bind(this));
+		this.#logger?.debug('connection.onDidChangeConfiguration handler registered');
 
-		this.#logger?.debug('onDidChangeConfiguration handler registered');
+		this.#documents.onDidClose(this.#onDidCloseDocument.bind(this));
+		this.#logger?.debug('documents.onDidClose handler registered');
 
 		this.#invokeHandlers('onDidRegisterHandlers');
 
@@ -328,6 +367,14 @@ export class StylelintLanguageServer {
 			},
 		};
 
+		if (params.capabilities.workspace?.configuration) {
+			this.#logger?.debug(
+				'Client reports workspace configuration support; using scoped configuration',
+			);
+
+			this.#hasConfigurationCapability = true;
+		}
+
 		for (const [, moduleResult] of Object.entries(this.#invokeHandlers('onInitialize', params))) {
 			if (moduleResult) {
 				deepAssign(result, moduleResult);
@@ -339,47 +386,43 @@ export class StylelintLanguageServer {
 		return result;
 	}
 
+	#onInitialized(params: LSP.InitializedParams): void {
+		this.#logger?.debug('received onInitialized', { params });
+
+		if (this.#hasConfigurationCapability) {
+			this.#logger?.debug('Registering DidChangeConfigurationNotification');
+
+			this.#connection.client.register(DidChangeConfigurationNotification.type, undefined);
+		}
+	}
+
+	#onDidCloseDocument({ document }: TextDocumentChangeEvent<TextDocument>): void {
+		this.#logger?.debug('received document.onDidClose, clearing cached options', {
+			uri: document.uri,
+		});
+
+		this.#scopedOptions.delete(document.uri);
+	}
+
 	#onDidChangeConfiguration(params: LSP.DidChangeConfigurationParams): void {
+		if (this.#hasConfigurationCapability) {
+			this.#logger?.debug('received onDidChangeConfiguration, clearing cached options', { params });
+
+			this.#scopedOptions.clear();
+
+			this.#invokeHandlers('onDidChangeConfiguration');
+
+			return;
+		}
+
 		this.#logger?.debug('received onDidChangeConfiguration', { params });
 
-		const oldOptions = this.#options;
+		this.#globalOptions = this.#getEffectiveOptions(params.settings.stylelint);
 
-		this.#setOptions(params.settings.stylelint);
+		Object.freeze(this.#globalOptions);
 
-		const validateLanguageSet = new Set(this.#options.validate);
-		const oldValidateLanguageSet = new Set(oldOptions.validate);
+		this.#logger?.debug('Global options updated', { options: this.#globalOptions });
 
-		/** Whether or not the list of languages that should be validated has changed. */
-		let changed = validateLanguageSet.size !== oldValidateLanguageSet.size;
-
-		/** The languages removed from the list of languages that should be validated */
-		const removedLanguages = new Set();
-
-		// Check if the sets are unequal, which means that the list of languages that should be
-		// validated has changed.
-		for (const language of oldValidateLanguageSet) {
-			if (!validateLanguageSet.has(language)) {
-				removedLanguages.add(language);
-				changed = true;
-			}
-		}
-
-		if (changed || !this.#hasSentInitialConfiguration) {
-			if (this.#logger?.isDebugEnabled()) {
-				this.#logger?.debug('Languages that should be validated changed', {
-					languages: [...validateLanguageSet],
-					removedLanguages: [...removedLanguages],
-				});
-			}
-
-			this.#invokeHandlers('onDidChangeValidateLanguages', {
-				languages: validateLanguageSet,
-				removedLanguages,
-			});
-		}
-
-		this.#invokeHandlers('onDidChangeConfiguration', { settings: this.#options });
-
-		this.#hasSentInitialConfiguration = true;
+		this.#invokeHandlers('onDidChangeConfiguration');
 	}
 }

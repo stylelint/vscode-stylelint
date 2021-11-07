@@ -46,21 +46,26 @@ export class CompletionModule implements LanguageServerModule {
 		this.#logger?.debug('onCompletion handler registered');
 	}
 
-	#shouldComplete(document: TextDocument): boolean {
+	async #shouldComplete(document: TextDocument): Promise<boolean> {
+		const options = await this.#context.getOptions(document.uri);
+
 		return (
-			this.#context.options.validate.includes(document.languageId) &&
-			this.#context.options.snippet.includes(document.languageId)
+			options.validate.includes(document.languageId) &&
+			options.snippet.includes(document.languageId)
 		);
 	}
 
-	#onCompletion({ textDocument, position }: LSP.CompletionParams): LSP.CompletionItem[] {
+	async #onCompletion({
+		textDocument,
+		position,
+	}: LSP.CompletionParams): Promise<LSP.CompletionItem[]> {
 		const { uri } = textDocument;
 
 		this.#logger?.debug('Received onCompletion', { uri, position });
 
 		const document = this.#context.documents.get(uri);
 
-		if (!document || !this.#shouldComplete(document)) {
+		if (!document || !(await this.#shouldComplete(document))) {
 			if (this.#logger?.isDebugEnabled()) {
 				if (!document) {
 					this.#logger.debug('Unknown document, ignoring', { uri });
