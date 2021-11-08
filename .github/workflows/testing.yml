@@ -54,7 +54,7 @@ jobs:
         id: vscode-cache
         with:
           path: .vscode-test
-          key: ${{ runner.os }}-vscode-${{ hashFiles('jest-runner-vscode.config.js') }}
+          key: ${{ runner.os }}-vscode-${{ hashFiles('test/e2e/jest-runner-vscode.config.js') }}
           restore-keys: |
             ${{ runner.os }}-vscode-
 

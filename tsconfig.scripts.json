@@ -4,6 +4,6 @@
 		"typeRoots": ["./types", "./node_modules/@types"],
 		"types": ["node", "babel__core"]
 	},
-	"include": ["*.js", "package.json", "scripts/**/*"],
+	"include": ["*.js", "package.json", "scripts/**/*", "test/e2e/jest-runner-vscode.config.js"],
 	"exclude": ["**/coverage"]
 }
