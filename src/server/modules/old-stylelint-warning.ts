@@ -85,7 +85,9 @@ export class OldStylelintWarningModule implements LanguageServerModule {
 	}
 
 	async #check(document: TextDocument): Promise<string | undefined> {
-		if (!this.#context.options.validate.includes(document.languageId)) {
+		const options = await this.#context.getOptions(document.uri);
+
+		if (!options.validate.includes(document.languageId)) {
 			this.#logger?.debug('Document should not be validated, ignoring', {
 				uri: document.uri,
 				language: document.languageId,

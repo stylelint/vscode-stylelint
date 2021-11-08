@@ -10,7 +10,10 @@ jest.mock('vscode-languageclient/node', () => ({
 import { EventEmitter } from 'events';
 import vscode, { window } from 'vscode';
 import { LanguageClient, SettingMonitor, NodeModule } from 'vscode-languageclient/node';
-import { Notification } from '../../server';
+import {
+	DidRegisterDocumentFormattingEditProviderNotificationParams,
+	Notification,
+} from '../../server';
 import { activate } from '../extension';
 import { ApiEvent } from '../types';
 
@@ -96,7 +99,6 @@ describe('Extension entry point', () => {
 		const api = activate(mockExtensionContext);
 
 		expect(api).toBeInstanceOf(EventEmitter);
-		expect(api.formattingReady).toBe(false);
 	});
 
 	it('should create a language client', () => {
@@ -213,25 +215,25 @@ describe('Extension entry point', () => {
 		expect(onNotification.mock.calls[0][1]).toBeInstanceOf(Function);
 	});
 
-	it('should set the formattingReady flag to true when the DidRegisterDocumentFormattingEditProvider notification is received', () => {
-		const api = activate(mockExtensionContext);
-
-		afterOnReady.mock.calls[0][0]();
-		onNotification.mock.calls[0][1]();
-
-		expect(api.formattingReady).toBe(true);
-	});
-
 	it('should emit the DidRegisterDocumentFormattingEditProvider event when the DidRegisterDocumentFormattingEditProvider notification is received', async () => {
 		const api = activate(mockExtensionContext);
 
-		const promise = new Promise<void>((resolve) => {
-			api.on(ApiEvent.DidRegisterDocumentFormattingEditProvider, resolve);
-		});
+		const promise = new Promise<DidRegisterDocumentFormattingEditProviderNotificationParams>(
+			(resolve) => {
+				api.on(ApiEvent.DidRegisterDocumentFormattingEditProvider, resolve);
+			},
+		);
+
+		const params: DidRegisterDocumentFormattingEditProviderNotificationParams = {
+			uri: 'file:///foo.css',
+			options: {
+				documentSelector: [{ scheme: 'file', pattern: '/foo.css' }],
+			},
+		};
 
 		afterOnReady.mock.calls[0][0]();
-		onNotification.mock.calls[0][1]();
+		onNotification.mock.calls[0][1](params);
 
-		await expect(promise).resolves.toBeUndefined();
+		await expect(promise).resolves.toStrictEqual(params);
 	});
 });

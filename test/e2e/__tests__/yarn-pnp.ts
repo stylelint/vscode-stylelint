@@ -1,15 +1,14 @@
 import path from 'path';
 
 import pWaitFor from 'p-wait-for';
-import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 import { workspace, window } from 'vscode';
 
-const workspaceDir = path.join(__dirname, 'workspace');
+import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-describe('vscode-stylelint with "stylelint.configBasedir"', () => {
-	it('should work even if "stylelint.configBasedir" is defined', async () => {
+describe('PnP Stylelint resolution', () => {
+	it('should resolve Stylelint using PnP', async () => {
 		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'config-basedir.css'),
+			path.resolve(workspaceDir, 'defaults/yarn-pnp/test.css'),
 		);
 
 		await window.showTextDocument(cssDocument);

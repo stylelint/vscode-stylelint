@@ -49,11 +49,13 @@
       "title": "Stylelint",
       "properties": {
         "stylelint.enable": {
+          "scope": "resource",
           "type": "boolean",
           "default": true,
           "description": "Control whether Stylelint is enabled or not."
         },
         "stylelint.config": {
+          "scope": "resource",
           "type": [
             "object",
             "null"
@@ -62,36 +64,43 @@
           "description": "A Stylelint configuration object."
         },
         "stylelint.configFile": {
+          "scope": "resource",
           "type": "string",
           "default": "",
           "description": "Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want Stylelint to search for a configuration file."
         },
         "stylelint.configBasedir": {
+          "scope": "resource",
           "type": "string",
           "default": "",
           "description": "A path to the directory that relative paths defining \"extends\" and \"plugins\" are relative to."
         },
         "stylelint.customSyntax": {
+          "scope": "resource",
           "type": "string",
           "default": "",
           "description": "An absolute path to a custom PostCSS-compatible syntax module."
         },
         "stylelint.ignoreDisables": {
+          "scope": "resource",
           "type": "boolean",
           "default": false,
           "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
         },
         "stylelint.reportNeedlessDisables": {
+          "scope": "resource",
           "type": "boolean",
           "default": false,
           "description": "Also report errors for `stylelint-disable` comments that are not blocking a lint warning."
         },
         "stylelint.reportInvalidScopeDisables": {
+          "scope": "resource",
           "type": "boolean",
           "default": false,
           "description": "Also report errors for `stylelint-disable` comments that used for rules that don't exist within the configuration object."
         },
         "stylelint.stylelintPath": {
+          "scope": "resource",
           "type": "string",
           "default": "",
           "description": "Supply a custom path to the Stylelint module."

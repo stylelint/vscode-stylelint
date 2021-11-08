@@ -6,19 +6,18 @@ import { workspace } from 'vscode';
 
 // import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-const workspaceDir = path.join(__dirname, 'workspace');
-
 describe('.stylelintignore', () => {
 	it('should have syntax highlighting', async () => {
 		expect(
-			(await workspace.openTextDocument(path.join(workspaceDir, '.stylelintignore'))).languageId,
+			(await workspace.openTextDocument(path.join(workspaceDir, 'defaults/.stylelintignore')))
+				.languageId,
 		).toBe('ignore');
 	});
 
 	// TODO: Get .stylelintignore to work
 	// eslint-disable-next-line jest/no-commented-out-tests
 	// it('should be respected', async () => {
-	// 	const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'ignored.css'));
+	// 	const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'defaults/ignored.css'));
 
 	// 	await window.showTextDocument(cssDocument);
 

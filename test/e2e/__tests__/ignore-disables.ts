@@ -5,11 +5,11 @@ import { workspace, window } from 'vscode';
 
 import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-const workspaceDir = path.join(__dirname, 'workspace/yarn-pnp');
-
-describe('PnP Stylelint resolution', () => {
-	it('should resolve Stylelint using PnP', async () => {
-		const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'test.css'));
+describe('vscode-stylelint with "stylelint.ignoreDisables"', () => {
+	it('should work if "stylelint.ignoreDisables" is enabled', async () => {
+		const cssDocument = await workspace.openTextDocument(
+			path.resolve(workspaceDir, 'ignore-disables/test.css'),
+		);
 
 		await window.showTextDocument(cssDocument);
 

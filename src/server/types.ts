@@ -32,6 +32,21 @@ export enum Notification {
 }
 
 /**
+ * `DidRegisterDocumentFormattingEditProvider` notification parameters.
+ */
+export interface DidRegisterDocumentFormattingEditProviderNotificationParams {
+	/**
+	 * The URI of the document for which the formatting provider was registered.
+	 */
+	readonly uri: string;
+
+	/**
+	 * The options used to register the document formatting provider.
+	 */
+	readonly options: LSP.DocumentFormattingRegistrationOptions;
+}
+
+/**
  * Context shared between the language server and its modules.
  */
 export interface LanguageServerContext {
@@ -46,11 +61,6 @@ export interface LanguageServerContext {
 	documents: TextDocuments<TextDocument>;
 
 	/**
-	 * The current language server options.
-	 */
-	options: LanguageServerOptions;
-
-	/**
 	 * The runner with which to run Stylelint.
 	 */
 	runner: StylelintRunner;
@@ -61,6 +71,12 @@ export interface LanguageServerContext {
 	 * @param error The error to display.
 	 */
 	displayError(error: unknown): void;
+
+	/**
+	 * Gets the effective extension options for a resource, given its URI.
+	 * @param uri The resource URI.
+	 */
+	getOptions(uri: string): Promise<LanguageServerOptions>;
 
 	/**
 	 * Returns the module with the given ID if it exists.
@@ -95,33 +111,6 @@ export interface LanguageServerContext {
 }
 
 /**
- * Parameters for the {@link LanguageServerModule.onDidChangeValidateLanguages}
- * event.
- */
-export interface DidChangeValidateLanguagesParams {
-	/**
-	 * IDs for the languages that should be validated.
-	 */
-	languages: Set<string>;
-
-	/**
-	 * IDs for the languages that should no longer be validated.
-	 */
-	removedLanguages: Set<string>;
-}
-
-/**
- * Parameters for the {@link LanguageServerModule.onDidChangeConfiguration}
- * event.
- *
- * Note: This is not the same as {@link LSP.DidChangeConfigurationParams}, which
- * is used for the {@link LSP.DidChangeConfigurationNotification}.
- */
-export interface DidChangeConfigurationParams {
-	settings: LanguageServerOptions;
-}
-
-/**
  * A language server module.
  */
 export interface LanguageServerModule {
@@ -137,16 +126,10 @@ export interface LanguageServerModule {
 	onDidRegisterHandlers?: () => void;
 
 	/**
-	 * Handler called after the language server has finished receiving, parsing,
-	 * and setting updated configuration.
+	 * Handler called after the language server has finished responding to the
+	 * onDidChangeConfiguration event.
 	 */
-	onDidChangeConfiguration?: (params: DidChangeConfigurationParams) => void;
-
-	/**
-	 * Handler called after the languages for which documents should be
-	 * validated have changed.
-	 */
-	onDidChangeValidateLanguages?: (params: DidChangeValidateLanguagesParams) => void;
+	onDidChangeConfiguration?: () => void;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[key: string | symbol]: any;

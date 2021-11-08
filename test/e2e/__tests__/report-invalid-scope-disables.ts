@@ -5,12 +5,10 @@ import { workspace, window } from 'vscode';
 
 import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-const workspaceDir = path.join(__dirname, 'workspace');
-
 describe('vscode-stylelint with "stylelint.reportInvalidScopeDisables"', () => {
 	it('should work if "stylelint.reportInvalidScopeDisables" is enabled', async () => {
 		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'invalid-scope.css'),
+			path.resolve(workspaceDir, 'report-disables/invalid-scope.css'),
 		);
 
 		await window.showTextDocument(cssDocument);

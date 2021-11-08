@@ -1,4 +1,5 @@
 import pWaitFor from 'p-wait-for';
+import path from 'path';
 
 import { extensions } from 'vscode';
 
@@ -10,4 +11,10 @@ global.beforeAll(async () => {
 	}
 
 	await pWaitFor(() => vscodeStylelint.isActive, { timeout: 2000 });
+});
+
+Object.defineProperty(global, 'workspaceDir', {
+	get() {
+		return path.join(__dirname, 'workspace');
+	},
 });

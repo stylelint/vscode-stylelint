@@ -1,3 +1,4 @@
+jest.mock('vscode-languageserver/node');
 jest.mock('../../utils/lsp');
 jest.mock('../../utils/stylelint');
 jest.mock('../../utils/documents');
@@ -5,7 +6,8 @@ jest.mock('../../utils/packages');
 
 import type { Connection, WorkDoneProgressReporter } from 'vscode-languageserver';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
-import type LSP from 'vscode-languageserver-protocol';
+import { TextDocuments } from 'vscode-languageserver/node';
+import * as LSP from 'vscode-languageserver-protocol';
 import type winston from 'winston';
 import { displayError } from '../../utils/lsp';
 import { StylelintRunner } from '../../utils/stylelint';
@@ -13,27 +15,34 @@ import { getFixes } from '../../utils/documents';
 import { StylelintResolver } from '../../utils/packages';
 import { StylelintLanguageServer } from '../server';
 import type {
-	DidChangeConfigurationParams,
-	DidChangeValidateLanguagesParams,
 	LanguageServerContext,
 	LanguageServerModule,
 	LanguageServerModuleConstructor,
 	LanguageServerModuleConstructorParameters,
-	LanguageServerOptions,
 } from '../types';
 
 const mockDisplayError = displayError as jest.MockedFunction<typeof displayError>;
 const mockRunner = StylelintRunner as jest.Mock<StylelintRunner>;
 const mockGetFixes = getFixes as jest.MockedFunction<typeof getFixes>;
 const mockResolver = StylelintResolver as jest.Mock<StylelintResolver>;
+const mockTextDocuments = TextDocuments as jest.Mock<TextDocuments<TextDocument>>;
 
-const mockConnection = {
+const mockConnectionBase = {
 	listen: jest.fn(),
 	onInitialize: jest.fn(),
+	onInitialized: jest.fn(),
 	onDidChangeConfiguration: jest.fn(),
 	onDidChangeWatchedFiles: jest.fn(),
 	sendDiagnostics: jest.fn(),
-} as unknown as jest.Mocked<Connection>;
+	client: {
+		register: jest.fn(),
+	},
+	workspace: {
+		getConfiguration: jest.fn(),
+	},
+};
+
+const mockConnection = mockConnectionBase as unknown as jest.Mocked<Connection>;
 
 const mockLogger = {
 	debug: jest.fn(),
@@ -47,6 +56,11 @@ const mockLogger = {
 describe('StylelintLanguageServer', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
+
+		mockTextDocuments.mockReturnValue({
+			listen: jest.fn(),
+			onDidClose: jest.fn(),
+		} as unknown as TextDocuments<TextDocument>);
 	});
 
 	test('should be constructable', () => {
@@ -212,6 +226,66 @@ describe('StylelintLanguageServer', () => {
 		expect(result).toMatchSnapshot();
 	});
 
+	test('if workspace/configuration is not supported, should not register DidChangeConfigurationNotification', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{ capabilities: {} } as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const onInitializedHandler = mockConnection.onInitialized.mock.calls[0][0];
+
+		onInitializedHandler({});
+
+		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
+		expect(mockLogger.debug).not.toHaveBeenCalledWith(
+			'Registering DidChangeConfigurationNotification',
+		);
+		expect(mockConnection.client.register).not.toHaveBeenCalledWith(
+			LSP.DidChangeConfigurationNotification.type,
+		);
+	});
+
+	test('if workspace/configuration is supported, should register DidChangeConfigurationNotification', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const onInitializedHandler = mockConnection.onInitialized.mock.calls[0][0];
+
+		onInitializedHandler({});
+
+		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
+		expect(mockLogger.debug).toHaveBeenCalledWith('Registering DidChangeConfigurationNotification');
+		expect(mockConnection.client.register).toHaveBeenCalledWith(
+			LSP.DidChangeConfigurationNotification.type,
+		);
+	});
+
 	test('should display and log errors thrown by module handlers', () => {
 		const error = new Error('Test error');
 
@@ -287,14 +361,14 @@ describe('StylelintLanguageServer', () => {
 		expect(module?.value).toBe(5);
 	});
 
-	test('should receive settings from the client and pass them to modules with defaults', () => {
-		let options: LanguageServerOptions | undefined;
+	test('when workspace/configuration is not available, context.getOptions should return global options', async () => {
+		let getOptions: LanguageServerContext['getOptions'] | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			onDidChangeConfiguration({ settings }: DidChangeConfigurationParams) {
-				options = settings;
+			constructor({ context }: LanguageServerModuleConstructorParameters) {
+				getOptions = context.getOptions;
 			}
 		}
 
@@ -317,19 +391,26 @@ describe('StylelintLanguageServer', () => {
 		const onDidChangeConfigurationHandler =
 			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
 
-		onDidChangeConfigurationHandler({ settings: { stylelint: {} } });
+		onDidChangeConfigurationHandler({ settings: {} });
 
-		expect(options).toMatchSnapshot();
+		const options = await getOptions?.('uri');
+
+		expect(mockConnection.workspace.getConfiguration).not.toHaveBeenCalled();
+		expect(options).toEqual({
+			packageManager: 'npm',
+			validate: ['css', 'postcss'],
+			snippet: ['css', 'postcss'],
+		});
 	});
 
-	test('should receive updates to settings from the client and pass them to modules', () => {
-		let options: LanguageServerOptions | undefined;
+	test('when workspace/configuration is not available, context.getOptions should gracefully handle missing section', async () => {
+		let getOptions: LanguageServerContext['getOptions'] | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			onDidChangeConfiguration({ settings }: DidChangeConfigurationParams) {
-				options = settings;
+			constructor({ context }: LanguageServerModuleConstructorParameters) {
+				getOptions = context.getOptions;
 			}
 		}
 
@@ -349,125 +430,7 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const onDidChangeConfigurationHandler =
-			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
-
-		onDidChangeConfigurationHandler({ settings: { stylelint: {} } });
-
-		onDidChangeConfigurationHandler({
-			settings: {
-				stylelint: {
-					config: {
-						rules: {
-							'block-no-empty': true,
-						},
-					},
-					ignoreDisables: true,
-				},
-			},
-		});
-
-		expect(options).toMatchSnapshot();
-	});
-
-	test('should fire onDidChangeValidateLanguages when first settings are sent to server', () => {
-		let options: LanguageServerOptions | undefined;
-		let languageParams: DidChangeValidateLanguagesParams | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			onDidChangeConfiguration({ settings }: DidChangeConfigurationParams) {
-				options = settings;
-			}
-
-			onDidChangeValidateLanguages(params: DidChangeValidateLanguagesParams) {
-				languageParams = params;
-			}
-		}
-
-		const server = new StylelintLanguageServer({
-			connection: mockConnection,
-			logger: mockLogger,
-			modules: [TestModule],
-		});
-
-		server.start();
-
-		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
-
-		onInitializeHandler(
-			{ capabilities: {} } as LSP.InitializeParams,
-			{} as LSP.CancellationToken,
-			{} as WorkDoneProgressReporter,
-		);
-
-		const onDidChangeConfigurationHandler =
-			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
-
-		onDidChangeConfigurationHandler({ settings: { stylelint: {} } });
-
-		expect(options).toMatchSnapshot();
-		expect(languageParams).toMatchSnapshot();
-	});
-
-	test('should fire onDidChangeValidateLanguages when validate option changes', () => {
-		let options: LanguageServerOptions | undefined;
-		let languageParams: DidChangeValidateLanguagesParams | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			onDidChangeConfiguration({ settings }: DidChangeConfigurationParams) {
-				options = settings;
-			}
-
-			onDidChangeValidateLanguages(params: DidChangeValidateLanguagesParams) {
-				languageParams = params;
-			}
-		}
-
-		const server = new StylelintLanguageServer({
-			connection: mockConnection,
-			logger: mockLogger,
-			modules: [TestModule],
-		});
-
-		server.start();
-
-		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
-
-		onInitializeHandler(
-			{ capabilities: {} } as LSP.InitializeParams,
-			{} as LSP.CancellationToken,
-			{} as WorkDoneProgressReporter,
-		);
-
-		const onDidChangeConfigurationHandler =
-			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
-
-		onDidChangeConfigurationHandler({ settings: { stylelint: {} } });
-
-		onDidChangeConfigurationHandler({
-			settings: {
-				stylelint: {
-					validate: ['css'],
-				},
-			},
-		});
-
-		expect(options).toMatchSnapshot();
-		expect(languageParams).toMatchSnapshot();
-	});
-
-	test('with debug log level, should log changed languages', () => {
-		mockLogger.isDebugEnabled.mockReturnValue(true);
-		const server = new StylelintLanguageServer({
-			connection: mockConnection,
-			logger: mockLogger,
-		});
-
-		server.start();
+		const initialOptions = await getOptions?.('uri');
 
 		const onDidChangeConfigurationHandler =
 			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
@@ -480,39 +443,301 @@ describe('StylelintLanguageServer', () => {
 			},
 		});
 
-		expect(mockLogger.debug).toHaveBeenCalledWith('Languages that should be validated changed', {
-			languages: ['css'],
-			removedLanguages: ['postcss'],
+		const changedOptions = await getOptions?.('uri');
+
+		expect(mockConnection.workspace.getConfiguration).not.toHaveBeenCalled();
+		expect(initialOptions).toEqual({
+			packageManager: 'npm',
+			validate: ['css', 'postcss'],
+			snippet: ['css', 'postcss'],
+		});
+		expect(changedOptions).toEqual({
+			packageManager: 'npm',
+			validate: ['css'],
+			snippet: ['css', 'postcss'],
 		});
 	});
 
-	test('without debug log level, should not log changed languages', () => {
-		mockLogger.isDebugEnabled.mockReturnValue(false);
+	test('when workspace/configuration is available, context.getOptions should return resource-scoped options', async () => {
+		mockConnectionBase.workspace.getConfiguration.mockImplementation(
+			({ scopeUri, section }: LSP.ConfigurationItem) => {
+				if (section !== 'stylelint') {
+					return {};
+				}
+
+				return scopeUri === 'uri'
+					? { packageManager: 'yarn' }
+					: { packageManager: 'npm', snippet: ['scss'] };
+			},
+		);
+
+		let getOptions: LanguageServerContext['getOptions'] | undefined;
+
+		class TestModule {
+			static id = 'test-module';
+
+			constructor({ context }: LanguageServerModuleConstructorParameters) {
+				getOptions = context.getOptions;
+			}
+		}
+
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
+			modules: [TestModule],
 		});
 
 		server.start();
 
-		const onDidChangeConfigurationHandler =
-			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onDidChangeConfigurationHandler({
-			settings: {
-				stylelint: {
-					validate: ['css'],
-				},
-			},
-		});
-
-		expect(mockLogger.debug).not.toHaveBeenCalledWith(
-			'Languages that should be validated changed',
+		onInitializeHandler(
 			{
-				languages: ['css'],
-				removedLanguages: ['postcss'],
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const options1 = await getOptions?.('uri');
+		const options2 = await getOptions?.('uri2');
+
+		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledWith({
+			scopeUri: 'uri',
+			section: 'stylelint',
+		});
+		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledWith({
+			scopeUri: 'uri2',
+			section: 'stylelint',
+		});
+		expect(options1).toEqual({
+			packageManager: 'yarn',
+			validate: ['css', 'postcss'],
+			snippet: ['css', 'postcss'],
+		});
+		expect(options2).toEqual({
+			packageManager: 'npm',
+			validate: ['css', 'postcss'],
+			snippet: ['scss'],
+		});
+	});
+
+	test('when workspace/configuration is available, context.getOptions should cache resource-scoped options', async () => {
+		mockConnectionBase.workspace.getConfiguration.mockImplementation(
+			({ scopeUri, section }: LSP.ConfigurationItem) => {
+				if (section !== 'stylelint') {
+					return {};
+				}
+
+				return scopeUri === 'uri'
+					? { packageManager: 'yarn' }
+					: { packageManager: 'npm', snippet: ['scss'] };
 			},
 		);
+
+		let getOptions: LanguageServerContext['getOptions'] | undefined;
+
+		class TestModule {
+			static id = 'test-module';
+
+			constructor({ context }: LanguageServerModuleConstructorParameters) {
+				getOptions = context.getOptions;
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const options1A = await getOptions?.('uri');
+		const options1B = await getOptions?.('uri');
+		const options2A = await getOptions?.('uri2');
+		const options2B = await getOptions?.('uri2');
+
+		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(2);
+		expect(options1A).toEqual(options1B);
+		expect(options2A).toEqual(options2B);
+	});
+
+	test('when workspace/configuration is available, on documents.onDidClose, should clear cached options', async () => {
+		mockConnectionBase.workspace.getConfiguration.mockImplementation(
+			({ scopeUri, section }: LSP.ConfigurationItem) => {
+				if (section !== 'stylelint') {
+					return {};
+				}
+
+				return scopeUri === 'uri'
+					? { packageManager: 'yarn' }
+					: { packageManager: 'npm', snippet: ['scss'] };
+			},
+		);
+
+		let getOptions: LanguageServerContext['getOptions'] | undefined;
+
+		class TestModule {
+			static id = 'test-module';
+
+			constructor({ context }: LanguageServerModuleConstructorParameters) {
+				getOptions = context.getOptions;
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const options1A = await getOptions?.('uri');
+		const options1B = await getOptions?.('uri');
+		const options2A = await getOptions?.('uri2');
+		const options2B = await getOptions?.('uri2');
+
+		const onDidCloseHandler = mockTextDocuments.mock.results[0].value.onDidClose.mock.calls[0][0];
+
+		onDidCloseHandler({ document: { uri: 'uri' } });
+
+		const options1C = await getOptions?.('uri');
+		const options2C = await getOptions?.('uri2');
+
+		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(3);
+		expect(options1A).toEqual(options1B);
+		expect(options1A).toEqual(options1C);
+		expect(options2A).toEqual(options2B);
+		expect(options2A).toEqual(options2C);
+	});
+
+	test('when workspace/configuration is available, onDidChangeConfiguration should clear all cached options', async () => {
+		let getOptions: LanguageServerContext['getOptions'] | undefined;
+
+		class TestModule {
+			static id = 'test-module';
+
+			constructor({ context }: LanguageServerModuleConstructorParameters) {
+				getOptions = context.getOptions;
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const options1A = await getOptions?.('uri');
+		const options1B = await getOptions?.('uri');
+		const options2A = await getOptions?.('uri2');
+		const options2B = await getOptions?.('uri2');
+
+		const onDidChangeConfigurationHandler =
+			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
+
+		onDidChangeConfigurationHandler({
+			settings: {
+				stylelint: {
+					validate: ['css'],
+				},
+			},
+		});
+
+		const options1C = await getOptions?.('uri');
+		const options2C = await getOptions?.('uri2');
+
+		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(4);
+		expect(options1A).toEqual(options1B);
+		expect(options1A).toEqual(options1C);
+		expect(options2A).toEqual(options2B);
+		expect(options2A).toEqual(options2C);
+	});
+
+	test('when workspace/configuration is available, onDidChangeConfiguration should fire module handlers', async () => {
+		const moduleHandler = jest.fn();
+
+		class TestModule {
+			static id = 'test-module';
+
+			onDidChangeConfiguration = moduleHandler;
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const onDidChangeConfigurationHandler =
+			mockConnection.onDidChangeConfiguration.mock.calls[0][0];
+
+		onDidChangeConfigurationHandler({
+			settings: {
+				stylelint: {
+					validate: ['css'],
+				},
+			},
+		});
+
+		expect(moduleHandler).toHaveBeenCalledTimes(1);
+		expect(moduleHandler).toHaveBeenCalledWith();
 	});
 
 	test('should allow modules to lint documents using context.lintDocument', async () => {

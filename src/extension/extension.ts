@@ -2,7 +2,11 @@ import { EventEmitter } from 'events';
 import { LanguageClient, SettingMonitor, ExecuteCommandRequest } from 'vscode-languageclient/node';
 import { workspace, commands, window } from 'vscode';
 import { ApiEvent, PublicApi } from './types';
-import { CommandId, Notification } from '../server';
+import {
+	CommandId,
+	DidRegisterDocumentFormattingEditProviderNotificationParams,
+	Notification,
+} from '../server';
 import type vscode from 'vscode';
 
 /**
@@ -11,9 +15,7 @@ import type vscode from 'vscode';
 export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi {
 	const serverPath = require.resolve('./start-server');
 
-	const api: PublicApi = Object.assign(new EventEmitter(), {
-		formattingReady: false,
-	});
+	const api: PublicApi = new EventEmitter();
 
 	const client = new LanguageClient(
 		'Stylelint',
@@ -41,10 +43,12 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 	);
 
 	client.onReady().then(() => {
-		client.onNotification(Notification.DidRegisterDocumentFormattingEditProvider, () => {
-			api.formattingReady = true;
-			api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider);
-		});
+		client.onNotification(
+			Notification.DidRegisterDocumentFormattingEditProvider,
+			(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
+				api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
+			},
+		);
 	});
 
 	subscriptions.push(

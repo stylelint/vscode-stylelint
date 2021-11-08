@@ -27,8 +27,10 @@ export class CodeActionModule implements LanguageServerModule {
 		this.#logger = logger;
 	}
 
-	#shouldCodeAction(document: TextDocument): boolean {
-		return this.#context.options.validate.includes(document.languageId);
+	async #shouldCodeAction(document: TextDocument): Promise<boolean> {
+		const options = await this.#context.getOptions(document.uri);
+
+		return options.validate.includes(document.languageId);
 	}
 
 	onInitialize(): Partial<LSP.InitializeResult> {
@@ -62,7 +64,7 @@ export class CodeActionModule implements LanguageServerModule {
 			const uri = textDocument.uri;
 			const document = this.#context.documents.get(uri);
 
-			if (!document || !this.#shouldCodeAction(document)) {
+			if (!document || !(await this.#shouldCodeAction(document))) {
 				if (this.#logger?.isDebugEnabled()) {
 					if (!document) {
 						this.#logger.debug('Unknown document, ignoring', { uri });

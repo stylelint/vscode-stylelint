@@ -5,11 +5,11 @@ import { workspace, window } from 'vscode';
 
 import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-const workspaceDir = path.join(__dirname, 'workspace');
-
 describe('Linting', () => {
 	it('should lint CSS documents', async () => {
-		const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'lint.css'));
+		const cssDocument = await workspace.openTextDocument(
+			path.resolve(workspaceDir, 'defaults/lint.css'),
+		);
 
 		await window.showTextDocument(cssDocument);
 
@@ -20,7 +20,7 @@ describe('Linting', () => {
 
 	it('should display rule documentation links when one is available', async () => {
 		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'rule-doc.css'),
+			path.resolve(workspaceDir, 'defaults/rule-doc.css'),
 		);
 
 		await window.showTextDocument(cssDocument);
