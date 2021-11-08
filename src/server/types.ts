@@ -32,6 +32,21 @@ export enum Notification {
 }
 
 /**
+ * `DidRegisterDocumentFormattingEditProvider` notification parameters.
+ */
+export interface DidRegisterDocumentFormattingEditProviderNotificationParams {
+	/**
+	 * The URI of the document for which the formatting provider was registered.
+	 */
+	readonly uri: string;
+
+	/**
+	 * The options used to register the document formatting provider.
+	 */
+	readonly options: LSP.DocumentFormattingRegistrationOptions;
+}
+
+/**
  * Context shared between the language server and its modules.
  */
 export interface LanguageServerContext {

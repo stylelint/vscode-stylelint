@@ -77,15 +77,16 @@ export class FormatterModule implements LanguageServerModule {
 		const filter: LSP.DocumentFilter = { scheme, pattern };
 		const options: LSP.DocumentFormattingRegistrationOptions = { documentSelector: [filter] };
 
-		this.#logger?.debug('Registering formatter for document', { uri: document.uri, options });
-
 		this.#registrations.set(
 			document.uri,
 			this.#context.connection.client.register(LSP.DocumentFormattingRequest.type, options),
 		);
 
+		this.#logger?.debug('Registering formatter for document', { uri: document.uri, options });
+
 		this.#context.connection.sendNotification(
 			Notification.DidRegisterDocumentFormattingEditProvider,
+			{ uri: document.uri, options },
 		);
 	}
 

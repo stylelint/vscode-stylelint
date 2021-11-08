@@ -1,26 +1,44 @@
 import path from 'path';
-import pWaitFor from 'p-wait-for';
 import { workspace, commands, window, extensions } from 'vscode';
+import { URI } from 'vscode-uri';
+import { PublicApi, ApiEvent } from '../../../src/extension';
 
 describe('Document formatting', () => {
-	beforeAll(async () => {
+	it('should format document using formatting options', async () => {
 		const extension = extensions.getExtension('stylelint.vscode-stylelint');
 
 		if (!extension) {
 			throw new Error('Unable to find Stylelint extension');
 		}
 
-		const api = /** @type {ExtensionPublicApi} */ extension.exports;
+		const api = extension.exports as PublicApi;
 
-		await pWaitFor(() => api.formattingReady);
-	});
+		// api is an event emitter. Wait for the DidRegisterDocumentFormattingEditProvider
+		// event to be emitted before continuing.
 
-	it('should format document using formatting options', async () => {
+		const documentPath = path.resolve(workspaceDir, 'defaults/format.css');
+
+		const eventPromise = new Promise<void>((resolve, reject) => {
+			api.on(ApiEvent.DidRegisterDocumentFormattingEditProvider, ({ uri }) => {
+				const { fsPath } = URI.parse(uri);
+
+				if (path.relative(documentPath, fsPath) === '') {
+					resolve();
+				}
+			});
+
+			setTimeout(() => {
+				reject(new Error('Timed out waiting for DidRegisterDocumentFormattingEditProvider event'));
+			}, 5000);
+		});
+
 		const cssDocument = await workspace.openTextDocument(
 			path.resolve(workspaceDir, 'defaults/format.css'),
 		);
 
 		const editor = await window.showTextDocument(cssDocument);
+
+		await eventPromise;
 
 		editor.options.tabSize = 4;
 		editor.options.insertSpaces = false;

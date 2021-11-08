@@ -10,7 +10,10 @@ jest.mock('vscode-languageclient/node', () => ({
 import { EventEmitter } from 'events';
 import vscode, { window } from 'vscode';
 import { LanguageClient, SettingMonitor, NodeModule } from 'vscode-languageclient/node';
-import { Notification } from '../../server';
+import {
+	DidRegisterDocumentFormattingEditProviderNotificationParams,
+	Notification,
+} from '../../server';
 import { activate } from '../extension';
 import { ApiEvent } from '../types';
 
@@ -225,13 +228,22 @@ describe('Extension entry point', () => {
 	it('should emit the DidRegisterDocumentFormattingEditProvider event when the DidRegisterDocumentFormattingEditProvider notification is received', async () => {
 		const api = activate(mockExtensionContext);
 
-		const promise = new Promise<void>((resolve) => {
-			api.on(ApiEvent.DidRegisterDocumentFormattingEditProvider, resolve);
-		});
+		const promise = new Promise<DidRegisterDocumentFormattingEditProviderNotificationParams>(
+			(resolve) => {
+				api.on(ApiEvent.DidRegisterDocumentFormattingEditProvider, resolve);
+			},
+		);
+
+		const params: DidRegisterDocumentFormattingEditProviderNotificationParams = {
+			uri: 'file:///foo.css',
+			options: {
+				documentSelector: [{ scheme: 'file', pattern: '/foo.css' }],
+			},
+		};
 
 		afterOnReady.mock.calls[0][0]();
-		onNotification.mock.calls[0][1]();
+		onNotification.mock.calls[0][1](params);
 
-		await expect(promise).resolves.toBeUndefined();
+		await expect(promise).resolves.toStrictEqual(params);
 	});
 });

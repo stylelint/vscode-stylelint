@@ -563,6 +563,12 @@ describe('FormatterModule', () => {
 
 		expect(mockContext.connection.sendNotification).toHaveBeenCalledWith(
 			Notification.DidRegisterDocumentFormattingEditProvider,
+			{
+				uri: 'file:///dir/test.css',
+				options: {
+					documentSelector: [{ scheme: 'file', pattern: '/dir/test.css' }],
+				},
+			},
 		);
 	});
 });
