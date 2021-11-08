@@ -99,7 +99,6 @@ describe('Extension entry point', () => {
 		const api = activate(mockExtensionContext);
 
 		expect(api).toBeInstanceOf(EventEmitter);
-		expect(api.formattingReady).toBe(false);
 	});
 
 	it('should create a language client', () => {
@@ -214,15 +213,6 @@ describe('Extension entry point', () => {
 			Notification.DidRegisterDocumentFormattingEditProvider,
 		);
 		expect(onNotification.mock.calls[0][1]).toBeInstanceOf(Function);
-	});
-
-	it('should set the formattingReady flag to true when the DidRegisterDocumentFormattingEditProvider notification is received', () => {
-		const api = activate(mockExtensionContext);
-
-		afterOnReady.mock.calls[0][0]();
-		onNotification.mock.calls[0][1]();
-
-		expect(api.formattingReady).toBe(true);
 	});
 
 	it('should emit the DidRegisterDocumentFormattingEditProvider event when the DidRegisterDocumentFormattingEditProvider notification is received', async () => {
