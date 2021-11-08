@@ -392,12 +392,12 @@ export class StylelintLanguageServer {
 		if (this.#hasConfigurationCapability) {
 			this.#logger?.debug('Registering DidChangeConfigurationNotification');
 
-			this.#connection.client.register(DidChangeConfigurationNotification.type, undefined);
+			this.#connection.client.register(DidChangeConfigurationNotification.type);
 		}
 	}
 
 	#onDidCloseDocument({ document }: TextDocumentChangeEvent<TextDocument>): void {
-		this.#logger?.debug('received document.onDidClose, clearing cached options', {
+		this.#logger?.debug('received documents.onDidClose, clearing cached options', {
 			uri: document.uri,
 		});
 

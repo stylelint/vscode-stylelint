@@ -1,14 +1,20 @@
 import { CodeActionKind, Position, TextEdit } from 'vscode-languageserver-types';
 import type winston from 'winston';
 import { CodeActionKind as StylelintCodeActionKind } from '../../types';
-import type { LanguageServerModuleConstructorParameters } from '../../types';
+import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 import { CodeActionModule } from '../code-action';
+
+const mockOptions: LanguageServerOptions = {
+	packageManager: 'npm',
+	validate: [],
+	snippet: [],
+};
 
 const mockContext = {
 	connection: { onCodeAction: jest.fn() },
 	documents: { get: jest.fn() },
-	options: { validate: [] as string[] },
+	getOptions: jest.fn(async () => mockOptions),
 	getFixes: jest.fn(),
 };
 
@@ -25,7 +31,7 @@ const getParams = (passLogger = false) =>
 
 describe('CodeActionModule', () => {
 	beforeEach(() => {
-		mockContext.options.validate = [];
+		mockOptions.validate = [];
 		jest.clearAllMocks();
 	});
 
@@ -53,7 +59,7 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
 		const module = new CodeActionModule(getParams(true));
@@ -79,7 +85,7 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
 		const module = new CodeActionModule(getParams(true));
@@ -105,7 +111,7 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
 		const module = new CodeActionModule(getParams(true));
@@ -190,7 +196,7 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 
 		const module = new CodeActionModule(getParams(true));
 
@@ -219,7 +225,7 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
 		const module = new CodeActionModule(getParams(true));

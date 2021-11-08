@@ -3,17 +3,20 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import type LSP from 'vscode-languageserver-protocol';
 import type winston from 'winston';
 import { DisableReportRuleNames } from '../../../utils/stylelint';
-import type { LanguageServerModuleConstructorParameters } from '../../types';
+import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 import { CompletionModule } from '../completion';
+
+const mockOptions: LanguageServerOptions = {
+	packageManager: 'npm',
+	validate: [],
+	snippet: [],
+};
 
 const mockContext = {
 	connection: { onCompletion: jest.fn() },
 	documents: { get: jest.fn() },
-	options: {
-		validate: [] as string[],
-		snippet: [] as string[],
-	},
+	getOptions: jest.fn(async () => mockOptions),
 	getModule: jest.fn(),
 };
 
@@ -45,8 +48,8 @@ const createNeedlessDisableDiagnostic = ({
 
 describe('CompletionModule', () => {
 	beforeEach(() => {
-		mockContext.options.validate = [];
-		mockContext.options.snippet = [];
+		mockOptions.validate = [];
+		mockOptions.snippet = [];
 		jest.clearAllMocks();
 	});
 
@@ -93,8 +96,8 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['baz'];
-		mockContext.options.snippet = ['bar'];
+		mockOptions.validate = ['baz'];
+		mockOptions.snippet = ['bar'];
 
 		const module = new CompletionModule(getParams(true));
 
@@ -123,8 +126,8 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['bar'];
-		mockContext.options.snippet = ['baz'];
+		mockOptions.validate = ['bar'];
+		mockOptions.snippet = ['baz'];
 
 		const module = new CompletionModule(getParams(true));
 
@@ -153,8 +156,8 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['bar'];
-		mockContext.options.snippet = ['baz'];
+		mockOptions.validate = ['bar'];
+		mockOptions.snippet = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
 		const module = new CompletionModule(getParams(true));
@@ -181,8 +184,8 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['bar'];
-		mockContext.options.snippet = ['bar'];
+		mockOptions.validate = ['bar'];
+		mockOptions.snippet = ['bar'];
 		mockContext.getModule.mockReturnValue(undefined);
 
 		const module = new CompletionModule(getParams(true));
@@ -205,8 +208,8 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['bar'];
-		mockContext.options.snippet = ['bar'];
+		mockOptions.validate = ['bar'];
+		mockOptions.snippet = ['bar'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [],
 		});
@@ -228,8 +231,8 @@ describe('CompletionModule', () => {
 
 	test('with no diagnostics at the same or next line, should return generic completions', async () => {
 		mockContext.documents.get.mockReturnValue(createDocument('a {\n  color: red;\n}'));
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -262,8 +265,8 @@ describe('CompletionModule', () => {
 
 	test('with diagnostics at the same line, should return disable comment completions for rule', async () => {
 		mockContext.documents.get.mockReturnValue(createDocument('a {\n  color: red;\n}'));
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -293,8 +296,8 @@ describe('CompletionModule', () => {
 		mockContext.documents.get.mockReturnValue(
 			createDocument('a {\n  font-weight: 400;\n  color: red;\n}'),
 		);
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -322,8 +325,8 @@ describe('CompletionModule', () => {
 
 	test('with needless disables reported for a diagnostic, should return generic completions', async () => {
 		mockContext.documents.get.mockReturnValue(createDocument('a {\n  color: red;\n}'));
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -360,8 +363,8 @@ describe('CompletionModule', () => {
   color: red;
 }`),
 		);
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -394,8 +397,8 @@ describe('CompletionModule', () => {
   color: red;
 }`),
 		);
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -428,8 +431,8 @@ describe('CompletionModule', () => {
   color: red;
 }`),
 		);
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -463,8 +466,8 @@ describe('CompletionModule', () => {
   font-weight: 400;
 }`),
 		);
-		mockContext.options.validate = ['css'];
-		mockContext.options.snippet = ['css'];
+		mockOptions.validate = ['css'];
+		mockOptions.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{

@@ -90,10 +90,6 @@ export class FormatterModule implements LanguageServerModule {
 	}
 
 	#deregister(uri: string): void {
-		if (!this.#registerDynamically) {
-			return;
-		}
-
 		const registration = this.#registrations.get(uri);
 
 		if (!registration) {
@@ -107,10 +103,6 @@ export class FormatterModule implements LanguageServerModule {
 	}
 
 	#deregisterAll(): void {
-		if (!this.#registerDynamically) {
-			return;
-		}
-
 		for (const [uri, registration] of this.#registrations) {
 			this.#logger?.debug('Deregistering formatter for document', { uri });
 
@@ -121,8 +113,7 @@ export class FormatterModule implements LanguageServerModule {
 	}
 
 	onDidRegisterHandlers(): void {
-		this.#logger?.debug('Registering onDocumentFormatting handler');
-
+		this.#logger?.debug('Registering connection.onDocumentFormatting handler');
 		this.#context.connection.onDocumentFormatting(async ({ textDocument, options }) => {
 			this.#logger?.debug('Received onDocumentFormatting', { textDocument, options });
 
@@ -164,19 +155,34 @@ export class FormatterModule implements LanguageServerModule {
 
 			return fixes;
 		});
+		this.#logger?.debug('connection.onDocumentFormatting handler registered');
 
-		this.#logger?.debug('onDocumentFormatting handler registered');
-
+		this.#logger?.debug('Registering documents.onDidOpen handler');
 		this.#context.documents.onDidOpen(({ document }) => this.#register(document));
-		this.#context.documents.onDidChangeContent(({ document }) => this.#register(document));
-		this.#context.documents.onDidSave(({ document }) => this.#register(document));
-		this.#context.documents.onDidClose(({ document }) => this.#deregister(document.uri));
+		this.#logger?.debug('documents.onDidOpen handler registered');
 
+		this.#logger?.debug('Registering documents.onDidChangeContent handler');
+		this.#context.documents.onDidChangeContent(({ document }) => this.#register(document));
+		this.#logger?.debug('documents.onDidChangeContent handler registered');
+
+		this.#logger?.debug('Registering documents.onDidSave handler');
+		this.#context.documents.onDidSave(({ document }) => this.#register(document));
+		this.#logger?.debug('documents.onDidSave handler registered');
+
+		this.#logger?.debug('Registering documents.onDidClose handler');
+		this.#context.documents.onDidClose(({ document }) => this.#deregister(document.uri));
+		this.#logger?.debug('documents.onDidClose handler registered');
+
+		this.#logger?.debug('Registering DidChangeConfigurationNotification');
 		this.#context.connection.onNotification(LSP.DidChangeConfigurationNotification.type, () =>
 			this.#deregisterAll(),
 		);
+		this.#logger?.debug('DidChangeConfigurationNotification registered');
+
+		this.#logger?.debug('Registering DidChangeWorkspaceFoldersNotification');
 		this.#context.connection.onNotification(LSP.DidChangeWorkspaceFoldersNotification.type, () =>
 			this.#deregisterAll(),
 		);
+		this.#logger?.debug('DidChangeWorkspaceFoldersNotification registered');
 	}
 }

@@ -10,7 +10,7 @@ import type winston from 'winston';
 import { getWorkspaceFolder } from '../../../utils/documents';
 import { findPackageRoot } from '../../../utils/packages';
 import { OldStylelintWarningModule } from '../old-stylelint-warning';
-import type { LanguageServerModuleConstructorParameters } from '../../types';
+import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 const mockedFS = fs as tests.mocks.FSPromisesModule;
 const mockedPath = path as tests.mocks.PathModule;
@@ -18,6 +18,12 @@ const mockedGetWorkspaceFolder = getWorkspaceFolder as jest.MockedFunction<
 	typeof getWorkspaceFolder
 >;
 const mockedFindPackageRoot = findPackageRoot as jest.MockedFunction<typeof findPackageRoot>;
+
+const mockOptions: LanguageServerOptions = {
+	packageManager: 'npm',
+	validate: [],
+	snippet: [],
+};
 
 const mockContext = {
 	connection: {
@@ -27,7 +33,7 @@ const mockContext = {
 		},
 	},
 	documents: { onDidOpen: jest.fn() },
-	options: { validate: [] as string[] },
+	getOptions: jest.fn(async () => mockOptions),
 	displayError: jest.fn(),
 	resolveStylelint: jest.fn(),
 };
@@ -47,7 +53,7 @@ const getParams = (passLogger = false) =>
 describe('OldStylelintWarningModule', () => {
 	beforeEach(() => {
 		mockedPath.__mockPlatform('posix');
-		mockContext.options.validate = [];
+		mockOptions.validate = [];
 		jest.clearAllMocks();
 	});
 
@@ -65,7 +71,7 @@ describe('OldStylelintWarningModule', () => {
 	});
 
 	test('if document language ID is not in options, should not warn', async () => {
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 
 		const module = new OldStylelintWarningModule(getParams(true));
 
@@ -89,7 +95,7 @@ describe('OldStylelintWarningModule', () => {
 
 	test('if document is not part of a workspace, should not warn', async () => {
 		mockedGetWorkspaceFolder.mockResolvedValue(undefined);
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 
 		const module = new OldStylelintWarningModule(getParams(true));
 
@@ -113,7 +119,7 @@ describe('OldStylelintWarningModule', () => {
 
 	test('if document has already been checked, should not warn', async () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 
 		const module = new OldStylelintWarningModule(getParams(true));
 
@@ -146,7 +152,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 
 		const module = new OldStylelintWarningModule(getParams(true));
 
@@ -176,7 +182,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockedFS.readFile.mockRejectedValue(error);
 
 		const module = new OldStylelintWarningModule(getParams(true));
@@ -206,7 +212,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{');
 
 		const module = new OldStylelintWarningModule(getParams(true));
@@ -240,7 +246,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{}');
 
 		const module = new OldStylelintWarningModule(getParams(true));
@@ -266,7 +272,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "foo"}');
 
 		const module = new OldStylelintWarningModule(getParams(true));
@@ -297,7 +303,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "14.0.0"}');
 
 		const module = new OldStylelintWarningModule(getParams(true));
@@ -323,7 +329,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "14.0.0-sdk"}');
 
 		const module = new OldStylelintWarningModule(getParams(true));
@@ -349,7 +355,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "13.0.0"}');
 
 		const module = new OldStylelintWarningModule(getParams(true));
@@ -377,7 +383,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.connection.window.showWarningMessage.mockResolvedValue(undefined);
 		mockedFS.readFile.mockResolvedValue('{"version": "13.0.0"}');
 
@@ -411,7 +417,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.connection.window.showWarningMessage.mockResolvedValue({
 			title: 'Open migration guide',
 		});
@@ -452,7 +458,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.connection.window.showWarningMessage.mockResolvedValue({
 			title: 'Open migration guide',
 		});

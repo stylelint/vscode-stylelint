@@ -1,9 +1,15 @@
 import { Position, TextEdit } from 'vscode-languageserver-types';
 import type winston from 'winston';
 import { CommandId } from '../../types';
-import type { LanguageServerModuleConstructorParameters } from '../../types';
+import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 import { AutoFixModule } from '../auto-fix';
+
+const mockOptions: LanguageServerOptions = {
+	packageManager: 'npm',
+	validate: [],
+	snippet: [],
+};
 
 const mockContext = {
 	connection: {
@@ -13,7 +19,7 @@ const mockContext = {
 		},
 	},
 	documents: { get: jest.fn() },
-	options: { validate: [] as string[] },
+	getOptions: jest.fn(async () => mockOptions),
 	getFixes: jest.fn(),
 };
 
@@ -30,7 +36,7 @@ const getParams = (passLogger = false) =>
 
 describe('AutoFixModule', () => {
 	beforeEach(() => {
-		mockContext.options.validate = [];
+		mockOptions.validate = [];
 		jest.clearAllMocks();
 	});
 
@@ -59,7 +65,7 @@ describe('AutoFixModule', () => {
 			languageId: 'bar',
 			version: 1,
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 		mockContext.connection.workspace.applyEdit.mockResolvedValue({ applied: true });
 
@@ -133,7 +139,7 @@ describe('AutoFixModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 
 		const module = new AutoFixModule(getParams(true));
 
@@ -162,7 +168,7 @@ describe('AutoFixModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
 		const module = new AutoFixModule(getParams(true));
@@ -189,7 +195,7 @@ describe('AutoFixModule', () => {
 			languageId: 'bar',
 			version: 2,
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 
 		const module = new AutoFixModule(getParams(true));
 
@@ -217,7 +223,7 @@ describe('AutoFixModule', () => {
 			languageId: 'bar',
 			version: 1,
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 		mockContext.connection.workspace.applyEdit.mockResolvedValue(response);
 
@@ -247,7 +253,7 @@ describe('AutoFixModule', () => {
 			languageId: 'bar',
 			version: 1,
 		});
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 		mockContext.connection.workspace.applyEdit.mockRejectedValue(error);
 

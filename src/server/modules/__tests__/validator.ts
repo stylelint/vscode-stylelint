@@ -1,7 +1,13 @@
 import { Range } from 'vscode-languageserver-types';
 import type winston from 'winston';
 import { ValidatorModule } from '../validator';
-import type { LanguageServerModuleConstructorParameters } from '../../types';
+import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
+
+const mockOptions: LanguageServerOptions = {
+	packageManager: 'npm',
+	validate: ['css', 'postcss'],
+	snippet: ['css', 'postcss'],
+};
 
 const mockContext = {
 	connection: {
@@ -13,7 +19,7 @@ const mockContext = {
 		onDidChangeContent: jest.fn(),
 		onDidClose: jest.fn(),
 	},
-	options: { validate: [] as string[] },
+	getOptions: jest.fn(async () => mockOptions),
 	displayError: jest.fn(),
 	lintDocument: jest.fn(),
 };
@@ -32,7 +38,7 @@ const getParams = (passLogger = false) =>
 
 describe('ValidatorModule', () => {
 	beforeEach(() => {
-		mockContext.options.validate = [];
+		mockOptions.validate = [];
 		jest.clearAllMocks();
 	});
 
@@ -56,7 +62,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('if document language ID is not in options, should not validate', async () => {
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 
 		const module = new ValidatorModule(getParams(true));
 
@@ -76,7 +82,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('if linting produces no results, should not validate', async () => {
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 
 		const module = new ValidatorModule(getParams(true));
 
@@ -93,7 +99,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('if linting produces results, should forward diagnostics to client', async () => {
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.lintDocument.mockResolvedValueOnce({
 			diagnostics: [
 				{
@@ -132,7 +138,7 @@ describe('ValidatorModule', () => {
 	test('if sending diagnostics fails, should display the error', async () => {
 		const error = new Error('foo');
 
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		mockContext.lintDocument.mockResolvedValueOnce({
 			diagnostics: [
 				{
@@ -177,7 +183,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('onInitialize should validate all documents', async () => {
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 		mockContext.lintDocument.mockImplementation((document) => {
 			return document.uri === 'foo'
 				? {
@@ -238,7 +244,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('onDidChangeWatchedFiles should validate all documents', async () => {
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 		mockContext.lintDocument.mockImplementation((document) => {
 			return document.uri === 'foo'
 				? {
@@ -300,7 +306,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('onDidChangeConfiguration should validate all documents', async () => {
-		mockContext.options.validate = ['baz'];
+		mockOptions.validate = ['baz'];
 		mockContext.lintDocument.mockImplementation((document) => {
 			return document.uri === 'foo'
 				? {
@@ -358,7 +364,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('getDiagnostics should return cached diagnostics per document', async () => {
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		const diagnostics = [
 			{
 				code: 'indentation',
@@ -392,7 +398,7 @@ describe('ValidatorModule', () => {
 	});
 
 	test('onDidClose should clear diagnostics', async () => {
-		mockContext.options.validate = ['bar'];
+		mockOptions.validate = ['bar'];
 		const diagnostics = [
 			{
 				code: 'indentation',
@@ -432,37 +438,8 @@ describe('ValidatorModule', () => {
 		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics cleared', { uri: 'foo' });
 	});
 
-	test("with no debug log level, onDidChangeValidateLanguages shouldn't log languages", () => {
-		mockLogger.isDebugEnabled.mockReturnValue(false);
-		mockContext.documents.all.mockReturnValueOnce([]);
-		const module = new ValidatorModule(getParams(true));
-
-		module.onDidChangeValidateLanguages({
-			languages: new Set(['foo']),
-			removedLanguages: new Set(),
-		});
-
-		expect(mockLogger.debug).not.toHaveBeenCalledWith('Received onDidChangeValidateLanguages');
-		expect(mockLogger.debug).not.toHaveBeenCalledWith('Registering formatter for languages');
-	});
-
-	test('with debug log level, onDidChangeValidateLanguages should log languages', () => {
-		mockLogger.isDebugEnabled.mockReturnValue(true);
-		mockContext.documents.all.mockReturnValueOnce([]);
-		const module = new ValidatorModule(getParams(true));
-
-		module.onDidChangeValidateLanguages({
-			languages: new Set(['foo']),
-			removedLanguages: new Set(),
-		});
-
-		expect(mockLogger.debug).toHaveBeenLastCalledWith('Received onDidChangeValidateLanguages', {
-			removedLanguages: [],
-		});
-	});
-
-	test('when languages are removed, onDidChangeValidateLanguages should clear diagnostics for documents of those languages', async () => {
-		mockContext.options.validate = ['baz', 'qux'];
+	test('when the configuration is updated, all documents should be revalidated', async () => {
+		mockOptions.validate = ['baz', 'qux'];
 		mockContext.lintDocument.mockImplementation((document) => {
 			return document.uri === 'foo'
 				? {
@@ -493,13 +470,69 @@ describe('ValidatorModule', () => {
 
 		await module.onDidChangeConfiguration();
 
-		module.onDidChangeValidateLanguages({
-			languages: new Set(['qux']),
-			removedLanguages: new Set(['baz']),
-		});
-
 		expect(mockContext.lintDocument).toHaveBeenCalledTimes(2);
-		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledTimes(3);
+		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledTimes(2);
+		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledWith({
+			uri: 'foo',
+			diagnostics: [
+				{
+					code: 'indentation',
+					message: 'Expected indentation of 4 spaces',
+					range: Range.create(4, 5, 1, 4),
+				},
+			],
+		});
+		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledWith({
+			uri: 'bar',
+			diagnostics: [
+				{
+					code: 'color-hex-case',
+					message: 'Expected "#CCC" to be "#ccc"',
+					range: Range.create(2, 2, 2, 6),
+				},
+			],
+		});
+		expect(mockLogger.debug).toHaveBeenCalledWith('Received onDidChangeConfiguration');
+	});
+
+	test('when the configuration is updated, documents excluded from new config should have diagnostics cleared', async () => {
+		mockOptions.validate = ['baz', 'qux'];
+		mockContext.lintDocument.mockImplementation((document) => {
+			return document.uri === 'foo'
+				? {
+						diagnostics: [
+							{
+								code: 'indentation',
+								message: 'Expected indentation of 4 spaces',
+								range: Range.create(4, 5, 1, 4),
+							},
+						],
+				  }
+				: {
+						diagnostics: [
+							{
+								code: 'color-hex-case',
+								message: 'Expected "#CCC" to be "#ccc"',
+								range: Range.create(2, 2, 2, 6),
+							},
+						],
+				  };
+		});
+		mockContext.documents.all.mockReturnValue([
+			{ uri: 'foo', languageId: 'baz' },
+			{ uri: 'bar', languageId: 'qux' },
+		]);
+
+		const module = new ValidatorModule(getParams(true));
+
+		await module.onDidChangeConfiguration();
+
+		mockOptions.validate = ['baz'];
+
+		await module.onDidChangeConfiguration();
+
+		expect(mockContext.lintDocument).toHaveBeenCalledTimes(3);
+		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledTimes(4);
 		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledWith({
 			uri: 'foo',
 			diagnostics: [
@@ -521,9 +554,15 @@ describe('ValidatorModule', () => {
 			],
 		});
 		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledWith({
-			uri: 'foo',
+			uri: 'bar',
 			diagnostics: [],
 		});
-		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics cleared', { uri: 'foo' });
+		expect(mockLogger.debug).toHaveBeenCalledWith(
+			'Document should not be validated, clearing diagnostics',
+			{
+				uri: 'bar',
+				language: 'qux',
+			},
+		);
 	});
 });

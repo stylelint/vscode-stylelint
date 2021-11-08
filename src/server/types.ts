@@ -96,17 +96,6 @@ export interface LanguageServerContext {
 }
 
 /**
- * Parameters for the {@link LanguageServerModule.onDidChangeConfiguration}
- * event.
- *
- * Note: This is not the same as {@link LSP.DidChangeConfigurationParams}, which
- * is used for the {@link LSP.DidChangeConfigurationNotification}.
- */
-export interface DidChangeConfigurationParams {
-	settings: LanguageServerOptions;
-}
-
-/**
  * A language server module.
  */
 export interface LanguageServerModule {
@@ -125,7 +114,7 @@ export interface LanguageServerModule {
 	 * Handler called after the language server has finished responding to the
 	 * onDidChangeConfiguration event.
 	 */
-	onDidChangeConfiguration?: (params: DidChangeConfigurationParams) => void;
+	onDidChangeConfiguration?: () => void;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[key: string | symbol]: any;

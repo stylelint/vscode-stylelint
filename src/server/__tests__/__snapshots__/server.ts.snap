@@ -4,34 +4,28 @@ exports[`StylelintLanguageServer should accept server modules 1`] = `
 Object {
   "context": Object {
     "connection": Object {
+      "client": Object {
+        "register": [MockFunction],
+      },
       "listen": [MockFunction],
       "onDidChangeConfiguration": [MockFunction],
       "onDidChangeWatchedFiles": [MockFunction],
       "onInitialize": [MockFunction],
+      "onInitialized": [MockFunction],
       "sendDiagnostics": [MockFunction],
+      "workspace": Object {
+        "getConfiguration": [MockFunction],
+      },
     },
     "displayError": [Function],
-    "documents": TextDocuments {
-      "all": [MockFunction],
-      "get": [MockFunction],
-      "keys": [MockFunction],
+    "documents": Object {
       "listen": [MockFunction],
-      "onWillSaveWaitUntil": [MockFunction],
+      "onDidClose": [MockFunction],
     },
     "getFixes": [Function],
     "getModule": [Function],
+    "getOptions": [Function],
     "lintDocument": [Function],
-    "options": Object {
-      "packageManager": "npm",
-      "snippet": Array [
-        "css",
-        "postcss",
-      ],
-      "validate": Array [
-        "css",
-        "postcss",
-      ],
-    },
     "resolveStylelint": [Function],
     "runner": StylelintRunner {
       "lintDocument": [MockFunction],
@@ -198,70 +192,6 @@ Object {
 }
 `;
 
-exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when first settings are sent to server 1`] = `
-Object {
-  "config": undefined,
-  "configBasedir": undefined,
-  "configFile": undefined,
-  "customSyntax": undefined,
-  "ignoreDisables": undefined,
-  "packageManager": "npm",
-  "reportInvalidScopeDisables": undefined,
-  "reportNeedlessDisables": undefined,
-  "snippet": Array [
-    "css",
-    "postcss",
-  ],
-  "stylelintPath": undefined,
-  "validate": Array [
-    "css",
-    "postcss",
-  ],
-}
-`;
-
-exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when first settings are sent to server 2`] = `
-Object {
-  "languages": Set {
-    "css",
-    "postcss",
-  },
-  "removedLanguages": Set {},
-}
-`;
-
-exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when validate option changes 1`] = `
-Object {
-  "config": undefined,
-  "configBasedir": undefined,
-  "configFile": undefined,
-  "customSyntax": undefined,
-  "ignoreDisables": undefined,
-  "packageManager": "npm",
-  "reportInvalidScopeDisables": undefined,
-  "reportNeedlessDisables": undefined,
-  "snippet": Array [
-    "css",
-    "postcss",
-  ],
-  "stylelintPath": undefined,
-  "validate": Array [
-    "css",
-  ],
-}
-`;
-
-exports[`StylelintLanguageServer should fire onDidChangeValidateLanguages when validate option changes 2`] = `
-Object {
-  "languages": Set {
-    "css",
-  },
-  "removedLanguages": Set {
-    "postcss",
-  },
-}
-`;
-
 exports[`StylelintLanguageServer should not accept modules with a non-string ID 1`] = `"Module IDs must be strings"`;
 
 exports[`StylelintLanguageServer should not accept modules with duplicate IDs 1`] = `"Module with ID \\"test-module\\" already registered"`;
@@ -269,51 +199,3 @@ exports[`StylelintLanguageServer should not accept modules with duplicate IDs 1`
 exports[`StylelintLanguageServer should not accept modules without an ID 1`] = `"Modules must have an ID"`;
 
 exports[`StylelintLanguageServer should prevent modules from modifying context properties 1`] = `"Cannot set read-only property"`;
-
-exports[`StylelintLanguageServer should receive settings from the client and pass them to modules with defaults 1`] = `
-Object {
-  "config": undefined,
-  "configBasedir": undefined,
-  "configFile": undefined,
-  "customSyntax": undefined,
-  "ignoreDisables": undefined,
-  "packageManager": "npm",
-  "reportInvalidScopeDisables": undefined,
-  "reportNeedlessDisables": undefined,
-  "snippet": Array [
-    "css",
-    "postcss",
-  ],
-  "stylelintPath": undefined,
-  "validate": Array [
-    "css",
-    "postcss",
-  ],
-}
-`;
-
-exports[`StylelintLanguageServer should receive updates to settings from the client and pass them to modules 1`] = `
-Object {
-  "config": Object {
-    "rules": Object {
-      "block-no-empty": true,
-    },
-  },
-  "configBasedir": undefined,
-  "configFile": undefined,
-  "customSyntax": undefined,
-  "ignoreDisables": true,
-  "packageManager": "npm",
-  "reportInvalidScopeDisables": undefined,
-  "reportNeedlessDisables": undefined,
-  "snippet": Array [
-    "css",
-    "postcss",
-  ],
-  "stylelintPath": undefined,
-  "validate": Array [
-    "css",
-    "postcss",
-  ],
-}
-`;
