@@ -9,8 +9,8 @@ const config = {
 	verbose: true,
 	modulePathIgnorePatterns: [
 		'<rootDir>/../../.vscode-test',
-		'<rootDir>/workspace/yarn-[^/]+/stylelint',
-		'<rootDir>/workspace/local-stylelint/node_modules',
+		'<rootDir>/workspace/defaults/yarn-[^/]+/stylelint',
+		'<rootDir>/workspace/defaults/local-stylelint/node_modules',
 	],
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	runner: 'vscode',
