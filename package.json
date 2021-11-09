@@ -239,5 +239,9 @@
     "test:unit": "jest --projects test/unit",
     "vscode:prepublish": "npm run build && npm run bundle-base -- --minify"
   },
-  "prettier": "@stylelint/prettier-config"
+  "prettier": "@stylelint/prettier-config",
+  "volta": {
+    "node": "14.17.6",
+    "npm": "8.1.3"
+  }
 }
