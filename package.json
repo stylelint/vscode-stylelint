@@ -54,6 +54,26 @@
           "default": true,
           "description": "Control whether Stylelint is enabled or not."
         },
+        "stylelint.codeAction.disableRuleComment": {
+          "scope": "resource",
+          "type": "object",
+          "default": {
+            "location": "separateLine"
+          },
+          "properties": {
+            "location": {
+              "type": "string",
+              "enum": [
+                "separateLine",
+                "sameLine"
+              ],
+              "default": "separateLine",
+              "description": "Configure whether disable comments are added on the same line or a new line."
+            }
+          },
+          "additionalProperties": false,
+          "description": "Options for the disable lint rule action in the quick fix menu."
+        },
         "stylelint.config": {
           "scope": "resource",
           "type": [
@@ -170,6 +190,7 @@
     "@types/triple-beam": "^1.3.2",
     "fast-diff": "^1.2.0",
     "path-is-inside": "^1.0.2",
+    "rfdc": "^1.3.0",
     "semver": "^7.3.5",
     "serialize-error": "^8.1.0",
     "triple-beam": "^1.3.0",

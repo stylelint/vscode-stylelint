@@ -6,6 +6,11 @@ import type { LanguageServerOptions, LanguageServerModuleConstructorParameters }
 import { AutoFixModule } from '../auto-fix';
 
 const mockOptions: LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine',
+		},
+	},
 	packageManager: 'npm',
 	validate: [],
 	snippet: [],

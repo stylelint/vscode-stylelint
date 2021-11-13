@@ -2,7 +2,8 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"typeRoots": ["./types", "./node_modules/@types"],
-		"types": ["node", "babel__core"]
+		"types": ["node", "babel__core"],
+		"noEmit": true
 	},
 	"include": ["*.js", "package.json", "scripts/**/*", "test/e2e/jest-runner-vscode.config.js"],
 	"exclude": ["**/coverage"]

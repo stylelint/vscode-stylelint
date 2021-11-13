@@ -29,6 +29,11 @@ import { Notification } from '../../types';
 import { FormatterModule } from '../formatter';
 
 const mockOptions: LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine',
+		},
+	},
 	packageManager: 'npm',
 	validate: [],
 	snippet: [],

@@ -4,6 +4,7 @@ import type LSP from 'vscode-languageserver-protocol';
 import { TextDocuments } from 'vscode-languageserver/node';
 import {
 	DidChangeConfigurationNotification,
+	InitializedNotification,
 	TextDocumentSyncKind,
 } from 'vscode-languageserver-protocol';
 // eslint-disable-next-line node/no-unpublished-import
@@ -11,8 +12,8 @@ import type stylelint from 'stylelint';
 import type winston from 'winston';
 
 import { getFixes } from '../utils/documents';
-import { displayError } from '../utils/lsp';
-import { deepAssign } from '../utils/objects';
+import { displayError, CommandManager, NotificationManager } from '../utils/lsp';
+import { mergeAssign, mergeOptionsWithDefaults } from '../utils/objects';
 import { StylelintRunner, LintDiagnostics } from '../utils/stylelint';
 import { StylelintResolver, StylelintResolutionResult } from '../utils/packages';
 import type {
@@ -25,9 +26,22 @@ import type {
 } from './types';
 
 const defaultOptions: LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine',
+		},
+	},
+	config: null,
+	configFile: '',
+	configBasedir: '',
+	customSyntax: '',
+	ignoreDisables: false,
 	packageManager: 'npm',
-	validate: ['css', 'postcss'],
+	reportInvalidScopeDisables: false,
+	reportNeedlessDisables: false,
 	snippet: ['css', 'postcss'],
+	stylelintPath: '',
+	validate: ['css', 'postcss'],
 };
 
 /**
@@ -43,6 +57,16 @@ export class StylelintLanguageServer {
 	 * The logger to use, if any.
 	 */
 	#logger: winston.Logger | undefined;
+
+	/**
+	 * The notification manager for the connection.
+	 */
+	#notifications: NotificationManager;
+
+	/**
+	 * The command manager for the connection.
+	 */
+	#commands: CommandManager;
 
 	/**
 	 * The global language server options, used if the client does not support
@@ -91,12 +115,16 @@ export class StylelintLanguageServer {
 	constructor({ connection, logger, modules }: LanguageServerConstructorParameters) {
 		this.#connection = connection;
 		this.#logger = logger?.child({ component: 'language-server' });
+		this.#notifications = new NotificationManager(connection, this.#logger);
+		this.#commands = new CommandManager(connection, this.#logger);
 		this.#globalOptions = defaultOptions;
 		this.#resolver = new StylelintResolver(connection, this.#logger);
 		this.#runner = new StylelintRunner(connection, this.#logger, this.#resolver);
 		this.#documents = new TextDocuments(TextDocument);
 		this.#context = {
 			connection: this.#connection,
+			notifications: this.#notifications,
+			commands: this.#commands,
 			documents: this.#documents,
 			runner: this.#runner,
 			getOptions: this.#getOptions.bind(this),
@@ -171,19 +199,27 @@ export class StylelintLanguageServer {
 		const cached = this.#scopedOptions.get(resource);
 
 		if (cached) {
+			this.#logger?.debug('Returning cached options', { resource });
+
 			return cached;
 		}
+
+		this.#logger?.debug('Requesting options from client', { resource });
 
 		const options = await this.#connection.workspace.getConfiguration({
 			scopeUri: resource,
 			section: 'stylelint',
 		});
 
-		const withDefaults = this.#getEffectiveOptions(options);
+		this.#logger?.debug('Received options from client', { resource, options });
+
+		const withDefaults = mergeOptionsWithDefaults(options, defaultOptions);
 
 		Object.freeze(withDefaults);
 
 		this.#scopedOptions.set(resource, withDefaults);
+
+		this.#logger?.debug('Returning options', { resource, options: withDefaults });
 
 		return withDefaults;
 	}
@@ -273,28 +309,6 @@ export class StylelintLanguageServer {
 	}
 
 	/**
-	 * Returns a shallow copy of the given options with defaults set for options
-	 * that are not set. If no options are given, the default options are returned.
-	 */
-	#getEffectiveOptions(options: Partial<LanguageServerOptions> = {}): LanguageServerOptions {
-		const withDefaults = {
-			config: options.config,
-			configBasedir: options.configBasedir,
-			configFile: options.configFile,
-			customSyntax: options.customSyntax,
-			ignoreDisables: options.ignoreDisables,
-			packageManager: options.packageManager || defaultOptions.packageManager,
-			reportInvalidScopeDisables: options.reportInvalidScopeDisables,
-			reportNeedlessDisables: options.reportNeedlessDisables,
-			snippet: options.snippet ?? defaultOptions.snippet,
-			stylelintPath: options.stylelintPath,
-			validate: options.validate ?? defaultOptions.validate,
-		};
-
-		return withDefaults;
-	}
-
-	/**
 	 * Registers handlers on the language server connection, then invokes the
 	 * `onDidRegisterHandlers` event for each registered module to allow them
 	 * to register their handlers.
@@ -305,10 +319,15 @@ export class StylelintLanguageServer {
 		this.#connection.onInitialize(this.#onInitialize.bind(this));
 		this.#logger?.debug('connection.onInitialize handler registered');
 
-		this.#connection.onInitialized(this.#onInitialized.bind(this));
+		this.#notifications.on(InitializedNotification.type, this.#onInitialized.bind(this));
 		this.#logger?.debug('connection.onInitialized handler registered');
 
-		this.#connection.onDidChangeConfiguration(this.#onDidChangeConfiguration.bind(this));
+		this.#commands.register();
+
+		this.#notifications.on(
+			DidChangeConfigurationNotification.type,
+			this.#onDidChangeConfiguration.bind(this),
+		);
 		this.#logger?.debug('connection.onDidChangeConfiguration handler registered');
 
 		this.#documents.onDidClose(this.#onDidCloseDocument.bind(this));
@@ -377,7 +396,7 @@ export class StylelintLanguageServer {
 
 		for (const [, moduleResult] of Object.entries(this.#invokeHandlers('onInitialize', params))) {
 			if (moduleResult) {
-				deepAssign(result, moduleResult);
+				mergeAssign(result, moduleResult);
 			}
 		}
 
@@ -392,7 +411,9 @@ export class StylelintLanguageServer {
 		if (this.#hasConfigurationCapability) {
 			this.#logger?.debug('Registering DidChangeConfigurationNotification');
 
-			this.#connection.client.register(DidChangeConfigurationNotification.type);
+			this.#connection.client.register(DidChangeConfigurationNotification.type, {
+				section: 'stylelint',
+			});
 		}
 	}
 
@@ -417,7 +438,7 @@ export class StylelintLanguageServer {
 
 		this.#logger?.debug('received onDidChangeConfiguration', { params });
 
-		this.#globalOptions = this.#getEffectiveOptions(params.settings.stylelint);
+		this.#globalOptions = mergeOptionsWithDefaults(params.settings.stylelint, defaultOptions);
 
 		Object.freeze(this.#globalOptions);
 

@@ -175,13 +175,13 @@ export class FormatterModule implements LanguageServerModule {
 		this.#logger?.debug('documents.onDidClose handler registered');
 
 		this.#logger?.debug('Registering DidChangeConfigurationNotification');
-		this.#context.connection.onNotification(LSP.DidChangeConfigurationNotification.type, () =>
+		this.#context.notifications.on(LSP.DidChangeConfigurationNotification.type, () =>
 			this.#deregisterAll(),
 		);
 		this.#logger?.debug('DidChangeConfigurationNotification registered');
 
 		this.#logger?.debug('Registering DidChangeWorkspaceFoldersNotification');
-		this.#context.connection.onNotification(LSP.DidChangeWorkspaceFoldersNotification.type, () =>
+		this.#context.notifications.on(LSP.DidChangeWorkspaceFoldersNotification.type, () =>
 			this.#deregisterAll(),
 		);
 		this.#logger?.debug('DidChangeWorkspaceFoldersNotification registered');

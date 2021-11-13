@@ -9,12 +9,14 @@ import type winston from 'winston';
 import type { StylelintRunner, LintDiagnostics } from '../utils/stylelint';
 import type { ExtractKeysOfValueType } from '../utils/types';
 import type { PackageManager, StylelintResolutionResult } from '../utils/packages';
+import type { NotificationManager, CommandManager } from '../utils/lsp';
 
 /**
  * Command IDs
  */
 export enum CommandId {
 	ApplyAutoFix = 'stylelint.applyAutoFix',
+	OpenRuleDoc = 'stylelint.openRuleDoc',
 }
 
 /**
@@ -54,6 +56,16 @@ export interface LanguageServerContext {
 	 * The language server connection.
 	 */
 	connection: Connection;
+
+	/**
+	 * The notification manager for the connection.
+	 */
+	notifications: NotificationManager;
+
+	/**
+	 * The command manager for the connection.
+	 */
+	commands: CommandManager;
 
 	/**
 	 * The text document manager.
@@ -202,6 +214,11 @@ export type LanguageServerConstructorParameters = {
  * Language server options.
  */
 export type LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine' | 'sameLine';
+		};
+	};
 	config?: stylelint.Config | null;
 	configBasedir?: string;
 	configFile?: string;

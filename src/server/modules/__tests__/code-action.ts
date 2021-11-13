@@ -6,6 +6,11 @@ import type { LanguageServerOptions, LanguageServerModuleConstructorParameters }
 import { CodeActionModule } from '../code-action';
 
 const mockOptions: LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine',
+		},
+	},
 	packageManager: 'npm',
 	validate: [],
 	snippet: [],

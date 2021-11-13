@@ -1,5 +1,5 @@
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import { WorkspaceChange } from 'vscode-languageserver-protocol';
+import { ExecuteCommandRequest, WorkspaceChange } from 'vscode-languageserver-protocol';
 import type LSP from 'vscode-languageserver-protocol';
 import { CommandId } from '../types';
 import type {
@@ -46,10 +46,8 @@ export class AutoFixModule implements LanguageServerModule {
 	onDidRegisterHandlers(): void {
 		this.#logger?.debug('Registering onExecuteCommand handler');
 
-		this.#context.connection.onExecuteCommand(async ({ command, arguments: args }) => {
-			this.#logger?.debug('Received onExecuteCommand', { command, arguments: args });
-
-			if (command !== CommandId.ApplyAutoFix || !args) {
+		this.#context.commands.on(CommandId.ApplyAutoFix, async ({ arguments: args }) => {
+			if (!args) {
 				return {};
 			}
 
@@ -99,7 +97,5 @@ export class AutoFixModule implements LanguageServerModule {
 
 			return {};
 		});
-
-		this.#logger?.debug('onExecuteCommand handler registered');
 	}
 }

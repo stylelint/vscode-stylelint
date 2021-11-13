@@ -8,6 +8,11 @@ import type { LanguageServerOptions, LanguageServerModuleConstructorParameters }
 import { CompletionModule } from '../completion';
 
 const mockOptions: LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine',
+		},
+	},
 	packageManager: 'npm',
 	validate: [],
 	snippet: [],

@@ -20,6 +20,11 @@ const mockedGetWorkspaceFolder = getWorkspaceFolder as jest.MockedFunction<
 const mockedFindPackageRoot = findPackageRoot as jest.MockedFunction<typeof findPackageRoot>;
 
 const mockOptions: LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine',
+		},
+	},
 	packageManager: 'npm',
 	validate: [],
 	snippet: [],

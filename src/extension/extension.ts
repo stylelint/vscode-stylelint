@@ -34,7 +34,6 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 			documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
 			diagnosticCollectionName: 'Stylelint',
 			synchronize: {
-				configurationSection: 'stylelint',
 				fileEvents: workspace.createFileSystemWatcher(
 					'**/{.stylelintrc{,.js,.json,.yaml,.yml},stylelint.config.js,.stylelintignore}',
 				),

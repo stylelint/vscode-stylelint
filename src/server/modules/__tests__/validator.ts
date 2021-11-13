@@ -4,6 +4,11 @@ import { ValidatorModule } from '../validator';
 import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 const mockOptions: LanguageServerOptions = {
+	codeAction: {
+		disableRuleComment: {
+			location: 'separateLine',
+		},
+	},
 	packageManager: 'npm',
 	validate: ['css', 'postcss'],
 	snippet: ['css', 'postcss'],
