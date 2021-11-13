@@ -8,12 +8,18 @@ import type VSLanguageServerNode from 'vscode-languageserver/node';
 import type * as ProcessesActual from '../src/utils/processes';
 import type { OptionalExcept } from '../src/utils/types';
 import type { TracerFn } from '../src/utils/packages';
+import type * as ServerMocks from './unit/server-mocks';
 
 declare global {
 	/**
 	 * The test workspace directory.
 	 */
 	const workspaceDir: string;
+
+	/**
+	 * Server mocks.
+	 */
+	const serverMocks: typeof ServerMocks;
 
 	/**
 	 * Types used in tests.

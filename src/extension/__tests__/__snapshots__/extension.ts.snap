@@ -28,7 +28,6 @@ Array [
       },
     ],
     "synchronize": Object {
-      "configurationSection": "stylelint",
       "fileEvents": undefined,
     },
   },

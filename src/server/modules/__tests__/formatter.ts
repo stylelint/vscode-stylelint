@@ -22,64 +22,25 @@ jest.mock('vscode-uri', () => {
 
 import * as LSP from 'vscode-languageserver-protocol';
 import { Position, TextEdit } from 'vscode-languageserver-types';
-import type winston from 'winston';
-import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 import { Notification } from '../../types';
 import { FormatterModule } from '../formatter';
 
-const mockOptions: LanguageServerOptions = {
-	codeAction: {
-		disableRuleComment: {
-			location: 'separateLine',
-		},
-	},
-	packageManager: 'npm',
-	validate: [],
-	snippet: [],
-};
-
-const mockContext = {
-	connection: {
-		onDocumentFormatting: jest.fn(),
-		onNotification: jest.fn(),
-		sendNotification: jest.fn(),
-		client: { register: jest.fn() },
-	},
-	documents: {
-		get: jest.fn(),
-		onDidOpen: jest.fn(),
-		onDidChangeContent: jest.fn(),
-		onDidClose: jest.fn(),
-		onDidSave: jest.fn(),
-	},
-	getOptions: jest.fn(async () => mockOptions),
-	getFixes: jest.fn(),
-};
-
-const mockLogger = {
-	debug: jest.fn(),
-	isDebugEnabled: jest.fn(() => true),
-} as unknown as jest.Mocked<winston.Logger>;
-
-const getParams = (passLogger = false) =>
-	({
-		context: mockContext,
-		logger: passLogger ? mockLogger : undefined,
-	} as unknown as LanguageServerModuleConstructorParameters);
+const mockContext = serverMocks.getContext();
+const mockLogger = serverMocks.getLogger();
 
 describe('FormatterModule', () => {
 	beforeEach(() => {
-		mockOptions.validate = [];
+		mockContext.__options.validate = [];
 		jest.clearAllMocks();
 	});
 
 	test('should be constructable', () => {
-		expect(() => new FormatterModule(getParams())).not.toThrow();
+		expect(() => new FormatterModule({ context: mockContext.__typed() })).not.toThrow();
 	});
 
 	test('without client dynamic registration support, onInitialize should request static registration', () => {
-		const module = new FormatterModule(getParams());
+		const module = new FormatterModule({ context: mockContext.__typed() });
 
 		expect(
 			module.onInitialize({
@@ -93,7 +54,7 @@ describe('FormatterModule', () => {
 	});
 
 	test('with client dynamic registration support, onInitialize should not request static registration', () => {
-		const module = new FormatterModule(getParams());
+		const module = new FormatterModule({ context: mockContext.__typed() });
 
 		expect(
 			module.onInitialize({
@@ -107,7 +68,7 @@ describe('FormatterModule', () => {
 	});
 
 	test('onDidRegisterHandlers should register a document formatting command handler', () => {
-		const module = new FormatterModule(getParams());
+		const module = new FormatterModule({ context: mockContext.__typed() });
 
 		module.onDidRegisterHandlers();
 
@@ -120,10 +81,10 @@ describe('FormatterModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -145,7 +106,7 @@ describe('FormatterModule', () => {
 	});
 
 	test('with incorrect command, should not attempt to format', async () => {
-		const module = new FormatterModule(getParams());
+		const module = new FormatterModule({ context: mockContext.__typed() });
 
 		module.onDidRegisterHandlers();
 
@@ -158,7 +119,7 @@ describe('FormatterModule', () => {
 	});
 
 	test('with no text document, should not attempt to format', async () => {
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -174,7 +135,7 @@ describe('FormatterModule', () => {
 	test('if no matching document exists, should not attempt to format', async () => {
 		mockContext.documents.get.mockReturnValue(undefined);
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -195,9 +156,9 @@ describe('FormatterModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['baz'];
+		mockContext.__options.validate = ['baz'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -224,10 +185,10 @@ describe('FormatterModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['baz'];
+		mockContext.__options.validate = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -249,9 +210,9 @@ describe('FormatterModule', () => {
 	});
 
 	test("without client dynamic registration support, documents.onDidOpen shouldn't register a formatter", async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -271,9 +232,9 @@ describe('FormatterModule', () => {
 	});
 
 	test("without client dynamic registration support, documents.onDidChangeContent shouldn't register a formatter", async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -293,9 +254,9 @@ describe('FormatterModule', () => {
 	});
 
 	test("without client dynamic registration support, documents.onDidSave shouldn't register a formatter", async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -315,9 +276,9 @@ describe('FormatterModule', () => {
 	});
 
 	test('with client dynamic registration support, documents.onDidOpen should register a formatter', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -345,9 +306,9 @@ describe('FormatterModule', () => {
 	});
 
 	test('with client dynamic registration support, documents.onDidChangeContent should register a formatter', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -372,9 +333,9 @@ describe('FormatterModule', () => {
 	});
 
 	test('with client dynamic registration support, documents.onDidSave should register a formatter', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -397,14 +358,14 @@ describe('FormatterModule', () => {
 	});
 
 	test('when a formatter was registered, documents.onDidClose should dispose the old registration', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockLogger.isDebugEnabled.mockReturnValue(true);
 
 		const mockRegistration = { dispose: jest.fn() };
 
 		mockContext.connection.client.register.mockResolvedValueOnce(mockRegistration);
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -429,10 +390,10 @@ describe('FormatterModule', () => {
 	});
 
 	test('when a formatter was not registered, documents.onDidClose should not try to dispose a registration', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockLogger.isDebugEnabled.mockReturnValue(true);
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -454,14 +415,14 @@ describe('FormatterModule', () => {
 	});
 
 	test('when formatters were registered, DidChangeConfigurationNotification should deregister all registrations', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockLogger.isDebugEnabled.mockReturnValue(true);
 
 		const mockRegistration = { dispose: jest.fn() };
 
 		mockContext.connection.client.register.mockResolvedValue(mockRegistration);
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -478,10 +439,9 @@ describe('FormatterModule', () => {
 		await onDidOpenHandler({ document: { uri: 'file:///dir/test-1.css', languageId: 'bar' } });
 		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
 
-		const didChangeConfigurationNotificationHandler =
-			mockContext.connection.onNotification.mock.calls.find(
-				(call) => call[0] === LSP.DidChangeConfigurationNotification.type,
-			)[1];
+		const didChangeConfigurationNotificationHandler = mockContext.notifications.on.mock.calls.find(
+			([type]) => type === LSP.DidChangeConfigurationNotification.type,
+		)[1];
 
 		await didChangeConfigurationNotificationHandler();
 
@@ -489,14 +449,14 @@ describe('FormatterModule', () => {
 	});
 
 	test('when formatters were registered, DidChangeWorkspaceFoldersNotification should deregister all registrations', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockLogger.isDebugEnabled.mockReturnValue(true);
 
 		const mockRegistration = { dispose: jest.fn() };
 
 		mockContext.connection.client.register.mockResolvedValue(mockRegistration);
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -514,8 +474,8 @@ describe('FormatterModule', () => {
 		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
 
 		const didChangeWorkspaceFoldersNotificationHandler =
-			mockContext.connection.onNotification.mock.calls.find(
-				(call) => call[0] === LSP.DidChangeWorkspaceFoldersNotification.type,
+			mockContext.notifications.on.mock.calls.find(
+				([type]) => type === LSP.DidChangeWorkspaceFoldersNotification.type,
 			)[1];
 
 		await didChangeWorkspaceFoldersNotificationHandler();
@@ -524,9 +484,9 @@ describe('FormatterModule', () => {
 	});
 
 	test('with client dynamic registration support, only one formatter should be registered per document', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {
@@ -548,9 +508,9 @@ describe('FormatterModule', () => {
 	});
 
 	test('when a formatter is registered, a notification should be sent', async () => {
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new FormatterModule(getParams(true));
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onInitialize({
 			capabilities: {

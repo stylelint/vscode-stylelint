@@ -1,57 +1,29 @@
 import { CodeActionKind, Position, TextEdit } from 'vscode-languageserver-types';
-import type winston from 'winston';
 import { CodeActionKind as StylelintCodeActionKind } from '../../types';
-import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 import { CodeActionModule } from '../code-action';
 
-const mockOptions: LanguageServerOptions = {
-	codeAction: {
-		disableRuleComment: {
-			location: 'separateLine',
-		},
-	},
-	packageManager: 'npm',
-	validate: [],
-	snippet: [],
-};
-
-const mockContext = {
-	connection: { onCodeAction: jest.fn() },
-	documents: { get: jest.fn() },
-	getOptions: jest.fn(async () => mockOptions),
-	getFixes: jest.fn(),
-};
-
-const mockLogger = {
-	debug: jest.fn(),
-	isDebugEnabled: jest.fn(() => true),
-} as unknown as jest.Mocked<winston.Logger>;
-
-const getParams = (passLogger = false) =>
-	({
-		context: mockContext,
-		logger: passLogger ? mockLogger : undefined,
-	} as unknown as LanguageServerModuleConstructorParameters);
+const mockContext = serverMocks.getContext();
+const mockLogger = serverMocks.getLogger();
 
 describe('CodeActionModule', () => {
 	beforeEach(() => {
-		mockOptions.validate = [];
+		mockContext.__options.validate = [];
 		jest.clearAllMocks();
 	});
 
 	test('should be constructable', () => {
-		expect(() => new CodeActionModule(getParams())).not.toThrow();
+		expect(() => new CodeActionModule({ context: mockContext.__typed() })).not.toThrow();
 	});
 
 	test('onInitialize should return results', () => {
-		const module = new CodeActionModule(getParams());
+		const module = new CodeActionModule({ context: mockContext.__typed() });
 
 		expect(module.onInitialize()).toMatchSnapshot();
 	});
 
 	test('onDidRegisterHandlers should register a code action handler', () => {
-		const module = new CodeActionModule(getParams());
+		const module = new CodeActionModule({ context: mockContext.__typed() });
 
 		module.onDidRegisterHandlers();
 
@@ -64,10 +36,10 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -90,10 +62,10 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -116,10 +88,10 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -138,7 +110,7 @@ describe('CodeActionModule', () => {
 	});
 
 	test('with no action kind, should not attempt to create actions', async () => {
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -157,7 +129,7 @@ describe('CodeActionModule', () => {
 	});
 
 	test('with incorrect action kind, should not attempt to create actions', async () => {
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -180,7 +152,7 @@ describe('CodeActionModule', () => {
 	test('if no matching document exists, should not attempt to create actions', async () => {
 		mockContext.documents.get.mockReturnValue(undefined);
 
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -201,9 +173,9 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['baz'];
+		mockContext.__options.validate = ['baz'];
 
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -230,10 +202,10 @@ describe('CodeActionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['baz'];
+		mockContext.__options.validate = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
-		const module = new CodeActionModule(getParams(true));
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 

@@ -6,11 +6,9 @@ jest.mock('path');
 import fs from 'fs/promises';
 import path from 'path';
 import type LSP from 'vscode-languageserver-protocol';
-import type winston from 'winston';
 import { getWorkspaceFolder } from '../../../utils/documents';
 import { findPackageRoot } from '../../../utils/packages';
 import { OldStylelintWarningModule } from '../old-stylelint-warning';
-import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 const mockedFS = fs as tests.mocks.FSPromisesModule;
 const mockedPath = path as tests.mocks.PathModule;
@@ -19,55 +17,22 @@ const mockedGetWorkspaceFolder = getWorkspaceFolder as jest.MockedFunction<
 >;
 const mockedFindPackageRoot = findPackageRoot as jest.MockedFunction<typeof findPackageRoot>;
 
-const mockOptions: LanguageServerOptions = {
-	codeAction: {
-		disableRuleComment: {
-			location: 'separateLine',
-		},
-	},
-	packageManager: 'npm',
-	validate: [],
-	snippet: [],
-};
-
-const mockContext = {
-	connection: {
-		window: {
-			showWarningMessage: jest.fn(),
-			showDocument: jest.fn(),
-		},
-	},
-	documents: { onDidOpen: jest.fn() },
-	getOptions: jest.fn(async () => mockOptions),
-	displayError: jest.fn(),
-	resolveStylelint: jest.fn(),
-};
-
-const mockLogger = {
-	debug: jest.fn(),
-	warn: jest.fn(),
-	error: jest.fn(),
-} as unknown as jest.Mocked<winston.Logger>;
-
-const getParams = (passLogger = false) =>
-	({
-		context: mockContext,
-		logger: passLogger ? mockLogger : undefined,
-	} as unknown as LanguageServerModuleConstructorParameters);
+const mockContext = serverMocks.getContext();
+const mockLogger = serverMocks.getLogger();
 
 describe('OldStylelintWarningModule', () => {
 	beforeEach(() => {
 		mockedPath.__mockPlatform('posix');
-		mockOptions.validate = [];
+		mockContext.__options.validate = [];
 		jest.clearAllMocks();
 	});
 
 	test('should be constructable', () => {
-		expect(() => new OldStylelintWarningModule(getParams())).not.toThrow();
+		expect(() => new OldStylelintWarningModule({ context: mockContext.__typed() })).not.toThrow();
 	});
 
 	test('onDidRegisterHandlers should register an onDidOpen handler', () => {
-		const module = new OldStylelintWarningModule(getParams());
+		const module = new OldStylelintWarningModule({ context: mockContext.__typed() });
 
 		module.onDidRegisterHandlers();
 
@@ -76,9 +41,12 @@ describe('OldStylelintWarningModule', () => {
 	});
 
 	test('if document language ID is not in options, should not warn', async () => {
-		mockOptions.validate = ['baz'];
+		mockContext.__options.validate = ['baz'];
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -100,9 +68,12 @@ describe('OldStylelintWarningModule', () => {
 
 	test('if document is not part of a workspace, should not warn', async () => {
 		mockedGetWorkspaceFolder.mockResolvedValue(undefined);
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -124,9 +95,12 @@ describe('OldStylelintWarningModule', () => {
 
 	test('if document has already been checked, should not warn', async () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -157,9 +131,12 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -187,10 +164,13 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockedFS.readFile.mockRejectedValue(error);
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -217,10 +197,13 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -251,10 +234,13 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -277,10 +263,13 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "foo"}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -308,10 +297,13 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "14.0.0"}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -334,10 +326,13 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "14.0.0-sdk"}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -360,10 +355,13 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockedFS.readFile.mockResolvedValue('{"version": "13.0.0"}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
 
@@ -388,11 +386,14 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockContext.connection.window.showWarningMessage.mockResolvedValue(undefined);
 		mockedFS.readFile.mockResolvedValue('{"version": "13.0.0"}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({
 			capabilities: {
@@ -422,7 +423,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockContext.connection.window.showWarningMessage.mockResolvedValue({
 			title: 'Open migration guide',
 		});
@@ -431,7 +432,10 @@ describe('OldStylelintWarningModule', () => {
 		});
 		mockedFS.readFile.mockResolvedValue('{"version": "13.0.0"}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({
 			capabilities: {
@@ -463,7 +467,7 @@ describe('OldStylelintWarningModule', () => {
 			stylelint: {},
 			resolvedPath: '/path/node_modules/stylelint',
 		});
-		mockOptions.validate = ['bar'];
+		mockContext.__options.validate = ['bar'];
 		mockContext.connection.window.showWarningMessage.mockResolvedValue({
 			title: 'Open migration guide',
 		});
@@ -472,7 +476,10 @@ describe('OldStylelintWarningModule', () => {
 		});
 		mockedFS.readFile.mockResolvedValue('{"version": "13.0.0"}');
 
-		const module = new OldStylelintWarningModule(getParams(true));
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize({
 			capabilities: {
