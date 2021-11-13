@@ -1,5 +1,6 @@
 // Part of test utils, don't record coverage
 /* istanbul ignore file */
+// cspell:ignore crit,emerg,unhandle
 
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { Connection, TextDocuments } from 'vscode-languageserver';
