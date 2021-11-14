@@ -54,7 +54,7 @@ export class GlobalPathResolver {
 	async #yarn(): Promise<string | undefined> {
 		const tryParseLog = (line: string): { type: string; data: string } | undefined => {
 			try {
-				return JSON.parse(line);
+				return JSON.parse(line) as { type: string; data: string };
 			} catch {
 				return undefined;
 			}

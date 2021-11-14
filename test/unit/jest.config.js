@@ -12,6 +12,7 @@ const config = {
 		'<rootDir>/test/e2e/workspace/defaults/yarn-[^/]+/stylelint',
 		'<rootDir>/test/e2e/workspace/defaults/local-stylelint/node_modules',
 	],
+	setupFilesAfterEnv: ['<rootDir>/test/unit/setup.ts'],
 	collectCoverage: true,
 	coverageThreshold: {
 		global: {

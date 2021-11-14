@@ -1,8 +1,9 @@
 {
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
-		"typeRoots": ["./types", "./node_modules/@types"]
+		"typeRoots": ["./types", "./node_modules/@types"],
+		"noEmit": true
 	},
 	"include": ["src/**/*", "test/**/*", "__mocks__/**/*", "types/*.d.ts"],
-	"exclude": ["**/coverage"]
+	"exclude": ["**/coverage", "test/e2e/workspace"]
 }

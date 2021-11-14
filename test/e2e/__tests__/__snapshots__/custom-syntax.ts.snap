@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.customSyntax" auto-fix should work if "stylelint.customSyntax" is enabled 1`] = `
+exports[`"stylelint.customSyntax" setting should auto-fix using the specified custom syntax 1`] = `
 "/* prettier-ignore */
 .foo .bar
     color: red"

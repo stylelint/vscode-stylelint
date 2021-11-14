@@ -9,16 +9,20 @@ export interface ExtensionEvents {
 	DidRegisterDocumentFormattingEditProvider: (
 		params: DidRegisterDocumentFormattingEditProviderNotificationParams,
 	) => void;
+	DidResetConfiguration: () => void;
 }
 
 /**
  * VS Code extension public API.
  */
-export type PublicApi = TypedEventEmitter<ExtensionEvents>;
+export type PublicApi = TypedEventEmitter<ExtensionEvents> & {
+	codeActionReady: boolean;
+};
 
 /**
  * Extension API event names.
  */
 export enum ApiEvent {
 	DidRegisterDocumentFormattingEditProvider = 'DidRegisterDocumentFormattingEditProvider',
+	DidResetConfiguration = 'DidResetConfiguration',
 }

@@ -8,6 +8,7 @@ const config = {
 	parserOptions: {
 		ecmaVersion: 2020,
 		sourceType: 'script',
+		project: ['./tsconfig.src.json', './tsconfig.test.json', './tsconfig.scripts.json'],
 	},
 	env: {
 		node: true,
@@ -30,7 +31,10 @@ const config = {
 	overrides: [
 		{
 			files: ['**/*.ts'],
-			extends: ['plugin:@typescript-eslint/recommended'],
+			extends: [
+				'plugin:@typescript-eslint/recommended',
+				'plugin:@typescript-eslint/recommended-requiring-type-checking',
+			],
 			rules: {
 				'no-shadow': 'off',
 				'no-use-before-define': 'off',
@@ -40,6 +44,14 @@ const config = {
 				'@typescript-eslint/explicit-module-boundary-types': ['error'],
 				'@typescript-eslint/no-shadow': ['error'],
 				'@typescript-eslint/no-use-before-define': ['error'],
+				'@typescript-eslint/switch-exhaustiveness-check': ['error'],
+				'@typescript-eslint/restrict-template-expressions': [
+					'error',
+					{
+						allowNumber: true,
+						allowNullish: true,
+					},
+				],
 			},
 		},
 		{
@@ -51,10 +63,20 @@ const config = {
 		},
 		{
 			files: ['**/__tests__/**/*', '**/__mocks__/**/*', 'test/**/*'],
+			plugins: ['jest'],
 			rules: {
 				'node/no-unpublished-require': 'off',
 				'node/no-unpublished-import': 'off',
 				'@typescript-eslint/explicit-function-return-type': 'off',
+				'@typescript-eslint/explicit-module-boundary-types': 'off',
+				'@typescript-eslint/require-await': 'off',
+				'@typescript-eslint/no-unsafe-assignment': 'off',
+				'@typescript-eslint/no-unsafe-member-access': 'off',
+				'@typescript-eslint/no-unsafe-argument': 'off',
+				'@typescript-eslint/no-unsafe-call': 'off',
+				'@typescript-eslint/no-unsafe-return': 'off',
+				'@typescript-eslint/unbound-method': 'off',
+				'jest/unbound-method': 'error',
 			},
 		},
 	],

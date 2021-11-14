@@ -38,4 +38,4 @@ async function bundle(): Promise<void> {
 	}
 }
 
-bundle();
+void bundle();

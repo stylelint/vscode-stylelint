@@ -19,3 +19,12 @@ export type RequiredExcept<T extends Record<never, never>, K extends keyof T> = 
 export type ExtractKeysOfValueType<T, V> = {
 	[K in keyof T]-?: T[K] extends V ? K : never;
 }[keyof T];
+
+/**
+ * Given a function `T`, returns a function type with the same parameters, but
+ * with the return type `Promise<R> | R` where `R` is the return type of `T`.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type MaybeAsync<T extends (...args: any[]) => any> = (
+	...args: Parameters<T>
+) => Promise<ReturnType<T>> | ReturnType<T>;

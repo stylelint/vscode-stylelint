@@ -36,13 +36,14 @@ export class LanguageServerFormatter {
 		)} ${date.getHours() < 12 ? 'a.m.' : 'p.m.'}`;
 
 		const messageParts = [];
+		const level = String(info[LEVEL]);
 
-		if (!getLogFunction(this.options.connection.console, info[LEVEL])) {
-			messageParts.push(`[${padString(upperCaseFirstChar(info[LEVEL]), 5)} - ${timestamp}]`);
+		if (!getLogFunction(this.options.connection.console, level)) {
+			messageParts.push(`[${padString(upperCaseFirstChar(level), 5)} - ${timestamp}]`);
 		}
 
 		if (info.component) {
-			messageParts.push(`[${info.component}]`);
+			messageParts.push(`[${String(info.component)}]`);
 		}
 
 		messageParts.push(info.message);

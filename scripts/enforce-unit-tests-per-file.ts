@@ -84,4 +84,4 @@ module.`);
 	process.exit(exitCode);
 }
 
-enforceUnitTestsPerFile();
+void enforceUnitTestsPerFile();

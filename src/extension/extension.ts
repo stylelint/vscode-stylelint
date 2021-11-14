@@ -15,7 +15,7 @@ import type vscode from 'vscode';
 export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi {
 	const serverPath = require.resolve('./start-server');
 
-	const api: PublicApi = new EventEmitter();
+	const api: PublicApi = Object.assign(new EventEmitter(), { codeActionReady: false });
 
 	const client = new LanguageClient(
 		'Stylelint',
@@ -34,7 +34,6 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 			documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
 			diagnosticCollectionName: 'Stylelint',
 			synchronize: {
-				configurationSection: 'stylelint',
 				fileEvents: workspace.createFileSystemWatcher(
 					'**/{.stylelintrc{,.js,.json,.yaml,.yml},stylelint.config.js,.stylelintignore}',
 				),
@@ -42,14 +41,27 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 		},
 	);
 
-	client.onReady().then(() => {
-		client.onNotification(
-			Notification.DidRegisterDocumentFormattingEditProvider,
-			(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
-				api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
-			},
-		);
-	});
+	client
+		.onReady()
+		.then(() => {
+			client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
+				api.codeActionReady = true;
+			});
+			client.onNotification(
+				Notification.DidRegisterDocumentFormattingEditProvider,
+				(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
+					api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
+				},
+			);
+			client.onNotification(Notification.DidResetConfiguration, () => {
+				api.emit(ApiEvent.DidResetConfiguration);
+			});
+		})
+		.catch(async (error) => {
+			await window.showErrorMessage(
+				`Stylelint: ${error instanceof Error ? error.message : String(error)}`,
+			);
+		});
 
 	subscriptions.push(
 		// cspell:disable-next-line
@@ -69,8 +81,8 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 				arguments: [textDocument],
 			};
 
-			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
-				window.showErrorMessage(
+			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, async () => {
+				await window.showErrorMessage(
 					'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
 				);
 			});

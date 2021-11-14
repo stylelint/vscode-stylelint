@@ -37,7 +37,7 @@ export class LanguageServerTransport extends TransportStream {
 			this.emit('logged', info);
 		});
 
-		const logFunc = getLogFunction(this.#console, info[LEVEL]);
+		const logFunc = getLogFunction(this.#console, String(info[LEVEL]));
 
 		if (typeof logFunc === 'function') {
 			logFunc.call(this.#console, String(info[MESSAGE]));

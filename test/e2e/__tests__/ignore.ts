@@ -1,28 +1,20 @@
 import path from 'path';
-
-// import pWaitFor from 'p-wait-for';
-// import { window, workspace } from 'vscode';
-import { workspace } from 'vscode';
-
 // import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
 describe('.stylelintignore', () => {
 	it('should have syntax highlighting', async () => {
-		expect(
-			(await workspace.openTextDocument(path.join(workspaceDir, 'defaults/.stylelintignore')))
-				.languageId,
-		).toBe('ignore');
+		const { document } = await openDocument(path.join(workspaceDir, 'defaults/.stylelintignore'));
+
+		expect(document.languageId).toBe('ignore');
 	});
 
 	// TODO: Get .stylelintignore to work
 	// eslint-disable-next-line jest/no-commented-out-tests
 	// it('should be respected', async () => {
-	// 	const cssDocument = await workspace.openTextDocument(path.resolve(workspaceDir, 'defaults/ignored.css'));
+	// 	const { document } = await openDocument(path.resolve(workspaceDir, 'defaults/ignored.css'));
 
-	// 	await window.showTextDocument(cssDocument);
+	// 	// Wait for diagnostics to be computed
 
-	// 	await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
-
-	// 	expect(getStylelintDiagnostics(cssDocument.uri).map(normalizeDiagnostic)).toEqual([]);
+	// 	expect(getStylelintDiagnostics(document.uri).map(normalizeDiagnostic)).toEqual([]);
 	// });
 });

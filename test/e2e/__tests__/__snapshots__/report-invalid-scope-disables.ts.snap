@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.reportInvalidScopeDisables" should work if "stylelint.reportInvalidScopeDisables" is enabled 1`] = `
+exports[`"stylelint.reportInvalidScopeDisables" setting should report invalid-scope disables when enabled 1`] = `
 Array [
   Object {
     "code": "--report-invalid-scope-disables",

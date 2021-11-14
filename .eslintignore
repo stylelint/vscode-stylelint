@@ -4,3 +4,4 @@ dist
 coverage
 .pnp.*
 .yarn
+test/e2e/workspace

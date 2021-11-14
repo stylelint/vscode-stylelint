@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.configBasedir" should work even if "stylelint.configBasedir" is defined 1`] = `
+exports[`"stylelint.configBasedir" setting should resolve referenced configs using the base directory 1`] = `
 Array [
   Object {
     "code": "color-hex-case",

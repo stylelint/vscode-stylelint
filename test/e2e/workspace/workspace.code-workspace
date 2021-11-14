@@ -1,5 +1,6 @@
 {
 	"folders": [
+		{ "path": "code-actions" },
 		{ "path": "config" },
 		{ "path": "custom-syntax" },
 		{ "path": "defaults" },

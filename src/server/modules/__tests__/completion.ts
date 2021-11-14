@@ -1,35 +1,12 @@
 import { Position, Range } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type LSP from 'vscode-languageserver-protocol';
-import type winston from 'winston';
 import { DisableReportRuleNames } from '../../../utils/stylelint';
-import type { LanguageServerOptions, LanguageServerModuleConstructorParameters } from '../../types';
 
 import { CompletionModule } from '../completion';
 
-const mockOptions: LanguageServerOptions = {
-	packageManager: 'npm',
-	validate: [],
-	snippet: [],
-};
-
-const mockContext = {
-	connection: { onCompletion: jest.fn() },
-	documents: { get: jest.fn() },
-	getOptions: jest.fn(async () => mockOptions),
-	getModule: jest.fn(),
-};
-
-const mockLogger = {
-	debug: jest.fn(),
-	isDebugEnabled: jest.fn(() => true),
-} as unknown as jest.Mocked<winston.Logger>;
-
-const getParams = (passLogger = false) =>
-	({
-		context: mockContext,
-		logger: passLogger ? mockLogger : undefined,
-	} as unknown as LanguageServerModuleConstructorParameters);
+const mockContext = serverMocks.getContext();
+const mockLogger = serverMocks.getLogger();
 
 const createDocument = (code: string) =>
 	TextDocument.create('file:///path/test.css', 'css', 0, code);
@@ -48,23 +25,23 @@ const createNeedlessDisableDiagnostic = ({
 
 describe('CompletionModule', () => {
 	beforeEach(() => {
-		mockOptions.validate = [];
-		mockOptions.snippet = [];
+		mockContext.__options.validate = [];
+		mockContext.__options.snippet = [];
 		jest.clearAllMocks();
 	});
 
 	test('should be constructable', () => {
-		expect(() => new CompletionModule(getParams())).not.toThrow();
+		expect(() => new CompletionModule({ context: mockContext.__typed() })).not.toThrow();
 	});
 
 	test('onInitialize should return results', () => {
-		const module = new CompletionModule(getParams());
+		const module = new CompletionModule({ context: mockContext.__typed() });
 
 		expect(module.onInitialize()).toMatchSnapshot();
 	});
 
 	test('onDidRegisterHandlers should register a completion handler', () => {
-		const module = new CompletionModule(getParams());
+		const module = new CompletionModule({ context: mockContext.__typed() });
 
 		module.onDidRegisterHandlers();
 
@@ -75,7 +52,7 @@ describe('CompletionModule', () => {
 	test('if no matching document exists, should not return completions', async () => {
 		mockContext.documents.get.mockReturnValue(undefined);
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -96,10 +73,10 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['baz'];
-		mockOptions.snippet = ['bar'];
+		mockContext.__options.validate = ['baz'];
+		mockContext.__options.snippet = ['bar'];
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -126,10 +103,10 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
-		mockOptions.snippet = ['baz'];
+		mockContext.__options.validate = ['bar'];
+		mockContext.__options.snippet = ['baz'];
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -156,11 +133,11 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
-		mockOptions.snippet = ['baz'];
+		mockContext.__options.validate = ['bar'];
+		mockContext.__options.snippet = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -184,11 +161,11 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
-		mockOptions.snippet = ['bar'];
+		mockContext.__options.validate = ['bar'];
+		mockContext.__options.snippet = ['bar'];
 		mockContext.getModule.mockReturnValue(undefined);
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -208,13 +185,13 @@ describe('CompletionModule', () => {
 			uri: 'foo',
 			languageId: 'bar',
 		});
-		mockOptions.validate = ['bar'];
-		mockOptions.snippet = ['bar'];
+		mockContext.__options.validate = ['bar'];
+		mockContext.__options.snippet = ['bar'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -231,8 +208,8 @@ describe('CompletionModule', () => {
 
 	test('with no diagnostics at the same or next line, should return generic completions', async () => {
 		mockContext.documents.get.mockReturnValue(createDocument('a {\n  color: red;\n}'));
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -248,7 +225,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -265,8 +242,8 @@ describe('CompletionModule', () => {
 
 	test('with diagnostics at the same line, should return disable comment completions for rule', async () => {
 		mockContext.documents.get.mockReturnValue(createDocument('a {\n  color: red;\n}'));
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -277,7 +254,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -296,8 +273,8 @@ describe('CompletionModule', () => {
 		mockContext.documents.get.mockReturnValue(
 			createDocument('a {\n  font-weight: 400;\n  color: red;\n}'),
 		);
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -308,7 +285,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -325,8 +302,8 @@ describe('CompletionModule', () => {
 
 	test('with needless disables reported for a diagnostic, should return generic completions', async () => {
 		mockContext.documents.get.mockReturnValue(createDocument('a {\n  color: red;\n}'));
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -341,7 +318,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -363,8 +340,8 @@ describe('CompletionModule', () => {
   color: red;
 }`),
 		);
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -375,7 +352,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -397,8 +374,8 @@ describe('CompletionModule', () => {
   color: red;
 }`),
 		);
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -409,7 +386,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -431,8 +408,8 @@ describe('CompletionModule', () => {
   color: red;
 }`),
 		);
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -443,7 +420,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 
@@ -466,8 +443,8 @@ describe('CompletionModule', () => {
   font-weight: 400;
 }`),
 		);
-		mockOptions.validate = ['css'];
-		mockOptions.snippet = ['css'];
+		mockContext.__options.validate = ['css'];
+		mockContext.__options.snippet = ['css'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [
 				{
@@ -478,7 +455,7 @@ describe('CompletionModule', () => {
 			],
 		});
 
-		const module = new CompletionModule(getParams(true));
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
 

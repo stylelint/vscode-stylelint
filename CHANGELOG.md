@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+
+- Code actions are now provided for disabling rules and showing documentation ([#322](https://github.com/stylelint/vscode-stylelint/pull/322)).
+
+### Changed
+
+- If the language client fails to connect to the server, the extension will now display an error message ([#322](https://github.com/stylelint/vscode-stylelint/pull/322)).
+
+### Fixed
+
+- When extension configuration is edited, the extension no longer needs to be reloaded to use the updated settings ([#322](https://github.com/stylelint/vscode-stylelint/pull/322)).
+
 ## [1.1.0](https://github.com/stylelint/vscode-stylelint/compare/v1.0.3...v1.1.0) (2021-11-06)
 
 ### Added

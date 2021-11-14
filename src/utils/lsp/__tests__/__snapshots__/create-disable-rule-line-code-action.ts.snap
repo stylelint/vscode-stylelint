@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`createDisableRuleLineCodeAction should create a code action to disable a rule for a line using the previous line 1`] = `
+Object {
+  "edit": Object {
+    "changeAnnotations": undefined,
+    "documentChanges": Array [
+      Object {
+        "edits": Array [
+          Object {
+            "newText": "/* stylelint-disable-next-line rule */
+",
+            "range": Object {
+              "end": Object {
+                "character": 0,
+                "line": 0,
+              },
+              "start": Object {
+                "character": 0,
+                "line": 0,
+              },
+            },
+          },
+        ],
+        "textDocument": Object {
+          "uri": "file:///home/user/src/file.css",
+          "version": 1,
+        },
+      },
+    ],
+  },
+  "kind": "quickfix",
+  "title": "Disable rule for this line",
+}
+`;
+
+exports[`createDisableRuleLineCodeAction should create a code action to disable a rule for a line using the same line 1`] = `
+Object {
+  "edit": Object {
+    "changeAnnotations": undefined,
+    "documentChanges": Array [
+      Object {
+        "edits": Array [
+          Object {
+            "newText": " /* stylelint-disable-line rule */",
+            "range": Object {
+              "end": Object {
+                "character": 2147483647,
+                "line": 0,
+              },
+              "start": Object {
+                "character": 2147483647,
+                "line": 0,
+              },
+            },
+          },
+        ],
+        "textDocument": Object {
+          "uri": "file:///home/user/src/file.css",
+          "version": 1,
+        },
+      },
+    ],
+  },
+  "kind": "quickfix",
+  "title": "Disable rule for this line",
+}
+`;

@@ -6,6 +6,7 @@ import type {
 	LanguageServerModuleConstructorParameters,
 	LanguageServerModule,
 } from '../types';
+import { DidChangeWatchedFilesNotification } from 'vscode-languageserver-protocol';
 
 export class ValidatorModule implements LanguageServerModule {
 	static id = 'validator';
@@ -105,7 +106,10 @@ export class ValidatorModule implements LanguageServerModule {
 	onDidRegisterHandlers(): void {
 		this.#logger?.debug('Registering handlers');
 
-		this.#context.connection.onDidChangeWatchedFiles(async () => await this.#validateAll());
+		this.#context.notifications.on(
+			DidChangeWatchedFilesNotification.type,
+			async () => await this.#validateAll(),
+		);
 
 		this.#logger?.debug('onDidChangeWatchedFiles handler registered');
 

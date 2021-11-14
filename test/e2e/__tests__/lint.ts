@@ -1,33 +1,18 @@
 import path from 'path';
-
-import pWaitFor from 'p-wait-for';
-import { workspace, window } from 'vscode';
-
-import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
+import { normalizeDiagnostic } from '../utils';
 
 describe('Linting', () => {
 	it('should lint CSS documents', async () => {
-		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'defaults/lint.css'),
-		);
+		const { document } = await openDocument(path.resolve(workspaceDir, 'defaults/lint.css'));
+		const diagnostics = await waitForDiagnostics(document);
 
-		await window.showTextDocument(cssDocument);
-
-		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
-
-		expect(getStylelintDiagnostics(cssDocument.uri).map(normalizeDiagnostic)).toMatchSnapshot();
+		expect(diagnostics.map(normalizeDiagnostic)).toMatchSnapshot();
 	});
 
 	it('should display rule documentation links when one is available', async () => {
-		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'defaults/rule-doc.css'),
-		);
+		const { document } = await openDocument(path.resolve(workspaceDir, 'defaults/rule-doc.css'));
+		const diagnostics = await waitForDiagnostics(document);
 
-		await window.showTextDocument(cssDocument);
-
-		// Wait for diagnostics result.
-		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
-
-		expect(getStylelintDiagnostics(cssDocument.uri).map(normalizeDiagnostic)).toMatchSnapshot();
+		expect(diagnostics.map(normalizeDiagnostic)).toMatchSnapshot();
 	});
 });
