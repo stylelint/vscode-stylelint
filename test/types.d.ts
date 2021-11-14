@@ -18,7 +18,7 @@ declare global {
 	const workspaceDir: string;
 
 	/**
-	 * Server mocks. Only available in end-to-end tests.
+	 * Server mocks. Only available in unit tests.
 	 */
 	const serverMocks: typeof ServerMocks;
 
