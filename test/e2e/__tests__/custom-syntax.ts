@@ -1,14 +1,10 @@
 import path from 'path';
 import pWaitFor from 'p-wait-for';
-import { workspace, commands, window } from 'vscode';
+import { commands } from 'vscode';
 
-describe('vscode-stylelint with "stylelint.customSyntax"', () => {
-	it('auto-fix should work if "stylelint.customSyntax" is enabled', async () => {
-		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'custom-syntax/test.css'),
-		);
-
-		await window.showTextDocument(cssDocument);
+describe('"stylelint.customSyntax" setting', () => {
+	it('should auto-fix using the specified custom syntax', async () => {
+		const { document } = await openDocument(path.resolve(workspaceDir, 'custom-syntax/test.css'));
 
 		await pWaitFor(
 			async () => {
@@ -25,6 +21,6 @@ describe('vscode-stylelint with "stylelint.customSyntax"', () => {
 		// cspell:disable-next-line
 		await commands.executeCommand('stylelint.executeAutofix');
 
-		expect(cssDocument.getText()).toMatchSnapshot();
+		expect(document.getText()).toMatchSnapshot();
 	});
 });

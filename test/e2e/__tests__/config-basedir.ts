@@ -1,20 +1,12 @@
 import path from 'path';
+import { normalizeDiagnostic } from '../utils';
 
-import pWaitFor from 'p-wait-for';
-import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
-import { workspace, window } from 'vscode';
-
-describe('vscode-stylelint with "stylelint.configBasedir"', () => {
-	it('should work even if "stylelint.configBasedir" is defined', async () => {
-		const cssDocument = await workspace.openTextDocument(
+describe('"stylelint.configBasedir" setting', () => {
+	it('should resolve referenced configs using the base directory', async () => {
+		const { document } = await openDocument(
 			path.resolve(workspaceDir, 'config/config-basedir.css'),
 		);
-
-		await window.showTextDocument(cssDocument);
-
-		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
-
-		const diagnostics = getStylelintDiagnostics(cssDocument.uri);
+		const diagnostics = await waitForDiagnostics(document);
 
 		expect(diagnostics.map(normalizeDiagnostic)).toMatchSnapshot();
 	});

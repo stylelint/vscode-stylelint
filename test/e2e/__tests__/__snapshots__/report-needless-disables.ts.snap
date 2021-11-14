@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.reportNeedlessDisables" should work if "stylelint.reportNeedlessDisables" is enabled 1`] = `
+exports[`"stylelint.reportNeedlessDisables" setting should report needless disables when enabled 1`] = `
 Array [
   Object {
     "code": "--report-needless-disables",

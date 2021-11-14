@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.ignoreDisables" should work if "stylelint.ignoreDisables" is enabled 1`] = `
+exports[`"stylelint.ignoreDisables" setting should ignore disable directives when enabled 1`] = `
 Array [
   Object {
     "code": "color-hex-case",

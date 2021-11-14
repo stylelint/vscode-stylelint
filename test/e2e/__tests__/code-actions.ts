@@ -1,23 +1,26 @@
 import path from 'path';
 
+import * as JSONC from 'jsonc-parser';
+import deepEqual from 'fast-deep-equal';
 import pWaitFor from 'p-wait-for';
-import { getStylelintDiagnostics } from '../utils';
 import {
 	commands,
 	extensions,
 	workspace,
-	window,
 	Selection,
 	Range,
 	Position,
 	CodeAction,
-	Uri,
 	TextEditor,
 } from 'vscode';
 import { ApiEvent, PublicApi } from '../../../src/extension';
 
-const getCodeActions = async (uri: Uri, range: Range): Promise<CodeAction[]> =>
-	(await commands.executeCommand('vscode.executeCodeActionProvider', uri, range)) ?? [];
+const getCodeActions = async (editor: TextEditor): Promise<CodeAction[]> =>
+	(await commands.executeCommand(
+		'vscode.executeCodeActionProvider',
+		editor.document.uri,
+		new Range(editor.selection.start, editor.selection.end),
+	)) ?? [];
 
 const serializeCodeActions = (actions: CodeAction[]) =>
 	actions.map((action) => ({
@@ -29,33 +32,9 @@ const cssPath = path.resolve(workspaceDir, 'code-actions/test.css');
 const jsPath = path.resolve(workspaceDir, 'code-actions/test.js');
 const settingsPath = path.resolve(workspaceDir, 'code-actions/.vscode/settings.json');
 
-const defaultSettings = `{
-	"stylelint.reportNeedlessDisables": true,
-	"stylelint.validate": ["css", "javascript"]
-}
-`;
-
-const openDocument = async (filePath: string): Promise<TextEditor> => {
-	const cssDocument = await workspace.openTextDocument(filePath);
-
-	const editor = await window.showTextDocument(cssDocument);
-
-	return editor;
-};
-
-const waitForDiagnostics = (editor: TextEditor): Promise<void> =>
-	pWaitFor(() => getStylelintDiagnostics(editor.document.uri).length > 0, { timeout: 5000 });
-
-const waitForConfigurationReset = async (): Promise<void> => {
-	const api = (await extensions.getExtension('stylelint.vscode-stylelint')?.exports) as PublicApi;
-
-	return new Promise<void>((resolve, reject) => {
-		api.on(ApiEvent.DidResetConfiguration, resolve);
-
-		setTimeout(() => {
-			reject(new Error('Timed out waiting for DidResetConfiguration event'));
-		}, 5000);
-	});
+const defaultSettings = {
+	'stylelint.reportNeedlessDisables': true,
+	'stylelint.validate': ['css', 'javascript'],
 };
 
 describe('Code actions', () => {
@@ -66,31 +45,32 @@ describe('Code actions', () => {
 	});
 
 	afterEach(async () => {
-		for (const filePath of [cssPath, jsPath]) {
-			const editor = await openDocument(filePath);
-
-			while (editor.document.isDirty) {
-				await commands.executeCommand('undo');
-			}
-		}
-
 		const settingsEditor = await openDocument(settingsPath);
+		const text = settingsEditor.document.getText();
+		const settings = JSONC.parse(text) as typeof defaultSettings;
+		const areEqual = deepEqual(settings, defaultSettings);
 
-		if (!settingsEditor.document.isDirty && settingsEditor.document.getText() === defaultSettings) {
+		if (!settingsEditor.document.isDirty && areEqual) {
 			return;
 		}
 
 		await settingsEditor.edit((editBuilder) => {
 			editBuilder.replace(
 				new Range(
-					new Position(0, 0),
-					settingsEditor.document.lineAt(settingsEditor.document.lineCount - 1).range.end,
+					settingsEditor.document.positionAt(0),
+					settingsEditor.document.positionAt(text.length - 1),
 				),
-				defaultSettings,
+				JSON.stringify(defaultSettings, null, '\t'),
 			);
 		});
 
-		const resetPromise = waitForConfigurationReset();
+		if (areEqual) {
+			await settingsEditor.document.save();
+
+			return;
+		}
+
+		const resetPromise = waitForApiEvent(ApiEvent.DidResetConfiguration);
 
 		await settingsEditor.document.save();
 
@@ -104,7 +84,7 @@ describe('Code actions', () => {
 
 		editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
 
-		const actions = await getCodeActions(editor.document.uri, editor.selection);
+		const actions = await getCodeActions(editor);
 
 		expect(serializeCodeActions(actions)).toMatchSnapshot();
 	});
@@ -116,7 +96,7 @@ describe('Code actions', () => {
 
 		editor.selection = new Selection(new Position(2, 4), new Position(2, 4));
 
-		const actions = await getCodeActions(editor.document.uri, editor.selection);
+		const actions = await getCodeActions(editor);
 
 		expect(actions).toHaveLength(0);
 	});
@@ -128,7 +108,7 @@ describe('Code actions', () => {
 
 		editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
 
-		const actions = await getCodeActions(editor.document.uri, editor.selection);
+		const actions = await getCodeActions(editor);
 
 		const fileAction = actions.find((action) =>
 			action.title.match(/^Disable .+ for the entire file$/),
@@ -149,7 +129,7 @@ describe('Code actions', () => {
 
 		editor.selection = new Selection(new Position(6, 9), new Position(6, 9));
 
-		const actions = await getCodeActions(editor.document.uri, editor.selection);
+		const actions = await getCodeActions(editor);
 
 		const fileAction = actions.find((action) =>
 			action.title.match(/^Disable .+ for the entire file$/),
@@ -166,12 +146,11 @@ describe('Code actions', () => {
 	it('should disable rules for a specific line with a comment on the previous line', async () => {
 		const editor = await openDocument(cssPath);
 
-		await waitForDiagnostics(editor);
-
 		editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
 
-		const actions = await getCodeActions(editor.document.uri, editor.selection);
+		await waitForDiagnostics(editor);
 
+		const actions = await getCodeActions(editor);
 		const lineAction = actions.find((action) => action.title.match(/^Disable .+ for this line$/));
 
 		expect(lineAction?.edit).toBeDefined();
@@ -187,17 +166,17 @@ describe('Code actions', () => {
 
 		await settingsEditor.edit((edit) =>
 			edit.insert(
-				new Position(2, 44),
+				new Position(5, 2),
 				',\n\t"stylelint.codeAction.disableRuleComment": { "location": "sameLine" }',
 			),
 		);
 
-		const resetPromise = waitForConfigurationReset();
+		const resetPromise = waitForApiEvent(ApiEvent.DidResetConfiguration);
 
 		await settingsEditor.document.save();
 		await resetPromise;
-		await openDocument(cssPath);
-		await commands.executeCommand('workbench.action.closeActiveEditor');
+		//await openDocument(cssPath);
+		//await commands.executeCommand('workbench.action.closeActiveEditor');
 
 		const editor = await openDocument(cssPath);
 
@@ -205,7 +184,7 @@ describe('Code actions', () => {
 
 		editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
 
-		const actions = await getCodeActions(editor.document.uri, editor.selection);
+		const actions = await getCodeActions(editor);
 		const lineAction = actions.find((action) => action.title.match(/^Disable .+ for this line$/));
 
 		expect(lineAction?.edit).toBeDefined();

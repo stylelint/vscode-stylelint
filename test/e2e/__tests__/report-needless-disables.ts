@@ -1,21 +1,12 @@
 import path from 'path';
+import { normalizeDiagnostic } from '../utils';
 
-import pWaitFor from 'p-wait-for';
-import { workspace, window } from 'vscode';
-
-import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
-
-describe('vscode-stylelint with "stylelint.reportNeedlessDisables"', () => {
-	it('should work if "stylelint.reportNeedlessDisables" is enabled', async () => {
-		const cssDocument = await workspace.openTextDocument(
+describe('"stylelint.reportNeedlessDisables" setting', () => {
+	it('should report needless disables when enabled', async () => {
+		const { document } = await openDocument(
 			path.resolve(workspaceDir, 'report-disables/needless.css'),
 		);
-
-		await window.showTextDocument(cssDocument);
-
-		await pWaitFor(() => getStylelintDiagnostics(cssDocument.uri).length > 0, { timeout: 5000 });
-
-		const diagnostics = getStylelintDiagnostics(cssDocument.uri);
+		const diagnostics = await waitForDiagnostics(document);
 
 		expect(
 			diagnostics

@@ -10,6 +10,7 @@
 			"args": [
 				"--extensionDevelopmentPath=${workspaceRoot}",
 				"${workspaceRoot}/test/e2e/workspace/workspace.code-workspace",
+				"--disable-extensions",
 				"--trace-warnings"
 			],
 			"env": { "NODE_ENV": "development" },

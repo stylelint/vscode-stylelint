@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`vscode-stylelint with "stylelint.configFile" should work even if "stylelint.configFile" is defined 1`] = `
+exports[`"stylelint.configFile" setting should resolve the config file using the specified path 1`] = `
 Array [
   Object {
     "code": "block-no-empty",

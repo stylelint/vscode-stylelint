@@ -1,11 +1,9 @@
 import path from 'path';
-
 import pWaitFor from 'p-wait-for';
-import { workspace, window, commands } from 'vscode';
-
+import { commands } from 'vscode';
 import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
 
-describe('vscode-stylelint with "stylelint.validate" set to ["scss"]', () => {
+describe('"stylelint.validate" setting', () => {
 	beforeAll(async () => {
 		await pWaitFor(
 			async () => {
@@ -20,54 +18,45 @@ describe('vscode-stylelint with "stylelint.validate" set to ["scss"]', () => {
 		);
 	});
 
-	it("shouldn't lint or fix css", async () => {
-		const cssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'validate/test.css'),
-		);
+	describe('when set to ["scss"]', () => {
+		it("shouldn't lint or fix css", async () => {
+			const { document } = await openDocument(path.resolve(workspaceDir, 'validate/test.css'));
 
-		await window.showTextDocument(cssDocument);
+			// TODO: find a better way to wait for linting to finish
+			await new Promise((resolve) => setTimeout(resolve, 2000));
 
-		await new Promise((resolve) => setTimeout(resolve, 2000));
+			expect(getStylelintDiagnostics(document.uri)).toEqual([]);
 
-		expect(getStylelintDiagnostics(cssDocument.uri)).toEqual([]);
+			// cspell:disable-next-line
+			await commands.executeCommand('stylelint.executeAutofix');
 
-		// cspell:disable-next-line
-		await commands.executeCommand('stylelint.executeAutofix');
+			expect(document.getText()).toMatchSnapshot();
+		});
 
-		expect(cssDocument.getText()).toMatchSnapshot();
-	});
+		it('should lint and auto-fix scss', async () => {
+			const { document } = await openDocument(path.resolve(workspaceDir, 'validate/test.scss'));
+			const diagnostics = await waitForDiagnostics(document);
 
-	it('should lint and auto-fix scss', async () => {
-		const scssDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'validate/test.scss'),
-		);
+			expect(diagnostics.map(normalizeDiagnostic)).toMatchSnapshot();
 
-		await window.showTextDocument(scssDocument);
+			// cspell:disable-next-line
+			await commands.executeCommand('stylelint.executeAutofix');
 
-		await pWaitFor(() => getStylelintDiagnostics(scssDocument.uri).length > 0, { timeout: 5000 });
+			expect(document.getText()).toMatchSnapshot();
+		});
 
-		expect(getStylelintDiagnostics(scssDocument.uri).map(normalizeDiagnostic)).toMatchSnapshot();
+		it("shouldn't lint or fix markdown", async () => {
+			const { document } = await openDocument(path.resolve(workspaceDir, 'validate/test.md'));
 
-		// cspell:disable-next-line
-		await commands.executeCommand('stylelint.executeAutofix');
+			// TODO: find a better way to wait for linting to finish
+			await new Promise((resolve) => setTimeout(resolve, 2000));
 
-		expect(scssDocument.getText()).toMatchSnapshot();
-	});
+			expect(getStylelintDiagnostics(document.uri)).toEqual([]);
 
-	it("shouldn't lint or fix markdown", async () => {
-		const mdDocument = await workspace.openTextDocument(
-			path.resolve(workspaceDir, 'validate/test.md'),
-		);
+			// cspell:disable-next-line
+			await commands.executeCommand('stylelint.executeAutofix');
 
-		await window.showTextDocument(mdDocument);
-
-		await new Promise((resolve) => setTimeout(resolve, 2000));
-
-		expect(getStylelintDiagnostics(mdDocument.uri)).toEqual([]);
-
-		// cspell:disable-next-line
-		await commands.executeCommand('stylelint.executeAutofix');
-
-		expect(mdDocument.getText()).toMatchSnapshot();
+			expect(document.getText()).toMatchSnapshot();
+		});
 	});
 });

@@ -5,7 +5,6 @@ dist
 coverage
 .nyc_output
 /.vscode-test/**
-/test/**/*.css
 /package.json
 .pnp.*
 .yarn
