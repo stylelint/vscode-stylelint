@@ -16,13 +16,14 @@ import { displayError, CommandManager, NotificationManager } from '../utils/lsp'
 import { mergeAssign, mergeOptionsWithDefaults } from '../utils/objects';
 import { StylelintRunner, LintDiagnostics } from '../utils/stylelint';
 import { StylelintResolver, StylelintResolutionResult } from '../utils/packages';
-import type {
+import {
 	LanguageServerOptions,
 	LanguageServerContext,
 	LanguageServerModule,
 	LanguageServerConstructorParameters,
 	LanguageServerHandlerParameters,
 	LanguageServerHandlerReturnValues,
+	Notification,
 } from './types';
 
 const defaultOptions: LanguageServerOptions = {
@@ -432,6 +433,8 @@ export class StylelintLanguageServer {
 			this.#scopedOptions.clear();
 
 			this.#invokeHandlers('onDidChangeConfiguration');
+
+			this.#connection.sendNotification(Notification.DidResetConfiguration);
 
 			return;
 		}

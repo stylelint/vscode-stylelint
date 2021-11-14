@@ -18,11 +18,12 @@ import { StylelintRunner } from '../../utils/stylelint';
 import { getFixes } from '../../utils/documents';
 import { StylelintResolver } from '../../utils/packages';
 import { StylelintLanguageServer } from '../server';
-import type {
+import {
 	LanguageServerContext,
 	LanguageServerModule,
 	LanguageServerModuleConstructor,
 	LanguageServerModuleConstructorParameters,
+	Notification,
 } from '../types';
 
 const mockDisplayError = displayError as jest.MockedFunction<typeof displayError>;
@@ -762,6 +763,43 @@ describe('StylelintLanguageServer', () => {
 		expect(await withoutOptions).toStrictEqual(['test']);
 
 		expect(mockRunnerImpl.lintDocument.mock.calls).toMatchSnapshot();
+	});
+
+	test('when workspace/configuration is available, onDidChangeConfiguration should send the DidResetConfiguration notification', async () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
+			(call) => call[0] === DidChangeConfigurationNotification.type,
+		)[1];
+
+		onDidChangeConfigurationHandler({
+			settings: {
+				stylelint: {
+					validate: ['css'],
+				},
+			},
+		});
+
+		expect(mockConnection.sendNotification).toHaveBeenCalledWith(
+			Notification.DidResetConfiguration,
+		);
 	});
 
 	test('should display and log errors thrown when linting', async () => {

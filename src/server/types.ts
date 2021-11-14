@@ -31,6 +31,7 @@ export const CodeActionKind = {
  */
 export enum Notification {
 	DidRegisterDocumentFormattingEditProvider = 'textDocument/didRegisterDocumentFormattingEditProvider',
+	DidResetConfiguration = 'stylelint/didResetConfiguration',
 }
 
 /**

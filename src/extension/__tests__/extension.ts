@@ -239,6 +239,30 @@ describe('Extension entry point', () => {
 		await expect(promise).resolves.toStrictEqual(params);
 	});
 
+	it('should listen for the DidResetConfiguration notification', () => {
+		activate(mockExtensionContext);
+
+		afterOnReady.mock.calls[0][0]();
+
+		expect(onReady).toHaveBeenCalled();
+		expect(onNotification).toHaveBeenCalled();
+		expect(onNotification.mock.calls[1][0]).toBe(Notification.DidResetConfiguration);
+		expect(onNotification.mock.calls[1][1]).toBeInstanceOf(Function);
+	});
+
+	it('should emit the DidResetConfiguration event when the DidResetConfiguration notification is received', async () => {
+		const api = activate(mockExtensionContext);
+
+		const promise = new Promise<void>((resolve) => {
+			api.on(ApiEvent.DidResetConfiguration, resolve);
+		});
+
+		afterOnReady.mock.calls[0][0]();
+		onNotification.mock.calls[1][1]();
+
+		await expect(promise).resolves.toBeUndefined();
+	});
+
 	it('should show an error message if the DidRegisterDocumentFormattingEditProvider notification fails', async () => {
 		activate(mockExtensionContext);
 

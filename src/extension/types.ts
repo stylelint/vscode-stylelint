@@ -9,6 +9,7 @@ export interface ExtensionEvents {
 	DidRegisterDocumentFormattingEditProvider: (
 		params: DidRegisterDocumentFormattingEditProviderNotificationParams,
 	) => void;
+	DidResetConfiguration: () => void;
 }
 
 /**
@@ -21,4 +22,5 @@ export type PublicApi = TypedEventEmitter<ExtensionEvents>;
  */
 export enum ApiEvent {
 	DidRegisterDocumentFormattingEditProvider = 'DidRegisterDocumentFormattingEditProvider',
+	DidResetConfiguration = 'DidResetConfiguration',
 }

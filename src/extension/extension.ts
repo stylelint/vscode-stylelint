@@ -50,6 +50,9 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 					api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
 				},
 			);
+			client.onNotification(Notification.DidResetConfiguration, () => {
+				api.emit(ApiEvent.DidResetConfiguration);
+			});
 		})
 		.catch(async (error) => {
 			await window.showErrorMessage(

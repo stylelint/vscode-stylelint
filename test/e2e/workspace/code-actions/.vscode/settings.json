@@ -1,0 +1,4 @@
+{
+	"stylelint.reportNeedlessDisables": true,
+	"stylelint.validate": ["css", "javascript"]
+}
