@@ -41,14 +41,21 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 		},
 	);
 
-	client.onReady().then(() => {
-		client.onNotification(
-			Notification.DidRegisterDocumentFormattingEditProvider,
-			(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
-				api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
-			},
-		);
-	});
+	client
+		.onReady()
+		.then(() => {
+			client.onNotification(
+				Notification.DidRegisterDocumentFormattingEditProvider,
+				(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
+					api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
+				},
+			);
+		})
+		.catch(async (error) => {
+			await window.showErrorMessage(
+				`Stylelint: ${error instanceof Error ? error.message : String(error)}`,
+			);
+		});
 
 	subscriptions.push(
 		// cspell:disable-next-line
@@ -68,8 +75,8 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 				arguments: [textDocument],
 			};
 
-			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, () => {
-				window.showErrorMessage(
+			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, async () => {
+				await window.showErrorMessage(
 					'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
 				);
 			});

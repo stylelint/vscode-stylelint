@@ -2,7 +2,7 @@ import path from 'path';
 import { createError } from '../../test/mockSystemErrors';
 import type { Stats } from 'fs';
 
-const fs = jest.createMockFromModule('fs/promises') as tests.mocks.FSPromisesModule;
+const fs = jest.createMockFromModule<tests.mocks.FSPromisesModule>('fs/promises');
 
 /**
  * Mock file system tree for testing.

@@ -1,7 +1,7 @@
 import stream from 'stream';
 import { createError } from '../test/mockSystemErrors';
 
-const cp = jest.createMockFromModule('child_process') as tests.mocks.ChildProcessModule;
+const cp = jest.createMockFromModule<tests.mocks.ChildProcessModule>('child_process');
 
 /**
  * Mocks of processes.

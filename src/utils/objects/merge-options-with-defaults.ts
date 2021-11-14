@@ -39,7 +39,7 @@ function mergeOptionsWithDefaultsInner<T extends object>(
 				seen.add(fromOptions);
 
 				const value: unknown = Array.isArray(fromOptions)
-					? fromOptions.map((item) => deepClone(item))
+					? fromOptions.map((item: unknown) => deepClone(item))
 					: isObject(fromDefaults) && !Array.isArray(fromDefaults)
 					? mergeOptionsWithDefaultsInner(fromOptions, fromDefaults, seen, mapped, circulars)
 					: deepClone(fromOptions);
@@ -70,8 +70,7 @@ export function mergeOptionsWithDefaults<T extends object>(options: unknown, def
 	// Track references to avoid circular infinite recursion.
 	const seen = new WeakSet<object>();
 	const mapped = new WeakMap<object, [keyof T, T[keyof T]]>();
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const circulars = new Set<Circular<any>>();
+	const circulars = new Set<Circular<Record<string | number | symbol, unknown>>>();
 
 	const result = mergeOptionsWithDefaultsInner(options, defaults, seen, mapped, circulars);
 

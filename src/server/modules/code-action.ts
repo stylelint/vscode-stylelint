@@ -1,21 +1,13 @@
-import os from 'os';
-import {
-	CodeActionKind,
-	CodeAction,
-	TextDocumentEdit,
-	Command,
-	WorkspaceChange,
-	uinteger,
-	Position,
-	TextEdit,
-	Range,
-} from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type LSP from 'vscode-languageserver-protocol';
+import * as LSP from 'vscode-languageserver-protocol';
 import type winston from 'winston';
 import { CodeActionKind as StylelintCodeActionKind, CommandId } from '../types';
-import { RuleCodeActionsCollection } from '../../utils/lsp';
-import { DisableReportRuleNames } from '../../utils/stylelint';
+import {
+	RuleCodeActionsCollection,
+	createDisableRuleFileCodeAction,
+	createDisableRuleLineCodeAction,
+} from '../../utils/lsp';
+import { isDisableReportRule } from '../../utils/stylelint';
 import type {
 	LanguageServerContext,
 	LanguageServerModuleConstructorParameters,
@@ -50,7 +42,10 @@ export class CodeActionModule implements LanguageServerModule {
 		return {
 			capabilities: {
 				codeActionProvider: {
-					codeActionKinds: [CodeActionKind.QuickFix, StylelintCodeActionKind.StylelintSourceFixAll],
+					codeActionKinds: [
+						LSP.CodeActionKind.QuickFix,
+						StylelintCodeActionKind.StylelintSourceFixAll,
+					],
 				},
 				executeCommandProvider: {
 					commands: [CommandId.OpenRuleDoc],
@@ -62,10 +57,9 @@ export class CodeActionModule implements LanguageServerModule {
 	onDidRegisterHandlers(): void {
 		this.#logger?.debug('Registering onCodeAction handler');
 
-		this.#context.connection.onCodeAction(async ({ context, textDocument }) => {
-			this.#logger?.debug('Received onCodeAction', { context, uri: textDocument.uri });
+		this.#context.connection.onCodeAction(async ({ context, textDocument: { uri } }) => {
+			this.#logger?.debug('Received onCodeAction', { context, uri });
 
-			const uri = textDocument.uri;
 			const document = this.#context.documents.get(uri);
 
 			if (!document) {
@@ -93,13 +87,17 @@ export class CodeActionModule implements LanguageServerModule {
 		this.#logger?.debug('onCodeAction handler registered');
 
 		this.#context.commands.on(CommandId.OpenRuleDoc, async ({ arguments: args }) => {
-			const params: { uri: string } | undefined = args?.[0];
+			const params = args?.[0] as { uri: string } | undefined;
 
 			if (!params) {
+				this.#logger?.debug('No URL provided, ignoring command request');
+
 				return {};
 			}
 
 			const { uri } = params;
+
+			this.#logger?.debug('Opening rule documentation', { uri });
 
 			// Open URL in browser
 			const showURIResponse = await this.#context.connection.window.showDocument({
@@ -108,118 +106,66 @@ export class CodeActionModule implements LanguageServerModule {
 			});
 
 			if (!showURIResponse.success) {
-				this.#logger?.warn('Failed to open documentation for rule', { uri });
+				this.#logger?.warn('Failed to open rule documentation', { uri });
+
+				return new LSP.ResponseError(
+					LSP.ErrorCodes.InternalError,
+					'Failed to open rule documentation',
+				);
 			}
+
+			return {};
 		});
 	}
 
-	async #getAutoFixAllAction(document: TextDocument): Promise<CodeAction | undefined> {
+	async #getAutoFixAllAction(document: TextDocument): Promise<LSP.CodeAction | undefined> {
 		const edits = await this.#context.getFixes(document);
 
 		return edits.length > 0
-			? CodeAction.create(
+			? LSP.CodeAction.create(
 					'Fix all Stylelint auto-fixable problems',
-					{ documentChanges: [TextDocumentEdit.create(document, edits)] },
-					CodeActionKind.SourceFixAll,
+					{ documentChanges: [LSP.TextDocumentEdit.create(document, edits)] },
+					StylelintCodeActionKind.StylelintSourceFixAll,
 			  )
 			: undefined;
 	}
 
-	#getAutoFixAllCommandAction(document: TextDocument): CodeAction | undefined {
-		const command = Command.create(
+	#getAutoFixAllCommandAction(document: TextDocument): LSP.CodeAction {
+		const command = LSP.Command.create(
 			'Fix all Stylelint auto-fixable problems',
 			CommandId.ApplyAutoFix,
 			{ uri: document.uri, version: document.version },
 		);
 
-		return CodeAction.create(
+		return LSP.CodeAction.create(
 			'Fix all Stylelint auto-fixable problems',
 			command,
-			CodeActionKind.Source,
+			LSP.CodeActionKind.Source,
 		);
 	}
 
-	#getDisableRuleLineAction(
-		document: TextDocument,
-		{ code, range }: LSP.Diagnostic,
-		location: 'sameLine' | 'separateLine',
-	): CodeAction {
-		const workspaceChange = new WorkspaceChange();
-
-		if (location === 'sameLine') {
-			workspaceChange
-				.getTextEditChange(document)
-				.add(
-					TextEdit.insert(
-						Position.create(range.start.line, uinteger.MAX_VALUE),
-						` /* stylelint-disable-line ${code} */`,
-					),
-				);
-		} else {
-			const lineText = document.getText(
-				Range.create(
-					Position.create(range.start.line, 0),
-					Position.create(range.start.line, uinteger.MAX_VALUE),
-				),
-			);
-			const indentation = lineText.match(/^([ \t]*)/)?.[1] ?? '';
-
-			workspaceChange
-				.getTextEditChange(document)
-				.add(
-					TextEdit.insert(
-						Position.create(range.start.line, 0),
-						`${indentation}/* stylelint-disable-next-line ${code} */${os.EOL}`,
-					),
-				);
-		}
-
-		return CodeAction.create(
-			`Disable ${code} for this line`,
-			workspaceChange.edit,
-			CodeActionKind.QuickFix,
-		);
-	}
-
-	#getDisableRuleFileAction(document: TextDocument, { code }: LSP.Diagnostic): CodeAction {
-		const workspaceChange = new WorkspaceChange();
-
-		const shebang = document?.getText(Range.create(Position.create(0, 0), Position.create(0, 2)));
-
-		workspaceChange
-			.getTextEditChange(document)
-			.add(
-				TextEdit.insert(
-					Position.create(shebang === '#!' ? 1 : 0, 0),
-					`/* stylelint-disable ${code} */${os.EOL}`,
-				),
-			);
-
-		return CodeAction.create(
-			`Disable ${code} for the entire file`,
-			workspaceChange.edit,
-			CodeActionKind.QuickFix,
-		);
-	}
-
-	#getOpenRuleDocAction({ code, codeDescription }: LSP.Diagnostic): CodeAction | undefined {
+	#getOpenRuleDocAction({ code, codeDescription }: LSP.Diagnostic): LSP.CodeAction | undefined {
 		const uri = codeDescription?.href;
 
 		if (!uri) {
 			return undefined;
 		}
 
-		const command = Command.create(`Open documentation for ${code}`, CommandId.OpenRuleDoc, {
+		const command = LSP.Command.create(`Open documentation for ${code}`, CommandId.OpenRuleDoc, {
 			uri,
 		});
 
-		return CodeAction.create(`Show documentation for ${code}`, command, CodeActionKind.QuickFix);
+		return LSP.CodeAction.create(
+			`Show documentation for ${code}`,
+			command,
+			LSP.CodeActionKind.QuickFix,
+		);
 	}
 
 	async #getCodeActions(
 		document: TextDocument,
 		context: LSP.CodeActionContext,
-	): Promise<CodeAction[]> {
+	): Promise<LSP.CodeAction[]> {
 		const only = context.only && new Set(context.only);
 
 		this.#logger?.debug('Creating code actions', { only: context.only });
@@ -227,7 +173,7 @@ export class CodeActionModule implements LanguageServerModule {
 		// If asked to provide source or source-fix-all actions, only provide
 		// actions for the whole document.
 		if (
-			only?.has(CodeActionKind.SourceFixAll) ||
+			only?.has(LSP.CodeActionKind.SourceFixAll) ||
 			only?.has(StylelintCodeActionKind.StylelintSourceFixAll)
 		) {
 			this.#logger?.debug('Creating "source-fix-all" code action');
@@ -237,15 +183,13 @@ export class CodeActionModule implements LanguageServerModule {
 			return action ? [action] : [];
 		}
 
-		if (only?.has(CodeActionKind.Source)) {
+		if (only?.has(LSP.CodeActionKind.Source)) {
 			this.#logger?.debug('Creating "source" code action');
 
-			const action = this.#getAutoFixAllCommandAction(document);
-
-			return action ? [action] : [];
+			return [this.#getAutoFixAllCommandAction(document)];
 		}
 
-		if (only && !only.has(CodeActionKind.QuickFix)) {
+		if (only && !only.has(LSP.CodeActionKind.QuickFix)) {
 			this.#logger?.debug('No quick fix actions requested, skipping action creation');
 
 			return [];
@@ -265,18 +209,13 @@ export class CodeActionModule implements LanguageServerModule {
 			// If the diagnostic is for a disable report, don't create disable
 			// rule actions. Creating disable rule actions for an invalid
 			// disable wouldn't make any sense.
-			if (
-				code !== DisableReportRuleNames.Descriptionless &&
-				code !== DisableReportRuleNames.Illegal &&
-				code !== DisableReportRuleNames.InvalidScope &&
-				code !== DisableReportRuleNames.Needless
-			) {
+			if (!isDisableReportRule(code)) {
 				const options = await this.#context.getOptions(document.uri);
 				const { location } = options.codeAction.disableRuleComment;
 
 				this.#logger?.debug('Creating disable rule for line code action', { rule: code, location });
 
-				actions.get(code).disableLine = this.#getDisableRuleLineAction(
+				actions.get(code).disableLine = createDisableRuleLineCodeAction(
 					document,
 					diagnostic,
 					location,
@@ -285,7 +224,7 @@ export class CodeActionModule implements LanguageServerModule {
 				if (!actions.get(code).disableFile) {
 					this.#logger?.debug('Creating disable rule for file code action', { rule: code });
 
-					actions.get(code).disableFile = this.#getDisableRuleFileAction(document, diagnostic);
+					actions.get(code).disableFile = createDisableRuleFileCodeAction(document, diagnostic);
 				}
 			}
 

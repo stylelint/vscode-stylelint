@@ -9,11 +9,35 @@ Object {
         "source.fixAll.stylelint",
       ],
     },
+    "executeCommandProvider": Object {
+      "commands": Array [
+        "stylelint.openRuleDoc",
+      ],
+    },
   },
 }
 `;
 
-exports[`CodeActionModule with action kind CodeActionKind.Source, should create code actions 1`] = `
+exports[`CodeActionModule with action kind Source, should create fix-all code actions 1`] = `
+Array [
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "uri": "foo",
+          "version": 1,
+        },
+      ],
+      "command": "stylelint.applyAutoFix",
+      "title": "Fix all Stylelint auto-fixable problems",
+    },
+    "kind": "source",
+    "title": "Fix all Stylelint auto-fixable problems",
+  },
+]
+`;
+
+exports[`CodeActionModule with action kind SourceFixAll, should create fix-all code actions 1`] = `
 Array [
   Object {
     "edit": Object {
@@ -34,9 +58,13 @@ Array [
               },
             },
           ],
-          "textDocument": Object {
-            "uri": "foo",
-            "version": undefined,
+          "textDocument": FullTextDocument {
+            "_content": "line 1
+line 2",
+            "_languageId": "bar",
+            "_lineOffsets": undefined,
+            "_uri": "foo",
+            "_version": 1,
           },
         },
       ],
@@ -47,7 +75,7 @@ Array [
 ]
 `;
 
-exports[`CodeActionModule with action kind CodeActionKind.SourceFixAll, should create code actions 1`] = `
+exports[`CodeActionModule with action kind StylelintSourceFixAll, should create fix-all code actions 1`] = `
 Array [
   Object {
     "edit": Object {
@@ -68,9 +96,13 @@ Array [
               },
             },
           ],
-          "textDocument": Object {
-            "uri": "foo",
-            "version": undefined,
+          "textDocument": FullTextDocument {
+            "_content": "line 1
+line 2",
+            "_languageId": "bar",
+            "_lineOffsets": undefined,
+            "_uri": "foo",
+            "_version": 1,
           },
         },
       ],
@@ -81,15 +113,17 @@ Array [
 ]
 `;
 
-exports[`CodeActionModule with action kind StylelintCodeActionKind.StylelintSourceFixAll, should create code actions 1`] = `
+exports[`CodeActionModule with no action kind, should create actions for each Stylelint diagnostic 1`] = `
 Array [
   Object {
     "edit": Object {
+      "changeAnnotations": undefined,
       "documentChanges": Array [
         Object {
           "edits": Array [
             Object {
-              "newText": "text",
+              "newText": "/* stylelint-disable-next-line rule 1 */
+",
               "range": Object {
                 "end": Object {
                   "character": 0,
@@ -104,13 +138,119 @@ Array [
           ],
           "textDocument": Object {
             "uri": "foo",
-            "version": undefined,
+            "version": 1,
           },
         },
       ],
     },
-    "kind": "source.fixAll.stylelint",
-    "title": "Fix all Stylelint auto-fixable problems",
+    "kind": "quickfix",
+    "title": "Disable rule 1 for this line",
+  },
+  Object {
+    "edit": Object {
+      "changeAnnotations": undefined,
+      "documentChanges": Array [
+        Object {
+          "edits": Array [
+            Object {
+              "newText": "/* stylelint-disable rule 1 */
+",
+              "range": Object {
+                "end": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": Object {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule 1 for the entire file",
+  },
+  Object {
+    "command": Object {
+      "arguments": Array [
+        Object {
+          "uri": "https://stylelint.io/user-guide/rules/rule",
+        },
+      ],
+      "command": "stylelint.openRuleDoc",
+      "title": "Open documentation for rule 1",
+    },
+    "kind": "quickfix",
+    "title": "Show documentation for rule 1",
+  },
+  Object {
+    "edit": Object {
+      "changeAnnotations": undefined,
+      "documentChanges": Array [
+        Object {
+          "edits": Array [
+            Object {
+              "newText": "/* stylelint-disable-next-line rule 3 */
+",
+              "range": Object {
+                "end": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": Object {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule 3 for this line",
+  },
+  Object {
+    "edit": Object {
+      "changeAnnotations": undefined,
+      "documentChanges": Array [
+        Object {
+          "edits": Array [
+            Object {
+              "newText": "/* stylelint-disable rule 3 */
+",
+              "range": Object {
+                "end": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": Object {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": Object {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule 3 for the entire file",
   },
 ]
 `;

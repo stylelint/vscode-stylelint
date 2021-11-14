@@ -48,10 +48,12 @@ mockVSCode.commands = mockCommands as unknown as typeof vscode.commands;
 mockVSCode.window = mockWindow as unknown as typeof vscode.window;
 
 const onNotification = jest.fn();
-const afterOnReady = jest.fn();
-const afterSendRequest = jest.fn();
-const onReady = jest.fn(() => ({ then: afterOnReady }));
-const sendRequest = jest.fn(() => ({ then: afterSendRequest }));
+const catchOnReady = jest.fn();
+const catchSendRequest = jest.fn();
+const afterOnReady = jest.fn().mockReturnValue({ catch: catchOnReady });
+const afterSendRequest = jest.fn().mockReturnValue({ catch: catchSendRequest });
+const onReady = jest.fn().mockReturnValue({ then: afterOnReady });
+const sendRequest = jest.fn().mockReturnValue({ then: afterSendRequest });
 const settingMonitorStart = jest.fn();
 
 const mockExtensionContext = {
@@ -235,5 +237,24 @@ describe('Extension entry point', () => {
 		onNotification.mock.calls[0][1](params);
 
 		await expect(promise).resolves.toStrictEqual(params);
+	});
+
+	it('should show an error message if the DidRegisterDocumentFormattingEditProvider notification fails', async () => {
+		activate(mockExtensionContext);
+
+		await catchOnReady.mock.calls[0][0](new Error('Problem!'));
+		await catchOnReady.mock.calls[0][0]('String problem!');
+
+		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
+		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
+		Array [
+		  "Stylelint: Problem!",
+		]
+	`);
+		expect(mockWindow.showErrorMessage.mock.calls[1]).toMatchInlineSnapshot(`
+		Array [
+		  "Stylelint: String problem!",
+		]
+	`);
 	});
 });

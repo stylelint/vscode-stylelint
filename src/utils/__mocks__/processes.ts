@@ -1,7 +1,7 @@
 import { createError } from '../../../test/mockSystemErrors';
 import type { SpawnOptionsWithoutStdio } from 'child_process';
 
-const processes = jest.createMockFromModule('../processes') as tests.mocks.Processes;
+const processes = jest.createMockFromModule<tests.mocks.Processes>('../processes');
 
 type MockProcess = {
 	args: string[];

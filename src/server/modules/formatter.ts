@@ -99,7 +99,12 @@ export class FormatterModule implements LanguageServerModule {
 
 		this.#logger?.debug('Deregistering formatter for document', { uri });
 
-		registration.then(({ dispose }) => dispose());
+		registration
+			.then(({ dispose }) => dispose())
+			.catch((error: unknown) => {
+				this.#logger?.error('Error deregistering formatter for document', { uri, error });
+			});
+
 		this.#registrations.delete(uri);
 	}
 
@@ -107,7 +112,11 @@ export class FormatterModule implements LanguageServerModule {
 		for (const [uri, registration] of this.#registrations) {
 			this.#logger?.debug('Deregistering formatter for document', { uri });
 
-			registration.then(({ dispose }) => dispose());
+			registration
+				.then(({ dispose }) => dispose())
+				.catch((error: unknown) => {
+					this.#logger?.error('Error deregistering formatter for document', { uri, error });
+				});
 		}
 
 		this.#registrations.clear();

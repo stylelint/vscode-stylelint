@@ -70,7 +70,7 @@ export class OldStylelintWarningModule implements LanguageServerModule {
 		try {
 			const rawManifest = await fs.readFile(manifestPath, 'utf8');
 
-			const manifest = JSON.parse(rawManifest);
+			const manifest = JSON.parse(rawManifest) as { version?: string };
 
 			return manifest.version;
 		} catch (error) {

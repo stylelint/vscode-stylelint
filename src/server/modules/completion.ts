@@ -152,14 +152,14 @@ export class CompletionModule implements LanguageServerModule {
 			results.push(
 				createDisableCompletionItem(
 					'stylelint-disable-line',
-					thisLineRules.size === 1 ? thisLineRules.values().next().value : undefined,
+					thisLineRules.size === 1 ? (thisLineRules.values().next().value as string) : undefined,
 				),
 			);
 
 			results.push(
 				createDisableCompletionItem(
 					'stylelint-disable-next-line',
-					nextLineRules.size === 1 ? nextLineRules.values().next().value : undefined,
+					nextLineRules.size === 1 ? (nextLineRules.values().next().value as string) : undefined,
 				),
 			);
 

@@ -206,10 +206,10 @@ export class StylelintLanguageServer {
 
 		this.#logger?.debug('Requesting options from client', { resource });
 
-		const options = await this.#connection.workspace.getConfiguration({
+		const options = (await this.#connection.workspace.getConfiguration({
 			scopeUri: resource,
 			section: 'stylelint',
-		});
+		})) as unknown;
 
 		this.#logger?.debug('Received options from client', { resource, options });
 
@@ -346,24 +346,24 @@ export class StylelintLanguageServer {
 		P extends LanguageServerHandlerParameters[K],
 		R extends LanguageServerHandlerReturnValues[K],
 	>(handlerName: K, ...params: P): { [moduleName: string]: R[] } {
-		this.#logger?.debug(`Invoking ${handlerName}`);
+		this.#logger?.debug(`Invoking ${String(handlerName)}`);
 
-		const returnValues: { [moduleName: string]: R[] } = Object.create(null);
+		const returnValues = Object.create(null) as { [moduleName: string]: R[] };
 
 		for (const [id, module] of this.#modules) {
-			const handler = module[handlerName];
+			const handler = module[handlerName] as (...args: P) => R;
 
 			if (handler) {
 				try {
 					returnValues[id] = handler.apply(module, params);
 
-					this.#logger?.debug(`Invoked ${handlerName}`, {
+					this.#logger?.debug(`Invoked ${String(handlerName)}`, {
 						module: id,
 						returnValue: returnValues[id],
 					});
 				} catch (error) {
 					this.#displayError(error);
-					this.#logger?.error(`Error invoking ${handlerName}`, {
+					this.#logger?.error(`Error invoking ${String(handlerName)}`, {
 						module: id,
 						error,
 					});
@@ -405,13 +405,13 @@ export class StylelintLanguageServer {
 		return result;
 	}
 
-	#onInitialized(params: LSP.InitializedParams): void {
+	async #onInitialized(params: LSP.InitializedParams): Promise<void> {
 		this.#logger?.debug('received onInitialized', { params });
 
 		if (this.#hasConfigurationCapability) {
 			this.#logger?.debug('Registering DidChangeConfigurationNotification');
 
-			this.#connection.client.register(DidChangeConfigurationNotification.type, {
+			await this.#connection.client.register(DidChangeConfigurationNotification.type, {
 				section: 'stylelint',
 			});
 		}
@@ -438,7 +438,10 @@ export class StylelintLanguageServer {
 
 		this.#logger?.debug('received onDidChangeConfiguration', { params });
 
-		this.#globalOptions = mergeOptionsWithDefaults(params.settings.stylelint, defaultOptions);
+		this.#globalOptions = mergeOptionsWithDefaults(
+			(params.settings as { stylelint: unknown }).stylelint,
+			defaultOptions,
+		);
 
 		Object.freeze(this.#globalOptions);
 

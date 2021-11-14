@@ -389,6 +389,40 @@ describe('FormatterModule', () => {
 		});
 	});
 
+	test('when a formatter was registered, if registration rejects, documents.onDidClose should log an error', async () => {
+		const error = new Error('test');
+
+		mockContext.__options.validate = ['bar'];
+		mockLogger.isDebugEnabled.mockReturnValue(true);
+
+		mockContext.connection.client.register.mockRejectedValueOnce(error);
+
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onInitialize({
+			capabilities: {
+				textDocument: {
+					formatting: { dynamicRegistration: true },
+				},
+			},
+		} as unknown as LSP.InitializeParams);
+
+		module.onDidRegisterHandlers();
+
+		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
+		const onDidCloseHandler = mockContext.documents.onDidClose.mock.calls[0][0];
+
+		await onDidOpenHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
+		await onDidCloseHandler({ document: { uri: 'file:///dir/test.css' } });
+
+		await new Promise((resolve) => setImmediate(resolve));
+
+		expect(mockLogger.error).toHaveBeenCalledWith('Error deregistering formatter for document', {
+			uri: 'file:///dir/test.css',
+			error,
+		});
+	});
+
 	test('when a formatter was not registered, documents.onDidClose should not try to dispose a registration', async () => {
 		mockContext.__options.validate = ['bar'];
 		mockLogger.isDebugEnabled.mockReturnValue(true);
@@ -448,6 +482,49 @@ describe('FormatterModule', () => {
 		expect(mockRegistration.dispose).toHaveBeenCalledTimes(2);
 	});
 
+	test('when formatters were registered, if registration rejects, DidChangeConfigurationNotification should log an error', async () => {
+		const error = new Error('test');
+
+		mockContext.__options.validate = ['bar'];
+		mockLogger.isDebugEnabled.mockReturnValue(true);
+
+		mockContext.connection.client.register.mockRejectedValue(error);
+
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onInitialize({
+			capabilities: {
+				textDocument: {
+					formatting: { dynamicRegistration: true },
+				},
+			},
+		} as unknown as LSP.InitializeParams);
+
+		module.onDidRegisterHandlers();
+
+		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
+
+		await onDidOpenHandler({ document: { uri: 'file:///dir/test-1.css', languageId: 'bar' } });
+		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
+
+		const didChangeConfigurationNotificationHandler = mockContext.notifications.on.mock.calls.find(
+			([type]) => type === LSP.DidChangeConfigurationNotification.type,
+		)[1];
+
+		await didChangeConfigurationNotificationHandler();
+
+		await new Promise((resolve) => setImmediate(resolve));
+
+		expect(mockLogger.error).toHaveBeenCalledWith('Error deregistering formatter for document', {
+			uri: 'file:///dir/test-1.css',
+			error,
+		});
+		expect(mockLogger.error).toHaveBeenCalledWith('Error deregistering formatter for document', {
+			uri: 'file:///dir/test-2.css',
+			error,
+		});
+	});
+
 	test('when formatters were registered, DidChangeWorkspaceFoldersNotification should deregister all registrations', async () => {
 		mockContext.__options.validate = ['bar'];
 		mockLogger.isDebugEnabled.mockReturnValue(true);
@@ -481,6 +558,50 @@ describe('FormatterModule', () => {
 		await didChangeWorkspaceFoldersNotificationHandler();
 
 		expect(mockRegistration.dispose).toHaveBeenCalledTimes(2);
+	});
+
+	test('when formatters were registered, if registration rejects, DidChangeWorkspaceFoldersNotification should log an error', async () => {
+		const error = new Error('test');
+
+		mockContext.__options.validate = ['bar'];
+		mockLogger.isDebugEnabled.mockReturnValue(true);
+
+		mockContext.connection.client.register.mockRejectedValue(error);
+
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onInitialize({
+			capabilities: {
+				textDocument: {
+					formatting: { dynamicRegistration: true },
+				},
+			},
+		} as unknown as LSP.InitializeParams);
+
+		module.onDidRegisterHandlers();
+
+		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
+
+		await onDidOpenHandler({ document: { uri: 'file:///dir/test-1.css', languageId: 'bar' } });
+		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
+
+		const didChangeWorkspaceFoldersNotificationHandler =
+			mockContext.notifications.on.mock.calls.find(
+				([type]) => type === LSP.DidChangeWorkspaceFoldersNotification.type,
+			)[1];
+
+		await didChangeWorkspaceFoldersNotificationHandler();
+
+		await new Promise((resolve) => setImmediate(resolve));
+
+		expect(mockLogger.error).toHaveBeenCalledWith('Error deregistering formatter for document', {
+			uri: 'file:///dir/test-1.css',
+			error,
+		});
+		expect(mockLogger.error).toHaveBeenCalledWith('Error deregistering formatter for document', {
+			uri: 'file:///dir/test-2.css',
+			error,
+		});
 	});
 
 	test('with client dynamic registration support, only one formatter should be registered per document', async () => {

@@ -35,5 +35,5 @@ export function processLinterResult(
 
 	const diagnostics = warnings.map((warning) => warningToDiagnostic(warning, stylelint.rules));
 
-	return output ? { output, diagnostics } : { diagnostics };
+	return output ? { output: output as string, diagnostics } : { diagnostics };
 }

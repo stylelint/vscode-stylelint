@@ -355,13 +355,13 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('when workspace/configuration is not available, context.getOptions should return global options', async () => {
-		let getOptions: LanguageServerContext['getOptions'] | undefined;
+		let context: LanguageServerContext | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				getOptions = context.getOptions;
+			constructor(params: LanguageServerModuleConstructorParameters) {
+				context = params.context;
 			}
 		}
 
@@ -387,20 +387,20 @@ describe('StylelintLanguageServer', () => {
 
 		onDidChangeConfigurationHandler({ settings: {} });
 
-		const options = await getOptions?.('uri');
+		const options = await context?.getOptions?.('uri');
 
 		expect(mockConnection.workspace.getConfiguration).not.toHaveBeenCalled();
 		expect(options).toMatchSnapshot();
 	});
 
 	test('when workspace/configuration is not available, context.getOptions should gracefully handle missing section', async () => {
-		let getOptions: LanguageServerContext['getOptions'] | undefined;
+		let context: LanguageServerContext | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				getOptions = context.getOptions;
+			constructor(params: LanguageServerModuleConstructorParameters) {
+				context = params.context;
 			}
 		}
 
@@ -420,7 +420,7 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const initialOptions = await getOptions?.('uri');
+		const initialOptions = await context?.getOptions?.('uri');
 
 		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
 			(call) => call[0] === DidChangeConfigurationNotification.type,
@@ -434,7 +434,7 @@ describe('StylelintLanguageServer', () => {
 			},
 		});
 
-		const changedOptions = await getOptions?.('uri');
+		const changedOptions = await context?.getOptions?.('uri');
 
 		expect(mockConnection.workspace.getConfiguration).not.toHaveBeenCalled();
 		expect(initialOptions).toMatchSnapshot();
@@ -454,13 +454,13 @@ describe('StylelintLanguageServer', () => {
 			},
 		);
 
-		let getOptions: LanguageServerContext['getOptions'] | undefined;
+		let context: LanguageServerContext | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				getOptions = context.getOptions;
+			constructor(params: LanguageServerModuleConstructorParameters) {
+				context = params.context;
 			}
 		}
 
@@ -484,8 +484,8 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1 = await getOptions?.('uri');
-		const options2 = await getOptions?.('uri2');
+		const options1 = await context?.getOptions?.('uri');
+		const options2 = await context?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledWith({
 			scopeUri: 'uri',
@@ -512,13 +512,13 @@ describe('StylelintLanguageServer', () => {
 			},
 		);
 
-		let getOptions: LanguageServerContext['getOptions'] | undefined;
+		let context: LanguageServerContext | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				getOptions = context.getOptions;
+			constructor(params: LanguageServerModuleConstructorParameters) {
+				context = params.context;
 			}
 		}
 
@@ -542,10 +542,10 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1A = await getOptions?.('uri');
-		const options1B = await getOptions?.('uri');
-		const options2A = await getOptions?.('uri2');
-		const options2B = await getOptions?.('uri2');
+		const options1A = await context?.getOptions?.('uri');
+		const options1B = await context?.getOptions?.('uri');
+		const options2A = await context?.getOptions?.('uri2');
+		const options2B = await context?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(2);
 		expect(options1A).toEqual(options1B);
@@ -565,13 +565,13 @@ describe('StylelintLanguageServer', () => {
 			},
 		);
 
-		let getOptions: LanguageServerContext['getOptions'] | undefined;
+		let context: LanguageServerContext | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				getOptions = context.getOptions;
+			constructor(params: LanguageServerModuleConstructorParameters) {
+				context = params.context;
 			}
 		}
 
@@ -595,17 +595,17 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1A = await getOptions?.('uri');
-		const options1B = await getOptions?.('uri');
-		const options2A = await getOptions?.('uri2');
-		const options2B = await getOptions?.('uri2');
+		const options1A = await context?.getOptions?.('uri');
+		const options1B = await context?.getOptions?.('uri');
+		const options2A = await context?.getOptions?.('uri2');
+		const options2B = await context?.getOptions?.('uri2');
 
 		const onDidCloseHandler = mockTextDocuments.mock.results[0].value.onDidClose.mock.calls[0][0];
 
 		onDidCloseHandler({ document: { uri: 'uri' } });
 
-		const options1C = await getOptions?.('uri');
-		const options2C = await getOptions?.('uri2');
+		const options1C = await context?.getOptions?.('uri');
+		const options2C = await context?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(3);
 		expect(options1A).toEqual(options1B);
@@ -615,13 +615,13 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('when workspace/configuration is available, onDidChangeConfiguration should clear all cached options', async () => {
-		let getOptions: LanguageServerContext['getOptions'] | undefined;
+		let context: LanguageServerContext | undefined;
 
 		class TestModule {
 			static id = 'test-module';
 
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				getOptions = context.getOptions;
+			constructor(params: LanguageServerModuleConstructorParameters) {
+				context = params.context;
 			}
 		}
 
@@ -645,10 +645,10 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1A = await getOptions?.('uri');
-		const options1B = await getOptions?.('uri');
-		const options2A = await getOptions?.('uri2');
-		const options2B = await getOptions?.('uri2');
+		const options1A = await context?.getOptions?.('uri');
+		const options1B = await context?.getOptions?.('uri');
+		const options2A = await context?.getOptions?.('uri2');
+		const options2B = await context?.getOptions?.('uri2');
 
 		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
 			(call) => call[0] === DidChangeConfigurationNotification.type,
@@ -662,8 +662,8 @@ describe('StylelintLanguageServer', () => {
 			},
 		});
 
-		const options1C = await getOptions?.('uri');
-		const options2C = await getOptions?.('uri2');
+		const options1C = await context?.getOptions?.('uri');
+		const options2C = await context?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(4);
 		expect(options1A).toEqual(options1B);

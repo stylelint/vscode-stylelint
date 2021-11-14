@@ -2,6 +2,8 @@ import fs from 'fs/promises';
 import { createRequire } from 'module';
 import path from 'path';
 import process from 'process';
+// eslint-disable-next-line node/no-unpublished-import
+import type stylelint from 'stylelint';
 
 import type winston from 'winston';
 import { Connection, Files } from 'vscode-languageserver/node';
@@ -109,7 +111,7 @@ export class StylelintResolver {
 		if (!process.versions.pnp) {
 			try {
 				// eslint-disable-next-line @typescript-eslint/no-var-requires
-				require(pnpPath).setup();
+				(require(pnpPath) as { setup: () => void }).setup();
 			} catch (error) {
 				this.#logger?.warn('Could not setup PnP', { path: pnpPath, error });
 
@@ -131,7 +133,7 @@ export class StylelintResolver {
 				return undefined;
 			}
 
-			const stylelint = rootRelativeRequire('stylelint');
+			const stylelint = rootRelativeRequire('stylelint') as stylelint.PublicApi;
 
 			const result = {
 				stylelint,
@@ -163,7 +165,8 @@ export class StylelintResolver {
 			const stylelintPath = await Files.resolve('stylelint', globalModulesPath, cwd, trace);
 
 			const result = {
-				stylelint: require(stylelintPath),
+				// eslint-disable-next-line @typescript-eslint/no-var-requires
+				stylelint: require(stylelintPath) as stylelint.PublicApi,
 				resolvedPath: stylelintPath,
 			};
 
@@ -217,7 +220,7 @@ export class StylelintResolver {
 			const requirePath = await this.#getRequirePath(stylelintPath, getWorkspaceFolderFn);
 
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const stylelint = require(requirePath);
+			const stylelint = require(requirePath) as stylelint.PublicApi;
 
 			if (stylelint && typeof stylelint.lint === 'function') {
 				return {

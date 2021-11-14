@@ -1,7 +1,9 @@
-import { CodeActionKind, Position, TextEdit } from 'vscode-languageserver-types';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import * as LSP from 'vscode-languageserver-protocol';
 import { CodeActionKind as StylelintCodeActionKind } from '../../types';
 
 import { CodeActionModule } from '../code-action';
+import { CommandId } from '../..';
 
 const mockContext = serverMocks.getContext();
 const mockLogger = serverMocks.getLogger();
@@ -31,13 +33,12 @@ describe('CodeActionModule', () => {
 		expect(mockContext.connection.onCodeAction).toHaveBeenCalledWith(expect.any(Function));
 	});
 
-	test('with action kind CodeActionKind.Source, should create code actions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+	test('with action kind Source, should create fix-all code actions', async () => {
+		mockContext.documents.get.mockReturnValue(
+			TextDocument.create('foo', 'bar', 1, 'line 1\nline 2'),
+		);
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
+		mockContext.getFixes.mockReturnValue([LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -46,24 +47,20 @@ describe('CodeActionModule', () => {
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
 		const result = await handler({
-			context: { only: [CodeActionKind.Source] },
+			context: { only: [LSP.CodeActionKind.Source] },
 			textDocument: { uri: 'foo' },
 		});
 
 		expect(result).toMatchSnapshot();
-		expect(mockContext.getFixes).toHaveBeenCalledWith({
-			languageId: 'bar',
-			uri: 'foo',
-		});
+		expect(mockContext.getFixes).not.toHaveBeenCalled();
 	});
 
-	test('with action kind StylelintCodeActionKind.StylelintSourceFixAll, should create code actions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+	test('with action kind StylelintSourceFixAll, should create fix-all code actions', async () => {
+		const document = TextDocument.create('foo', 'bar', 1, 'line 1\nline 2');
+
+		mockContext.documents.get.mockReturnValue(document);
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
+		mockContext.getFixes.mockReturnValue([LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -77,19 +74,15 @@ describe('CodeActionModule', () => {
 		});
 
 		expect(result).toMatchSnapshot();
-		expect(mockContext.getFixes).toHaveBeenCalledWith({
-			languageId: 'bar',
-			uri: 'foo',
-		});
+		expect(mockContext.getFixes).toHaveBeenCalledWith(document);
 	});
 
-	test('with action kind CodeActionKind.SourceFixAll, should create code actions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+	test('with action kind SourceFixAll, should create fix-all code actions', async () => {
+		const document = TextDocument.create('foo', 'bar', 1, 'line 1\nline 2');
+
+		mockContext.documents.get.mockReturnValue(document);
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
+		mockContext.getFixes.mockReturnValue([LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -98,18 +91,21 @@ describe('CodeActionModule', () => {
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
 		const result = await handler({
-			context: { only: [CodeActionKind.SourceFixAll] },
+			context: { only: [LSP.CodeActionKind.SourceFixAll] },
 			textDocument: { uri: 'foo' },
 		});
 
 		expect(result).toMatchSnapshot();
-		expect(mockContext.getFixes).toHaveBeenCalledWith({
-			languageId: 'bar',
-			uri: 'foo',
-		});
+		expect(mockContext.getFixes).toHaveBeenCalledWith(document);
 	});
 
-	test('with no action kind, should not attempt to create actions', async () => {
+	test('with action kind SourceFixAll but no fixes, should not create fix-all code actions', async () => {
+		const document = TextDocument.create('foo', 'bar', 1, 'line 1\nline 2');
+
+		mockContext.documents.get.mockReturnValue(document);
+		mockContext.__options.validate = ['bar'];
+		mockContext.getFixes.mockReturnValue([]);
+
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
@@ -117,18 +113,88 @@ describe('CodeActionModule', () => {
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
 		const result = await handler({
-			context: {},
+			context: { only: [LSP.CodeActionKind.SourceFixAll] },
 			textDocument: { uri: 'foo' },
 		});
 
 		expect(result).toStrictEqual([]);
+		expect(mockContext.getFixes).toHaveBeenCalledWith(document);
+	});
+
+	test('with no action kind, should create actions for each Stylelint diagnostic', async () => {
+		mockContext.documents.get.mockReturnValue(
+			TextDocument.create('foo', 'bar', 1, 'line 1\nline 2'),
+		);
+		mockContext.__options.validate = ['bar'];
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+
+		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
+
+		const context: LSP.CodeActionContext = {
+			diagnostics: [
+				{
+					message: 'Message for rule 1',
+					source: 'Stylelint',
+					range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+					code: 'rule 1',
+					severity: LSP.DiagnosticSeverity.Error,
+					codeDescription: {
+						href: 'https://stylelint.io/user-guide/rules/rule',
+					},
+				},
+				{
+					message: 'Message for rule 2',
+					source: 'ESLint',
+					range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+					code: 'rule 2',
+					severity: LSP.DiagnosticSeverity.Warning,
+					codeDescription: {
+						href: 'https://eslint.org/docs/rules/rule',
+					},
+				},
+				{
+					message: 'Message for rule 3',
+					source: 'Stylelint',
+					range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+					code: 'rule 3',
+					severity: LSP.DiagnosticSeverity.Warning,
+				},
+				{
+					message: 'Message for rule 1',
+					source: 'Stylelint',
+					range: LSP.Range.create(LSP.Position.create(0, 1), LSP.Position.create(0, 1)),
+					code: 'rule 1',
+					severity: LSP.DiagnosticSeverity.Error,
+					codeDescription: {
+						href: 'https://stylelint.io/user-guide/rules/rule',
+					},
+				},
+				{
+					message: 'Message for rule 4',
+					source: 'Stylelint',
+					range: LSP.Range.create(LSP.Position.create(0, 1), LSP.Position.create(0, 1)),
+					code: 404,
+					severity: LSP.DiagnosticSeverity.Error,
+				},
+			],
+		};
+
+		const result = await handler({ context, textDocument: { uri: 'foo' } });
+
+		expect(result).toMatchSnapshot();
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
-		expect(mockLogger.debug).toHaveBeenLastCalledWith('Unsupported code action kind, ignoring', {
-			kind: undefined,
+		expect(mockLogger.debug).toHaveBeenLastCalledWith('Returning code actions', {
+			actions: result,
 		});
 	});
 
-	test('with incorrect action kind, should not attempt to create actions', async () => {
+	test('with unsupported action kind, should not create actions', async () => {
+		mockContext.documents.get.mockReturnValue(
+			TextDocument.create('foo', 'bar', 1, 'line 1\nline 2'),
+		);
+		mockContext.__options.validate = ['bar'];
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
 		module.onDidRegisterHandlers();
@@ -144,9 +210,10 @@ describe('CodeActionModule', () => {
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
-		expect(mockLogger.debug).toHaveBeenLastCalledWith('Unsupported code action kind, ignoring', {
-			kind: 'foo',
-		});
+		expect(mockLogger.debug).toHaveBeenCalledWith(
+			'No quick fix actions requested, skipping action creation',
+		);
+		expect(mockLogger.debug).toHaveBeenLastCalledWith('Returning code actions', { actions: [] });
 	});
 
 	test('if no matching document exists, should not attempt to create actions', async () => {
@@ -159,7 +226,7 @@ describe('CodeActionModule', () => {
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
 		const result = await handler({
-			context: { only: [CodeActionKind.Source] },
+			context: { only: [LSP.CodeActionKind.Source] },
 			textDocument: { uri: 'foo' },
 		});
 
@@ -182,7 +249,7 @@ describe('CodeActionModule', () => {
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
 		const result = await handler({
-			context: { only: [CodeActionKind.Source] },
+			context: { only: [LSP.CodeActionKind.Source] },
 			textDocument: { uri: 'foo' },
 		});
 
@@ -197,30 +264,88 @@ describe('CodeActionModule', () => {
 		);
 	});
 
-	test('with no debug log level and no valid document, should not attempt to log reason', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
+	describe('OpenRuleDoc command', () => {
+		it('should open the rule documentation URL', async () => {
+			mockContext.connection.window.showDocument.mockResolvedValue({ success: true });
+
+			const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+			module.onDidRegisterHandlers();
+
+			const handler = mockContext.commands.on.mock.calls.find(
+				([command]) => command === CommandId.OpenRuleDoc,
+			)?.[1];
+
+			const result = await handler({
+				arguments: [
+					{
+						uri: 'https://stylelint.io/user-guide/rules/foo',
+					},
+				],
+			});
+
+			expect(result).toStrictEqual({});
+			expect(mockContext.connection.window.showDocument).toHaveBeenCalledWith({
+				uri: 'https://stylelint.io/user-guide/rules/foo',
+				external: true,
+			});
+			expect(mockLogger.debug).toHaveBeenLastCalledWith('Opening rule documentation', {
+				uri: 'https://stylelint.io/user-guide/rules/foo',
+			});
+			expect(mockLogger.warn).not.toHaveBeenCalled();
 		});
-		mockContext.__options.validate = ['baz'];
-		mockLogger.isDebugEnabled.mockReturnValue(false);
 
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		it('if no URL is provided, should do nothing', async () => {
+			const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
-		module.onDidRegisterHandlers();
+			module.onDidRegisterHandlers();
 
-		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
+			const handler = mockContext.commands.on.mock.calls.find(
+				([command]) => command === CommandId.OpenRuleDoc,
+			)?.[1];
 
-		const result = await handler({
-			context: { only: [CodeActionKind.Source] },
-			textDocument: { uri: 'foo' },
+			const result = await handler({});
+
+			expect(result).toStrictEqual({});
+			expect(mockContext.connection.window.showDocument).not.toHaveBeenCalled();
+			expect(mockLogger.debug).toHaveBeenLastCalledWith(
+				'No URL provided, ignoring command request',
+			);
+			expect(mockLogger.warn).not.toHaveBeenCalled();
 		});
 
-		expect(result).toStrictEqual([]);
-		expect(mockContext.getFixes).not.toHaveBeenCalled();
-		expect(mockLogger.debug).toHaveBeenLastCalledWith('Received onCodeAction', {
-			context: { only: [CodeActionKind.Source] },
-			uri: 'foo',
+		it('if opening the URL fails, should log a warning and respond with an error', async () => {
+			mockContext.connection.window.showDocument.mockResolvedValue({ success: false });
+
+			const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+			module.onDidRegisterHandlers();
+
+			const handler = mockContext.commands.on.mock.calls.find(
+				([command]) => command === CommandId.OpenRuleDoc,
+			)?.[1];
+
+			const result = await handler({
+				arguments: [
+					{
+						uri: 'https://stylelint.io/user-guide/rules/foo',
+					},
+				],
+			});
+
+			expect(result).toStrictEqual(
+				new LSP.ResponseError(LSP.ErrorCodes.InternalError, 'Failed to open rule documentation'),
+			);
+			expect(mockContext.connection.window.showDocument).toHaveBeenCalledWith({
+				uri: 'https://stylelint.io/user-guide/rules/foo',
+				external: true,
+			});
+			expect(mockLogger.debug).toHaveBeenLastCalledWith('Opening rule documentation', {
+				uri: 'https://stylelint.io/user-guide/rules/foo',
+			});
+			expect(mockLogger.warn).toHaveBeenLastCalledWith('Failed to open rule documentation', {
+				uri: 'https://stylelint.io/user-guide/rules/foo',
+			});
 		});
 	});
 });

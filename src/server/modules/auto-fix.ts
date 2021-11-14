@@ -1,5 +1,5 @@
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import { ExecuteCommandRequest, WorkspaceChange } from 'vscode-languageserver-protocol';
+import { WorkspaceChange } from 'vscode-languageserver-protocol';
 import type LSP from 'vscode-languageserver-protocol';
 import { CommandId } from '../types';
 import type {
@@ -51,7 +51,7 @@ export class AutoFixModule implements LanguageServerModule {
 				return {};
 			}
 
-			const identifier: { version: number; uri: string } = args[0];
+			const identifier = args[0] as { version: number; uri: string };
 			const uri = identifier.uri;
 			const document = this.#context.documents.get(uri);
 

@@ -1,5 +1,6 @@
 import { serializeError } from 'serialize-error';
 import { isIterable } from './iterables';
+import { isObject } from './objects';
 
 /**
  * Takes an object with errors, returning a new object in which each error has
@@ -43,11 +44,11 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 				const serializedKey = serializeInner(key, visited);
 				const serializedValue = serializeInner(value, visited);
 
-				if (key && typeof key === 'object') {
+				if (isObject(key)) {
 					visited.set(key, serializedKey);
 				}
 
-				if (value && typeof value === 'object') {
+				if (isObject(value)) {
 					visited.set(value, serializedValue);
 				}
 
@@ -63,7 +64,7 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 			visited.set(obj, result);
 
 			for (const value of obj) {
-				if (!value || typeof value !== 'object') {
+				if (!isObject(value)) {
 					result.add(value);
 					continue;
 				}
@@ -94,7 +95,7 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 
 		const serializedObj = Object.fromEntries(
 			Object.entries(obj).map(([key, value]) => {
-				if (!value || typeof value !== 'object') {
+				if (!isObject(value)) {
 					return [key, value];
 				}
 

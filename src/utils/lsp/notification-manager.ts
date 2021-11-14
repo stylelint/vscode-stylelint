@@ -1,6 +1,7 @@
 import * as LSP from 'vscode-languageserver-protocol';
 import { Connection } from 'vscode-languageserver';
 import type winston from 'winston';
+import { MaybeAsync } from '../types';
 
 type Handlers = Map<
 	| LSP.ProtocolNotificationType0<unknown>
@@ -9,7 +10,7 @@ type Handlers = Map<
 	| LSP.NotificationType<unknown>
 	| string
 	| undefined,
-	LSP.GenericNotificationHandler[]
+	MaybeAsync<LSP.GenericNotificationHandler>[]
 >;
 
 /**
@@ -63,7 +64,6 @@ export class NotificationManager {
 		await Promise.all(
 			handlers.map(async (handler) => {
 				try {
-					// Using await in case the handler is async
 					await handler(...params);
 				} catch (error) {
 					this.#logger?.error('Error handling notification', {
@@ -78,11 +78,17 @@ export class NotificationManager {
 	/**
 	 * Registers a handler for a notification.
 	 */
-	on<R0>(type: LSP.ProtocolNotificationType0<R0>, handler: LSP.NotificationHandler0): void;
-	on<P, R0>(type: LSP.ProtocolNotificationType<P, R0>, handler: LSP.NotificationHandler<P>): void;
-	on(type: LSP.NotificationType0, handler: LSP.NotificationHandler0): void;
-	on<P>(type: LSP.NotificationType<P>, handler: LSP.NotificationHandler<P>): void;
-	on(type: string, handler: LSP.GenericNotificationHandler): void;
+	on<R0>(
+		type: LSP.ProtocolNotificationType0<R0>,
+		handler: MaybeAsync<LSP.NotificationHandler0>,
+	): void;
+	on<P, R0>(
+		type: LSP.ProtocolNotificationType<P, R0>,
+		handler: MaybeAsync<LSP.NotificationHandler<P>>,
+	): void;
+	on(type: LSP.NotificationType0, handler: MaybeAsync<LSP.NotificationHandler0>): void;
+	on<P>(type: LSP.NotificationType<P>, handler: MaybeAsync<LSP.NotificationHandler<P>>): void;
+	on(type: string, handler: MaybeAsync<LSP.GenericNotificationHandler>): void;
 	on(handler: LSP.StarNotificationHandler): void;
 	on<P, R0>(
 		type:
@@ -92,7 +98,7 @@ export class NotificationManager {
 			| LSP.NotificationType<P>
 			| string
 			| LSP.StarNotificationHandler,
-		handler?: LSP.GenericNotificationHandler,
+		handler?: MaybeAsync<LSP.GenericNotificationHandler>,
 	): void {
 		const isStar = typeof type === 'function';
 		const [key, func] = isStar ? [undefined, type] : [type, handler];
@@ -112,14 +118,16 @@ export class NotificationManager {
 		this.#notifications.set(key, [func]);
 
 		if (isStar) {
+			// eslint-disable-next-line @typescript-eslint/no-misused-promises
 			this.#connection.onNotification((...params) => this.#handleNotification(undefined, params));
 
 			return;
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		this.#connection.onNotification<P, R0>(type as any, (...params) =>
-			this.#handleNotification(type, params),
+		this.#connection.onNotification<P, R0>(
+			type as LSP.ProtocolNotificationType<P, R0>,
+			// eslint-disable-next-line @typescript-eslint/no-misused-promises
+			(...params) => this.#handleNotification(type, params),
 		);
 	}
 }

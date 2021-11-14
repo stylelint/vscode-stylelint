@@ -9,7 +9,7 @@ export class ErrorFormatter {
 		const transformed = serializeErrors({ ...info });
 
 		for (const key of Object.keys(transformed)) {
-			info[key] = transformed[key];
+			info[key] = transformed[key] as unknown;
 		}
 
 		return info;

@@ -11,6 +11,8 @@ const mockRemoteConsole: RemoteConsole = {
 
 describe('getLogFunction', () => {
 	it('should return a function when given a supported level', () => {
+		// https://github.com/jest-community/eslint-plugin-jest/issues/985
+		// eslint-disable-next-line jest/unbound-method
 		expect(getLogFunction(mockRemoteConsole, 'info')).toBe(mockRemoteConsole.info);
 	});
 
