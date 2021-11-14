@@ -204,6 +204,26 @@ describe('Extension entry point', () => {
 		expect(subscriptions).toContain(disposable);
 	});
 
+	it('should listen for the DidRegisterCodeActionRequestHandler notification', () => {
+		activate(mockExtensionContext);
+
+		afterOnReady.mock.calls[0][0]();
+
+		expect(onReady).toHaveBeenCalled();
+		expect(onNotification).toHaveBeenCalled();
+		expect(onNotification.mock.calls[0][0]).toBe(Notification.DidRegisterCodeActionRequestHandler);
+		expect(onNotification.mock.calls[0][1]).toBeInstanceOf(Function);
+	});
+
+	it('should set codeActionReady to true when the DidRegisterCodeActionRequestHandler notification is received', async () => {
+		const api = activate(mockExtensionContext);
+
+		afterOnReady.mock.calls[0][0]();
+		onNotification.mock.calls[0][1]();
+
+		expect(api.codeActionReady).toBe(true);
+	});
+
 	it('should listen for the DidRegisterDocumentFormattingEditProvider notification', () => {
 		activate(mockExtensionContext);
 
@@ -211,10 +231,10 @@ describe('Extension entry point', () => {
 
 		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
-		expect(onNotification.mock.calls[0][0]).toBe(
+		expect(onNotification.mock.calls[1][0]).toBe(
 			Notification.DidRegisterDocumentFormattingEditProvider,
 		);
-		expect(onNotification.mock.calls[0][1]).toBeInstanceOf(Function);
+		expect(onNotification.mock.calls[1][1]).toBeInstanceOf(Function);
 	});
 
 	it('should emit the DidRegisterDocumentFormattingEditProvider event when the DidRegisterDocumentFormattingEditProvider notification is received', async () => {
@@ -234,7 +254,7 @@ describe('Extension entry point', () => {
 		};
 
 		afterOnReady.mock.calls[0][0]();
-		onNotification.mock.calls[0][1](params);
+		onNotification.mock.calls[1][1](params);
 
 		await expect(promise).resolves.toStrictEqual(params);
 	});
@@ -246,8 +266,8 @@ describe('Extension entry point', () => {
 
 		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
-		expect(onNotification.mock.calls[1][0]).toBe(Notification.DidResetConfiguration);
-		expect(onNotification.mock.calls[1][1]).toBeInstanceOf(Function);
+		expect(onNotification.mock.calls[2][0]).toBe(Notification.DidResetConfiguration);
+		expect(onNotification.mock.calls[2][1]).toBeInstanceOf(Function);
 	});
 
 	it('should emit the DidResetConfiguration event when the DidResetConfiguration notification is received', async () => {
@@ -258,7 +278,7 @@ describe('Extension entry point', () => {
 		});
 
 		afterOnReady.mock.calls[0][0]();
-		onNotification.mock.calls[1][1]();
+		onNotification.mock.calls[2][1]();
 
 		await expect(promise).resolves.toBeUndefined();
 	});

@@ -3,7 +3,7 @@ import * as LSP from 'vscode-languageserver-protocol';
 import { CodeActionKind as StylelintCodeActionKind } from '../../types';
 
 import { CodeActionModule } from '../code-action';
-import { CommandId } from '../..';
+import { CommandId, Notification } from '../..';
 
 const mockContext = serverMocks.getContext();
 const mockLogger = serverMocks.getLogger();
@@ -31,6 +31,29 @@ describe('CodeActionModule', () => {
 
 		expect(mockContext.connection.onCodeAction).toHaveBeenCalledTimes(1);
 		expect(mockContext.connection.onCodeAction).toHaveBeenCalledWith(expect.any(Function));
+	});
+
+	test('onDidRegisterHandlers should register a InitializedRequest handler', () => {
+		const module = new CodeActionModule({ context: mockContext.__typed() });
+
+		module.onDidRegisterHandlers();
+
+		expect(mockContext.notifications.on).toHaveBeenCalledWith(
+			LSP.InitializedNotification.type,
+			expect.any(Function),
+		);
+	});
+
+	test('should send the DidRegisterCodeActionRequestHandler notification when InitializedNotification is received', () => {
+		const module = new CodeActionModule({ context: mockContext.__typed() });
+
+		module.onDidRegisterHandlers();
+
+		mockContext.notifications.on.mock.calls[0][1]();
+
+		expect(mockContext.connection.sendNotification).toHaveBeenCalledWith(
+			Notification.DidRegisterCodeActionRequestHandler,
+		);
 	});
 
 	test('with action kind Source, should create fix-all code actions', async () => {

@@ -15,7 +15,9 @@ export interface ExtensionEvents {
 /**
  * VS Code extension public API.
  */
-export type PublicApi = TypedEventEmitter<ExtensionEvents>;
+export type PublicApi = TypedEventEmitter<ExtensionEvents> & {
+	codeActionReady: boolean;
+};
 
 /**
  * Extension API event names.

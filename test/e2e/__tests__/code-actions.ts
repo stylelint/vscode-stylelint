@@ -59,6 +59,12 @@ const waitForConfigurationReset = async (): Promise<void> => {
 };
 
 describe('Code actions', () => {
+	beforeAll(async () => {
+		const api = (await extensions.getExtension('stylelint.vscode-stylelint')?.exports) as PublicApi;
+
+		await pWaitFor(() => api.codeActionReady, { timeout: 5000 });
+	});
+
 	afterEach(async () => {
 		for (const filePath of [cssPath, jsPath]) {
 			const editor = await openDocument(filePath);

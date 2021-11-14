@@ -1,7 +1,7 @@
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import * as LSP from 'vscode-languageserver-protocol';
 import type winston from 'winston';
-import { CodeActionKind as StylelintCodeActionKind, CommandId } from '../types';
+import { CodeActionKind as StylelintCodeActionKind, CommandId, Notification } from '../types';
 import {
 	RuleCodeActionsCollection,
 	createDisableRuleFileCodeAction,
@@ -13,6 +13,7 @@ import type {
 	LanguageServerModuleConstructorParameters,
 	LanguageServerModule,
 } from '../types';
+import { InitializedNotification } from 'vscode-languageserver-protocol';
 
 export class CodeActionModule implements LanguageServerModule {
 	static id = 'code-action';
@@ -116,6 +117,10 @@ export class CodeActionModule implements LanguageServerModule {
 
 			return {};
 		});
+
+		this.#context.notifications.on(InitializedNotification.type, () =>
+			this.#context.connection.sendNotification(Notification.DidRegisterCodeActionRequestHandler),
+		);
 	}
 
 	async #getAutoFixAllAction(document: TextDocument): Promise<LSP.CodeAction | undefined> {

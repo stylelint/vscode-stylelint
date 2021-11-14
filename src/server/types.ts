@@ -30,6 +30,7 @@ export const CodeActionKind = {
  * Language server notification names.
  */
 export enum Notification {
+	DidRegisterCodeActionRequestHandler = 'stylelint/didRegisterCodeActionRequestHandler',
 	DidRegisterDocumentFormattingEditProvider = 'textDocument/didRegisterDocumentFormattingEditProvider',
 	DidResetConfiguration = 'stylelint/didResetConfiguration',
 }
