@@ -153,7 +153,7 @@ export class OldStylelintWarningModule implements LanguageServerModule {
 
 			this.#logger?.warn(`Found unsupported version of Stylelint: ${stylelintVersion}`);
 
-			const message = `Stylelint version ${stylelintVersion} is no longer supported — you may encounter unexpected behavior. Please upgrade to version 14.0.0 or newer. See the migration guide for more information.`;
+			const message = `Stylelint version ${stylelintVersion} is no longer supported. While it may continue to work for a while, you may encounter unexpected behavior. Please upgrade to version 14.0.0 or newer. See the migration guide for more information.`;
 
 			if (!this.#openMigrationGuide) {
 				this.#context.connection.window.showWarningMessage(message);
