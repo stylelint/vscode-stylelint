@@ -10,7 +10,7 @@ Array [
     "message": "Expected \\"#fff\\" to be \\"#FFF\\" (color-hex-case)",
     "range": Object {
       "end": Object {
-        "character": 9,
+        "character": 10,
         "line": 3,
       },
       "start": Object {
@@ -29,7 +29,7 @@ Array [
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
-        "character": 2,
+        "character": 3,
         "line": 3,
       },
       "start": Object {

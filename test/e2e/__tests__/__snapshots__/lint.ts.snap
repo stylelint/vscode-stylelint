@@ -7,7 +7,7 @@ Array [
     "message": "Bar (plugin/foo-bar)",
     "range": Object {
       "end": Object {
-        "character": 5,
+        "character": 6,
         "line": 0,
       },
       "start": Object {
@@ -26,7 +26,7 @@ Array [
     "message": "Unexpected invalid hex color \\"#y3\\" (color-no-invalid-hex)",
     "range": Object {
       "end": Object {
-        "character": 11,
+        "character": 12,
         "line": 6,
       },
       "start": Object {
@@ -45,7 +45,7 @@ Array [
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
-        "character": 2,
+        "character": 3,
         "line": 2,
       },
       "start": Object {
@@ -69,7 +69,7 @@ Array [
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
-        "character": 2,
+        "character": 3,
         "line": 2,
       },
       "start": Object {

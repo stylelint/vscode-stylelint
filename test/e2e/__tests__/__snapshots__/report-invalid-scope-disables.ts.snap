@@ -7,7 +7,7 @@ Array [
     "message": "Rule \\"foo\\" isn't enabled",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 0,
       },
       "start": Object {
@@ -23,7 +23,7 @@ Array [
     "message": "Rule \\"foo\\" isn't enabled",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 2,
       },
       "start": Object {
@@ -39,7 +39,7 @@ Array [
     "message": "Rule \\"foo\\" isn't enabled",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 4,
       },
       "start": Object {

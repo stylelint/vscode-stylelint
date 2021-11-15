@@ -45,13 +45,14 @@ export function warningToDiagnostic(
 	warning: stylelint.Warning,
 	rules?: { [name: string]: stylelint.Rule },
 ): Diagnostic {
-	const position = Position.create(warning.line - 1, warning.column - 1);
+	const start = Position.create(warning.line - 1, warning.column - 1);
+	const end = Position.create(warning.line - 1, warning.column);
 
 	const ruleDocUrl =
 		rules?.[warning.rule] && `https://stylelint.io/user-guide/rules/${warning.rule}`;
 
 	const diagnostic = Diagnostic.create(
-		Range.create(position, position),
+		Range.create(start, end),
 		warning.text,
 		DiagnosticSeverity[warning.severity === 'warning' ? 'Warning' : 'Error'],
 		warning.rule,

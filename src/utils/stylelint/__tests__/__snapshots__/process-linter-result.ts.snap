@@ -11,7 +11,7 @@ Object {
       "message": "unit-no-unknown",
       "range": Object {
         "end": Object {
-          "character": 0,
+          "character": 1,
           "line": 0,
         },
         "start": Object {
@@ -30,7 +30,7 @@ Object {
       "message": "at-rule-no-unknown",
       "range": Object {
         "end": Object {
-          "character": 0,
+          "character": 1,
           "line": 0,
         },
         "start": Object {
@@ -46,7 +46,7 @@ Object {
       "message": "alpha-value-notation",
       "range": Object {
         "end": Object {
-          "character": 0,
+          "character": 1,
           "line": 0,
         },
         "start": Object {
@@ -72,7 +72,7 @@ Object {
       "message": "unit-no-unknown",
       "range": Object {
         "end": Object {
-          "character": 0,
+          "character": 1,
           "line": 0,
         },
         "start": Object {
