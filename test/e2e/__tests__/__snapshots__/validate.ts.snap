@@ -10,7 +10,7 @@ Array [
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
       "end": Object {
-        "character": 2,
+        "character": 3,
         "line": 2,
       },
       "start": Object {

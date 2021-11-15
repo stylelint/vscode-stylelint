@@ -7,7 +7,7 @@ Array [
     "message": "Fake result",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 0,
       },
       "start": Object {
@@ -28,7 +28,7 @@ Array [
     "message": "Fake result from yarn-pnp",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 0,
       },
       "start": Object {
@@ -49,7 +49,7 @@ Array [
     "message": "Fake result from yarn-2-pnp",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 0,
       },
       "start": Object {
@@ -70,7 +70,7 @@ Array [
     "message": "Fake result from resolve-local",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 0,
       },
       "start": Object {

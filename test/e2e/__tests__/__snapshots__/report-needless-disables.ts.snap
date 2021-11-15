@@ -7,7 +7,7 @@ Array [
     "message": "Needless disable for \\"indentation\\"",
     "range": Object {
       "end": Object {
-        "character": 2,
+        "character": 3,
         "line": 2,
       },
       "start": Object {
@@ -23,7 +23,7 @@ Array [
     "message": "Needless disable for \\"indentation\\"",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 6,
       },
       "start": Object {
@@ -39,7 +39,7 @@ Array [
     "message": "Needless disable for \\"indentation\\"",
     "range": Object {
       "end": Object {
-        "character": 16,
+        "character": 17,
         "line": 14,
       },
       "start": Object {
@@ -55,7 +55,7 @@ Array [
     "message": "Needless disable for \\"indentation\\"",
     "range": Object {
       "end": Object {
-        "character": 0,
+        "character": 1,
         "line": 17,
       },
       "start": Object {
@@ -71,7 +71,7 @@ Array [
     "message": "Needless disable for \\"unknown\\"",
     "range": Object {
       "end": Object {
-        "character": 2,
+        "character": 3,
         "line": 2,
       },
       "start": Object {

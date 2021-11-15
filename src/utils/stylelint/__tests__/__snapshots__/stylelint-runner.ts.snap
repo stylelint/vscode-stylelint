@@ -30,7 +30,7 @@ Object {
       "message": "Unexpected empty block (block-no-empty)",
       "range": Object {
         "end": Object {
-          "character": 2,
+          "character": 3,
           "line": 0,
         },
         "start": Object {
@@ -53,7 +53,7 @@ Object {
       "message": "Unclosed block (CssSyntaxError)",
       "range": Object {
         "end": Object {
-          "character": 0,
+          "character": 1,
           "line": 0,
         },
         "start": Object {

@@ -10,7 +10,7 @@ Array [
     "message": "Unexpected empty block (block-no-empty)",
     "range": Object {
       "end": Object {
-        "character": 2,
+        "character": 3,
         "line": 0,
       },
       "start": Object {

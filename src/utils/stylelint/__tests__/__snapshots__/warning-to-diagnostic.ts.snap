@@ -9,7 +9,7 @@ Object {
   "message": "Expected \\"#AAA\\" to be \\"#aaa\\" (color-hex-case)",
   "range": Object {
     "end": Object {
-      "character": 11,
+      "character": 12,
       "line": 1,
     },
     "start": Object {
@@ -28,7 +28,7 @@ Object {
   "message": "Expected \\"#AAA\\" to be \\"#aaa\\" (color-hex-case)",
   "range": Object {
     "end": Object {
-      "character": 11,
+      "character": 12,
       "line": 1,
     },
     "start": Object {
@@ -47,7 +47,7 @@ Object {
   "message": "Expected \\"#bbbbbb\\" to be \\"#bbb\\" (color-hex-length)",
   "range": Object {
     "end": Object {
-      "character": 18,
+      "character": 19,
       "line": 2,
     },
     "start": Object {
