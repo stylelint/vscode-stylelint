@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [1.2.0](https://github.com/stylelint/vscode-stylelint/compare/v1.1.0...v1.2.0) (2021-11-16)
+
 ### Added
 
 - Code actions are now provided for disabling rules and showing documentation ([#322](https://github.com/stylelint/vscode-stylelint/pull/322)).
@@ -20,6 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 
 - When extension configuration is edited, the extension no longer needs to be reloaded to use the updated settings ([#322](https://github.com/stylelint/vscode-stylelint/pull/322)).
+- Worked around VS Code behaviour that resulted in problems having a hover region only one pixel wide ([#325](https://github.com/stylelint/vscode-stylelint/pull/325)).
 
 ## [1.1.0](https://github.com/stylelint/vscode-stylelint/compare/v1.0.3...v1.1.0) (2021-11-06)
 
