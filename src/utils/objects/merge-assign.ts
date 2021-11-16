@@ -15,7 +15,7 @@ export function mergeAssign<T, U, V>(target: T, source1: U, source2?: V): T & U 
 			continue;
 		}
 
-		for (const key of Object.keys(object) as (keyof typeof object)[]) {
+		for (const key of Object.getOwnPropertyNames(object) as (keyof typeof object)[]) {
 			const value = object[key];
 
 			if (isObject(value)) {
