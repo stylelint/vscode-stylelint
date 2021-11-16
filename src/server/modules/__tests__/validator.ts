@@ -1,4 +1,5 @@
 import { DidChangeWatchedFilesNotification } from 'vscode-languageserver-protocol';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Range } from 'vscode-languageserver-types';
 import { ValidatorModule } from '../validator';
 
@@ -41,7 +42,7 @@ describe('ValidatorModule', () => {
 		const handler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.lintDocument).not.toHaveBeenCalled();
@@ -61,7 +62,7 @@ describe('ValidatorModule', () => {
 		const handler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.lintDocument).toHaveBeenCalledTimes(1);
@@ -87,7 +88,7 @@ describe('ValidatorModule', () => {
 		const handler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.lintDocument).toHaveBeenCalledTimes(1);
@@ -129,7 +130,7 @@ describe('ValidatorModule', () => {
 		const handler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.lintDocument).toHaveBeenCalledTimes(1);
@@ -154,7 +155,7 @@ describe('ValidatorModule', () => {
 
 	test('onInitialize should validate all documents', async () => {
 		mockContext.__options.validate = ['baz'];
-		mockContext.lintDocument.mockImplementation((document) => {
+		mockContext.lintDocument.mockImplementation(async (document) => {
 			return document.uri === 'foo'
 				? {
 						diagnostics: [
@@ -176,8 +177,8 @@ describe('ValidatorModule', () => {
 				  };
 		});
 		mockContext.documents.all.mockReturnValueOnce([
-			{ uri: 'foo', languageId: 'baz' },
-			{ uri: 'bar', languageId: 'baz' },
+			TextDocument.create('foo', 'baz', 1, 'a {}'),
+			TextDocument.create('bar', 'baz', 1, 'a {}'),
 		]);
 
 		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -215,7 +216,7 @@ describe('ValidatorModule', () => {
 
 	test('onDidChangeWatchedFiles should validate all documents', async () => {
 		mockContext.__options.validate = ['baz'];
-		mockContext.lintDocument.mockImplementation((document) => {
+		mockContext.lintDocument.mockImplementation(async (document) => {
 			return document.uri === 'foo'
 				? {
 						diagnostics: [
@@ -237,8 +238,8 @@ describe('ValidatorModule', () => {
 				  };
 		});
 		mockContext.documents.all.mockReturnValueOnce([
-			{ uri: 'foo', languageId: 'baz' },
-			{ uri: 'bar', languageId: 'baz' },
+			TextDocument.create('foo', 'baz', 1, 'a {}'),
+			TextDocument.create('bar', 'baz', 1, 'a {}'),
 		]);
 
 		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -247,9 +248,9 @@ describe('ValidatorModule', () => {
 
 		const handler = mockContext.notifications.on.mock.calls.find(
 			([type]) => type === DidChangeWatchedFilesNotification.type,
-		)[1];
+		)?.[1];
 
-		await handler();
+		await handler?.();
 
 		expect(mockContext.lintDocument).toHaveBeenCalledTimes(2);
 		expect(mockContext.connection.sendDiagnostics).toHaveBeenCalledTimes(2);
@@ -279,7 +280,7 @@ describe('ValidatorModule', () => {
 
 	test('onDidChangeConfiguration should validate all documents', async () => {
 		mockContext.__options.validate = ['baz'];
-		mockContext.lintDocument.mockImplementation((document) => {
+		mockContext.lintDocument.mockImplementation(async (document) => {
 			return document.uri === 'foo'
 				? {
 						diagnostics: [
@@ -301,8 +302,8 @@ describe('ValidatorModule', () => {
 				  };
 		});
 		mockContext.documents.all.mockReturnValueOnce([
-			{ uri: 'foo', languageId: 'baz' },
-			{ uri: 'bar', languageId: 'baz' },
+			TextDocument.create('foo', 'baz', 1, 'a {}'),
+			TextDocument.create('bar', 'baz', 1, 'a {}'),
 		]);
 
 		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -354,7 +355,7 @@ describe('ValidatorModule', () => {
 		const handler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		const cached = module.getDiagnostics('foo');
@@ -385,14 +386,13 @@ describe('ValidatorModule', () => {
 
 		module.onDidRegisterHandlers();
 
+		const document = TextDocument.create('foo', 'bar', 1, 'a {}');
+
 		const onDidChangeContentHandler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 		const onDidCloseHandler = mockContext.documents.onDidClose.mock.calls[0][0];
 
-		await onDidChangeContentHandler({
-			document: { uri: 'foo', languageId: 'bar' },
-		});
-
-		onDidCloseHandler({ document: { uri: 'foo', languageId: 'bar' } });
+		await onDidChangeContentHandler({ document });
+		onDidCloseHandler({ document });
 
 		const cached = module.getDiagnostics('foo');
 
@@ -412,7 +412,7 @@ describe('ValidatorModule', () => {
 
 	test('when the configuration is updated, all documents should be revalidated', async () => {
 		mockContext.__options.validate = ['baz', 'qux'];
-		mockContext.lintDocument.mockImplementation((document) => {
+		mockContext.lintDocument.mockImplementation(async (document) => {
 			return document.uri === 'foo'
 				? {
 						diagnostics: [
@@ -434,8 +434,8 @@ describe('ValidatorModule', () => {
 				  };
 		});
 		mockContext.documents.all.mockReturnValue([
-			{ uri: 'foo', languageId: 'baz' },
-			{ uri: 'bar', languageId: 'qux' },
+			TextDocument.create('foo', 'baz', 1, 'a {}'),
+			TextDocument.create('bar', 'qux', 1, 'a {}'),
 		]);
 
 		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -469,7 +469,7 @@ describe('ValidatorModule', () => {
 
 	test('when the configuration is updated, documents excluded from new config should have diagnostics cleared', async () => {
 		mockContext.__options.validate = ['baz', 'qux'];
-		mockContext.lintDocument.mockImplementation((document) => {
+		mockContext.lintDocument.mockImplementation(async (document) => {
 			return document.uri === 'foo'
 				? {
 						diagnostics: [
@@ -491,8 +491,8 @@ describe('ValidatorModule', () => {
 				  };
 		});
 		mockContext.documents.all.mockReturnValue([
-			{ uri: 'foo', languageId: 'baz' },
-			{ uri: 'bar', languageId: 'qux' },
+			TextDocument.create('foo', 'baz', 1, 'a {}'),
+			TextDocument.create('bar', 'qux', 1, 'a {}'),
 		]);
 
 		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -536,5 +536,31 @@ describe('ValidatorModule', () => {
 				language: 'qux',
 			},
 		);
+	});
+
+	it('should be disposable', () => {
+		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		expect(module).toHaveProperty('dispose');
+		expect(module.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should dispose all handler registrations when disposed', () => {
+		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+		module.dispose();
+
+		const disposables = [
+			...mockContext.notifications.on.mock.results,
+			...mockContext.documents.onDidClose.mock.results,
+			...mockContext.documents.onDidChangeContent.mock.results,
+		];
+
+		expect(disposables).toHaveLength(3);
+
+		for (const disposable of disposables) {
+			expect(disposable.value.dispose).toHaveBeenCalledTimes(1);
+		}
 	});
 });

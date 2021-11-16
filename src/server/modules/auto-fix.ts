@@ -22,6 +22,11 @@ export class AutoFixModule implements LanguageServerModule {
 	 */
 	#logger: winston.Logger | undefined;
 
+	/**
+	 * Disposables for handlers.
+	 */
+	#disposables: LSP.Disposable[] = [];
+
 	constructor({ context, logger }: LanguageServerModuleConstructorParameters) {
 		this.#context = context;
 		this.#logger = logger;
@@ -43,59 +48,66 @@ export class AutoFixModule implements LanguageServerModule {
 		};
 	}
 
+	dispose(): void {
+		this.#disposables.forEach((disposable) => disposable.dispose());
+		this.#disposables.length = 0;
+	}
+
 	onDidRegisterHandlers(): void {
 		this.#logger?.debug('Registering onExecuteCommand handler');
 
-		this.#context.commands.on(CommandId.ApplyAutoFix, async ({ arguments: args }) => {
-			if (!args) {
-				return {};
-			}
+		this.#disposables.push(
+			this.#context.commands.on(CommandId.ApplyAutoFix, async ({ arguments: args }) => {
+				if (!args) {
+					return {};
+				}
 
-			const identifier = args[0] as { version: number; uri: string };
-			const uri = identifier.uri;
-			const document = this.#context.documents.get(uri);
+				const identifier = args[0] as { version: number; uri: string };
+				const uri = identifier.uri;
+				const document = this.#context.documents.get(uri);
 
-			if (!document || !(await this.#shouldAutoFix(document))) {
-				if (this.#logger?.isDebugEnabled()) {
-					if (!document) {
-						this.#logger.debug('Unknown document, ignoring', { uri });
-					} else {
-						this.#logger.debug('Document should not be auto-fixed, ignoring', {
-							uri,
-							language: document.languageId,
-						});
+				if (!document || !(await this.#shouldAutoFix(document))) {
+					if (this.#logger?.isDebugEnabled()) {
+						if (!document) {
+							this.#logger.debug('Unknown document, ignoring', { uri });
+						} else {
+							this.#logger.debug('Document should not be auto-fixed, ignoring', {
+								uri,
+								language: document.languageId,
+							});
+						}
 					}
+
+					return {};
+				}
+
+				if (identifier.version !== document.version) {
+					this.#logger?.debug('Document has been modified, ignoring', { uri });
+
+					return {};
+				}
+
+				const workspaceChange = new WorkspaceChange();
+				const textChange = workspaceChange.getTextEditChange(identifier);
+
+				const edits = await this.#context.getFixes(document);
+
+				edits.forEach((edit) => textChange.add(edit));
+
+				this.#logger?.debug('Applying fixes', { uri, edits });
+
+				try {
+					const response = await this.#context.connection.workspace.applyEdit(workspaceChange.edit);
+
+					if (!response.applied) {
+						this.#logger?.debug('Failed to apply fixes', { uri, response });
+					}
+				} catch (error) {
+					this.#logger?.debug('Failed to apply fixes', { uri, error });
 				}
 
 				return {};
-			}
-
-			if (identifier.version !== document.version) {
-				this.#logger?.debug('Document has been modified, ignoring', { uri });
-
-				return {};
-			}
-
-			const workspaceChange = new WorkspaceChange();
-			const textChange = workspaceChange.getTextEditChange(identifier);
-
-			const edits = await this.#context.getFixes(document);
-
-			edits.forEach((edit) => textChange.add(edit));
-
-			this.#logger?.debug('Applying fixes', { uri, edits });
-
-			try {
-				const response = await this.#context.connection.workspace.applyEdit(workspaceChange.edit);
-
-				if (!response.applied) {
-					this.#logger?.debug('Failed to apply fixes', { uri, response });
-				}
-			} catch (error) {
-				this.#logger?.debug('Failed to apply fixes', { uri, error });
-			}
-
-			return {};
-		});
+			}),
+		);
 	}
 }

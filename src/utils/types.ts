@@ -28,3 +28,17 @@ export type ExtractKeysOfValueType<T, V> = {
 export type MaybeAsync<T extends (...args: any[]) => any> = (
 	...args: Parameters<T>
 ) => Promise<ReturnType<T>> | ReturnType<T>;
+
+/**
+ * Given a type `T`, returns a type with only the public properties of `T`.
+ */
+export type PublicOnly<T> = Pick<T, keyof T>;
+
+/**
+ * Given a type `T`, returns a type with only the public properties of `T` and
+ * its descendants.
+ */
+export type PublicOnlyDeep<T> = {
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	[K in keyof T]: T[K] extends Function ? T[K] : T[K] extends object ? PublicOnlyDeep<T[K]> : T[K];
+};

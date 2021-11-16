@@ -4,6 +4,7 @@ import type LSP from 'vscode-languageserver-protocol';
 import { TextDocuments } from 'vscode-languageserver/node';
 import {
 	DidChangeConfigurationNotification,
+	Disposable,
 	InitializedNotification,
 	TextDocumentSyncKind,
 } from 'vscode-languageserver-protocol';
@@ -25,6 +26,7 @@ import {
 	LanguageServerHandlerReturnValues,
 	Notification,
 } from './types';
+import { createLogger } from './create-logger';
 
 const defaultOptions: LanguageServerOptions = {
 	codeAction: {
@@ -45,19 +47,31 @@ const defaultOptions: LanguageServerOptions = {
 	validate: ['css', 'postcss'],
 };
 
+const enum State {
+	New = 'New',
+	Started = 'Started',
+	Initialized = 'Initialized',
+	Disposed = 'Disposed',
+}
+
 /**
  * Stylelint language server.
  */
-export class StylelintLanguageServer {
+export class StylelintLanguageServer implements Disposable {
+	/**
+	 * The language server state.
+	 */
+	#state = State.New;
+
 	/**
 	 * The language server connection.
 	 */
 	#connection: Connection;
 
 	/**
-	 * The logger to use, if any.
+	 * The logger to use.
 	 */
-	#logger: winston.Logger | undefined;
+	#logger: winston.Logger;
 
 	/**
 	 * The notification manager for the connection.
@@ -111,11 +125,16 @@ export class StylelintLanguageServer {
 	#scopedOptions = new Map<string, LanguageServerOptions>();
 
 	/**
+	 * Disposables for handlers.
+	 */
+	#disposables: LSP.Disposable[] = [];
+
+	/**
 	 * Creates a new Stylelint language server.
 	 */
 	constructor({ connection, logger, modules }: LanguageServerConstructorParameters) {
 		this.#connection = connection;
-		this.#logger = logger?.child({ component: 'language-server' });
+		this.#logger = (logger ?? createLogger(connection))?.child({ component: 'language-server' });
 		this.#notifications = new NotificationManager(connection, this.#logger);
 		this.#commands = new CommandManager(connection, this.#logger);
 		this.#globalOptions = defaultOptions;
@@ -148,7 +167,7 @@ export class StylelintLanguageServer {
 
 		if (modules) {
 			for (const Module of modules) {
-				this.#logger?.info('Registering module', { module: Module.id });
+				this.#logger.info('Registering module', { module: Module.id });
 
 				if (!Module.id) {
 					throw new Error('Modules must have an ID');
@@ -169,23 +188,84 @@ export class StylelintLanguageServer {
 
 				this.#modules.set(Module.id, module);
 
-				this.#logger?.info('Module registered', { module: Module.id });
+				this.#logger.info('Module registered', { module: Module.id });
 			}
 		}
+	}
+
+	/**
+	 * Transitions the server's state.
+	 * @param state The new state.
+	 */
+	#transition(state: State): void {
+		if (this.#state === state) {
+			throw new Error(`Cannot transition from state ${state} to itself`);
+		}
+
+		// We only have a handful of states, so we can use a switch statement.
+		switch (this.#state) {
+			// We don't need to check State.New since the only invalid state
+			// transition from New is to Initialized, and the handler for
+			// InitializedNotification isn't registered until the server is
+			// started.
+
+			// We don't need to check State.Started since the only invalid state
+			// transition from Started is to New and we never transition to New.
+
+			case State.Initialized:
+				if (state !== State.Disposed) {
+					throw new Error('Can only transition state from Initialized to Disposed');
+				}
+
+				break;
+
+			case State.Disposed:
+				throw new Error('Cannot transition from Disposed');
+
+			default:
+				break;
+		}
+
+		this.#state = state;
 	}
 
 	/**
 	 * Starts the language server.
 	 */
 	start(): void {
-		this.#logger?.info('Starting language server');
+		this.#transition(State.Started);
+
+		this.#logger.info('Starting language server');
 
 		this.#documents.listen(this.#connection);
 		this.#connection.listen();
 
 		this.#registerHandlers();
 
-		this.#logger?.info('Language server started');
+		this.#logger.info('Language server started');
+	}
+
+	/**
+	 * Disposes the language server.
+	 */
+	dispose(): void {
+		try {
+			this.#transition(State.Disposed);
+		} catch {
+			return;
+		}
+
+		this.#logger.info('Stopping language server');
+
+		this.#modules.forEach((module) => module.dispose());
+		this.#disposables.forEach((disposable) => disposable.dispose());
+		this.#disposables.length = 0;
+		this.#connection.onInitialize(() => ({ capabilities: {} }));
+		this.#connection.onShutdown(() => undefined);
+		this.#modules.clear();
+		this.#notifications.dispose();
+		this.#commands.dispose();
+		this.#connection.dispose();
 	}
 
 	#displayError(error: unknown): void {
@@ -200,19 +280,19 @@ export class StylelintLanguageServer {
 		const cached = this.#scopedOptions.get(resource);
 
 		if (cached) {
-			this.#logger?.debug('Returning cached options', { resource });
+			this.#logger.debug('Returning cached options', { resource });
 
 			return cached;
 		}
 
-		this.#logger?.debug('Requesting options from client', { resource });
+		this.#logger.debug('Requesting options from client', { resource });
 
 		const options = (await this.#connection.workspace.getConfiguration({
 			scopeUri: resource,
 			section: 'stylelint',
 		})) as unknown;
 
-		this.#logger?.debug('Received options from client', { resource, options });
+		this.#logger.debug('Received options from client', { resource, options });
 
 		const withDefaults = mergeOptionsWithDefaults(options, defaultOptions);
 
@@ -220,7 +300,7 @@ export class StylelintLanguageServer {
 
 		this.#scopedOptions.set(resource, withDefaults);
 
-		this.#logger?.debug('Returning options', { resource, options: withDefaults });
+		this.#logger.debug('Returning options', { resource, options: withDefaults });
 
 		return withDefaults;
 	}
@@ -229,7 +309,7 @@ export class StylelintLanguageServer {
 	 * Resolves the Stylelint package for the given document.
 	 */
 	async #resolveStylelint(document: TextDocument): Promise<StylelintResolutionResult | undefined> {
-		this.#logger?.debug('Resolving Stylelint', { uri: document.uri });
+		this.#logger.debug('Resolving Stylelint', { uri: document.uri });
 
 		try {
 			const options = await this.#getOptions(document.uri);
@@ -237,18 +317,18 @@ export class StylelintLanguageServer {
 			const result = await this.#resolver.resolve(options, document);
 
 			if (result) {
-				this.#logger?.debug('Stylelint resolved', {
+				this.#logger.debug('Stylelint resolved', {
 					uri: document.uri,
 					resolvedPath: result.resolvedPath,
 				});
 			} else {
-				this.#logger?.warn('Failed to resolve Stylelint', { uri: document.uri });
+				this.#logger.warn('Failed to resolve Stylelint', { uri: document.uri });
 			}
 
 			return result;
 		} catch (error) {
 			this.#displayError(error);
-			this.#logger?.error('Error resolving Stylelint', { uri: document.uri, error });
+			this.#logger.error('Error resolving Stylelint', { uri: document.uri, error });
 
 			return undefined;
 		}
@@ -261,19 +341,19 @@ export class StylelintLanguageServer {
 		document: TextDocument,
 		linterOptions: Partial<stylelint.LinterOptions> = {},
 	): Promise<LintDiagnostics | undefined> {
-		this.#logger?.debug('Linting document', { uri: document.uri, linterOptions });
+		this.#logger.debug('Linting document', { uri: document.uri, linterOptions });
 
 		try {
 			const options = await this.#getOptions(document.uri);
 
 			const results = await this.#runner.lintDocument(document, linterOptions, options);
 
-			this.#logger?.debug('Lint run complete', { uri: document.uri, results });
+			this.#logger.debug('Lint run complete', { uri: document.uri, results });
 
 			return results;
 		} catch (err) {
 			this.#displayError(err);
-			this.#logger?.error('Error running lint', { uri: document.uri, error: err });
+			this.#logger.error('Error running lint', { uri: document.uri, error: err });
 
 			return undefined;
 		}
@@ -291,12 +371,12 @@ export class StylelintLanguageServer {
 
 			const edits = await getFixes(this.#runner, document, linterOptions, options);
 
-			this.#logger?.debug('Fixes retrieved', { uri: document.uri, edits });
+			this.#logger.debug('Fixes retrieved', { uri: document.uri, edits });
 
 			return edits;
 		} catch (error) {
 			this.#displayError(error);
-			this.#logger?.error('Error getting fixes', { uri: document.uri, error });
+			this.#logger.error('Error getting fixes', { uri: document.uri, error });
 
 			return [];
 		}
@@ -315,28 +395,35 @@ export class StylelintLanguageServer {
 	 * to register their handlers.
 	 */
 	#registerHandlers(): void {
-		this.#logger?.info('Registering handlers');
+		this.#logger.info('Registering handlers');
 
 		this.#connection.onInitialize(this.#onInitialize.bind(this));
-		this.#logger?.debug('connection.onInitialize handler registered');
+		this.#logger.debug('connection.onInitialize handler registered');
 
-		this.#notifications.on(InitializedNotification.type, this.#onInitialized.bind(this));
-		this.#logger?.debug('connection.onInitialized handler registered');
+		this.#disposables.push(
+			this.#notifications.on(InitializedNotification.type, this.#onInitialized.bind(this)),
+		);
+		this.#logger.debug('connection.onInitialized handler registered');
+
+		this.#connection.onShutdown(() => this.dispose());
+		this.#logger.debug('connection.onShutdown handler registered');
 
 		this.#commands.register();
 
-		this.#notifications.on(
-			DidChangeConfigurationNotification.type,
-			this.#onDidChangeConfiguration.bind(this),
+		this.#disposables.push(
+			this.#notifications.on(
+				DidChangeConfigurationNotification.type,
+				this.#onDidChangeConfiguration.bind(this),
+			),
 		);
-		this.#logger?.debug('connection.onDidChangeConfiguration handler registered');
+		this.#logger.debug('connection.onDidChangeConfiguration handler registered');
 
-		this.#documents.onDidClose(this.#onDidCloseDocument.bind(this));
-		this.#logger?.debug('documents.onDidClose handler registered');
+		this.#disposables.push(this.#documents.onDidClose(this.#onDidCloseDocument.bind(this)));
+		this.#logger.debug('documents.onDidClose handler registered');
 
 		this.#invokeHandlers('onDidRegisterHandlers');
 
-		this.#logger?.info('Handlers registered');
+		this.#logger.info('Handlers registered');
 	}
 
 	/**
@@ -347,7 +434,7 @@ export class StylelintLanguageServer {
 		P extends LanguageServerHandlerParameters[K],
 		R extends LanguageServerHandlerReturnValues[K],
 	>(handlerName: K, ...params: P): { [moduleName: string]: R[] } {
-		this.#logger?.debug(`Invoking ${String(handlerName)}`);
+		this.#logger.debug(`Invoking ${String(handlerName)}`);
 
 		const returnValues = Object.create(null) as { [moduleName: string]: R[] };
 
@@ -358,13 +445,13 @@ export class StylelintLanguageServer {
 				try {
 					returnValues[id] = handler.apply(module, params);
 
-					this.#logger?.debug(`Invoked ${String(handlerName)}`, {
+					this.#logger.debug(`Invoked ${String(handlerName)}`, {
 						module: id,
 						returnValue: returnValues[id],
 					});
 				} catch (error) {
 					this.#displayError(error);
-					this.#logger?.error(`Error invoking ${String(handlerName)}`, {
+					this.#logger.error(`Error invoking ${String(handlerName)}`, {
 						module: id,
 						error,
 					});
@@ -376,7 +463,7 @@ export class StylelintLanguageServer {
 	}
 
 	#onInitialize(params: LSP.InitializeParams): LSP.InitializeResult {
-		this.#logger?.debug('received onInitialize', { params });
+		this.#logger.debug('received onInitialize', { params });
 
 		const result: LSP.InitializeResult = {
 			capabilities: {
@@ -388,7 +475,7 @@ export class StylelintLanguageServer {
 		};
 
 		if (params.capabilities.workspace?.configuration) {
-			this.#logger?.debug(
+			this.#logger.debug(
 				'Client reports workspace configuration support; using scoped configuration',
 			);
 
@@ -401,16 +488,18 @@ export class StylelintLanguageServer {
 			}
 		}
 
-		this.#logger?.debug('Returning initialization results', { result });
+		this.#logger.debug('Returning initialization results', { result });
 
 		return result;
 	}
 
 	async #onInitialized(params: LSP.InitializedParams): Promise<void> {
-		this.#logger?.debug('received onInitialized', { params });
+		this.#transition(State.Initialized);
+
+		this.#logger.debug('received onInitialized', { params });
 
 		if (this.#hasConfigurationCapability) {
-			this.#logger?.debug('Registering DidChangeConfigurationNotification');
+			this.#logger.debug('Registering DidChangeConfigurationNotification');
 
 			await this.#connection.client.register(DidChangeConfigurationNotification.type, {
 				section: 'stylelint',
@@ -419,7 +508,7 @@ export class StylelintLanguageServer {
 	}
 
 	#onDidCloseDocument({ document }: TextDocumentChangeEvent<TextDocument>): void {
-		this.#logger?.debug('received documents.onDidClose, clearing cached options', {
+		this.#logger.debug('received documents.onDidClose, clearing cached options', {
 			uri: document.uri,
 		});
 
@@ -428,7 +517,7 @@ export class StylelintLanguageServer {
 
 	#onDidChangeConfiguration(params: LSP.DidChangeConfigurationParams): void {
 		if (this.#hasConfigurationCapability) {
-			this.#logger?.debug('received onDidChangeConfiguration, clearing cached options', { params });
+			this.#logger.debug('received onDidChangeConfiguration, clearing cached options', { params });
 
 			this.#scopedOptions.clear();
 
@@ -439,7 +528,7 @@ export class StylelintLanguageServer {
 			return;
 		}
 
-		this.#logger?.debug('received onDidChangeConfiguration', { params });
+		this.#logger.debug('received onDidChangeConfiguration', { params });
 
 		this.#globalOptions = mergeOptionsWithDefaults(
 			(params.settings as { stylelint: unknown }).stylelint,
@@ -448,7 +537,7 @@ export class StylelintLanguageServer {
 
 		Object.freeze(this.#globalOptions);
 
-		this.#logger?.debug('Global options updated', { options: this.#globalOptions });
+		this.#logger.debug('Global options updated', { options: this.#globalOptions });
 
 		this.#invokeHandlers('onDidChangeConfiguration');
 	}

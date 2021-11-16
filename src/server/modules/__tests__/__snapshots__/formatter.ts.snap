@@ -20,9 +20,12 @@ Array [
 
 exports[`FormatterModule should format documents 2`] = `
 Array [
-  Object {
-    "languageId": "bar",
-    "uri": "foo",
+  FullTextDocument {
+    "_content": "a {}",
+    "_languageId": "bar",
+    "_lineOffsets": undefined,
+    "_uri": "foo",
+    "_version": 1,
   },
   Object {
     "config": Object {

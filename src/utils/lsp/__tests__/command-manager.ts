@@ -158,4 +158,122 @@ describe('CommandManager', () => {
 			error,
 		});
 	});
+
+	it('should return disposables when registering commands', () => {
+		const manager = new CommandManager(mockConnection, mockLogger);
+		const disposable = manager.on('test', () => undefined);
+
+		expect(disposable).toHaveProperty('dispose');
+		expect(disposable.dispose).toBeInstanceOf(Function);
+	});
+
+	it("should deregister the command handler when disposing a command's disposable", async () => {
+		const manager = new CommandManager(mockConnection, mockLogger);
+		const disposable = manager.on('test', () => undefined);
+
+		manager.register();
+		disposable.dispose();
+
+		const executeCommand = mockConnection.onExecuteCommand.mock.calls[0][0];
+
+		await executeCommand(
+			{
+				command: 'test',
+				arguments: [1, 2, 3],
+			},
+			{
+				isCancellationRequested: false,
+			} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(mockLogger.debug).toHaveBeenCalledWith('No handler registered for command', {
+			command: 'test',
+		});
+	});
+	it("should deregister the command handler for all command names when disposing a command's disposable", async () => {
+		const manager = new CommandManager(mockConnection, mockLogger);
+		const disposable = manager.on(['test', 'other'], () => undefined);
+
+		manager.register();
+		disposable.dispose();
+
+		const executeCommand = mockConnection.onExecuteCommand.mock.calls[0][0];
+
+		await executeCommand(
+			{
+				command: 'test',
+				arguments: [1, 2, 3],
+			},
+			{
+				isCancellationRequested: false,
+			} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		await executeCommand(
+			{
+				command: 'other',
+				arguments: [1, 2, 3],
+			},
+			{
+				isCancellationRequested: false,
+			} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(mockLogger.debug).toHaveBeenCalledWith('No handler registered for command', {
+			command: 'test',
+		});
+	});
+
+	it('should be disposable', () => {
+		const manager = new CommandManager(mockConnection, mockLogger);
+
+		expect(manager).toHaveProperty('dispose');
+		expect(manager.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should deregister all registered command handlers when disposing', () => {
+		const manager = new CommandManager(mockConnection, mockLogger);
+
+		manager.on('test1', () => undefined);
+		manager.on('test2', () => undefined);
+		manager.register();
+		manager.dispose();
+
+		const executeCommand =
+			mockConnection.onExecuteCommand.mock.calls[
+				mockConnection.onExecuteCommand.mock.calls.length - 1
+			][0];
+
+		executeCommand(
+			{
+				command: 'test1',
+				arguments: [1, 2, 3],
+			},
+			{
+				isCancellationRequested: false,
+			} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		executeCommand(
+			{
+				command: 'test2',
+				arguments: [1, 2, 3],
+			},
+			{
+				isCancellationRequested: false,
+			} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(mockLogger.debug).not.toHaveBeenCalledWith('No handler registered for command', {
+			command: 'test1',
+		});
+		expect(mockLogger.debug).not.toHaveBeenCalledWith('No handler registered for command', {
+			command: 'test2',
+		});
+	});
 });
