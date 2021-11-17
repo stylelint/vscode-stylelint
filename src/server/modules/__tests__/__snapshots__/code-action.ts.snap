@@ -58,13 +58,9 @@ Array [
               },
             },
           ],
-          "textDocument": FullTextDocument {
-            "_content": "line 1
-line 2",
-            "_languageId": "bar",
-            "_lineOffsets": undefined,
-            "_uri": "foo",
-            "_version": 1,
+          "textDocument": Object {
+            "uri": "foo",
+            "version": 1,
           },
         },
       ],
@@ -96,13 +92,9 @@ Array [
               },
             },
           ],
-          "textDocument": FullTextDocument {
-            "_content": "line 1
-line 2",
-            "_languageId": "bar",
-            "_lineOffsets": undefined,
-            "_uri": "foo",
-            "_version": 1,
+          "textDocument": Object {
+            "uri": "foo",
+            "version": 1,
           },
         },
       ],
