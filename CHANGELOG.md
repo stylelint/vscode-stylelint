@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [1.2.1](https://github.com/stylelint/vscode-stylelint/compare/v1.2.0...v1.2.1) (2021-11-18)
+
+### Fixed
+
+- Fixed a bug where code actions would not work on save ([#330](https://github.com/stylelint/vscode-stylelint/pull/330)).
+
 ## [1.2.0](https://github.com/stylelint/vscode-stylelint/compare/v1.1.0...v1.2.0) (2021-11-16)
 
 ### Added
