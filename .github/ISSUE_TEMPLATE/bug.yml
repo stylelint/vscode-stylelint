@@ -29,6 +29,20 @@ body:
         }
         ```
   - type: textarea
+    id: stylelint-config
+    attributes:
+      label: Stylelint Configuration
+      description: Stylelint configuration is needed to reproduce the bug?
+      placeholder: |
+        ```js
+        module.exports = {
+          extends: ['stylelint-config-standard'],
+          rules: {
+            'block-opening-brace-newline-after': 'always-multi-line'
+          },
+        };
+        ```
+  - type: textarea
     id: extension-config
     attributes:
       label: Extension Configuration
