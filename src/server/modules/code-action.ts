@@ -126,10 +126,12 @@ export class CodeActionModule implements LanguageServerModule {
 	async #getAutoFixAllAction(document: TextDocument): Promise<LSP.CodeAction | undefined> {
 		const edits = await this.#context.getFixes(document);
 
+		const identifier = { uri: document.uri, version: document.version };
+
 		return edits.length > 0
 			? LSP.CodeAction.create(
 					'Fix all Stylelint auto-fixable problems',
-					{ documentChanges: [LSP.TextDocumentEdit.create(document, edits)] },
+					{ documentChanges: [LSP.TextDocumentEdit.create(identifier, edits)] },
 					StylelintCodeActionKind.StylelintSourceFixAll,
 			  )
 			: undefined;
