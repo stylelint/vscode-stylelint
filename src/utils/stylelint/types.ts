@@ -59,11 +59,3 @@ export class InvalidOptionError extends Error {
 		this.reasons = reasons;
 	}
 }
-
-// TODO: Create type upstream
-// https://github.com/stylelint/stylelint/pull/5696
-/**
- * A Stylelint configuration error. Taken from
- * https://github.com/stylelint/stylelint/blob/551dcb5/lib/utils/configurationError.js
- */
-export type ConfigurationError = Error & { code: 78 };
