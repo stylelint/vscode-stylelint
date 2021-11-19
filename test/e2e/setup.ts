@@ -8,10 +8,9 @@ import {
 	workspace,
 	TextEditor,
 	TextDocument,
-	languages,
 	Diagnostic,
 } from 'vscode';
-import type { ApiEvent, ExtensionEvents, PublicApi } from '../../src/extension';
+import type { ExtensionEvents, PublicApi } from '../../src/extension';
 import { getStylelintDiagnostics } from './utils';
 
 Object.defineProperty(global, 'workspaceDir', {

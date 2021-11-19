@@ -47,13 +47,11 @@ mockVSCode.workspace = mockWorkspace as unknown as typeof vscode.workspace;
 mockVSCode.commands = mockCommands as unknown as typeof vscode.commands;
 mockVSCode.window = mockWindow as unknown as typeof vscode.window;
 
+const start = jest.fn();
+const stop = jest.fn();
 const onNotification = jest.fn();
-const catchOnReady = jest.fn();
-const catchSendRequest = jest.fn();
-const afterOnReady = jest.fn().mockReturnValue({ catch: catchOnReady });
-const afterSendRequest = jest.fn().mockReturnValue({ catch: catchSendRequest });
-const onReady = jest.fn().mockReturnValue({ then: afterOnReady });
-const sendRequest = jest.fn().mockReturnValue({ then: afterSendRequest });
+const onReady = jest.fn();
+const sendRequest = jest.fn();
 const settingMonitorStart = jest.fn();
 
 const mockExtensionContext = {
@@ -80,14 +78,20 @@ const stripPaths = <T extends unknown[]>(params: T): T => {
 
 describe('Extension entry point', () => {
 	beforeEach(() => {
-		jest.clearAllMocks();
+		jest.resetAllMocks();
 
 		mockVSCode.window.activeTextEditor = undefined;
+
+		start.mockImplementation(async () => undefined);
+		onReady.mockImplementation(async () => undefined);
+		sendRequest.mockImplementation(async () => undefined);
 
 		mockLanguageClient.mockReturnValue({
 			onNotification,
 			onReady,
 			sendRequest,
+			start,
+			stop,
 		} as unknown as LanguageClient);
 
 		mockSettingMonitor.mockReturnValue({
@@ -142,48 +146,73 @@ describe('Extension entry point', () => {
 		expect(subscriptions).toContain(disposable);
 	});
 
-	it('with an active text editor, should send auto-fix commands to the language server', () => {
+	it('with an active text editor, should send auto-fix commands to the language server', async () => {
 		window.activeTextEditor = mockTextEditor;
 
 		activate(mockExtensionContext);
 
-		mockCommands.registerCommand.mock.calls[0][1](undefined);
+		await mockCommands.registerCommand.mock.calls[0][1](undefined);
 
 		expect(sendRequest).toHaveBeenCalledTimes(1);
 		expect(sendRequest.mock.calls[0]).toMatchSnapshot();
-		expect(afterSendRequest).toHaveBeenCalledTimes(1);
-		expect(afterSendRequest.mock.calls[0][0]).toBeUndefined();
 		expect(mockWindow.showErrorMessage).not.toHaveBeenCalled();
 	});
 
-	it('without an active text editor, should not send auto-fix commands to the language server', () => {
+	it('without an active text editor, should not send auto-fix commands to the language server', async () => {
 		window.activeTextEditor = undefined;
 
 		activate(mockExtensionContext);
 
-		mockCommands.registerCommand.mock.calls[0][1](undefined);
+		await mockCommands.registerCommand.mock.calls[0][1](undefined);
 
 		expect(sendRequest).not.toHaveBeenCalled();
-		expect(afterSendRequest).not.toHaveBeenCalled();
 		expect(mockWindow.showErrorMessage).not.toHaveBeenCalled();
 	});
 
-	it('should show an error message if sending the command request fails', () => {
+	it('should show an error message if sending the command request fails', async () => {
 		window.activeTextEditor = mockTextEditor;
 
 		activate(mockExtensionContext);
 
-		mockCommands.registerCommand.mock.calls[0][1](undefined);
-		afterSendRequest.mock.calls[0][1](undefined, new Error());
+		sendRequest.mockRejectedValueOnce(new Error('mock error'));
+
+		await mockCommands.registerCommand.mock.calls[0][1](undefined);
 
 		expect(sendRequest).toHaveBeenCalledTimes(1);
-		expect(afterSendRequest).toHaveBeenCalledTimes(1);
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(1);
 		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
 		Array [
 		  "Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.",
 		]
 	`);
+	});
+
+	it('should register a restart server command', () => {
+		const disposable = { dispose: () => undefined };
+
+		mockCommands.registerCommand.mockReturnValue(disposable);
+
+		activate(mockExtensionContext);
+
+		const { subscriptions } = mockExtensionContext;
+
+		expect(mockCommands.registerCommand).toHaveBeenCalled();
+		expect(mockCommands.registerCommand.mock.calls[1]).toMatchInlineSnapshot(`
+		Array [
+		  "stylelint.restart",
+		  [Function],
+		]
+	`);
+		expect(subscriptions).toContain(disposable);
+	});
+
+	it('should restart the language server', async () => {
+		activate(mockExtensionContext);
+
+		await mockCommands.registerCommand.mock.calls[1][1]();
+
+		expect(stop).toHaveBeenCalled();
+		expect(start).toHaveBeenCalled();
 	});
 
 	it('should monitor settings', () => {
@@ -204,10 +233,10 @@ describe('Extension entry point', () => {
 		expect(subscriptions).toContain(disposable);
 	});
 
-	it('should listen for the DidRegisterCodeActionRequestHandler notification', () => {
+	it('should listen for the DidRegisterCodeActionRequestHandler notification', async () => {
 		activate(mockExtensionContext);
 
-		afterOnReady.mock.calls[0][0]();
+		await new Promise((resolve) => setImmediate(resolve));
 
 		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
@@ -218,16 +247,17 @@ describe('Extension entry point', () => {
 	it('should set codeActionReady to true when the DidRegisterCodeActionRequestHandler notification is received', async () => {
 		const api = activate(mockExtensionContext);
 
-		afterOnReady.mock.calls[0][0]();
+		await new Promise((resolve) => setImmediate(resolve));
+
 		onNotification.mock.calls[0][1]();
 
 		expect(api.codeActionReady).toBe(true);
 	});
 
-	it('should listen for the DidRegisterDocumentFormattingEditProvider notification', () => {
+	it('should listen for the DidRegisterDocumentFormattingEditProvider notification', async () => {
 		activate(mockExtensionContext);
 
-		afterOnReady.mock.calls[0][0]();
+		await new Promise((resolve) => setImmediate(resolve));
 
 		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
@@ -253,16 +283,17 @@ describe('Extension entry point', () => {
 			},
 		};
 
-		afterOnReady.mock.calls[0][0]();
+		await new Promise((resolve) => setImmediate(resolve));
+
 		onNotification.mock.calls[1][1](params);
 
 		await expect(promise).resolves.toStrictEqual(params);
 	});
 
-	it('should listen for the DidResetConfiguration notification', () => {
+	it('should listen for the DidResetConfiguration notification', async () => {
 		activate(mockExtensionContext);
 
-		afterOnReady.mock.calls[0][0]();
+		await new Promise((resolve) => setImmediate(resolve));
 
 		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
@@ -277,17 +308,59 @@ describe('Extension entry point', () => {
 			api.on(ApiEvent.DidResetConfiguration, resolve);
 		});
 
-		afterOnReady.mock.calls[0][0]();
+		await new Promise((resolve) => setImmediate(resolve));
+
 		onNotification.mock.calls[2][1]();
 
 		await expect(promise).resolves.toBeUndefined();
 	});
 
-	it('should show an error message if the DidRegisterDocumentFormattingEditProvider notification fails', async () => {
+	it('should show an error message if registering notifications fails', async () => {
+		onNotification.mockImplementation((): void => {
+			throw new Error('Problem!');
+		});
+
 		activate(mockExtensionContext);
 
-		await catchOnReady.mock.calls[0][0](new Error('Problem!'));
-		await catchOnReady.mock.calls[0][0]('String problem!');
+		await new Promise((resolve) => setImmediate(resolve));
+
+		onNotification.mockImplementation((): void => {
+			throw 'String problem!';
+		});
+
+		activate(mockExtensionContext);
+
+		await new Promise((resolve) => setImmediate(resolve));
+
+		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
+		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
+		Array [
+		  "Stylelint: Problem!",
+		]
+	`);
+		expect(mockWindow.showErrorMessage.mock.calls[1]).toMatchInlineSnapshot(`
+		Array [
+		  "Stylelint: String problem!",
+		]
+	`);
+	});
+
+	it('should show an error message if restarting the language server fails', async () => {
+		activate(mockExtensionContext);
+
+		await new Promise((resolve) => setImmediate(resolve));
+
+		onReady.mockImplementation((): void => {
+			throw new Error('Problem!');
+		});
+
+		await mockCommands.registerCommand.mock.calls[1][1]();
+
+		onReady.mockImplementation((): void => {
+			throw 'String problem!';
+		});
+
+		await mockCommands.registerCommand.mock.calls[1][1]();
 
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
 		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
