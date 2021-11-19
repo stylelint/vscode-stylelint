@@ -20,7 +20,9 @@ jest.mock('vscode-uri', () => {
 	return mock;
 });
 
+import { WorkDoneProgressReporter } from 'vscode-languageserver';
 import * as LSP from 'vscode-languageserver-protocol';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { Position, TextEdit } from 'vscode-languageserver-types';
 
 import { Notification } from '../../types';
@@ -77,12 +79,9 @@ describe('FormatterModule', () => {
 	});
 
 	test('should format documents', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([TextEdit.insert(Position.create(0, 0), 'text')]);
+		mockContext.getFixes.mockResolvedValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 
 		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -90,32 +89,23 @@ describe('FormatterModule', () => {
 
 		const handler = mockContext.connection.onDocumentFormatting.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			options: {
-				insertSpaces: true,
-				tabSize: 2,
-				insertFinalNewline: true,
-				trimFinalNewlines: false,
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				options: {
+					insertSpaces: true,
+					tabSize: 2,
+					insertFinalNewline: true,
+					trimFinalNewlines: false,
+				},
 			},
-		});
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toMatchSnapshot();
 		expect(mockContext.getFixes.mock.calls[0]).toMatchSnapshot();
-		expect(mockContext.getFixes.mock.results[0].value).toStrictEqual(result);
-	});
-
-	test('with incorrect command, should not attempt to format', async () => {
-		const module = new FormatterModule({ context: mockContext.__typed() });
-
-		module.onDidRegisterHandlers();
-
-		const handler = mockContext.connection.onDocumentFormatting.mock.calls[0][0];
-
-		const result = await handler({ command: 'foo' });
-
-		expect(result).toBeNull();
-		expect(mockContext.getFixes).not.toHaveBeenCalled();
+		expect(await mockContext.getFixes.mock.results[0].value).toStrictEqual(result);
 	});
 
 	test('with no text document, should not attempt to format', async () => {
@@ -125,7 +115,14 @@ describe('FormatterModule', () => {
 
 		const handler = mockContext.connection.onDocumentFormatting.mock.calls[0][0];
 
-		const result = await handler({ options: {} });
+		const result = await handler(
+			{
+				options: { insertSpaces: true, tabSize: 2 },
+				textDocument: undefined as unknown as LSP.TextDocumentIdentifier,
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toBeNull();
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -141,10 +138,14 @@ describe('FormatterModule', () => {
 
 		const handler = mockContext.connection.onDocumentFormatting.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			options: {},
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				options: { insertSpaces: true, tabSize: 2 },
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toBeNull();
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -152,10 +153,7 @@ describe('FormatterModule', () => {
 	});
 
 	test('if document language ID is not in options, should not attempt to format', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['baz'];
 
 		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -164,10 +162,14 @@ describe('FormatterModule', () => {
 
 		const handler = mockContext.connection.onDocumentFormatting.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			options: {},
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				options: { insertSpaces: true, tabSize: 2 },
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toBeNull();
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -181,10 +183,7 @@ describe('FormatterModule', () => {
 	});
 
 	test('with no debug log level and no valid document, should not attempt to log reason', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
@@ -194,12 +193,16 @@ describe('FormatterModule', () => {
 
 		const handler = mockContext.connection.onDocumentFormatting.mock.calls[0][0];
 
-		const handlerParams = {
+		const handlerParams: LSP.DocumentFormattingParams = {
 			textDocument: { uri: 'foo' },
-			options: {},
+			options: { insertSpaces: true, tabSize: 2 },
 		};
 
-		const result = await handler(handlerParams);
+		const result = await handler(
+			handlerParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toBeNull();
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -226,7 +229,7 @@ describe('FormatterModule', () => {
 
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'foo', languageId: 'bar' } });
+		await onDidOpenHandler({ document: TextDocument.create('foo', 'bar', 1, 'a {}') });
 
 		expect(mockContext.connection.client.register).not.toHaveBeenCalled();
 	});
@@ -248,7 +251,7 @@ describe('FormatterModule', () => {
 
 		const onDidChangeContentHandler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 
-		await onDidChangeContentHandler({ document: { uri: 'foo', languageId: 'bar' } });
+		await onDidChangeContentHandler({ document: TextDocument.create('foo', 'bar', 1, 'a {}') });
 
 		expect(mockContext.connection.client.register).not.toHaveBeenCalled();
 	});
@@ -270,7 +273,7 @@ describe('FormatterModule', () => {
 
 		const onDidSaveHandler = mockContext.documents.onDidSave.mock.calls[0][0];
 
-		await onDidSaveHandler({ document: { uri: 'foo', languageId: 'bar' } });
+		await onDidSaveHandler({ document: TextDocument.create('foo', 'bar', 1, 'a {}') });
 
 		expect(mockContext.connection.client.register).not.toHaveBeenCalled();
 	});
@@ -292,8 +295,12 @@ describe('FormatterModule', () => {
 
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
-		await onDidOpenHandler({ document: { uri: 'scheme:///dir/test.css', languageId: 'bar' } });
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}'),
+		});
+		await onDidOpenHandler({
+			document: TextDocument.create('scheme:///dir/test.css', 'bar', 1, 'a {}'),
+		});
 
 		expect(mockContext.connection.client.register).toHaveBeenCalledWith(
 			LSP.DocumentFormattingRequest.type,
@@ -323,7 +330,7 @@ describe('FormatterModule', () => {
 		const onDidChangeContentHandler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
 
 		await onDidChangeContentHandler({
-			document: { uri: 'file:///dir/test.css', languageId: 'bar' },
+			document: TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.connection.client.register).toHaveBeenCalledWith(
@@ -349,7 +356,9 @@ describe('FormatterModule', () => {
 
 		const onDidSaveHandler = mockContext.documents.onDidSave.mock.calls[0][0];
 
-		await onDidSaveHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
+		await onDidSaveHandler({
+			document: TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}'),
+		});
 
 		expect(mockContext.connection.client.register).toHaveBeenCalledWith(
 			LSP.DocumentFormattingRequest.type,
@@ -377,11 +386,13 @@ describe('FormatterModule', () => {
 
 		module.onDidRegisterHandlers();
 
+		const document = TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}');
+
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 		const onDidCloseHandler = mockContext.documents.onDidClose.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
-		await onDidCloseHandler({ document: { uri: 'file:///dir/test.css' } });
+		await onDidOpenHandler({ document });
+		await onDidCloseHandler({ document });
 
 		expect(mockRegistration.dispose).toHaveBeenCalled();
 		expect(mockLogger.debug).toHaveBeenCalledWith('Deregistering formatter for document', {
@@ -409,11 +420,13 @@ describe('FormatterModule', () => {
 
 		module.onDidRegisterHandlers();
 
+		const document = TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}');
+
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 		const onDidCloseHandler = mockContext.documents.onDidClose.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
-		await onDidCloseHandler({ document: { uri: 'file:///dir/test.css' } });
+		await onDidOpenHandler({ document });
+		await onDidCloseHandler({ document });
 
 		await new Promise((resolve) => setImmediate(resolve));
 
@@ -441,7 +454,9 @@ describe('FormatterModule', () => {
 
 		const onDidCloseHandler = mockContext.documents.onDidClose.mock.calls[0][0];
 
-		await onDidCloseHandler({ document: { uri: 'file:///dir/test.css' } });
+		await onDidCloseHandler({
+			document: TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}'),
+		});
 
 		expect(mockLogger.debug).not.toHaveBeenCalledWith('Deregistering formatter for document', {
 			uri: 'file:///dir/test.css',
@@ -470,14 +485,18 @@ describe('FormatterModule', () => {
 
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-1.css', languageId: 'bar' } });
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-1.css', 'bar', 1, 'a {}'),
+		});
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-2.css', 'bar', 1, 'a {}'),
+		});
 
 		const didChangeConfigurationNotificationHandler = mockContext.notifications.on.mock.calls.find(
 			([type]) => type === LSP.DidChangeConfigurationNotification.type,
-		)[1];
+		)?.[1];
 
-		await didChangeConfigurationNotificationHandler();
+		await didChangeConfigurationNotificationHandler?.();
 
 		expect(mockRegistration.dispose).toHaveBeenCalledTimes(2);
 	});
@@ -504,14 +523,18 @@ describe('FormatterModule', () => {
 
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-1.css', languageId: 'bar' } });
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-1.css', 'bar', 1, 'a {}'),
+		});
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-2.css', 'bar', 1, 'a {}'),
+		});
 
 		const didChangeConfigurationNotificationHandler = mockContext.notifications.on.mock.calls.find(
 			([type]) => type === LSP.DidChangeConfigurationNotification.type,
-		)[1];
+		)?.[1];
 
-		await didChangeConfigurationNotificationHandler();
+		await didChangeConfigurationNotificationHandler?.();
 
 		await new Promise((resolve) => setImmediate(resolve));
 
@@ -547,15 +570,19 @@ describe('FormatterModule', () => {
 
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-1.css', languageId: 'bar' } });
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-1.css', 'bar', 1, 'a {}'),
+		});
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-2.css', 'bar', 1, 'a {}'),
+		});
 
 		const didChangeWorkspaceFoldersNotificationHandler =
 			mockContext.notifications.on.mock.calls.find(
 				([type]) => type === LSP.DidChangeWorkspaceFoldersNotification.type,
-			)[1];
+			)?.[1];
 
-		await didChangeWorkspaceFoldersNotificationHandler();
+		await didChangeWorkspaceFoldersNotificationHandler?.();
 
 		expect(mockRegistration.dispose).toHaveBeenCalledTimes(2);
 	});
@@ -582,15 +609,19 @@ describe('FormatterModule', () => {
 
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-1.css', languageId: 'bar' } });
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test-2.css', languageId: 'bar' } });
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-1.css', 'bar', 1, 'a {}'),
+		});
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test-2.css', 'bar', 1, 'a {}'),
+		});
 
 		const didChangeWorkspaceFoldersNotificationHandler =
 			mockContext.notifications.on.mock.calls.find(
 				([type]) => type === LSP.DidChangeWorkspaceFoldersNotification.type,
-			)[1];
+			)?.[1];
 
-		await didChangeWorkspaceFoldersNotificationHandler();
+		await didChangeWorkspaceFoldersNotificationHandler?.();
 
 		await new Promise((resolve) => setImmediate(resolve));
 
@@ -619,11 +650,13 @@ describe('FormatterModule', () => {
 
 		module.onDidRegisterHandlers();
 
+		const document = TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}');
+
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 		const onDidSaveHandler = mockContext.documents.onDidSave.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
-		await onDidSaveHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
+		await onDidOpenHandler({ document });
+		await onDidSaveHandler({ document });
 
 		expect(mockContext.connection.client.register).toHaveBeenCalledTimes(1);
 	});
@@ -645,7 +678,9 @@ describe('FormatterModule', () => {
 
 		const onDidOpenHandler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await onDidOpenHandler({ document: { uri: 'file:///dir/test.css', languageId: 'bar' } });
+		await onDidOpenHandler({
+			document: TextDocument.create('file:///dir/test.css', 'bar', 1, 'a {}'),
+		});
 
 		expect(mockContext.connection.sendNotification).toHaveBeenCalledWith(
 			Notification.DidRegisterDocumentFormattingEditProvider,
@@ -656,5 +691,58 @@ describe('FormatterModule', () => {
 				},
 			},
 		);
+	});
+
+	it('should be disposable', () => {
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		expect(module).toHaveProperty('dispose');
+		expect(module.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should set a no-op formatting handler when disposed', async () => {
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+		module.dispose();
+
+		const handler = mockContext.connection.onDocumentFormatting.mock.calls[1][0];
+
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///dir/test.css' },
+				options: {
+					tabSize: 4,
+					insertSpaces: true,
+				},
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(mockContext.connection.onDocumentFormatting).toHaveBeenCalledTimes(2);
+		expect(result).toBeUndefined();
+	});
+
+	it('should dispose all handler registrations when disposed', () => {
+		const module = new FormatterModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+		module.dispose();
+
+		const disposables = [
+			...mockContext.notifications.on.mock.results,
+			...mockContext.commands.on.mock.results,
+			...mockContext.documents.onDidOpen.mock.results,
+			...mockContext.documents.onDidSave.mock.results,
+			...mockContext.documents.onDidClose.mock.results,
+			...mockContext.documents.onDidChangeContent.mock.results,
+		];
+
+		expect(disposables).toHaveLength(6);
+
+		for (const disposable of disposables) {
+			expect(disposable.value.dispose).toHaveBeenCalledTimes(1);
+		}
 	});
 });

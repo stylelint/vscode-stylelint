@@ -1,127 +1,93 @@
 // Part of test utils, don't record coverage
 /* istanbul ignore file */
-// cspell:ignore crit,emerg,unhandle
+// cspell:ignore crit,emerg,unhandle,unregistration
 
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type { Connection, TextDocuments } from 'vscode-languageserver';
+import type LSP from 'vscode-languageserver-protocol';
+import type {
+	BulkRegistration,
+	BulkUnregistration,
+	Connection,
+	TextDocuments,
+} from 'vscode-languageserver';
 import type winston from 'winston';
 import type { LanguageServerContext, LanguageServerOptions } from '../../src/server/types';
 import type { CommandManager, NotificationManager } from '../../src/utils/lsp';
 import type { StylelintRunner } from '../../src/utils/stylelint';
+import { MaybeAsync, PublicOnly, PublicOnlyDeep } from '../../src/utils/types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type JestFn = jest.Mock<any, any>;
 
-export type MockConnection = {
+export type MockConnection = jest.Mocked<PublicOnly<Connection>> & {
 	__typed: () => Connection;
-	client: {
+	client: jest.Mocked<PublicOnly<Connection['client']>> & {
 		connection: MockConnection;
-		register: JestFn;
+		register: jest.MockInstance<
+			Promise<LSP.Disposable | BulkRegistration>,
+			| [type: LSP.ProtocolNotificationType<unknown, unknown>, registerParams?: unknown]
+			| [type: LSP.ProtocolNotificationType0<unknown>, registerParams?: unknown]
+			| [
+					unregistration: BulkUnregistration,
+					type: LSP.ProtocolNotificationType<unknown, unknown>,
+					registerParams?: unknown,
+			  ]
+			| [
+					unregistration: BulkUnregistration,
+					type: LSP.ProtocolNotificationType0<unknown>,
+					registerParams?: unknown,
+			  ]
+			| [
+					type: LSP.ProtocolRequestType<unknown, unknown, unknown, unknown, unknown>,
+					registerParams?: unknown,
+			  ]
+			| [
+					type: LSP.ProtocolRequestType0<unknown, unknown, unknown, unknown>,
+					registerParams?: unknown,
+			  ]
+			| [
+					unregistration: BulkUnregistration,
+					type: LSP.ProtocolRequestType<unknown, unknown, unknown, unknown, unknown>,
+					registerParams?: unknown,
+			  ]
+			| [
+					unregistration: BulkUnregistration,
+					type: LSP.ProtocolRequestType0<unknown, unknown, unknown, unknown>,
+					registerParams?: unknown,
+			  ]
+			| [type: LSP.RegistrationType<unknown>, registerParams?: unknown]
+			| [
+					unregistration: BulkUnregistration,
+					type: LSP.RegistrationType<unknown>,
+					registerParams?: unknown,
+			  ]
+			| [registrations: BulkRegistration]
+		>;
 	};
-	console: {
+	console: jest.Mocked<PublicOnly<Connection['console']>> & {
 		connection: MockConnection;
-		error: JestFn;
-		info: JestFn;
-		log: JestFn;
-		warn: JestFn;
 	};
-	dispose: JestFn;
-	languages: {
+	languages: jest.Mocked<PublicOnly<Connection['languages']>> & {
 		connection: MockConnection;
-		attachPartialResultProgress: JestFn;
-		attachWorkDoneProgress: JestFn;
-		callHierarchy: {
-			onIncomingCalls: JestFn;
-			onOutgoingCalls: JestFn;
-			onPrepare: JestFn;
-		};
-		moniker: {
-			on: JestFn;
-		};
-		onLinkedEditingRange: JestFn;
-		semanticTokens: {
-			on: JestFn;
-			onDelta: JestFn;
-			onRange: JestFn;
-		};
+		callHierarchy: jest.Mocked<PublicOnly<Connection['languages']['callHierarchy']>>;
+		moniker: jest.Mocked<PublicOnly<Connection['languages']['moniker']>>;
+		semanticTokens: jest.Mocked<PublicOnly<Connection['languages']['semanticTokens']>>;
 	};
-	listen: JestFn;
-	onCodeAction: JestFn;
-	onCodeActionResolve: JestFn;
-	onCodeLens: JestFn;
-	onCodeLensResolve: JestFn;
-	onColorPresentation: JestFn;
-	onCompletion: JestFn;
-	onCompletionResolve: JestFn;
-	onDeclaration: JestFn;
-	onDefinition: JestFn;
-	onDidChangeConfiguration: JestFn;
-	onDidChangeTextDocument: JestFn;
-	onDidChangeWatchedFiles: JestFn;
-	onDidCloseTextDocument: JestFn;
-	onDidOpenTextDocument: JestFn;
-	onDidSaveTextDocument: JestFn;
-	onDocumentColor: JestFn;
-	onDocumentFormatting: JestFn;
-	onDocumentHighlight: JestFn;
-	onDocumentLinkResolve: JestFn;
-	onDocumentLinks: JestFn;
-	onDocumentOnTypeFormatting: JestFn;
-	onDocumentRangeFormatting: JestFn;
-	onDocumentSymbol: JestFn;
-	onExecuteCommand: JestFn;
-	onExit: JestFn;
-	onFoldingRanges: JestFn;
-	onHover: JestFn;
-	onImplementation: JestFn;
-	onInitialize: JestFn;
-	onInitialized: JestFn;
-	onNotification: JestFn;
-	onPrepareRename: JestFn;
-	onProgress: JestFn;
-	onReferences: JestFn;
-	onRenameRequest: JestFn;
-	onRequest: JestFn;
-	onSignatureHelp: JestFn;
-	onSelectionRanges: JestFn;
-	onShutdown: JestFn;
-	onTypeDefinition: JestFn;
-	onWillSaveTextDocument: JestFn;
-	onWillSaveTextDocumentWaitUntil: JestFn;
-	onWorkspaceSymbol: JestFn;
-	sendDiagnostics: JestFn;
-	sendNotification: JestFn;
-	sendProgress: JestFn;
-	sendRequest: JestFn;
-	telemetry: {
+	telemetry: jest.Mocked<PublicOnly<Connection['telemetry']>> & {
 		connection: MockConnection;
-		logEvent: JestFn;
 	};
-	tracer: {
+	tracer: jest.Mocked<PublicOnly<Connection['tracer']>> & {
 		connection: MockConnection;
-		log: JestFn;
 	};
-	window: {
+	window: jest.Mocked<PublicOnly<Connection['window']>> & {
 		connection: MockConnection;
-		attachWorkDoneProgress: JestFn;
-		createWorkDoneProgress: JestFn;
-		showDocument: JestFn;
-		showErrorMessage: JestFn;
-		showInformationMessage: JestFn;
-		showWarningMessage: JestFn;
 	};
-	workspace: {
+	workspace: jest.Mocked<PublicOnly<Connection['workspace']>> & {
 		connection: MockConnection;
-		applyEdit: JestFn;
-		getConfiguration: JestFn;
-		getWorkspaceFolders: JestFn;
-		onDidChangeWorkspaceFolders: JestFn;
-		onDidCreateFiles: JestFn;
-		onDidDeleteFiles: JestFn;
-		onDidRenameFiles: JestFn;
-		onWillCreateFiles: JestFn;
-		onWillDeleteFiles: JestFn;
-		onWillRenameFiles: JestFn;
+		getConfiguration: jest.MockInstance<
+			Promise<unknown>,
+			[section: string] | [item: LSP.ConfigurationItem] | [items: LSP.ConfigurationItem[]]
+		>;
 	};
 };
 
@@ -275,7 +241,7 @@ export function getLogger(): jest.Mocked<winston.Logger> {
 		addListener: jest.fn(),
 		alert: jest.fn(),
 		allowHalfOpen: false,
-		child: jest.fn().mockImplementation(() => logger),
+		child: jest.fn(() => logger) as JestFn,
 		close: jest.fn(),
 		clear: jest.fn(),
 		configure: jest.fn(),
@@ -311,19 +277,17 @@ export function getLogger(): jest.Mocked<winston.Logger> {
 		http: jest.fn(),
 		info: jest.fn(),
 		input: jest.fn(),
-		isDebugEnabled: jest.fn().mockReturnValue(true),
-		isErrorEnabled: jest.fn().mockReturnValue(true),
-		isInfoEnabled: jest.fn().mockReturnValue(true),
-		isLevelEnabled: jest
-			.fn()
-			.mockImplementation(
-				(level: string) =>
-					level === 'info' || level === 'error' || level === 'debug' || level === 'warn',
-			),
-		isPaused: jest.fn().mockReturnValue(false),
-		isWarnEnabled: jest.fn().mockReturnValue(true),
-		isSillyEnabled: jest.fn().mockReturnValue(false),
-		isVerboseEnabled: jest.fn().mockReturnValue(false),
+		isDebugEnabled: jest.fn(() => true) as JestFn,
+		isErrorEnabled: jest.fn(() => true) as JestFn,
+		isInfoEnabled: jest.fn(() => true) as JestFn,
+		isLevelEnabled: jest.fn(
+			(level: string) =>
+				level === 'info' || level === 'error' || level === 'debug' || level === 'warn',
+		),
+		isPaused: jest.fn(() => false) as JestFn,
+		isWarnEnabled: jest.fn(() => true) as JestFn,
+		isSillyEnabled: jest.fn(() => false) as JestFn,
+		isVerboseEnabled: jest.fn(() => false) as JestFn,
 		level: 'debug',
 		levels: {
 			silly: 0,
@@ -397,18 +361,8 @@ export function getLogger(): jest.Mocked<winston.Logger> {
 	return logger;
 }
 
-export type MockTextDocuments = {
+export type MockTextDocuments = jest.Mocked<PublicOnly<TextDocuments<TextDocument>>> & {
 	__typed: () => TextDocuments<TextDocument>;
-	all: JestFn;
-	get: JestFn;
-	keys: JestFn;
-	listen: JestFn;
-	onDidChangeContent: JestFn;
-	onDidClose: JestFn;
-	onDidOpen: JestFn;
-	onDidSave: JestFn;
-	onWillSave: JestFn;
-	onWillSaveWaitUntil: JestFn;
 };
 
 /**
@@ -421,21 +375,19 @@ export function getTextDocuments(): MockTextDocuments {
 		get: jest.fn(),
 		keys: jest.fn(),
 		listen: jest.fn(),
-		onDidChangeContent: jest.fn(),
-		onDidClose: jest.fn(),
-		onDidOpen: jest.fn(),
-		onDidSave: jest.fn(),
-		onWillSave: jest.fn(),
-		onWillSaveWaitUntil: jest.fn(),
+		onDidChangeContent: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
+		onDidClose: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
+		onDidOpen: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
+		onDidSave: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
+		onWillSave: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
+		onWillSaveWaitUntil: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
 	};
 
 	return documents;
 }
 
-export type MockCommandManager = {
+export type MockCommandManager = jest.Mocked<PublicOnly<CommandManager>> & {
 	__typed: () => CommandManager;
-	on: JestFn;
-	register: JestFn;
 };
 
 /**
@@ -444,17 +396,32 @@ export type MockCommandManager = {
 export function getCommandManager(): MockCommandManager {
 	const manager: MockCommandManager = {
 		__typed: () => manager as unknown as CommandManager,
-		on: jest.fn(),
+		dispose: jest.fn(),
+		on: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
 		register: jest.fn(),
 	};
 
 	return manager;
 }
 
-export type MockNotificationManager = {
-	__typed: () => NotificationManager;
-	on: JestFn;
-};
+export type MockNotificationManager = Omit<jest.Mocked<PublicOnly<NotificationManager>>, 'on'> &
+	Pick<NotificationManager, 'on'> & {
+		__typed: () => NotificationManager;
+		on: jest.MockInstance<
+			LSP.Disposable,
+			| [handler: MaybeAsync<LSP.StarNotificationHandler>]
+			| [
+					(
+						| LSP.ProtocolNotificationType0<unknown>
+						| LSP.ProtocolNotificationType<unknown, unknown>
+						| LSP.NotificationType0
+						| LSP.NotificationType<unknown>
+						| string
+					),
+					MaybeAsync<LSP.GenericNotificationHandler>,
+			  ]
+		>;
+	};
 
 /**
  * Returns a mock notification manager.
@@ -462,15 +429,15 @@ export type MockNotificationManager = {
 export function getNotificationManager(): MockNotificationManager {
 	const manager: MockNotificationManager = {
 		__typed: () => manager as unknown as NotificationManager,
-		on: jest.fn(),
+		dispose: jest.fn(),
+		on: jest.fn(() => ({ dispose: jest.fn() })) as JestFn,
 	};
 
 	return manager;
 }
 
-export type MockStylelintRunner = {
+export type MockStylelintRunner = jest.Mocked<PublicOnly<StylelintRunner>> & {
 	__typed: () => StylelintRunner;
-	lintDocument: JestFn;
 };
 
 /**
@@ -509,7 +476,7 @@ export function getOptions(): LanguageServerOptions {
 	};
 }
 
-export type MockLanguageServerContext = {
+export type MockLanguageServerContext = jest.Mocked<PublicOnlyDeep<LanguageServerContext>> & {
 	__typed: () => LanguageServerContext;
 	__options: LanguageServerOptions;
 	connection: MockConnection;
@@ -517,12 +484,6 @@ export type MockLanguageServerContext = {
 	commands: MockCommandManager;
 	notifications: MockNotificationManager;
 	runner: MockStylelintRunner;
-	displayError: JestFn;
-	getOptions: jest.MockedFunction<() => Promise<LanguageServerOptions>>;
-	getFixes: JestFn;
-	getModule: JestFn;
-	lintDocument: JestFn;
-	resolveStylelint: JestFn;
 };
 
 /**
@@ -538,7 +499,7 @@ export function getContext(): MockLanguageServerContext {
 		notifications: getNotificationManager(),
 		runner: getStylelintRunner(),
 		displayError: jest.fn(),
-		getOptions: jest.fn().mockImplementation(async () => context.__options),
+		getOptions: jest.fn(async () => context.__options) as JestFn,
 		getFixes: jest.fn(),
 		getModule: jest.fn(),
 		lintDocument: jest.fn(),

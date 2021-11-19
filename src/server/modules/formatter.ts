@@ -35,6 +35,11 @@ export class FormatterModule implements LanguageServerModule {
 	 */
 	#registrations = new Map<string, Promise<LSP.Disposable>>();
 
+	/**
+	 * Disposables for handlers.
+	 */
+	#disposables: LSP.Disposable[] = [];
+
 	constructor({ context, logger }: LanguageServerModuleConstructorParameters) {
 		this.#context = context;
 		this.#logger = logger;
@@ -44,6 +49,13 @@ export class FormatterModule implements LanguageServerModule {
 		const options = await this.#context.getOptions(document.uri);
 
 		return options.validate.includes(document.languageId);
+	}
+
+	dispose(): void {
+		this.#context.connection.onDocumentFormatting(() => undefined);
+		this.#disposables.forEach((disposable) => disposable.dispose());
+		this.#disposables.length = 0;
+		this.#deregisterAll();
 	}
 
 	onInitialize({ capabilities }: LSP.InitializeParams): Partial<LSP.InitializeResult> {
@@ -168,30 +180,42 @@ export class FormatterModule implements LanguageServerModule {
 		this.#logger?.debug('connection.onDocumentFormatting handler registered');
 
 		this.#logger?.debug('Registering documents.onDidOpen handler');
-		this.#context.documents.onDidOpen(({ document }) => this.#register(document));
+		this.#disposables.push(
+			this.#context.documents.onDidOpen(({ document }) => this.#register(document)),
+		);
 		this.#logger?.debug('documents.onDidOpen handler registered');
 
 		this.#logger?.debug('Registering documents.onDidChangeContent handler');
-		this.#context.documents.onDidChangeContent(({ document }) => this.#register(document));
+		this.#disposables.push(
+			this.#context.documents.onDidChangeContent(({ document }) => this.#register(document)),
+		);
 		this.#logger?.debug('documents.onDidChangeContent handler registered');
 
 		this.#logger?.debug('Registering documents.onDidSave handler');
-		this.#context.documents.onDidSave(({ document }) => this.#register(document));
+		this.#disposables.push(
+			this.#context.documents.onDidSave(({ document }) => this.#register(document)),
+		);
 		this.#logger?.debug('documents.onDidSave handler registered');
 
 		this.#logger?.debug('Registering documents.onDidClose handler');
-		this.#context.documents.onDidClose(({ document }) => this.#deregister(document.uri));
+		this.#disposables.push(
+			this.#context.documents.onDidClose(({ document }) => this.#deregister(document.uri)),
+		);
 		this.#logger?.debug('documents.onDidClose handler registered');
 
 		this.#logger?.debug('Registering DidChangeConfigurationNotification');
-		this.#context.notifications.on(LSP.DidChangeConfigurationNotification.type, () =>
-			this.#deregisterAll(),
+		this.#disposables.push(
+			this.#context.notifications.on(LSP.DidChangeConfigurationNotification.type, () =>
+				this.#deregisterAll(),
+			),
 		);
 		this.#logger?.debug('DidChangeConfigurationNotification registered');
 
 		this.#logger?.debug('Registering DidChangeWorkspaceFoldersNotification');
-		this.#context.notifications.on(LSP.DidChangeWorkspaceFoldersNotification.type, () =>
-			this.#deregisterAll(),
+		this.#disposables.push(
+			this.#context.notifications.on(LSP.DidChangeWorkspaceFoldersNotification.type, () =>
+				this.#deregisterAll(),
+			),
 		);
 		this.#logger?.debug('DidChangeWorkspaceFoldersNotification registered');
 	}

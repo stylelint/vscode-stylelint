@@ -1,19 +1,10 @@
 import { LEVEL, MESSAGE } from 'triple-beam';
 import type winston from 'winston';
-import type { Connection } from 'vscode-languageserver';
 import { LanguageServerTransport } from '../language-server-transport';
 
 // Test winston transport
 
-const mockConnection = {
-	console: {
-		connection: {},
-		error: jest.fn(),
-		warn: jest.fn(),
-		info: jest.fn(),
-		log: jest.fn(),
-	},
-} as unknown as Connection;
+const mockConnection = serverMocks.getConnection();
 
 const createMockInfo = (message: string, level: string) =>
 	({
@@ -89,5 +80,37 @@ describe('LanguageServerTransport', () => {
 		transport.log(info, () => undefined);
 
 		expect(mockConnection.console.log).toHaveBeenCalledWith('test');
+	});
+
+	test('should not emit disposed connection errors', () => {
+		const info = createMockInfo('test', 'info');
+		const onError = jest.fn();
+
+		mockConnection.console.info.mockImplementationOnce(() => {
+			throw new Error('Connection is disposed.');
+		});
+
+		transport.on('error', onError);
+		transport.log(info, () => undefined);
+
+		expect(mockConnection.console.info).toHaveBeenCalledTimes(1);
+		expect(onError).toHaveBeenCalledTimes(0);
+	});
+
+	test('should emit errors thrown when attempting to log', () => {
+		const info = createMockInfo('test', 'info');
+		const onError = jest.fn();
+		const error = new Error('test');
+
+		mockConnection.console.info.mockImplementationOnce(() => {
+			throw error;
+		});
+
+		transport.on('error', onError);
+		transport.log(info, () => undefined);
+
+		expect(mockConnection.console.info).toHaveBeenCalledTimes(1);
+		expect(onError).toHaveBeenCalledTimes(1);
+		expect(onError).toHaveBeenCalledWith(error);
 	});
 });

@@ -4,6 +4,7 @@ import { CodeActionKind as StylelintCodeActionKind } from '../../types';
 
 import { CodeActionModule } from '../code-action';
 import { CommandId, Notification } from '../..';
+import { WorkDoneProgressReporter } from 'vscode-languageserver';
 
 const mockContext = serverMocks.getContext();
 const mockLogger = serverMocks.getLogger();
@@ -49,7 +50,7 @@ describe('CodeActionModule', () => {
 
 		module.onDidRegisterHandlers();
 
-		mockContext.notifications.on.mock.calls[0][1]();
+		mockContext.notifications.on.mock.calls[0][1]?.();
 
 		expect(mockContext.connection.sendNotification).toHaveBeenCalledWith(
 			Notification.DidRegisterCodeActionRequestHandler,
@@ -61,7 +62,9 @@ describe('CodeActionModule', () => {
 			TextDocument.create('foo', 'bar', 1, 'line 1\nline 2'),
 		);
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
+		mockContext.getFixes.mockResolvedValue([
+			LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text'),
+		]);
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -69,10 +72,15 @@ describe('CodeActionModule', () => {
 
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
-		const result = await handler({
-			context: { only: [LSP.CodeActionKind.Source] },
-			textDocument: { uri: 'foo' },
-		});
+		const result = await handler(
+			{
+				context: { only: [LSP.CodeActionKind.Source], diagnostics: [] },
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toMatchSnapshot();
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -83,7 +91,9 @@ describe('CodeActionModule', () => {
 
 		mockContext.documents.get.mockReturnValue(document);
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
+		mockContext.getFixes.mockResolvedValue([
+			LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text'),
+		]);
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -91,10 +101,15 @@ describe('CodeActionModule', () => {
 
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
-		const result = await handler({
-			context: { only: [StylelintCodeActionKind.StylelintSourceFixAll] },
-			textDocument: { uri: 'foo' },
-		});
+		const result = await handler(
+			{
+				context: { only: [StylelintCodeActionKind.StylelintSourceFixAll], diagnostics: [] },
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toMatchSnapshot();
 		expect(mockContext.getFixes).toHaveBeenCalledWith(document);
@@ -105,7 +120,9 @@ describe('CodeActionModule', () => {
 
 		mockContext.documents.get.mockReturnValue(document);
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
+		mockContext.getFixes.mockResolvedValue([
+			LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text'),
+		]);
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -113,10 +130,15 @@ describe('CodeActionModule', () => {
 
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
-		const result = await handler({
-			context: { only: [LSP.CodeActionKind.SourceFixAll] },
-			textDocument: { uri: 'foo' },
-		});
+		const result = await handler(
+			{
+				context: { only: [LSP.CodeActionKind.SourceFixAll], diagnostics: [] },
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toMatchSnapshot();
 		expect(mockContext.getFixes).toHaveBeenCalledWith(document);
@@ -127,7 +149,7 @@ describe('CodeActionModule', () => {
 
 		mockContext.documents.get.mockReturnValue(document);
 		mockContext.__options.validate = ['bar'];
-		mockContext.getFixes.mockReturnValue([]);
+		mockContext.getFixes.mockResolvedValue([]);
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -135,10 +157,15 @@ describe('CodeActionModule', () => {
 
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
-		const result = await handler({
-			context: { only: [LSP.CodeActionKind.SourceFixAll] },
-			textDocument: { uri: 'foo' },
-		});
+		const result = await handler(
+			{
+				context: { only: [LSP.CodeActionKind.SourceFixAll], diagnostics: [] },
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getFixes).toHaveBeenCalledWith(document);
@@ -204,7 +231,15 @@ describe('CodeActionModule', () => {
 			],
 		};
 
-		const result = await handler({ context, textDocument: { uri: 'foo' } });
+		const result = await handler(
+			{
+				context,
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 1)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toMatchSnapshot();
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -224,12 +259,18 @@ describe('CodeActionModule', () => {
 
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
-		const result = await handler({
-			context: {
-				only: ['foo'],
+		const result = await handler(
+			{
+				context: {
+					only: ['foo'],
+					diagnostics: [],
+				},
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
 			},
-			textDocument: { uri: 'foo' },
-		});
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -248,10 +289,15 @@ describe('CodeActionModule', () => {
 
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
-		const result = await handler({
-			context: { only: [LSP.CodeActionKind.Source] },
-			textDocument: { uri: 'foo' },
-		});
+		const result = await handler(
+			{
+				context: { only: [LSP.CodeActionKind.Source], diagnostics: [] },
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -259,10 +305,9 @@ describe('CodeActionModule', () => {
 	});
 
 	test('if document language ID is not in options, should not attempt to create actions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(
+			TextDocument.create('foo', 'bar', 1, 'line 1\nline 2'),
+		);
 		mockContext.__options.validate = ['baz'];
 
 		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -271,10 +316,15 @@ describe('CodeActionModule', () => {
 
 		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
 
-		const result = await handler({
-			context: { only: [LSP.CodeActionKind.Source] },
-			textDocument: { uri: 'foo' },
-		});
+		const result = await handler(
+			{
+				context: { only: [LSP.CodeActionKind.Source], diagnostics: [] },
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
@@ -299,13 +349,18 @@ describe('CodeActionModule', () => {
 				([command]) => command === CommandId.OpenRuleDoc,
 			)?.[1];
 
-			const result = await handler({
-				arguments: [
-					{
-						uri: 'https://stylelint.io/user-guide/rules/foo',
-					},
-				],
-			});
+			const result = await handler?.(
+				{
+					command: CommandId.OpenRuleDoc,
+					arguments: [
+						{
+							uri: 'https://stylelint.io/user-guide/rules/foo',
+						},
+					],
+				},
+				{} as LSP.CancellationToken,
+				{} as WorkDoneProgressReporter,
+			);
 
 			expect(result).toStrictEqual({});
 			expect(mockContext.connection.window.showDocument).toHaveBeenCalledWith({
@@ -327,7 +382,11 @@ describe('CodeActionModule', () => {
 				([command]) => command === CommandId.OpenRuleDoc,
 			)?.[1];
 
-			const result = await handler({});
+			const result = await handler?.(
+				{ command: CommandId.OpenRuleDoc },
+				{} as LSP.CancellationToken,
+				{} as WorkDoneProgressReporter,
+			);
 
 			expect(result).toStrictEqual({});
 			expect(mockContext.connection.window.showDocument).not.toHaveBeenCalled();
@@ -348,13 +407,18 @@ describe('CodeActionModule', () => {
 				([command]) => command === CommandId.OpenRuleDoc,
 			)?.[1];
 
-			const result = await handler({
-				arguments: [
-					{
-						uri: 'https://stylelint.io/user-guide/rules/foo',
-					},
-				],
-			});
+			const result = await handler?.(
+				{
+					command: CommandId.OpenRuleDoc,
+					arguments: [
+						{
+							uri: 'https://stylelint.io/user-guide/rules/foo',
+						},
+					],
+				},
+				{} as LSP.CancellationToken,
+				{} as WorkDoneProgressReporter,
+			);
 
 			expect(result).toStrictEqual(
 				new LSP.ResponseError(LSP.ErrorCodes.InternalError, 'Failed to open rule documentation'),
@@ -370,5 +434,53 @@ describe('CodeActionModule', () => {
 				uri: 'https://stylelint.io/user-guide/rules/foo',
 			});
 		});
+	});
+
+	it('should be disposable', () => {
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		expect(module).toHaveProperty('dispose');
+		expect(module.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should set a no-op code action handler when disposed', async () => {
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+		module.dispose();
+
+		const handler = mockContext.connection.onCodeAction.mock.calls[1][0];
+
+		const result = await handler(
+			{
+				context: {
+					diagnostics: [],
+					only: [LSP.CodeActionKind.QuickFix],
+				},
+				textDocument: { uri: 'foo' },
+				range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(mockContext.connection.onCodeAction).toHaveBeenCalledTimes(2);
+		expect(result).toBeUndefined();
+	});
+
+	it('should dispose all handler registrations when disposed', () => {
+		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+		module.dispose();
+
+		const disposables = [
+			...mockContext.notifications.on.mock.results,
+			...mockContext.commands.on.mock.results,
+		];
+
+		expect(disposables).toHaveLength(2);
+		expect(disposables[0].value.dispose).toHaveBeenCalledTimes(1);
+		expect(disposables[1].value.dispose).toHaveBeenCalledTimes(1);
 	});
 });

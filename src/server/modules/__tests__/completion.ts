@@ -4,6 +4,7 @@ import type LSP from 'vscode-languageserver-protocol';
 import { DisableReportRuleNames } from '../../../utils/stylelint';
 
 import { CompletionModule } from '../completion';
+import { WorkDoneProgressReporter } from 'vscode-languageserver';
 
 const mockContext = serverMocks.getContext();
 const mockLogger = serverMocks.getLogger();
@@ -58,10 +59,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			position: Position.create(0, 0),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				position: Position.create(0, 0),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getModule).not.toHaveBeenCalled();
@@ -69,10 +74,7 @@ describe('CompletionModule', () => {
 	});
 
 	test('if document language ID is not in validate options, should not return completions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['baz'];
 		mockContext.__options.snippet = ['bar'];
 
@@ -82,10 +84,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			position: Position.create(0, 0),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				position: Position.create(0, 0),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getModule).not.toHaveBeenCalled();
@@ -99,10 +105,7 @@ describe('CompletionModule', () => {
 	});
 
 	test('if document language ID is not in snippet options, should not return completions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['bar'];
 		mockContext.__options.snippet = ['baz'];
 
@@ -112,10 +115,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			position: Position.create(0, 0),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				position: Position.create(0, 0),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getModule).not.toHaveBeenCalled();
@@ -129,10 +136,7 @@ describe('CompletionModule', () => {
 	});
 
 	test('with no debug log level and no valid document, should not attempt to log reason', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['bar'];
 		mockContext.__options.snippet = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
@@ -143,10 +147,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			position: Position.create(0, 0),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				position: Position.create(0, 0),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getModule).not.toHaveBeenCalled();
@@ -157,10 +165,7 @@ describe('CompletionModule', () => {
 	});
 
 	test('without the validator module, should return generic completions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['bar'];
 		mockContext.__options.snippet = ['bar'];
 		mockContext.getModule.mockReturnValue(undefined);
@@ -171,24 +176,26 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			position: Position.create(0, 0),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				position: Position.create(0, 0),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
 	});
 
 	test('without diagnostics, should return generic completions', async () => {
-		mockContext.documents.get.mockReturnValue({
-			uri: 'foo',
-			languageId: 'bar',
-		});
+		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['bar'];
 		mockContext.__options.snippet = ['bar'];
 		mockContext.getModule.mockReturnValue({
 			getDiagnostics: () => [],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -197,10 +204,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'foo' },
-			position: Position.create(0, 0),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				position: Position.create(0, 0),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -223,6 +234,7 @@ describe('CompletionModule', () => {
 					range: Range.create(1, 2, 1, 4),
 				},
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -231,10 +243,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 3),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 3),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -252,6 +268,7 @@ describe('CompletionModule', () => {
 					range: Range.create(1, 2, 3, 4),
 				},
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -260,10 +277,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 3),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 3),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -283,6 +304,7 @@ describe('CompletionModule', () => {
 					range: Range.create(2, 1, 3, 4),
 				},
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -291,10 +313,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 3),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 3),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -316,6 +342,7 @@ describe('CompletionModule', () => {
 					range: Range.create(1, 2, 3, 4),
 				}),
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -324,10 +351,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 3),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 3),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -350,6 +381,7 @@ describe('CompletionModule', () => {
 					range: Range.create(1, 2, 3, 4),
 				},
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -358,10 +390,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 28),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 28),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -384,6 +420,7 @@ describe('CompletionModule', () => {
 					range: Range.create(2, 2, 3, 4),
 				},
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -392,10 +429,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 33),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 33),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -418,6 +459,7 @@ describe('CompletionModule', () => {
 					range: Range.create(2, 2, 3, 4),
 				},
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -426,10 +468,14 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 23),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 23),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
@@ -453,6 +499,7 @@ describe('CompletionModule', () => {
 					range: Range.create(3, 2, 3, 4),
 				},
 			],
+			dispose: () => undefined,
 		});
 
 		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
@@ -461,12 +508,44 @@ describe('CompletionModule', () => {
 
 		const handler = mockContext.connection.onCompletion.mock.calls[0][0];
 
-		const result = await handler({
-			textDocument: { uri: 'file:///path/test.css' },
-			position: Position.create(1, 25),
-		});
+		const result = await handler(
+			{
+				textDocument: { uri: 'file:///path/test.css' },
+				position: Position.create(1, 25),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
 
 		expect(mockContext.getModule).toHaveBeenCalledTimes(1);
 		expect(result).toMatchSnapshot();
+	});
+
+	it('should be disposable', () => {
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		expect(module).toHaveProperty('dispose');
+		expect(module.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should set a no-op completion handler when disposed', async () => {
+		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+		module.dispose();
+
+		const handler = mockContext.connection.onCompletion.mock.calls[1][0];
+
+		const result = await handler(
+			{
+				textDocument: { uri: 'foo' },
+				position: Position.create(0, 0),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(mockContext.connection.onCompletion).toHaveBeenCalledTimes(2);
+		expect(result).toBeUndefined();
 	});
 });

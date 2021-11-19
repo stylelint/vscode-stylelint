@@ -14,7 +14,7 @@ import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument'
 import { TextDocuments } from 'vscode-languageserver/node';
 import * as LSP from 'vscode-languageserver-protocol';
 import { displayError, NotificationManager, CommandManager } from '../../utils/lsp';
-import { StylelintRunner } from '../../utils/stylelint';
+import { LintDiagnostics, StylelintRunner } from '../../utils/stylelint';
 import { getFixes } from '../../utils/documents';
 import { StylelintResolver } from '../../utils/packages';
 import { StylelintLanguageServer } from '../server';
@@ -38,18 +38,38 @@ const mockConnection = serverMocks.getConnection();
 const mockLogger = serverMocks.getLogger();
 const mockNotifications = serverMocks.getNotificationManager();
 const mockCommands = serverMocks.getCommandManager();
+const mockDocuments = serverMocks.getTextDocuments();
 
 mockNotificationManager.mockImplementation(() => mockNotifications.__typed());
 mockCommandManager.mockImplementation(() => mockCommands.__typed());
+mockTextDocuments.mockImplementation(() => mockDocuments.__typed());
+
+abstract class BaseDisposable implements LSP.Disposable {
+	public dispose(): void {
+		// noop
+	}
+}
+
+const getContextModule = (
+	id = 'test-module',
+): [LanguageServerModuleConstructor, () => LanguageServerContext | undefined] => {
+	let context: LanguageServerContext | undefined;
+
+	class TestModule extends BaseDisposable implements LanguageServerModule {
+		static id = id;
+
+		constructor(params: LanguageServerModuleConstructorParameters) {
+			super();
+			context = params.context;
+		}
+	}
+
+	return [TestModule, () => context];
+};
 
 describe('StylelintLanguageServer', () => {
 	beforeEach(() => {
 		jest.clearAllMocks();
-
-		mockTextDocuments.mockReturnValue({
-			listen: jest.fn(),
-			onDidClose: jest.fn(),
-		} as unknown as TextDocuments<TextDocument>);
 	});
 
 	test('should be constructable', () => {
@@ -72,11 +92,12 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should accept server modules', () => {
-		class TestModule {
+		class TestModule extends BaseDisposable {
 			static params: LanguageServerModuleConstructorParameters | undefined;
 			static id = 'test-module';
 
 			constructor(params: LanguageServerModuleConstructorParameters) {
+				super();
 				TestModule.params = params;
 			}
 		}
@@ -94,11 +115,11 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should not accept modules with duplicate IDs', () => {
-		class TestModule {
+		class TestModule extends BaseDisposable {
 			static id = 'test-module';
 		}
 
-		class TestModule2 {
+		class TestModule2 extends BaseDisposable {
 			static id = 'test-module';
 		}
 
@@ -112,10 +133,11 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should prevent modules from modifying context properties', () => {
-		class TestModule {
+		class TestModule extends BaseDisposable {
 			static id = 'test-module';
 
 			constructor({ context }: LanguageServerModuleConstructorParameters) {
+				super();
 				context.connection = {} as unknown as Connection;
 			}
 		}
@@ -130,7 +152,7 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should not accept modules without an ID', () => {
-		class TestModule {
+		class TestModule extends BaseDisposable {
 			static id = undefined;
 		}
 
@@ -144,7 +166,7 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should not accept modules with a non-string ID', () => {
-		class TestModule {
+		class TestModule extends BaseDisposable {
 			static id = 1;
 		}
 
@@ -169,7 +191,7 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should combine initialization results from modules', () => {
-		class TestModuleA {
+		class TestModuleA extends BaseDisposable {
 			static id = 'module-a';
 
 			onInitialize(): Partial<LSP.InitializeResult> {
@@ -179,7 +201,7 @@ describe('StylelintLanguageServer', () => {
 			}
 		}
 
-		class TestModuleB {
+		class TestModuleB extends BaseDisposable {
 			static id = 'module-b';
 
 			onInitialize(): Partial<LSP.InitializeResult> {
@@ -215,7 +237,7 @@ describe('StylelintLanguageServer', () => {
 		expect(result).toMatchSnapshot();
 	});
 
-	test('if workspace/configuration is not supported, should not register DidChangeConfigurationNotification', () => {
+	test('if workspace/configuration is not supported, should not register DidChangeConfigurationNotification', async () => {
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -225,17 +247,17 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
 		const onInitializedHandler = mockNotifications.on.mock.calls.find(
-			(call) => call[0] === InitializedNotification.type,
-		)[1];
+			([type]) => type === InitializedNotification.type,
+		)?.[1];
 
-		onInitializedHandler({});
+		onInitializedHandler?.({});
 
 		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
 		expect(mockLogger.debug).not.toHaveBeenCalledWith(
@@ -246,7 +268,7 @@ describe('StylelintLanguageServer', () => {
 		);
 	});
 
-	test('if workspace/configuration is supported, should register DidChangeConfigurationNotification', () => {
+	test('if workspace/configuration is supported, should register DidChangeConfigurationNotification', async () => {
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -256,7 +278,7 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{
 				capabilities: {
 					workspace: { configuration: true },
@@ -267,10 +289,10 @@ describe('StylelintLanguageServer', () => {
 		);
 
 		const onInitializedHandler = mockNotifications.on.mock.calls.find(
-			(call) => call[0] === InitializedNotification.type,
-		)[1];
+			([type]) => type === InitializedNotification.type,
+		)?.[1];
 
-		onInitializedHandler({});
+		onInitializedHandler?.({});
 
 		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
 		expect(mockLogger.debug).toHaveBeenCalledWith('Registering DidChangeConfigurationNotification');
@@ -280,10 +302,10 @@ describe('StylelintLanguageServer', () => {
 		);
 	});
 
-	test('should display and log errors thrown by module handlers', () => {
+	test('should display and log errors thrown by module handlers', async () => {
 		const error = new Error('Test error');
 
-		class TestModule {
+		class TestModule extends BaseDisposable {
 			static id = 'test-module';
 
 			onInitialize(): Partial<LSP.InitializeResult> {
@@ -301,7 +323,7 @@ describe('StylelintLanguageServer', () => {
 
 		const handler = mockConnection.onInitialize.mock.calls[0][0];
 
-		handler(
+		await handler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
@@ -314,26 +336,13 @@ describe('StylelintLanguageServer', () => {
 		});
 	});
 
-	test('should allow modules to access sibling modules', () => {
-		let module: LanguageServerModule | undefined;
-
-		class TestModuleA {
+	test('should allow modules to access sibling modules', async () => {
+		class TestModuleA extends BaseDisposable {
 			static id = 'module-a';
 			value = 5;
 		}
 
-		class TestModuleB {
-			static id = 'module-b';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				module = this.context.getModule('module-a');
-			}
-		}
+		const [TestModuleB, getContext] = getContextModule('module-b');
 
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
@@ -345,26 +354,20 @@ describe('StylelintLanguageServer', () => {
 
 		const handler = mockConnection.onInitialize.mock.calls[0][0];
 
-		handler(
+		await handler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
+
+		const module = getContext()?.getModule('module-a');
 
 		expect(module).toBeInstanceOf(TestModuleA);
 		expect(module?.value).toBe(5);
 	});
 
 	test('when workspace/configuration is not available, context.getOptions should return global options', async () => {
-		let context: LanguageServerContext | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			constructor(params: LanguageServerModuleConstructorParameters) {
-				context = params.context;
-			}
-		}
+		const [TestModule, getContext] = getContextModule();
 
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
@@ -376,34 +379,26 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
 		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
-			(call) => call[0] === DidChangeConfigurationNotification.type,
-		)[1];
+			([type]) => type === DidChangeConfigurationNotification.type,
+		)?.[1];
 
-		onDidChangeConfigurationHandler({ settings: {} });
+		onDidChangeConfigurationHandler?.({ settings: {} });
 
-		const options = await context?.getOptions?.('uri');
+		const options = await getContext()?.getOptions?.('uri');
 
 		expect(mockConnection.workspace.getConfiguration).not.toHaveBeenCalled();
 		expect(options).toMatchSnapshot();
 	});
 
 	test('when workspace/configuration is not available, context.getOptions should gracefully handle missing section', async () => {
-		let context: LanguageServerContext | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			constructor(params: LanguageServerModuleConstructorParameters) {
-				context = params.context;
-			}
-		}
+		const [TestModule, getContext] = getContextModule();
 
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
@@ -415,19 +410,19 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		const initialOptions = await context?.getOptions?.('uri');
+		const initialOptions = await getContext()?.getOptions?.('uri');
 
 		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
-			(call) => call[0] === DidChangeConfigurationNotification.type,
-		)[1];
+			([type]) => type === DidChangeConfigurationNotification.type,
+		)?.[1];
 
-		onDidChangeConfigurationHandler({
+		await onDidChangeConfigurationHandler?.({
 			settings: {
 				stylelint: {
 					validate: ['css'],
@@ -435,7 +430,7 @@ describe('StylelintLanguageServer', () => {
 			},
 		});
 
-		const changedOptions = await context?.getOptions?.('uri');
+		const changedOptions = await getContext()?.getOptions?.('uri');
 
 		expect(mockConnection.workspace.getConfiguration).not.toHaveBeenCalled();
 		expect(initialOptions).toMatchSnapshot();
@@ -443,8 +438,12 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('when workspace/configuration is available, context.getOptions should return resource-scoped options', async () => {
+		const [TestModule, getContext] = getContextModule();
+
 		mockConnection.workspace.getConfiguration.mockImplementation(
-			({ scopeUri, section }: LSP.ConfigurationItem) => {
+			async (params: string | LSP.ConfigurationItem | LSP.ConfigurationItem[]) => {
+				const { scopeUri, section } = params as LSP.ConfigurationItem;
+
 				if (section !== 'stylelint') {
 					return {};
 				}
@@ -455,16 +454,6 @@ describe('StylelintLanguageServer', () => {
 			},
 		);
 
-		let context: LanguageServerContext | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			constructor(params: LanguageServerModuleConstructorParameters) {
-				context = params.context;
-			}
-		}
-
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -475,7 +464,7 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{
 				capabilities: {
 					workspace: { configuration: true },
@@ -485,8 +474,8 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1 = await context?.getOptions?.('uri');
-		const options2 = await context?.getOptions?.('uri2');
+		const options1 = await getContext()?.getOptions?.('uri');
+		const options2 = await getContext()?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledWith({
 			scopeUri: 'uri',
@@ -502,7 +491,9 @@ describe('StylelintLanguageServer', () => {
 
 	test('when workspace/configuration is available, context.getOptions should cache resource-scoped options', async () => {
 		mockConnection.workspace.getConfiguration.mockImplementation(
-			({ scopeUri, section }: LSP.ConfigurationItem) => {
+			async (params: string | LSP.ConfigurationItem | LSP.ConfigurationItem[]) => {
+				const { scopeUri, section } = params as LSP.ConfigurationItem;
+
 				if (section !== 'stylelint') {
 					return {};
 				}
@@ -513,15 +504,7 @@ describe('StylelintLanguageServer', () => {
 			},
 		);
 
-		let context: LanguageServerContext | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			constructor(params: LanguageServerModuleConstructorParameters) {
-				context = params.context;
-			}
-		}
+		const [TestModule, getContext] = getContextModule();
 
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
@@ -533,7 +516,7 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{
 				capabilities: {
 					workspace: { configuration: true },
@@ -543,10 +526,10 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1A = await context?.getOptions?.('uri');
-		const options1B = await context?.getOptions?.('uri');
-		const options2A = await context?.getOptions?.('uri2');
-		const options2B = await context?.getOptions?.('uri2');
+		const options1A = await getContext()?.getOptions?.('uri');
+		const options1B = await getContext()?.getOptions?.('uri');
+		const options2A = await getContext()?.getOptions?.('uri2');
+		const options2B = await getContext()?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(2);
 		expect(options1A).toEqual(options1B);
@@ -555,7 +538,9 @@ describe('StylelintLanguageServer', () => {
 
 	test('when workspace/configuration is available, on documents.onDidClose, should clear cached options', async () => {
 		mockConnection.workspace.getConfiguration.mockImplementation(
-			({ scopeUri, section }: LSP.ConfigurationItem) => {
+			async (params: string | LSP.ConfigurationItem | LSP.ConfigurationItem[]) => {
+				const { scopeUri, section } = params as LSP.ConfigurationItem;
+
 				if (section !== 'stylelint') {
 					return {};
 				}
@@ -566,15 +551,7 @@ describe('StylelintLanguageServer', () => {
 			},
 		);
 
-		let context: LanguageServerContext | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			constructor(params: LanguageServerModuleConstructorParameters) {
-				context = params.context;
-			}
-		}
+		const [TestModule, getContext] = getContextModule();
 
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
@@ -586,7 +563,7 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{
 				capabilities: {
 					workspace: { configuration: true },
@@ -596,17 +573,17 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1A = await context?.getOptions?.('uri');
-		const options1B = await context?.getOptions?.('uri');
-		const options2A = await context?.getOptions?.('uri2');
-		const options2B = await context?.getOptions?.('uri2');
+		const options1A = await getContext()?.getOptions?.('uri');
+		const options1B = await getContext()?.getOptions?.('uri');
+		const options2A = await getContext()?.getOptions?.('uri2');
+		const options2B = await getContext()?.getOptions?.('uri2');
 
 		const onDidCloseHandler = mockTextDocuments.mock.results[0].value.onDidClose.mock.calls[0][0];
 
 		onDidCloseHandler({ document: { uri: 'uri' } });
 
-		const options1C = await context?.getOptions?.('uri');
-		const options2C = await context?.getOptions?.('uri2');
+		const options1C = await getContext()?.getOptions?.('uri');
+		const options2C = await getContext()?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(3);
 		expect(options1A).toEqual(options1B);
@@ -616,15 +593,7 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('when workspace/configuration is available, onDidChangeConfiguration should clear all cached options', async () => {
-		let context: LanguageServerContext | undefined;
-
-		class TestModule {
-			static id = 'test-module';
-
-			constructor(params: LanguageServerModuleConstructorParameters) {
-				context = params.context;
-			}
-		}
+		const [TestModule, getContext] = getContextModule();
 
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
@@ -636,7 +605,7 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{
 				capabilities: {
 					workspace: { configuration: true },
@@ -646,16 +615,16 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const options1A = await context?.getOptions?.('uri');
-		const options1B = await context?.getOptions?.('uri');
-		const options2A = await context?.getOptions?.('uri2');
-		const options2B = await context?.getOptions?.('uri2');
+		const options1A = await getContext()?.getOptions?.('uri');
+		const options1B = await getContext()?.getOptions?.('uri');
+		const options2A = await getContext()?.getOptions?.('uri2');
+		const options2B = await getContext()?.getOptions?.('uri2');
 
 		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
-			(call) => call[0] === DidChangeConfigurationNotification.type,
-		)[1];
+			([type]) => type === DidChangeConfigurationNotification.type,
+		)?.[1];
 
-		onDidChangeConfigurationHandler({
+		onDidChangeConfigurationHandler?.({
 			settings: {
 				stylelint: {
 					validate: ['css'],
@@ -663,8 +632,8 @@ describe('StylelintLanguageServer', () => {
 			},
 		});
 
-		const options1C = await context?.getOptions?.('uri');
-		const options2C = await context?.getOptions?.('uri2');
+		const options1C = await getContext()?.getOptions?.('uri');
+		const options2C = await getContext()?.getOptions?.('uri2');
 
 		expect(mockConnection.workspace.getConfiguration).toHaveBeenCalledTimes(4);
 		expect(options1A).toEqual(options1B);
@@ -676,7 +645,7 @@ describe('StylelintLanguageServer', () => {
 	test('when workspace/configuration is available, onDidChangeConfiguration should fire module handlers', async () => {
 		const moduleHandler = jest.fn();
 
-		class TestModule {
+		class TestModule extends BaseDisposable {
 			static id = 'test-module';
 
 			onDidChangeConfiguration = moduleHandler;
@@ -692,7 +661,7 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{
 				capabilities: {
 					workspace: { configuration: true },
@@ -703,10 +672,10 @@ describe('StylelintLanguageServer', () => {
 		);
 
 		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
-			(call) => call[0] === DidChangeConfigurationNotification.type,
-		)[1];
+			([type]) => type === DidChangeConfigurationNotification.type,
+		)?.[1];
 
-		onDidChangeConfigurationHandler({
+		onDidChangeConfigurationHandler?.({
 			settings: {
 				stylelint: {
 					validate: ['css'],
@@ -719,31 +688,13 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should allow modules to lint documents using context.lintDocument', async () => {
-		let withOptions: Promise<unknown> | undefined;
-		let withoutOptions: Promise<unknown> | undefined;
+		const mockRunnerImpl = serverMocks.getStylelintRunner();
 
-		const mockRunnerImpl = {
-			lintDocument: jest.fn(async () => ['test']),
-		} as unknown as jest.Mocked<StylelintRunner>;
-
-		mockRunner.mockImplementation(() => mockRunnerImpl);
+		mockRunnerImpl.lintDocument.mockResolvedValue(['test'] as unknown as LintDiagnostics);
+		mockRunner.mockImplementation(() => mockRunnerImpl.__typed());
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
-
-		class TestModule {
-			static id = 'test-module';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				withOptions = this.context.lintDocument(document, { maxWarnings: 1 });
-				withoutOptions = this.context.lintDocument(document);
-			}
-		}
-
+		const [TestModule, getContext] = getContextModule();
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			modules: [TestModule],
@@ -753,14 +704,17 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		expect(await withOptions).toStrictEqual(['test']);
-		expect(await withoutOptions).toStrictEqual(['test']);
+		const withOptions = await getContext()?.lintDocument(document, { maxWarnings: 1 });
+		const withoutOptions = await getContext()?.lintDocument(document);
+
+		expect(withOptions).toStrictEqual(['test']);
+		expect(withoutOptions).toStrictEqual(['test']);
 
 		expect(mockRunnerImpl.lintDocument.mock.calls).toMatchSnapshot();
 	});
@@ -775,7 +729,7 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{
 				capabilities: {
 					workspace: { configuration: true },
@@ -786,10 +740,10 @@ describe('StylelintLanguageServer', () => {
 		);
 
 		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
-			(call) => call[0] === DidChangeConfigurationNotification.type,
-		)[1];
+			([type]) => type === DidChangeConfigurationNotification.type,
+		)?.[1];
 
-		onDidChangeConfigurationHandler({
+		onDidChangeConfigurationHandler?.({
 			settings: {
 				stylelint: {
 					validate: ['css'],
@@ -804,7 +758,6 @@ describe('StylelintLanguageServer', () => {
 
 	test('should display and log errors thrown when linting', async () => {
 		const error = new Error('test');
-		let promise: Promise<unknown> | undefined;
 
 		mockRunner.mockImplementation(
 			() =>
@@ -816,20 +769,7 @@ describe('StylelintLanguageServer', () => {
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
-
-		class TestModule {
-			static id = 'test-module';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				promise = this.context.lintDocument(document, { maxWarnings: 1 });
-			}
-		}
-
+		const [TestModule, getContext] = getContextModule();
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -840,13 +780,15 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		expect(await promise).toBeUndefined();
+		const results = await getContext()?.lintDocument(document, { maxWarnings: 1 });
+
+		expect(results).toBeUndefined();
 		expect(mockDisplayError).toHaveBeenCalledWith(mockConnection, error);
 		expect(mockLogger.error).toHaveBeenCalledWith('Error running lint', {
 			uri: 'file:///test.css',
@@ -855,28 +797,11 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should allow modules to get fixes for documents using context.getFixes', async () => {
-		let withOptions: Promise<unknown> | undefined;
-		let withoutOptions: Promise<unknown> | undefined;
-
 		mockRunner.mockImplementation(() => ({} as unknown as StylelintRunner));
 		mockGetFixes.mockImplementation(async () => ['test'] as unknown as TextEdit[]);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
-
-		class TestModule {
-			static id = 'test-module';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				withOptions = this.context.getFixes(document, { maxWarnings: 1 });
-				withoutOptions = this.context.getFixes(document);
-			}
-		}
-
+		const [TestModule, getContext] = getContextModule();
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			modules: [TestModule],
@@ -886,40 +811,29 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		expect(await withOptions).toStrictEqual(['test']);
-		expect(await withoutOptions).toStrictEqual(['test']);
+		const withOptions = await getContext()?.getFixes(document, { maxWarnings: 1 });
+		const withoutOptions = await getContext()?.getFixes(document);
+
+		expect(withOptions).toStrictEqual(['test']);
+		expect(withoutOptions).toStrictEqual(['test']);
 		expect(mockGetFixes.mock.calls).toMatchSnapshot();
 	});
 
 	test('should display and log errors thrown when getting fixes', async () => {
 		const error = new Error('test');
-		let promise: Promise<unknown> | undefined;
 
 		mockGetFixes.mockImplementation(() => {
 			throw error;
 		});
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
-
-		class TestModule {
-			static id = 'test-module';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				promise = this.context.getFixes(document, { maxWarnings: 1 });
-			}
-		}
-
+		const [TestModule, getContext] = getContextModule();
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -930,13 +844,15 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		expect(await promise).toStrictEqual([]);
+		const fixes = await getContext()?.getFixes(document, { maxWarnings: 1 });
+
+		expect(fixes).toStrictEqual([]);
 		expect(mockDisplayError).toHaveBeenCalledWith(mockConnection, error);
 		expect(mockLogger.error).toHaveBeenCalledWith('Error getting fixes', {
 			uri: 'file:///test.css',
@@ -945,8 +861,6 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should allow modules to resolve the Stylelint package for a given document using context.resolveStylelintPackage', async () => {
-		let promise: Promise<unknown> | undefined;
-
 		mockResolver.mockImplementation(
 			() =>
 				({
@@ -958,20 +872,7 @@ describe('StylelintLanguageServer', () => {
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
-
-		class TestModule {
-			static id = 'test-module';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				promise = this.context.resolveStylelint(document);
-			}
-		}
-
+		const [TestModule, getContext] = getContextModule();
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			modules: [TestModule],
@@ -981,13 +882,15 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		expect(await promise).toStrictEqual({
+		const resolved = await getContext()?.resolveStylelint(document);
+
+		expect(resolved).toStrictEqual({
 			stylelint: { fake: 'package' },
 			resolvedPath: 'fake/path',
 		});
@@ -995,7 +898,6 @@ describe('StylelintLanguageServer', () => {
 
 	test('should display and log errors thrown when resolving the Stylelint package', async () => {
 		const error = new Error('test');
-		let promise: Promise<unknown> | undefined;
 
 		mockResolver.mockImplementation(
 			() =>
@@ -1007,20 +909,7 @@ describe('StylelintLanguageServer', () => {
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
-
-		class TestModule {
-			static id = 'test-module';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				promise = this.context.resolveStylelint(document);
-			}
-		}
-
+		const [TestModule, getContext] = getContextModule();
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -1031,13 +920,15 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		expect(await promise).toBeUndefined();
+		const resolved = await getContext()?.resolveStylelint(document);
+
+		expect(resolved).toBeUndefined();
 		expect(mockDisplayError).toHaveBeenCalledWith(mockConnection, error);
 		expect(mockLogger.error).toHaveBeenCalledWith('Error resolving Stylelint', {
 			uri: 'file:///test.css',
@@ -1046,8 +937,6 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should log when Stylelint cannot be resolved', async () => {
-		let promise: Promise<unknown> | undefined;
-
 		mockResolver.mockImplementation(
 			() =>
 				({
@@ -1058,20 +947,7 @@ describe('StylelintLanguageServer', () => {
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
-
-		class TestModule {
-			static id = 'test-module';
-			context: LanguageServerContext;
-
-			constructor({ context }: LanguageServerModuleConstructorParameters) {
-				this.context = context;
-			}
-
-			onInitialize() {
-				promise = this.context.resolveStylelint(document);
-			}
-		}
-
+		const [TestModule, getContext] = getContextModule();
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -1082,15 +958,275 @@ describe('StylelintLanguageServer', () => {
 
 		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
 
-		onInitializeHandler(
+		await onInitializeHandler(
 			{ capabilities: {} } as LSP.InitializeParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
 		);
 
-		expect(await promise).toBeUndefined();
+		const resolved = await getContext()?.resolveStylelint(document);
+
+		expect(resolved).toBeUndefined();
 		expect(mockLogger.warn).toHaveBeenCalledWith('Failed to resolve Stylelint', {
 			uri: 'file:///test.css',
 		});
+	});
+
+	it('should be disposable', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		expect(server).toHaveProperty('dispose');
+		expect(server.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should log when disposing', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.dispose();
+
+		expect(mockLogger.info).toHaveBeenCalledWith('Stopping language server');
+	});
+
+	it('should dispose all modules when disposed', () => {
+		const funcs: jest.Mock[] = [];
+
+		class TestModuleA extends BaseDisposable {
+			static id = 'module-a';
+
+			constructor() {
+				const dispose = jest.fn();
+
+				super();
+				funcs.push(dispose);
+				this.dispose = dispose;
+			}
+		}
+
+		class TestModuleB extends BaseDisposable {
+			static id = 'module-b';
+
+			constructor() {
+				const dispose = jest.fn();
+
+				super();
+				funcs.push(dispose);
+				this.dispose = dispose;
+			}
+		}
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+			modules: [TestModuleA, TestModuleB],
+		});
+
+		server.dispose();
+
+		expect(funcs).toHaveLength(2);
+		expect(funcs[0]).toHaveBeenCalledTimes(1);
+		expect(funcs[1]).toHaveBeenCalledTimes(1);
+	});
+
+	it('should set a no-op InitializeRequest handler when disposed', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.dispose();
+
+		expect(mockConnection.onInitialize).toHaveBeenCalledTimes(1);
+		expect(mockConnection.onInitialize.mock.calls[0][0]).toBeInstanceOf(Function);
+		expect(
+			mockConnection.onInitialize.mock.calls[0][0](
+				{
+					rootUri: '',
+					capabilities: {},
+					processId: 1,
+					workspaceFolders: [],
+				},
+				{} as LSP.CancellationToken,
+				{} as WorkDoneProgressReporter,
+			),
+		).toStrictEqual({
+			capabilities: {},
+		});
+	});
+
+	it('should set a no-op ShutdownRequest handler when disposed', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.dispose();
+
+		expect(mockConnection.onShutdown).toHaveBeenCalledTimes(1);
+		expect(mockConnection.onShutdown.mock.calls[0][0]).toBeInstanceOf(Function);
+		expect(mockConnection.onShutdown.mock.calls[0][0]({} as LSP.CancellationToken)).toBeUndefined();
+	});
+
+	it('should dispose all handler registrations when disposed', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+		server.dispose();
+
+		const disposables = [
+			...mockNotifications.on.mock.results,
+			...mockDocuments.onDidClose.mock.results,
+		];
+
+		expect(disposables).toHaveLength(3);
+
+		for (const disposable of disposables) {
+			expect(disposable.value.dispose).toHaveBeenCalledTimes(1);
+		}
+	});
+
+	it('should dispose the notification manager when disposed', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.dispose();
+
+		expect(mockNotifications.dispose).toHaveBeenCalled();
+	});
+
+	it('should dispose the command manager when disposed', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.dispose();
+
+		expect(mockCommands.dispose).toHaveBeenCalled();
+	});
+
+	it('should dispose the connection when disposed', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		const onInitializedHandler = mockNotifications.on.mock.calls.find(
+			([type]) => type === InitializedNotification.type,
+		)?.[1];
+
+		onInitializedHandler?.(
+			{} as LSP.InitializedParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		server.dispose();
+
+		expect(mockConnection.dispose).toHaveBeenCalled();
+	});
+
+	it('should not allow starting the server twice', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		expect(() => server.start()).toThrowErrorMatchingInlineSnapshot(
+			`"Cannot transition from state Started to itself"`,
+		);
+	});
+
+	it('should not allow starting the server once initialized', async () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		const onInitializedHandler = mockNotifications.on.mock.calls.find(
+			([type]) => type === InitializedNotification.type,
+		)?.[1];
+
+		await onInitializedHandler?.(
+			{} as LSP.InitializedParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(() => server.start()).toThrowErrorMatchingInlineSnapshot(
+			`"Can only transition state from Initialized to Disposed"`,
+		);
+	});
+
+	it('should not allow starting the server once disposed', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+		server.dispose();
+
+		expect(() => server.start()).toThrowErrorMatchingInlineSnapshot(
+			`"Cannot transition from Disposed"`,
+		);
+	});
+
+	it('should not throw when calling dispose twice', () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.dispose();
+
+		expect(() => server.dispose()).not.toThrow();
+	});
+
+	it('should dispose the server after receiving a shutdown request', async () => {
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		const onInitializedHandler = mockNotifications.on.mock.calls.find(
+			([type]) => type === InitializedNotification.type,
+		)?.[1];
+
+		await onInitializedHandler?.(
+			{} as LSP.InitializedParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const onShutdownHandler = mockConnection.onShutdown.mock.calls[0][0];
+
+		await onShutdownHandler({} as LSP.CancellationToken);
+
+		expect(mockLogger.info).toHaveBeenCalledWith('Stopping language server');
+		expect(mockConnection.dispose).toHaveBeenCalledTimes(1);
+		expect(mockNotifications.dispose).toHaveBeenCalledTimes(1);
+		expect(mockCommands.dispose).toHaveBeenCalledTimes(1);
+		expect(() => server.start()).toThrowErrorMatchingInlineSnapshot(
+			`"Cannot transition from Disposed"`,
+		);
 	});
 });

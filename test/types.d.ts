@@ -9,7 +9,8 @@ import type * as ProcessesActual from '../src/utils/processes';
 import type { OptionalExcept } from '../src/utils/types';
 import type { TracerFn } from '../src/utils/packages';
 import type * as ServerMocks from './unit/server-mocks';
-import { ExtensionEvents } from '../src/extension';
+import type { ConnectionManager as ConnectionManagerConstructor } from './integration/connection-manager';
+import type { ExtensionEvents } from '../src/extension';
 
 declare global {
 	/**
@@ -21,6 +22,11 @@ declare global {
 	 * Server mocks. Only available in unit tests.
 	 */
 	const serverMocks: typeof ServerMocks;
+
+	/**
+	 * Connection manager. Only available in integration tests.
+	 */
+	const ConnectionManager: typeof ConnectionManagerConstructor;
 
 	/**
 	 * Opens a file in the editor. Only available in end-to-end tests.

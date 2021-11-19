@@ -13,7 +13,6 @@ import type {
 	LanguageServerModuleConstructorParameters,
 	LanguageServerModule,
 } from '../types';
-import { InitializedNotification } from 'vscode-languageserver-protocol';
 
 export class CodeActionModule implements LanguageServerModule {
 	static id = 'code-action';
@@ -28,6 +27,11 @@ export class CodeActionModule implements LanguageServerModule {
 	 */
 	#logger: winston.Logger | undefined;
 
+	/**
+	 * Disposables for notification and command handlers.
+	 */
+	#disposables: LSP.Disposable[] = [];
+
 	constructor({ context, logger }: LanguageServerModuleConstructorParameters) {
 		this.#context = context;
 		this.#logger = logger;
@@ -37,6 +41,12 @@ export class CodeActionModule implements LanguageServerModule {
 		const options = await this.#context.getOptions(document.uri);
 
 		return options.validate.includes(document.languageId);
+	}
+
+	dispose(): void {
+		this.#disposables.forEach((disposable) => disposable.dispose());
+		this.#disposables.length = 0;
+		this.#context.connection.onCodeAction(() => undefined);
 	}
 
 	onInitialize(): Partial<LSP.InitializeResult> {
@@ -87,39 +97,43 @@ export class CodeActionModule implements LanguageServerModule {
 
 		this.#logger?.debug('onCodeAction handler registered');
 
-		this.#context.commands.on(CommandId.OpenRuleDoc, async ({ arguments: args }) => {
-			const params = args?.[0] as { uri: string } | undefined;
+		this.#disposables.push(
+			this.#context.commands.on(CommandId.OpenRuleDoc, async ({ arguments: args }) => {
+				const params = args?.[0] as { uri: string } | undefined;
 
-			if (!params) {
-				this.#logger?.debug('No URL provided, ignoring command request');
+				if (!params) {
+					this.#logger?.debug('No URL provided, ignoring command request');
+
+					return {};
+				}
+
+				const { uri } = params;
+
+				this.#logger?.debug('Opening rule documentation', { uri });
+
+				// Open URL in browser
+				const showURIResponse = await this.#context.connection.window.showDocument({
+					uri,
+					external: true,
+				});
+
+				if (!showURIResponse.success) {
+					this.#logger?.warn('Failed to open rule documentation', { uri });
+
+					return new LSP.ResponseError(
+						LSP.ErrorCodes.InternalError,
+						'Failed to open rule documentation',
+					);
+				}
 
 				return {};
-			}
+			}),
+		);
 
-			const { uri } = params;
-
-			this.#logger?.debug('Opening rule documentation', { uri });
-
-			// Open URL in browser
-			const showURIResponse = await this.#context.connection.window.showDocument({
-				uri,
-				external: true,
-			});
-
-			if (!showURIResponse.success) {
-				this.#logger?.warn('Failed to open rule documentation', { uri });
-
-				return new LSP.ResponseError(
-					LSP.ErrorCodes.InternalError,
-					'Failed to open rule documentation',
-				);
-			}
-
-			return {};
-		});
-
-		this.#context.notifications.on(InitializedNotification.type, () =>
-			this.#context.connection.sendNotification(Notification.DidRegisterCodeActionRequestHandler),
+		this.#disposables.push(
+			this.#context.notifications.on(LSP.InitializedNotification.type, () =>
+				this.#context.connection.sendNotification(Notification.DidRegisterCodeActionRequestHandler),
+			),
 		);
 	}
 
