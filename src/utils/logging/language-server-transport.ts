@@ -37,12 +37,18 @@ export class LanguageServerTransport extends TransportStream {
 			this.emit('logged', info);
 		});
 
-		const logFunc = getLogFunction(this.#console, String(info[LEVEL]));
+		try {
+			const logFunc = getLogFunction(this.#console, String(info[LEVEL]));
 
-		if (typeof logFunc === 'function') {
-			logFunc.call(this.#console, String(info[MESSAGE]));
-		} else {
-			this.#console.log(String(info[MESSAGE]));
+			if (typeof logFunc === 'function') {
+				logFunc.call(this.#console, String(info[MESSAGE]));
+			} else {
+				this.#console.log(String(info[MESSAGE]));
+			}
+		} catch (error) {
+			if (!(error instanceof Error) || !error.message.includes('Connection is disposed')) {
+				this.emit('error', error);
+			}
 		}
 
 		callback();

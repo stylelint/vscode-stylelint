@@ -9,6 +9,7 @@ const config = {
 	preset: 'ts-jest',
 	globals: { 'ts-jest': { tsconfig: '<rootDir>/../../tsconfig.test.json' } },
 	verbose: true,
+	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	modulePathIgnorePatterns: [
 		'<rootDir>/../../.vscode-test',
 		'<rootDir>/../e2e/workspace/defaults/yarn-[^/]+/stylelint',
