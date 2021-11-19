@@ -169,7 +169,12 @@
         "title": "Fix all auto-fixable Problems",
         "category": "Stylelint",
         "command": "stylelint.executeAutofix"
-      }
+      },
+			{
+				"title": "Restart Stylelint Server",
+				"category": "Stylelint",
+				"command": "stylelint.restart"
+			}
     ],
     "jsonValidation": [
       {
