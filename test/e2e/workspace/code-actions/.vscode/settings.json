@@ -1,4 +1,9 @@
 {
+	"[css]": {
+		"editor.codeActionsOnSave": {
+			"source.fixAll.stylelint": true
+		}
+	},
 	"stylelint.reportNeedlessDisables": true,
 	"stylelint.validate": [
 		"css",

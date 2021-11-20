@@ -19,7 +19,7 @@ Object.defineProperty(global, 'workspaceDir', {
 	},
 });
 
-let openEditors: TextEditor[] = [];
+const openEditors: TextEditor[] = [];
 
 Object.defineProperty(global, 'openDocument', {
 	get() {
@@ -123,7 +123,7 @@ global.afterEach(async () => {
 		await commands.executeCommand('workbench.action.files.revert');
 	}
 
-	openEditors = [];
+	openEditors.length = 0;
 
 	await commands.executeCommand('workbench.action.closeAllEditors');
 });

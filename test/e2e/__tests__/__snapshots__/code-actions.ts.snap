@@ -121,3 +121,12 @@ Array [
   },
 ]
 `;
+
+exports[`Code actions should run auto-fix action on save 1`] = `
+"a {
+    font-size: 1.2em;
+    /* stylelint-disable-next-line comment-no-empty */
+    color: #00;
+}
+"
+`;
