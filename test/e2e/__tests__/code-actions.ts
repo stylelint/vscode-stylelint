@@ -96,23 +96,6 @@ describe('Code actions', () => {
 		await resetPromise;
 	});
 
-	test('should run auto-fix action on save', async () => {
-		const editor = await openDocument(cssPath);
-
-		await waitForDiagnostics(editor);
-
-		await getCodeActions(editor);
-
-		// API won't save unless we dirty the document, unlike saving via the UI
-		await editor.edit((editBuilder) => {
-			editBuilder.insert(new Position(3, 0), ' ');
-		});
-
-		await editor.document.save();
-
-		expect(editor.document.getText()).toMatchSnapshot();
-	});
-
 	it('should provide code actions for problems', async () => {
 		const editor = await openDocument(cssPath);
 
@@ -135,6 +118,23 @@ describe('Code actions', () => {
 		const actions = await getCodeActions(editor);
 
 		expect(actions).toHaveLength(0);
+	});
+
+	test('should run auto-fix action on save', async () => {
+		const editor = await openDocument(cssPath);
+
+		await waitForDiagnostics(editor);
+
+		await getCodeActions(editor);
+
+		// API won't save unless we dirty the document, unlike saving via the UI
+		await editor.edit((editBuilder) => {
+			editBuilder.insert(new Position(3, 0), ' ');
+		});
+
+		await editor.document.save();
+
+		expect(editor.document.getText()).toMatchSnapshot();
 	});
 
 	localIt('should disable rules for an entire file', async () => {
