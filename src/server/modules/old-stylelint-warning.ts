@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs/promises';
 import semver from 'semver';
+import pathIsInside from 'path-is-inside';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type LSP from 'vscode-languageserver-protocol';
 import { getWorkspaceFolder } from '../../utils/documents';
@@ -54,7 +55,10 @@ export class OldStylelintWarningModule implements LanguageServerModule {
 		this.#openMigrationGuide = capabilities.window?.showDocument?.support ?? false;
 	}
 
-	async #getStylelintVersion(document: TextDocument): Promise<string | undefined> {
+	async #getStylelintVersion(
+		document: TextDocument,
+		workspaceFolder: string,
+	): Promise<string | undefined> {
 		const result = await this.#context.resolveStylelint(document);
 
 		if (!result) {
@@ -69,6 +73,14 @@ export class OldStylelintWarningModule implements LanguageServerModule {
 
 		if (!packageDir) {
 			this.#logger?.debug('Stylelint package root not found', {
+				uri: document.uri,
+			});
+
+			return undefined;
+		}
+
+		if (!pathIsInside(packageDir, workspaceFolder)) {
+			this.#logger?.debug('Stylelint package root is not inside the workspace', {
 				uri: document.uri,
 			});
 
@@ -95,17 +107,6 @@ export class OldStylelintWarningModule implements LanguageServerModule {
 	}
 
 	async #check(document: TextDocument): Promise<string | undefined> {
-		const options = await this.#context.getOptions(document.uri);
-
-		if (!options.validate.includes(document.languageId)) {
-			this.#logger?.debug('Document should not be validated, ignoring', {
-				uri: document.uri,
-				language: document.languageId,
-			});
-
-			return undefined;
-		}
-
 		const workspaceFolder = await getWorkspaceFolder(this.#context.connection, document);
 
 		if (!workspaceFolder) {
@@ -126,7 +127,7 @@ export class OldStylelintWarningModule implements LanguageServerModule {
 
 		this.#checkedWorkspaces.add(workspaceFolder);
 
-		const stylelintVersion = await this.#getStylelintVersion(document);
+		const stylelintVersion = await this.#getStylelintVersion(document, workspaceFolder);
 
 		if (!stylelintVersion) {
 			return undefined;
