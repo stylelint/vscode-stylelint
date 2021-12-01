@@ -208,7 +208,7 @@
     "@stylelint/prettier-config": "^2.0.0",
     "@types/eslint": "^7.28.2",
     "@types/fs-extra": "^9.0.13",
-    "@types/jest": "^27.0.1",
+    "@types/jest": "^27.0.3",
     "@types/path-is-inside": "^1.0.0",
     "@types/semver": "^7.3.9",
     "@types/vscode": "1.56.0",
