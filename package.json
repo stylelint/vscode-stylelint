@@ -206,7 +206,7 @@
   "devDependencies": {
     "@stylelint/postcss-css-in-js": "^0.37.2",
     "@stylelint/prettier-config": "^2.0.0",
-    "@types/eslint": "^7.28.2",
+    "@types/eslint": "^8.2.0",
     "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.3",
     "@types/path-is-inside": "^1.0.0",
