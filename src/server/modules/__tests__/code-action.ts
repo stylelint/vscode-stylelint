@@ -45,12 +45,12 @@ describe('CodeActionModule', () => {
 		);
 	});
 
-	test('should send the DidRegisterCodeActionRequestHandler notification when InitializedNotification is received', () => {
+	test('should send the DidRegisterCodeActionRequestHandler notification when InitializedNotification is received', async () => {
 		const module = new CodeActionModule({ context: mockContext.__typed() });
 
 		module.onDidRegisterHandlers();
 
-		mockContext.notifications.on.mock.calls[0][1]?.();
+		await mockContext.notifications.on.mock.calls[0][1]?.();
 
 		expect(mockContext.connection.sendNotification).toHaveBeenCalledWith(
 			Notification.DidRegisterCodeActionRequestHandler,
