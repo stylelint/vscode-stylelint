@@ -28,7 +28,10 @@ Array [
       },
     ],
     "synchronize": Object {
-      "fileEvents": undefined,
+      "fileEvents": Array [
+        undefined,
+        undefined,
+      ],
     },
   },
 ]
