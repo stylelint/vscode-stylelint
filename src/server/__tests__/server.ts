@@ -257,7 +257,7 @@ describe('StylelintLanguageServer', () => {
 			([type]) => type === InitializedNotification.type,
 		)?.[1];
 
-		onInitializedHandler?.({});
+		await onInitializedHandler?.({});
 
 		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
 		expect(mockLogger.debug).not.toHaveBeenCalledWith(
@@ -292,7 +292,7 @@ describe('StylelintLanguageServer', () => {
 			([type]) => type === InitializedNotification.type,
 		)?.[1];
 
-		onInitializedHandler?.({});
+		await onInitializedHandler?.({});
 
 		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
 		expect(mockLogger.debug).toHaveBeenCalledWith('Registering DidChangeConfigurationNotification');
@@ -389,7 +389,7 @@ describe('StylelintLanguageServer', () => {
 			([type]) => type === DidChangeConfigurationNotification.type,
 		)?.[1];
 
-		onDidChangeConfigurationHandler?.({ settings: {} });
+		await onDidChangeConfigurationHandler?.({ settings: {} });
 
 		const options = await getContext()?.getOptions?.('uri');
 
@@ -624,7 +624,7 @@ describe('StylelintLanguageServer', () => {
 			([type]) => type === DidChangeConfigurationNotification.type,
 		)?.[1];
 
-		onDidChangeConfigurationHandler?.({
+		await onDidChangeConfigurationHandler?.({
 			settings: {
 				stylelint: {
 					validate: ['css'],
@@ -675,7 +675,7 @@ describe('StylelintLanguageServer', () => {
 			([type]) => type === DidChangeConfigurationNotification.type,
 		)?.[1];
 
-		onDidChangeConfigurationHandler?.({
+		await onDidChangeConfigurationHandler?.({
 			settings: {
 				stylelint: {
 					validate: ['css'],
@@ -743,7 +743,7 @@ describe('StylelintLanguageServer', () => {
 			([type]) => type === DidChangeConfigurationNotification.type,
 		)?.[1];
 
-		onDidChangeConfigurationHandler?.({
+		await onDidChangeConfigurationHandler?.({
 			settings: {
 				stylelint: {
 					validate: ['css'],
@@ -1115,7 +1115,7 @@ describe('StylelintLanguageServer', () => {
 		expect(mockCommands.dispose).toHaveBeenCalled();
 	});
 
-	it('should dispose the connection when disposed', () => {
+	it('should dispose the connection when disposed', async () => {
 		const server = new StylelintLanguageServer({
 			connection: mockConnection,
 			logger: mockLogger,
@@ -1127,7 +1127,7 @@ describe('StylelintLanguageServer', () => {
 			([type]) => type === InitializedNotification.type,
 		)?.[1];
 
-		onInitializedHandler?.(
+		await onInitializedHandler?.(
 			{} as LSP.InitializedParams,
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
