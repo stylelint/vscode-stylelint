@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+
+- Language server can now be restarted with the "Restart Stylelint Server" command ([#339](https://github.com/stylelint/vscode-stylelint/pull/339)).
+- The warning shown for unsupported versions of Stylelint will now be shown in any workspace with a locally installed copy of Stylelint, regardless of the file type of the open file ([#340](https://github.com/stylelint/vscode-stylelint/pull/340)).
+- Language server can now be disposed with `server.dispose()` and is disposed when receiving the shutdown LSP notification ([#326](https://github.com/stylelint/vscode-stylelint/pull/326)).
+
+### Changed
+
+- A custom notification used for testing in VS Code sent by the language server now uses the `stylelint` namespace instead of `textDocument` ([3b845a2](https://github.com/stylelint/vscode-stylelint/commit/3b845a2)).
+
+### Fixed
+
+- Files are now re-linted when a Stylelint configuration file is changed in the workspace ([#356](https://github.com/stylelint/vscode-stylelint/pull/356)).
+
 ## [1.2.1](https://github.com/stylelint/vscode-stylelint/compare/v1.2.0...v1.2.1) (2021-11-18)
 
 ### Fixed
