@@ -40,7 +40,9 @@ describe('warningToDiagnostic', () => {
 			},
 		});
 
-		const rules = { 'color-hex-case': {} } as unknown as {
+		const rules = {
+			'color-hex-case': { meta: { url: 'https://stylelint.io/rules/color-hex-case' } },
+		} as unknown as {
 			[name: string]: stylelint.Rule<unknown, unknown>;
 		};
 

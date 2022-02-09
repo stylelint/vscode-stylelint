@@ -48,8 +48,7 @@ export function warningToDiagnostic(
 	const start = Position.create(warning.line - 1, warning.column - 1);
 	const end = Position.create(warning.line - 1, warning.column);
 
-	const ruleDocUrl =
-		rules?.[warning.rule] && `https://stylelint.io/user-guide/rules/${warning.rule}`;
+	const ruleDocUrl = rules?.[warning.rule]?.meta?.url;
 
 	const diagnostic = Diagnostic.create(
 		Range.create(start, end),
