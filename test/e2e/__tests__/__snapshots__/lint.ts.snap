@@ -21,7 +21,7 @@ Array [
   Object {
     "code": "color-no-invalid-hex",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
+      "href": "https://stylelint.io/user-guide/rules/list/color-no-invalid-hex",
     },
     "message": "Unexpected invalid hex color \\"#y3\\" (color-no-invalid-hex)",
     "range": Object {
@@ -40,7 +40,7 @@ Array [
   Object {
     "code": "indentation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
+      "href": "https://stylelint.io/user-guide/rules/list/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {
@@ -64,7 +64,7 @@ Array [
   Object {
     "code": "indentation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
+      "href": "https://stylelint.io/user-guide/rules/list/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {

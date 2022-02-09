@@ -5,7 +5,7 @@ Array [
   Object {
     "code": "color-hex-case",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/color-hex-case",
+      "href": "https://stylelint.io/user-guide/rules/list/color-hex-case",
     },
     "message": "Expected \\"#fff\\" to be \\"#FFF\\" (color-hex-case)",
     "range": Object {
@@ -24,7 +24,7 @@ Array [
   Object {
     "code": "indentation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
+      "href": "https://stylelint.io/user-guide/rules/list/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {

@@ -5,9 +5,6 @@ Object {
   "diagnostics": Array [
     Object {
       "code": "unit-no-unknown",
-      "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/unit-no-unknown",
-      },
       "message": "unit-no-unknown",
       "range": Object {
         "end": Object {
@@ -24,9 +21,6 @@ Object {
     },
     Object {
       "code": "at-rule-no-unknown",
-      "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/at-rule-no-unknown",
-      },
       "message": "at-rule-no-unknown",
       "range": Object {
         "end": Object {
@@ -66,9 +60,6 @@ Object {
   "diagnostics": Array [
     Object {
       "code": "unit-no-unknown",
-      "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/unit-no-unknown",
-      },
       "message": "unit-no-unknown",
       "range": Object {
         "end": Object {
