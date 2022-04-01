@@ -213,7 +213,7 @@
     "@types/semver": "^7.3.9",
     "@types/vscode": "1.56.0",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
-    "@typescript-eslint/parser": "^5.5.0",
+    "@typescript-eslint/parser": "^5.17.0",
     "@typescript/lib-dom": "npm:@types/web@^0.0.47",
     "@vscode/test-electron": "^1.6.2",
     "cspell": "^5.13.1",
