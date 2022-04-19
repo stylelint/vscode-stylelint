@@ -20,6 +20,7 @@ export async function buildStylelintOptions(
 		configBasedir,
 		customSyntax,
 		ignoreDisables,
+		ignorePath,
 		reportNeedlessDisables,
 		reportInvalidScopeDisables,
 	}: RunnerOptions = {},
@@ -49,6 +50,12 @@ export async function buildStylelintOptions(
 
 		ignoreDisables: ignoreDisables ?? baseOptions.ignoreDisables,
 
+		ignorePath: ignorePath
+			? workspaceFolder
+				? ignorePath.replace(/\$\{workspaceFolder\}/gu, workspaceFolder)
+				: ignorePath
+			: baseOptions.ignorePath,
+
 		reportNeedlessDisables: reportNeedlessDisables ?? baseOptions.reportNeedlessDisables,
 
 		reportInvalidScopeDisables:
@@ -57,18 +64,15 @@ export async function buildStylelintOptions(
 
 	const documentPath = URI.parse(uri).fsPath;
 
-	if (documentPath) {
+	if (documentPath && !documentPath.toLowerCase().startsWith('untitled')) {
 		if (workspaceFolder && pathIsInside(documentPath, workspaceFolder)) {
-			options.ignorePath = path.join(workspaceFolder, '.stylelintignore');
-		}
-
-		if (options.ignorePath === undefined) {
-			options.ignorePath = path.join(
-				(await findPackageRoot(documentPath)) || path.parse(documentPath).root,
-				'.stylelintignore',
-			);
+			options.cwd = workspaceFolder;
+			!options.ignorePath && (options.ignorePath = path.join(workspaceFolder, '.stylelintignore'));
+		} else {
+			const rootPath = (await findPackageRoot(documentPath)) || path.parse(documentPath).root;
+			options.cwd = rootPath;
+			!options.ignorePath && (options.ignorePath = path.join(rootPath, '.stylelintignore'));
 		}
 	}
-
 	return options;
 }

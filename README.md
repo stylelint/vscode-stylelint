@@ -175,6 +175,13 @@ e.g.
 
 Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
 
+### `stylelint.ignorePath`
+
+> Type: `string`  
+> Default: `""`
+
+Sets the Stylelint [`ignorePath`] option. A path to a file containing patterns describing files to ignore.
+
 ### `stylelint.reportNeedlessDisables`
 
 > Type: `boolean`  
@@ -306,6 +313,7 @@ cmd /C "set NODE_ENV=development&&code"
 [`configfile`]: https://stylelint.io/user-guide/usage/options#configfile
 [`configbasedir`]: https://stylelint.io/user-guide/usage/options#configbasedir
 [`ignoredisables`]: https://stylelint.io/user-guide/usage/options#ignoredisables
+[`ignorepath`]: https://stylelint.io/user-guide/usage/options#ignorepath
 [`reportneedlessdisables`]: https://stylelint.io/user-guide/usage/options#reportneedlessdisables
 [`reportinvalidscopedisables`]: https://stylelint.io/user-guide/usage/options#reportInvalidScopeDisables
 

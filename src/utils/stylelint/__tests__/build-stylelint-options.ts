@@ -22,24 +22,34 @@ describe('buildStylelintOptions', () => {
 		mockedPackages.findPackageRoot.mockReset();
 	});
 
-	test('with no options, should only set ignore path', async () => {
+	test('with no options, should only set ignore path and cwd', async () => {
 		const result = await buildStylelintOptions('/path/to/file.css', '/path');
 
-		expect(result).toEqual({ ignorePath: '/path/.stylelintignore' });
+		expect(result).toEqual({ ignorePath: '/path/.stylelintignore', cwd: '/path' });
 	});
 
-	test('should only override ignore path if document is in workspace', async () => {
-		const result1 = await buildStylelintOptions('/path/to/file.css', '/path', {
-			ignorePath: './stylelintignore',
-		});
+	test('when document is not in workspace, should set cwd to package root', async () => {
+		mockedPackages.findPackageRoot.mockResolvedValueOnce('/path');
 
-		expect(result1).toEqual({ ignorePath: '/path/.stylelintignore' });
+		const result = await buildStylelintOptions('/path/to/file.css', '/workspace');
 
-		const result2 = await buildStylelintOptions('/path/to/file.css', '/workspace', {
-			ignorePath: './stylelintignore',
-		});
+		expect(result).toEqual({ ignorePath: '/path/.stylelintignore', cwd: '/path' });
+	});
 
-		expect(result2).toEqual({ ignorePath: './stylelintignore' });
+	test('with no workspace folder, should set cwd to package root', async () => {
+		mockedPackages.findPackageRoot.mockResolvedValueOnce('/path');
+
+		const result = await buildStylelintOptions('/path/to/file.css');
+
+		expect(result).toEqual({ ignorePath: '/path/.stylelintignore', cwd: '/path' });
+	});
+
+	test('with no package root, or workspace, should set cwd to URI root', async () => {
+		mockedPackages.findPackageRoot.mockResolvedValueOnce(undefined);
+
+		const result = await buildStylelintOptions('/path/to/file.css');
+
+		expect(result).toEqual({ ignorePath: '/.stylelintignore', cwd: '/' });
 	});
 
 	test('with no ignore path or workspace folder, should set ignore path to package root', async () => {
@@ -47,7 +57,7 @@ describe('buildStylelintOptions', () => {
 
 		const result = await buildStylelintOptions('/path/to/file.css');
 
-		expect(result).toEqual({ ignorePath: '/path/.stylelintignore' });
+		expect(result).toEqual({ ignorePath: '/path/.stylelintignore', cwd: '/path' });
 	});
 
 	test('with no ignore path, when document is not in workspace, should set ignore path to package root', async () => {
@@ -55,7 +65,7 @@ describe('buildStylelintOptions', () => {
 
 		const result = await buildStylelintOptions('/path/to/file.css', '/workspace');
 
-		expect(result).toEqual({ ignorePath: '/path/.stylelintignore' });
+		expect(result).toEqual({ ignorePath: '/path/.stylelintignore', cwd: '/path' });
 	});
 
 	test('with no ignore path, package root, or workspace, should set ignore path to URI root', async () => {
@@ -63,7 +73,7 @@ describe('buildStylelintOptions', () => {
 
 		const result = await buildStylelintOptions('/path/to/file.css');
 
-		expect(result).toEqual({ ignorePath: '/.stylelintignore' });
+		expect(result).toEqual({ ignorePath: '/.stylelintignore', cwd: '/' }); //?
 	});
 
 	test('with no options or document FS path, should not set any options', async () => {
@@ -74,7 +84,15 @@ describe('buildStylelintOptions', () => {
 		expect(result).toEqual({});
 	});
 
-	test('with only base options, should not override base options except ignore path', async () => {
+	test('with no options or an untitled document, should not set any options', async () => {
+		mockedPackages.findPackageRoot.mockResolvedValueOnce('/path');
+
+		const result = await buildStylelintOptions('Untitled-1', '/workspace');
+
+		expect(result).toEqual({});
+	});
+
+	test('with only base options, should not override base options except cwd', async () => {
 		mockedPackages.findPackageRoot.mockResolvedValueOnce('/path');
 
 		const options: stylelint.LinterOptions = {
@@ -83,17 +101,17 @@ describe('buildStylelintOptions', () => {
 			configBasedir: '/path',
 			customSyntax: 'postcss-scss',
 			ignoreDisables: false,
-			ignorePath: '/.stylelintignore',
+			ignorePath: '/path/to/.stylelintignore',
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
 
 		const result = await buildStylelintOptions('/path/to/file.css', '/path', options);
 
-		expect(result).toEqual({ ...options, ignorePath: '/path/.stylelintignore' });
+		expect(result).toEqual({ ...options, ignorePath: '/path/to/.stylelintignore', cwd: '/path' });
 	});
 
-	test('with runner options, should override base options', async () => {
+	test('with runner options, should override base options and set cwd', async () => {
 		mockedPackages.findPackageRoot.mockResolvedValueOnce('/path');
 
 		const options: stylelint.LinterOptions = {
@@ -113,6 +131,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: '/workspace',
 			customSyntax: 'postcss-html',
 			ignoreDisables: false,
+			ignorePath: '/custom/path/to/.stylelintignore',
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -127,10 +146,11 @@ describe('buildStylelintOptions', () => {
 		expect(result).toEqual({
 			...options,
 			...runnerOptions,
+			cwd: '/path',
 		});
 	});
 
-	test('with runner options and workspace, should override and replace ${workspaceFolder} in paths', async () => {
+	test('with runner options and workspace, should override and replace ${workspaceFolder} in paths and set cwd to workspaceFolder', async () => {
 		mockedPackages.findPackageRoot.mockResolvedValueOnce('/workspace');
 
 		const options: stylelint.LinterOptions = {
@@ -150,6 +170,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: '/workspace',
 			customSyntax: '${workspaceFolder}/postcss-html',
 			ignoreDisables: false,
+			ignorePath: '${workspaceFolder}/custom/path/to/.stylelintignore',
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -167,7 +188,8 @@ describe('buildStylelintOptions', () => {
 			configFile: '/workspace/stylelint.config.js',
 			configBasedir: '/workspace',
 			customSyntax: '/workspace/postcss-html',
-			ignorePath: '/workspace/.stylelintignore',
+			ignorePath: '/workspace/custom/path/to/.stylelintignore',
+			cwd: '/workspace',
 		});
 	});
 
@@ -191,6 +213,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: '/workspace',
 			customSyntax: '${workspaceFolder}/postcss-html',
 			ignoreDisables: false,
+			ignorePath: '${workspaceFolder}/custom/path/to/.stylelintignore',
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -206,7 +229,7 @@ describe('buildStylelintOptions', () => {
 			...options,
 			...runnerOptions,
 			configBasedir: '/workspace',
-			ignorePath: '/.stylelintignore',
+			cwd: '/workspace',
 		});
 	});
 
@@ -230,6 +253,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: './base',
 			customSyntax: '/workspace/postcss-html',
 			ignoreDisables: false,
+			ignorePath: '/custom/path/to/.stylelintignore',
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -245,7 +269,7 @@ describe('buildStylelintOptions', () => {
 			...options,
 			...runnerOptions,
 			configBasedir: '/workspace/base',
-			ignorePath: '/workspace/.stylelintignore',
+			cwd: '/workspace',
 		});
 	});
 
@@ -269,6 +293,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: './base',
 			customSyntax: '/workspace/postcss-html',
 			ignoreDisables: false,
+			ignorePath: '/custom/path/to/.stylelintignore',
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -284,7 +309,7 @@ describe('buildStylelintOptions', () => {
 			...options,
 			...runnerOptions,
 			configBasedir: 'base',
-			ignorePath: '/.stylelintignore',
+			cwd: '/workspace',
 		});
 	});
 });

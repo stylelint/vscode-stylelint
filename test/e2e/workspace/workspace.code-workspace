@@ -5,6 +5,7 @@
 		{ "path": "custom-syntax" },
 		{ "path": "defaults" },
 		{ "path": "ignore-disables" },
+		{ "path": "ignore-path" },
 		{ "path": "report-disables" },
 		{ "path": "stylelint-path" },
 		{ "path": "validate" }

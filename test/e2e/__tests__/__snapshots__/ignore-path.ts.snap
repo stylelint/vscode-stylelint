@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`"stylelint.ignorePath" setting should lint files that are not ignored 1`] = `
+Array [
+  Object {
+    "code": "indentation",
+    "codeDescription": Object {
+      "href": "https://stylelint.io/user-guide/rules/list/indentation",
+    },
+    "message": "Expected indentation of 4 spaces (indentation)",
+    "range": Object {
+      "end": Object {
+        "character": 3,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 2,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+]
+`;

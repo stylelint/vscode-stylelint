@@ -10,6 +10,7 @@ Object {
   "configBasedir": undefined,
   "configFile": undefined,
   "customSyntax": undefined,
+  "cwd": "/",
   "fix": true,
   "formatter": [Function],
   "ignoreDisables": undefined,

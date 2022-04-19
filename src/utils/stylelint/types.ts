@@ -38,6 +38,7 @@ export type RunnerOptions = {
 	configFile?: string;
 	customSyntax?: string;
 	ignoreDisables?: boolean;
+	ignorePath?: string;
 	packageManager?: PackageManager;
 	reportInvalidScopeDisables?: boolean;
 	reportNeedlessDisables?: boolean;

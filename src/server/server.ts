@@ -37,6 +37,7 @@ const defaultOptions: LanguageServerOptions = {
 	configBasedir: '',
 	customSyntax: '',
 	ignoreDisables: false,
+	ignorePath: '',
 	packageManager: 'npm',
 	reportInvalidScopeDisables: false,
 	reportNeedlessDisables: false,
