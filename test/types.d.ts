@@ -44,6 +44,16 @@ declare global {
 	) => Promise<vscode.Diagnostic[]>;
 
 	/**
+	 * Waits until the extension emits diagnostics for a document and checks if
+	 * these are empty. Required as `waitForDiagnostics` never resolves with an
+	 * empty object, but we need to listen for this case when checking if a file
+	 * was ignored. Resolves with `true` if diagnostics were empty, or `false` if
+	 * diagnostics were present. Only available in end-to-end tests.
+	 * @param Document The editor document for which to wait.
+	 */
+	const waitForEmptyDiagnostics: (Document: vscode.TextDocument) => Promise<boolean>;
+
+	/**
 	 * Waits until the extension emits the specified event. If `shouldResolve`
 	 * is provided, the promise will only resolve if `shouldResolve` returns
 	 * true. Resolves with the event's parameters. Rejects if the timeout is
