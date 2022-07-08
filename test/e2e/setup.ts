@@ -69,6 +69,28 @@ Object.defineProperty(global, 'waitForDiagnostics', {
 	},
 });
 
+// Waits until the extension emits diagnostics for a document and checks if these are empty.
+// Required as `waitForDiagnostics` never resolves with an empty object, but we need to listen
+// for this case when checking if a file was ignored. Resolves with `true` if diagnostics were
+// empty, or `false` if diagnostics were present.
+Object.defineProperty(global, 'waitForEmptyDiagnostics', {
+	get() {
+		return (document: TextDocument) =>
+			new Promise<boolean>((resolve) => {
+				const onDidChangeDiagnostics = languages.onDidChangeDiagnostics(
+					(diagnosticsChangeEvent) => {
+						if (
+							diagnosticsChangeEvent.uris.filter((uri) => uri.path === document.uri.path).length > 0
+						) {
+							resolve(languages.getDiagnostics(document.uri).length === 0);
+							onDidChangeDiagnostics.dispose();
+						}
+					},
+				);
+			});
+	},
+});
+
 Object.defineProperty(global, 'waitForApiEvent', {
 	get() {
 		return <T extends keyof ExtensionEvents>(

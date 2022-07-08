@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+### Added
+
+- Added `stylelint.ignorePath` setting ([#158](https://github.com/stylelint/vscode-stylelint/issues/158)).
+
 ## [1.2.2](https://github.com/stylelint/vscode-stylelint/compare/v1.2.1...v1.2.2) (2022-02-09)
 
 ### Fixed

@@ -107,6 +107,12 @@
           "default": false,
           "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
         },
+        "stylelint.ignorePath": {
+          "scope": "resource",
+          "type": "string",
+          "default": "",
+          "description": "A path to a file containing patterns describing files to ignore. By default, Stylelint looks for `.stylelintignore` from your workspace root path."
+        },
         "stylelint.reportNeedlessDisables": {
           "scope": "resource",
           "type": "boolean",
