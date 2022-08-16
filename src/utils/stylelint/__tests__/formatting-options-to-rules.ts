@@ -21,7 +21,7 @@ describe('formattingOptionsToRules', () => {
 			formattingOptionsToRules({ insertSpaces: true, tabSize: 2, insertFinalNewline: false }),
 		).toStrictEqual({
 			indentation: [2],
-			'no-missing-end-of-source-newline': false,
+			'no-missing-end-of-source-newline': null,
 		});
 	});
 
@@ -36,7 +36,7 @@ describe('formattingOptionsToRules', () => {
 			formattingOptionsToRules({ insertSpaces: true, tabSize: 2, trimTrailingWhitespace: false }),
 		).toStrictEqual({
 			indentation: [2],
-			'no-eol-whitespace': false,
+			'no-eol-whitespace': null,
 		});
 	});
 
