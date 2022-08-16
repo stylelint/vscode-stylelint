@@ -120,15 +120,15 @@ body:
       label: Windows Subsystem for Linux
       description: If you are running VS Code on Windows Subsystem for Linux (WSL), please specify what version of WSL and Windows you are using.
       placeholder: e.g. WSL 2, Windows 11 21H2
-  - type: textarea
-    id: bug-reproduction
+  - type: input
+    id: reproduction-url
     attributes:
       label: Link to Minimal Reproducible Example
       description: |
         Create a minimal reproduction of the problem. **A minimal reproduction is required** so that others can help debug your issue. If a report is vague (e.g. just a generic error message) and has no reproduction, it may be closed.
-        [Why Reproductions are Required](https://antfu.me/posts/why-reproductions-are-required)
+        See also [Why Reproductions are Required](https://antfu.me/posts/why-reproductions-are-required)
       placeholder: |
-        https://github.com/[your]/[repo]
+        e.g. https://github.com/[your]/[repo]
     validations:
       required: true
   - type: checkboxes
