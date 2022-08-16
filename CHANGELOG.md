@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [1.2.3](https://github.com/stylelint/vscode-stylelint/compare/v1.2.2...v1.2.3) (2022-08-16)
+
 ### Fixed
 
 - Fix: don't pass invalid "false" rule value when formatting ([#399](https://github.com/stylelint/vscode-stylelint/pull/399)).
