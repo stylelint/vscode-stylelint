@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 ### Fixed
 
 - Fix: don't pass invalid "false" rule value when formatting ([#399](https://github.com/stylelint/vscode-stylelint/pull/399)).
+- Fix to resolve doc URL of plugin rules when using stylelint v14.10 ([#416](https://github.com/stylelint/vscode-stylelint/pull/416))
 
 ## [1.2.2](https://github.com/stylelint/vscode-stylelint/compare/v1.2.1...v1.2.2) (2022-02-09)
 
