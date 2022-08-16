@@ -33,13 +33,16 @@ export function processLinterResult(
 		throw new InvalidOptionError(invalidOptionWarnings);
 	}
 
-	if(!ruleMetadata) {
+	if (!ruleMetadata) {
 		// Create built-in rule metadata for backwards compatibility.
-		ruleMetadata = new Proxy({}, {
-			get: (_, key:string) => {
-				return stylelint.rules?.[key]?.meta;
-			}
-		})
+		ruleMetadata = new Proxy(
+			{},
+			{
+				get: (_, key: string) => {
+					return stylelint.rules?.[key]?.meta;
+				},
+			},
+		);
 	}
 
 	const diagnostics = warnings.map((warning) => warningToDiagnostic(warning, ruleMetadata));
