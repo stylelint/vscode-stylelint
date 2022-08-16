@@ -101,7 +101,7 @@ describe('StylelintRunner', () => {
 			createMockResolver(async (options) => {
 				expect(options).toMatchSnapshot();
 
-				expect((options.formatter as stylelint.Formatter)?.([])).toBe('');
+				expect((options.formatter as stylelint.Formatter)?.([], {} as never)).toBe('');
 
 				return { results: [] };
 			}),
