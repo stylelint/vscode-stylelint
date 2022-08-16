@@ -17,7 +17,7 @@ import { LintDiagnostics, InvalidOptionError } from './types';
  */
 export function processLinterResult(
 	stylelint: stylelint.PublicApi,
-	{ results, output }: stylelint.LinterResult,
+	{ results, output, ruleMetadata }: stylelint.LinterResult,
 ): LintDiagnostics {
 	if (results.length === 0) {
 		return { diagnostics: [] };
@@ -33,7 +33,16 @@ export function processLinterResult(
 		throw new InvalidOptionError(invalidOptionWarnings);
 	}
 
-	const diagnostics = warnings.map((warning) => warningToDiagnostic(warning, stylelint.rules));
+	if(!ruleMetadata) {
+		// Create built-in rule metadata for backwards compatibility.
+		ruleMetadata = new Proxy({}, {
+			get: (_, key:string) => {
+				return stylelint.rules?.[key]?.meta;
+			}
+		})
+	}
+
+	const diagnostics = warnings.map((warning) => warningToDiagnostic(warning, ruleMetadata));
 
 	return output ? { output: output as string, diagnostics } : { diagnostics };
 }

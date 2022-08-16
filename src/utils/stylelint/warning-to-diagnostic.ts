@@ -43,12 +43,12 @@ import type stylelint from 'stylelint';
  */
 export function warningToDiagnostic(
 	warning: stylelint.Warning,
-	rules?: { [name: string]: stylelint.Rule },
+	ruleMetadata?: stylelint.LinterResult['ruleMetadata'],
 ): Diagnostic {
 	const start = Position.create(warning.line - 1, warning.column - 1);
 	const end = Position.create(warning.line - 1, warning.column);
 
-	const ruleDocUrl = rules?.[warning.rule]?.meta?.url;
+	const ruleDocUrl = ruleMetadata?.[warning.rule]?.url;
 
 	const diagnostic = Diagnostic.create(
 		Range.create(start, end),

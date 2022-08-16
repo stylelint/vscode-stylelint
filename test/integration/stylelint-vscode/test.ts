@@ -240,6 +240,21 @@ a { color: #000 }
 
 		expect(result.diagnostics).toMatchSnapshot();
 	});
+
+	test('should be resolved with diagnostic plugin rule URL', async () => {
+		expect.assertions(1);
+		const runner = new StylelintRunner();
+		const result = await runner.lintDocument(createDocument('unknown-rule.scss', 'scss', '@unknown (max-width: 960px) {}'), {
+			config: {
+				plugins: ['stylelint-scss'],
+				rules: {
+					'scss/at-rule-no-unknown': true,
+				},
+			},
+		});
+
+		expect(result.diagnostics).toMatchSnapshot();
+	});
 });
 
 describe('StylelintRunner with a configuration file', () => {

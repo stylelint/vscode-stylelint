@@ -41,9 +41,9 @@ describe('warningToDiagnostic', () => {
 		});
 
 		const rules = {
-			'color-hex-case': { meta: { url: 'https://stylelint.io/rules/color-hex-case' } },
-		} as unknown as {
-			[name: string]: stylelint.Rule<unknown, unknown>;
+			'color-hex-case':  { url: 'https://stylelint.io/rules/color-hex-case' } ,
+		} as {
+			[name: string]:  Partial<stylelint.RuleMeta>;
 		};
 
 		expect(warningToDiagnostic(warnings[0], rules)).toMatchSnapshot();
