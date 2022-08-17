@@ -2,8 +2,8 @@ import type LSP from 'vscode-languageserver-protocol';
 
 export type FormattingRules = {
 	indentation: [number | string];
-	'no-missing-end-of-source-newline'?: boolean;
-	'no-eol-whitespace'?: boolean;
+	'no-missing-end-of-source-newline'?: true | null;
+	'no-eol-whitespace'?: true | null;
 };
 
 /**
@@ -25,11 +25,11 @@ export function formattingOptionsToRules({
 	};
 
 	if (insertFinalNewline !== undefined) {
-		rules['no-missing-end-of-source-newline'] = insertFinalNewline;
+		rules['no-missing-end-of-source-newline'] = insertFinalNewline || null;
 	}
 
 	if (trimTrailingWhitespace !== undefined) {
-		rules['no-eol-whitespace'] = trimTrailingWhitespace;
+		rules['no-eol-whitespace'] = trimTrailingWhitespace || null;
 	}
 
 	return rules;

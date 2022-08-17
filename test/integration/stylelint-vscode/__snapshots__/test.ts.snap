@@ -1,11 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`StylelintRunner should be resolved with diagnostic plugin rule URL 1`] = `
+Array [
+  Object {
+    "code": "scss/at-rule-no-unknown",
+    "codeDescription": Object {
+      "href": "https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown",
+    },
+    "message": "Unexpected unknown at-rule \\"@unknown\\" (scss/at-rule-no-unknown)",
+    "range": Object {
+      "end": Object {
+        "character": 1,
+        "line": 0,
+      },
+      "start": Object {
+        "character": 0,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+]
+`;
+
 exports[`StylelintRunner should be resolved with diagnostics when it lints CSS successfully 1`] = `
 Array [
   Object {
     "code": "string-quotes",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/string-quotes",
+      "href": "https://stylelint.io/user-guide/rules/list/string-quotes",
     },
     "message": "Expected single quotes (string-quotes)",
     "range": Object {
@@ -24,7 +48,7 @@ Array [
   Object {
     "code": "indentation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
+      "href": "https://stylelint.io/user-guide/rules/list/indentation",
     },
     "message": "Expected indentation of 0 tabs (indentation)",
     "range": Object {
@@ -174,7 +198,7 @@ Array [
   Object {
     "code": "font-weight-notation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
+      "href": "https://stylelint.io/user-guide/rules/list/font-weight-notation",
     },
     "message": "Expected numeric font-weight notation (font-weight-notation)",
     "range": Object {
@@ -193,7 +217,7 @@ Array [
   Object {
     "code": "font-weight-notation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
+      "href": "https://stylelint.io/user-guide/rules/list/font-weight-notation",
     },
     "message": "Expected numeric font-weight notation (font-weight-notation)",
     "range": Object {
@@ -217,7 +241,7 @@ Array [
   Object {
     "code": "length-zero-no-unit",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/length-zero-no-unit",
+      "href": "https://stylelint.io/user-guide/rules/list/length-zero-no-unit",
     },
     "message": "Unexpected unit (length-zero-no-unit)",
     "range": Object {
@@ -242,7 +266,7 @@ Object {
     Object {
       "code": "selector-type-no-unknown",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
+        "href": "https://stylelint.io/user-guide/rules/list/selector-type-no-unknown",
       },
       "message": "Unexpected unknown type selector \\"unknown\\" (selector-type-no-unknown)",
       "range": Object {
@@ -298,7 +322,7 @@ Object {
     Object {
       "code": "indentation",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/indentation",
+        "href": "https://stylelint.io/user-guide/rules/list/indentation",
       },
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {
@@ -379,7 +403,7 @@ Object {
     Object {
       "code": "indentation",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/indentation",
+        "href": "https://stylelint.io/user-guide/rules/list/indentation",
       },
       "message": "Expected indentation of 4 spaces (indentation)",
       "range": Object {
@@ -492,7 +516,7 @@ Object {
     Object {
       "code": "indentation",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/indentation",
+        "href": "https://stylelint.io/user-guide/rules/list/indentation",
       },
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {

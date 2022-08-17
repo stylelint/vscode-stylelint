@@ -4,7 +4,7 @@ exports[`warningToDiagnostic should add a rule documentation URL if a matching r
 Object {
   "code": "color-hex-case",
   "codeDescription": Object {
-    "href": "https://stylelint.io/user-guide/rules/color-hex-case",
+    "href": "https://stylelint.io/rules/color-hex-case",
   },
   "message": "Expected \\"#AAA\\" to be \\"#aaa\\" (color-hex-case)",
   "range": Object {
