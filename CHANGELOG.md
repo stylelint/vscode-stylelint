@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - Language server can now be restarted with the "Restart Stylelint Server" command ([#339](https://github.com/stylelint/vscode-stylelint/pull/339)).
 - The warning shown for unsupported versions of Stylelint will now be shown in any workspace with a locally installed copy of Stylelint, regardless of the file type of the open file ([#340](https://github.com/stylelint/vscode-stylelint/pull/340)).
 - Language server can now be disposed with `server.dispose()` and is disposed when receiving the shutdown LSP notification ([#326](https://github.com/stylelint/vscode-stylelint/pull/326)).
+- Add support for range warnings ([#358](https://github.com/stylelint/vscode-stylelint/pull/358)).
 
 ### Changed
 
