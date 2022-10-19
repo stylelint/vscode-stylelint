@@ -434,7 +434,12 @@ export class StylelintLanguageServer {
 
 			this.#invokeHandlers('onDidChangeConfiguration');
 
-			this.#connection.sendNotification(Notification.DidResetConfiguration);
+			this.#connection
+				.sendNotification(Notification.DidResetConfiguration)
+				.catch((error: unknown) => {
+					this.#displayError(error);
+					this.#logger?.error('Error sending DidResetConfiguration notification', { error });
+				});
 
 			return;
 		}

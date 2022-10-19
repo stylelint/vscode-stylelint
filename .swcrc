@@ -1,0 +1,7 @@
+{
+	"$schema": "https://json.schemastore.org/swcrc",
+	"jsc": {
+		"parser": { "syntax": "typescript", "tsx": false, "dynamicImport": true },
+		"target": "es2021"
+	}
+}

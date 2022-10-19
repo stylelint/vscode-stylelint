@@ -1,7 +1,8 @@
 import { EventEmitter } from 'events';
+import type TypedEventEmitter from 'typed-emitter';
 import { LanguageClient, SettingMonitor, ExecuteCommandRequest } from 'vscode-languageclient/node';
 import { workspace, commands, window } from 'vscode';
-import { ApiEvent, PublicApi } from './types';
+import { ApiEvent, ExtensionEvents, PublicApi } from './types';
 import {
 	CommandId,
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
@@ -15,7 +16,9 @@ import type vscode from 'vscode';
 export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi {
 	const serverPath = require.resolve('./start-server');
 
-	const api: PublicApi = Object.assign(new EventEmitter(), { codeActionReady: false });
+	const api: PublicApi = Object.assign(new EventEmitter() as TypedEventEmitter<ExtensionEvents>, {
+		codeActionReady: false,
+	});
 
 	const client = new LanguageClient(
 		'Stylelint',
@@ -42,7 +45,7 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 	);
 
 	client
-		.onReady()
+		.start()
 		.then(() => {
 			client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
 				api.codeActionReady = true;

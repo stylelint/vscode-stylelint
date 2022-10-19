@@ -315,7 +315,7 @@ describe('StylelintRunner with auto-fix', () => {
 			fix: true,
 		});
 
-		expect(result.output).toMatchInlineSnapshot(`"\\"a\\""`);
+		expect(result.output).toMatchInlineSnapshot(`""a""`);
 	});
 
 	test('auto-fix should ignore if the file matches the ignoreFiles', async () => {

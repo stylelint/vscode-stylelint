@@ -3,7 +3,9 @@ jest.mock('../global-path-resolver');
 jest.mock('../find-package-root');
 jest.mock('path');
 jest.mock('fs/promises', () => jest.createMockFromModule('fs/promises'));
-jest.mock('module');
+jest.mock('module', () => ({
+	createRequire: jest.fn().mockReturnValue(jest.fn()),
+}));
 
 import path from 'path';
 import fs from 'fs/promises';

@@ -54,7 +54,7 @@ describe('StylelintLanguageServer', () => {
 
 	test('should be constructable', () => {
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 		});
 
 		expect(server).toBeInstanceOf(StylelintLanguageServer);
@@ -62,7 +62,7 @@ describe('StylelintLanguageServer', () => {
 
 	test('should tag its own logger', () => {
 		new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 		});
 
@@ -82,7 +82,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -104,7 +104,7 @@ describe('StylelintLanguageServer', () => {
 
 		expect(() => {
 			new StylelintLanguageServer({
-				connection: mockConnection,
+				connection: mockConnection.__typed(),
 				logger: mockLogger,
 				modules: [TestModule, TestModule2],
 			});
@@ -122,7 +122,7 @@ describe('StylelintLanguageServer', () => {
 
 		expect(() => {
 			new StylelintLanguageServer({
-				connection: mockConnection,
+				connection: mockConnection.__typed(),
 				logger: mockLogger,
 				modules: [TestModule],
 			});
@@ -136,7 +136,7 @@ describe('StylelintLanguageServer', () => {
 
 		expect(() => {
 			new StylelintLanguageServer({
-				connection: mockConnection,
+				connection: mockConnection.__typed(),
 				logger: mockLogger,
 				modules: [TestModule as unknown as LanguageServerModuleConstructor],
 			});
@@ -150,7 +150,7 @@ describe('StylelintLanguageServer', () => {
 
 		expect(() => {
 			new StylelintLanguageServer({
-				connection: mockConnection,
+				connection: mockConnection.__typed(),
 				logger: mockLogger,
 				modules: [TestModule as unknown as LanguageServerModuleConstructor],
 			});
@@ -159,7 +159,7 @@ describe('StylelintLanguageServer', () => {
 
 	test('should start successfully', async () => {
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 		});
 
@@ -197,7 +197,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModuleA, TestModuleB],
 		});
@@ -217,7 +217,7 @@ describe('StylelintLanguageServer', () => {
 
 	test('if workspace/configuration is not supported, should not register DidChangeConfigurationNotification', () => {
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 		});
 
@@ -248,7 +248,7 @@ describe('StylelintLanguageServer', () => {
 
 	test('if workspace/configuration is supported, should register DidChangeConfigurationNotification', () => {
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 		});
 
@@ -292,7 +292,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -336,7 +336,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModuleA, TestModuleB],
 		});
@@ -367,7 +367,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -406,7 +406,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -466,7 +466,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -524,7 +524,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -577,7 +577,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -627,7 +627,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -683,7 +683,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -745,7 +745,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			modules: [TestModule],
 		});
 
@@ -767,7 +767,7 @@ describe('StylelintLanguageServer', () => {
 
 	test('when workspace/configuration is available, onDidChangeConfiguration should send the DidResetConfiguration notification', async () => {
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 		});
 
@@ -831,7 +831,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -878,7 +878,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			modules: [TestModule],
 		});
 
@@ -921,7 +921,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -973,7 +973,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			modules: [TestModule],
 		});
 
@@ -1022,7 +1022,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});
@@ -1073,7 +1073,7 @@ describe('StylelintLanguageServer', () => {
 		}
 
 		const server = new StylelintLanguageServer({
-			connection: mockConnection,
+			connection: mockConnection.__typed(),
 			logger: mockLogger,
 			modules: [TestModule],
 		});

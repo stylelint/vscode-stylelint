@@ -4,8 +4,7 @@
 const config = {
 	rootDir: '../..',
 	testMatch: ['<rootDir>/src/**/__tests__/**/*.[jt]s?(x)'],
-	preset: 'ts-jest',
-	globals: { 'ts-jest': { tsconfig: '<rootDir>/tsconfig.test.json' } },
+	transform: { '^.+\\.[jt]sx?$': '@swc/jest' },
 	verbose: true,
 	modulePathIgnorePatterns: [
 		'<rootDir>/.vscode-test',

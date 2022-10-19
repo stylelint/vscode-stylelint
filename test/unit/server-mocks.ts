@@ -130,7 +130,7 @@ export type MockConnection = {
  */
 export function getConnection(): MockConnection {
 	const connection: MockConnection = {
-		__typed: () => connection as Connection,
+		__typed: () => connection as unknown as Connection,
 		client: {
 			get connection() {
 				return connection;
@@ -212,8 +212,8 @@ export function getConnection(): MockConnection {
 		onWillSaveTextDocument: jest.fn(),
 		onWillSaveTextDocumentWaitUntil: jest.fn(),
 		onWorkspaceSymbol: jest.fn(),
-		sendDiagnostics: jest.fn(),
-		sendNotification: jest.fn(),
+		sendDiagnostics: jest.fn(() => Promise.resolve()),
+		sendNotification: jest.fn(() => Promise.resolve()),
 		sendProgress: jest.fn(),
 		sendRequest: jest.fn(),
 		telemetry: {
@@ -388,7 +388,7 @@ export function getLogger(): jest.Mocked<winston.Logger> {
 		writableHighWaterMark: 16,
 		writableLength: 0,
 		writableObjectMode: false,
-	});
+	}) as unknown as jest.Mocked<winston.Logger>;
 
 	Object.defineProperty(logger.exceptions, 'logger', {
 		get: () => logger,
@@ -538,7 +538,7 @@ export function getContext(): MockLanguageServerContext {
 		notifications: getNotificationManager(),
 		runner: getStylelintRunner(),
 		displayError: jest.fn(),
-		getOptions: jest.fn().mockImplementation(async () => context.__options),
+		getOptions: jest.fn(async () => context.__options),
 		getFixes: jest.fn(),
 		getModule: jest.fn(),
 		lintDocument: jest.fn(),

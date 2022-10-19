@@ -7,12 +7,17 @@ const mockRemoteConsole: RemoteConsole = {
 	warn: jest.fn(),
 	info: jest.fn(),
 	log: jest.fn(),
+	initialize(): void {
+		throw new Error('Function not implemented.');
+	},
+	fillServerCapabilities(): void {
+		throw new Error('Function not implemented.');
+	},
 };
 
 describe('getLogFunction', () => {
 	it('should return a function when given a supported level', () => {
 		// https://github.com/jest-community/eslint-plugin-jest/issues/985
-		// eslint-disable-next-line jest/unbound-method
 		expect(getLogFunction(mockRemoteConsole, 'info')).toBe(mockRemoteConsole.info);
 	});
 
