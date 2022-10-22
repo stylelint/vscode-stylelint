@@ -802,6 +802,47 @@ describe('StylelintLanguageServer', () => {
 		);
 	});
 
+	test('should display and log errors thrown when failing to send the DidResetConfiguration notification', async () => {
+		const error = new Error('test');
+
+		mockConnection.sendNotification.mockRejectedValue(error);
+
+		const server = new StylelintLanguageServer({
+			connection: mockConnection.__typed(),
+			logger: mockLogger,
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		onInitializeHandler(
+			{
+				capabilities: {
+					workspace: { configuration: true },
+				},
+			} as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const onDidChangeConfigurationHandler = mockNotifications.on.mock.calls.find(
+			([notification]) => notification.method === 'workspace/didChangeConfiguration',
+		)?.[1];
+
+		onDidChangeConfigurationHandler?.({ settings: {} });
+
+		await Promise.resolve();
+
+		expect(mockDisplayError).toHaveBeenCalledWith(mockConnection, error);
+		expect(mockLogger.error).toHaveBeenCalledWith(
+			'Error sending DidResetConfiguration notification',
+			{
+				error,
+			},
+		);
+	});
+
 	test('should display and log errors thrown when linting', async () => {
 		const error = new Error('test');
 		let promise: Promise<unknown> | undefined;

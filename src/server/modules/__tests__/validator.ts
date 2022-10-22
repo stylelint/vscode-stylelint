@@ -118,9 +118,7 @@ describe('ValidatorModule', () => {
 				},
 			],
 		});
-		mockContext.connection.sendDiagnostics.mockImplementationOnce(() => {
-			throw error;
-		});
+		mockContext.connection.sendDiagnostics.mockRejectedValueOnce(error);
 
 		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
 
@@ -408,6 +406,44 @@ describe('ValidatorModule', () => {
 			diagnostics: [],
 		});
 		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics cleared', { uri: 'foo' });
+	});
+
+	test('should display and log error when clearing diagnostics fails', async () => {
+		mockContext.__options.validate = ['bar'];
+		const diagnostics = [
+			{
+				code: 'indentation',
+				message: 'Expected indentation of 4 spaces',
+				range: Range.create(4, 5, 1, 4),
+			},
+		];
+
+		mockContext.lintDocument.mockResolvedValueOnce({ diagnostics });
+
+		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+
+		module.onDidRegisterHandlers();
+
+		const onDidChangeContentHandler = mockContext.documents.onDidChangeContent.mock.calls[0][0];
+		const onDidCloseHandler = mockContext.documents.onDidClose.mock.calls[0][0];
+
+		await onDidChangeContentHandler({
+			document: { uri: 'foo', languageId: 'bar' },
+		});
+
+		const error = new Error('foo');
+
+		mockContext.connection.sendDiagnostics.mockRejectedValueOnce(error);
+
+		onDidCloseHandler({ document: { uri: 'foo', languageId: 'bar' } });
+
+		await Promise.resolve();
+
+		expect(mockContext.displayError).toHaveBeenCalledWith(error);
+		expect(mockLogger.error).toHaveBeenCalledWith('Failed to clear diagnostics', {
+			uri: 'foo',
+			error,
+		});
 	});
 
 	test('when the configuration is updated, all documents should be revalidated', async () => {
