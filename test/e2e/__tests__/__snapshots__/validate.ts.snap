@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"stylelint.validate" setting when set to ["scss"] should lint and auto-fix scss 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "indentation",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/indentation",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 3,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 2,
         "line": 2,
       },

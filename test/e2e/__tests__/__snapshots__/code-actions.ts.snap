@@ -44,22 +44,22 @@ const css = css\`
 `;
 
 exports[`Code actions should provide code actions for problems 1`] = `
-Array [
-  Object {
-    "edit": Array [
-      Array [
+[
+  {
+    "edit": [
+      [
         "<uri>",
-        Array [
-          Object {
+        [
+          {
             "newEol": undefined,
             "newText": "  /* stylelint-disable-next-line indentation */
 ",
-            "range": Array [
-              Object {
+            "range": [
+              {
                 "character": 0,
                 "line": 1,
               },
-              Object {
+              {
                 "character": 0,
                 "line": 1,
               },
@@ -69,26 +69,26 @@ Array [
       ],
     ],
     "isPreferred": undefined,
-    "kind": s {
+    "kind": h {
       "value": "quickfix",
     },
     "title": "Disable indentation for this line",
   },
-  Object {
-    "edit": Array [
-      Array [
+  {
+    "edit": [
+      [
         "<uri>",
-        Array [
-          Object {
+        [
+          {
             "newEol": undefined,
             "newText": "/* stylelint-disable indentation */
 ",
-            "range": Array [
-              Object {
+            "range": [
+              {
                 "character": 0,
                 "line": 0,
               },
-              Object {
+              {
                 "character": 0,
                 "line": 0,
               },
@@ -98,23 +98,23 @@ Array [
       ],
     ],
     "isPreferred": undefined,
-    "kind": s {
+    "kind": h {
       "value": "quickfix",
     },
     "title": "Disable indentation for the entire file",
   },
-  Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "uri": "https://stylelint.io/user-guide/rules/list/indentation",
+  {
+    "command": {
+      "arguments": [
+        {
+          "uri": "https://stylelint.io/user-guide/rules/indentation",
         },
       ],
       "command": "stylelint.openRuleDoc",
       "title": "Open documentation for indentation",
     },
     "isPreferred": undefined,
-    "kind": s {
+    "kind": h {
       "value": "quickfix",
     },
     "title": "Show documentation for indentation",
