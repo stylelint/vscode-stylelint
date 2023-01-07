@@ -299,7 +299,7 @@ cmd /C "set NODE_ENV=development&&code"
 
 [stylelint]: https://stylelint.io/
 [stylelint getting started guide]: https://stylelint.io/user-guide/get-started
-[stylelint configuration file]: https://stylelint.io/user-guide/configuration
+[stylelint configuration file]: https://stylelint.io/user-guide/configure
 [stylelint 14 migration guide]: https://github.com/stylelint/stylelint/blob/main/docs/migration-guide/to-14.md
 [`customsyntax`]: https://stylelint.io/user-guide/usage/options/#customsyntax
 [`config`]: https://stylelint.io/user-guide/usage/node-api#config
