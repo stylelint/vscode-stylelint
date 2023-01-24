@@ -280,7 +280,7 @@ cmd /C "set NODE_ENV=development&&code"
 
 ## Contributors
 
-Stylelint is maintained by volunteers. Without the code contributions from [all these fantastic people](https://github.com/stylelint/vscode-stylelint/graphs/contributors), Stylelint would not exist. [Become a contributor](CONTRIBUTING.md).
+Stylelint is maintained by volunteers. Without the code contributions from [all these fantastic people](https://github.com/stylelint/vscode-stylelint/graphs/contributors), Stylelint would not exist. [Become a contributor](https://github.com/stylelint/vscode-stylelint/contribute).
 
 ### Sponsors
 
