@@ -278,6 +278,26 @@ And on Windows by running:
 cmd /C "set NODE_ENV=development&&code"
 ```
 
+## Contributors
+
+Stylelint is maintained by volunteers. Without the code contributions from [all these fantastic people](https://github.com/stylelint/vscode-stylelint/graphs/contributors), Stylelint would not exist. [Become a contributor](https://github.com/stylelint/vscode-stylelint/contribute).
+
+### Sponsors
+
+<object data="https://opencollective.com/stylelint/sponsors.svg?width=420&button=false" type="image/svg+xml">
+  <img src="https://opencollective.com/stylelint/sponsors.svg?width=840&button=false" />
+</object>
+
+Thank you to all our sponsors! [Become a sponsor](https://opencollective.com/stylelint).
+
+### Backers
+
+<object data="https://opencollective.com/stylelint/backers.svg?width=420&avatarHeight=48&button=false" type="image/svg+xml">
+  <img src="https://opencollective.com/stylelint/backers.svg?width=840&avatarHeight=48&button=false" />
+</object>
+
+Thank you to all our backers! [Become a backer](https://opencollective.com/stylelint).
+
 ## Licence
 
 [MIT](LICENSE)
