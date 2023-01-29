@@ -8,7 +8,9 @@ import { isObject } from './is-object';
  * @param source2 The second source object from which to copy properties.
  */
 export function mergeAssign<T, U, V>(target: T, source1: U, source2?: V): T & U & V {
-	const targetAsUnion = target as T & U & V;
+	type UnionType = T & U & V;
+	type UnionKeys = keyof T & keyof U & keyof V;
+	const targetAsUnion = target as UnionType;
 
 	for (const object of [source1, source2]) {
 		if (!object) {
@@ -24,22 +26,22 @@ export function mergeAssign<T, U, V>(target: T, source1: U, source2?: V): T & U 
 
 			if (isObject(value)) {
 				if (Array.isArray(value)) {
-					const existing = targetAsUnion[key];
+					const existing = targetAsUnion[key as UnionKeys];
 
-					targetAsUnion[key] = (
+					targetAsUnion[key as UnionKeys] = (
 						Array.isArray(existing) ? existing.concat(value) : (value as unknown)
-					) as (T & U & V)[typeof key];
+					) as UnionType[UnionKeys];
 
 					continue;
 				}
 
-				if (!targetAsUnion[key]) {
-					targetAsUnion[key] = {} as (T & U & V)[typeof key];
+				if (!targetAsUnion[key as UnionKeys]) {
+					targetAsUnion[key as UnionKeys] = {} as UnionType[UnionKeys];
 				}
 
-				targetAsUnion[key] = mergeAssign(targetAsUnion[key], value);
+				targetAsUnion[key as UnionKeys] = mergeAssign(targetAsUnion[key as UnionKeys], value);
 			} else {
-				targetAsUnion[key] = value as (T & U & V)[typeof key];
+				targetAsUnion[key as UnionKeys] = value as UnionType[UnionKeys];
 			}
 		}
 	}

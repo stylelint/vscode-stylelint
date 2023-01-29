@@ -1,9 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`createDisableCompletionItem should create a stylelint-disable completion item 1`] = `
-Object {
+{
   "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)",
-  "documentation": Object {
+  "documentation": {
     "kind": "markdown",
     "value": "\`\`\`css
 /* stylelint-disable rule */
@@ -19,9 +19,9 @@ Object {
 `;
 
 exports[`createDisableCompletionItem should create a stylelint-disable completion item for a specific rule 1`] = `
-Object {
+{
   "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)",
-  "documentation": Object {
+  "documentation": {
     "kind": "markdown",
     "value": "\`\`\`css
 /* stylelint-disable indentation */
@@ -37,9 +37,9 @@ Object {
 `;
 
 exports[`createDisableCompletionItem should create a stylelint-disable-line completion item 1`] = `
-Object {
+{
   "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)",
-  "documentation": Object {
+  "documentation": {
     "kind": "markdown",
     "value": "\`\`\`css
 /* stylelint-disable-line rule */
@@ -53,9 +53,9 @@ Object {
 `;
 
 exports[`createDisableCompletionItem should create a stylelint-disable-line completion item for a specific rule 1`] = `
-Object {
+{
   "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)",
-  "documentation": Object {
+  "documentation": {
     "kind": "markdown",
     "value": "\`\`\`css
 /* stylelint-disable-line indentation */
@@ -69,9 +69,9 @@ Object {
 `;
 
 exports[`createDisableCompletionItem should create a stylelint-disable-next-line completion item 1`] = `
-Object {
+{
   "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)",
-  "documentation": Object {
+  "documentation": {
     "kind": "markdown",
     "value": "\`\`\`css
 /* stylelint-disable-next-line rule */
@@ -85,9 +85,9 @@ Object {
 `;
 
 exports[`createDisableCompletionItem should create a stylelint-disable-next-line completion item for a specific rule 1`] = `
-Object {
+{
   "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)",
-  "documentation": Object {
+  "documentation": {
     "kind": "markdown",
     "value": "\`\`\`css
 /* stylelint-disable-next-line indentation */

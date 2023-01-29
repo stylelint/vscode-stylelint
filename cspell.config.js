@@ -10,6 +10,7 @@ const config = {
 	words: [
 		'browserslist',
 		'caniuse',
+		'color',
 		'Descriptionless',
 		'ENOTDIR',
 		'esbuild',
@@ -21,6 +22,7 @@ const config = {
 		'pnpm',
 		'quuz',
 		'rfdc',
+		'sass',
 		'shinnn',
 		'stylehacks',
 		'Stylelint',

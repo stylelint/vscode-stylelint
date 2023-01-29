@@ -66,7 +66,7 @@ export class ValidatorModule implements LanguageServerModule {
 		this.#logger?.debug('Sending diagnostics', { uri: document.uri, result });
 
 		try {
-			this.#context.connection.sendDiagnostics({
+			await this.#context.connection.sendDiagnostics({
 				uri: document.uri,
 				diagnostics: result.diagnostics,
 			});
@@ -90,7 +90,11 @@ export class ValidatorModule implements LanguageServerModule {
 		this.#logger?.debug('Clearing diagnostics for document', { uri });
 
 		this.#documentDiagnostics.delete(uri);
-		this.#context.connection.sendDiagnostics({ uri, diagnostics: [] });
+		this.#context.connection.sendDiagnostics({ uri, diagnostics: [] }).catch((error: unknown) => {
+			this.#context.displayError(error);
+
+			this.#logger?.error('Failed to clear diagnostics', { uri, error });
+		});
 
 		this.#logger?.debug('Diagnostics cleared', { uri });
 	}

@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`AutoFixModule onInitialize should return results 1`] = `
-Object {
-  "capabilities": Object {
-    "executeCommandProvider": Object {
-      "commands": Array [
+{
+  "capabilities": {
+    "executeCommandProvider": {
+      "commands": [
         "stylelint.applyAutoFix",
       ],
     },
@@ -13,27 +13,27 @@ Object {
 `;
 
 exports[`AutoFixModule should auto-fix documents 1`] = `
-Array [
-  Object {
+[
+  {
     "changeAnnotations": undefined,
-    "documentChanges": Array [
-      Object {
-        "edits": Array [
-          Object {
+    "documentChanges": [
+      {
+        "edits": [
+          {
             "newText": "text",
-            "range": Object {
-              "end": Object {
+            "range": {
+              "end": {
                 "character": 0,
                 "line": 0,
               },
-              "start": Object {
+              "start": {
                 "character": 0,
                 "line": 0,
               },
             },
           },
         ],
-        "textDocument": Object {
+        "textDocument": {
           "uri": "foo",
           "version": 1,
         },

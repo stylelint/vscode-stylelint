@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"stylelint.reportNeedlessDisables" setting should report needless disables when enabled 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "--report-needless-disables",
-    "message": "Needless disable for \\"indentation\\"",
-    "range": Object {
-      "end": Object {
+    "message": "Needless disable for "indentation"",
+    "range": {
+      "end": {
         "character": 3,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 2,
         "line": 2,
       },
@@ -18,15 +18,15 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "--report-needless-disables",
-    "message": "Needless disable for \\"indentation\\"",
-    "range": Object {
-      "end": Object {
+    "message": "Needless disable for "indentation"",
+    "range": {
+      "end": {
         "character": 1,
         "line": 6,
       },
-      "start": Object {
+      "start": {
         "character": 0,
         "line": 6,
       },
@@ -34,15 +34,15 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "--report-needless-disables",
-    "message": "Needless disable for \\"indentation\\"",
-    "range": Object {
-      "end": Object {
+    "message": "Needless disable for "indentation"",
+    "range": {
+      "end": {
         "character": 17,
         "line": 14,
       },
-      "start": Object {
+      "start": {
         "character": 16,
         "line": 14,
       },
@@ -50,15 +50,15 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "--report-needless-disables",
-    "message": "Needless disable for \\"indentation\\"",
-    "range": Object {
-      "end": Object {
+    "message": "Needless disable for "indentation"",
+    "range": {
+      "end": {
         "character": 1,
         "line": 17,
       },
-      "start": Object {
+      "start": {
         "character": 0,
         "line": 17,
       },
@@ -66,15 +66,15 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "--report-needless-disables",
-    "message": "Needless disable for \\"unknown\\"",
-    "range": Object {
-      "end": Object {
+    "message": "Needless disable for "unknown"",
+    "range": {
+      "end": {
         "character": 3,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 2,
         "line": 2,
       },

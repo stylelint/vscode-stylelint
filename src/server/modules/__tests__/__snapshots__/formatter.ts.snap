@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`FormatterModule should format documents 1`] = `
-Array [
-  Object {
+[
+  {
     "newText": "text",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 0,
         "line": 0,
       },
-      "start": Object {
+      "start": {
         "character": 0,
         "line": 0,
       },
@@ -19,15 +19,15 @@ Array [
 `;
 
 exports[`FormatterModule should format documents 2`] = `
-Array [
-  Object {
+[
+  {
     "languageId": "bar",
     "uri": "foo",
   },
-  Object {
-    "config": Object {
-      "rules": Object {
-        "indentation": Array [
+  {
+    "config": {
+      "rules": {
+        "indentation": [
           2,
         ],
         "no-missing-end-of-source-newline": true,
@@ -38,16 +38,16 @@ Array [
 `;
 
 exports[`FormatterModule with client dynamic registration support, onInitialize should not request static registration 1`] = `
-Object {
-  "capabilities": Object {
+{
+  "capabilities": {
     "documentFormattingProvider": false,
   },
 }
 `;
 
 exports[`FormatterModule without client dynamic registration support, onInitialize should request static registration 1`] = `
-Object {
-  "capabilities": Object {
+{
+  "capabilities": {
     "documentFormattingProvider": true,
   },
 }

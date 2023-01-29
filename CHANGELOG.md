@@ -353,6 +353,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 - [454ce9b](https://github.com/stylelint/vscode-stylelint/commit/454ce9b) add a file extension to the license file. because vsce automatically adds it after all. https://github.com/Microsoft/vscode-vsce/commit/4f8cc5470756503f698619ba869bee15dae5abdc
 - [ad39322](https://github.com/stylelint/vscode-stylelint/commit/ad39322) include devDependencies to the lockfile. because vsce >= v1.1.0 automatically excludes devDependencies from the published extension, thanks to this great improvement https://github.com/Microsoft/vscode-vsce/commit/1e1887da98f33982f04b2d6bcd92f2e80ab96676 (pull request: https://github.com/Microsoft/vscode-vsce/pull/58)
 - [8aaa26b](https://github.com/stylelint/vscode-stylelint/commit/8aaa26b) switch from MIT license to [ISC license](https://opensource.org/licenses/ISC)
+    <!-- cspell:disable-next-line -->
 - [e7bf9cd](https://github.com/stylelint/vscode-stylelint/commit/e7bf9cd) state `css.validate: false` is not a required setting. It’s highly recommended, though. Note: PNG is compressed by: pngquant --speed=1 --strip
 - [9f1fed4](https://github.com/stylelint/vscode-stylelint/commit/9f1fed4) describe how to install "this" extension correctly. because currently there are lots of extension named `stylelint` in Marketplace
 - [d02d35a](https://github.com/stylelint/vscode-stylelint/commit/d02d35a) clarify which languages are supported by default

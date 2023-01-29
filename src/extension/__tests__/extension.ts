@@ -1,4 +1,4 @@
-jest.doMock('vscode', () => ({ workspace: {}, window: {}, commands: {} }), { virtual: true });
+jest.mock('vscode', () => ({ workspace: {}, window: {}, commands: {} }), { virtual: true });
 jest.mock('vscode-languageclient/node', () => ({
 	LanguageClient: jest.fn(),
 	SettingMonitor: jest.fn(),
@@ -50,10 +50,10 @@ mockVSCode.window = mockWindow as unknown as typeof vscode.window;
 const onNotification = jest.fn();
 const catchOnReady = jest.fn();
 const catchSendRequest = jest.fn();
-const afterOnReady = jest.fn().mockReturnValue({ catch: catchOnReady });
-const afterSendRequest = jest.fn().mockReturnValue({ catch: catchSendRequest });
-const onReady = jest.fn().mockReturnValue({ then: afterOnReady });
-const sendRequest = jest.fn().mockReturnValue({ then: afterSendRequest });
+const afterOnReady = jest.fn();
+const afterSendRequest = jest.fn();
+const start = jest.fn();
+const sendRequest = jest.fn();
 const settingMonitorStart = jest.fn();
 
 const mockExtensionContext = {
@@ -80,13 +80,18 @@ const stripPaths = <T extends unknown[]>(params: T): T => {
 
 describe('Extension entry point', () => {
 	beforeEach(() => {
-		jest.clearAllMocks();
+		jest.resetAllMocks();
+
+		afterOnReady.mockReturnValue({ catch: catchOnReady });
+		afterSendRequest.mockReturnValue({ catch: catchSendRequest });
+		start.mockReturnValue({ then: afterOnReady });
+		sendRequest.mockReturnValue({ then: afterSendRequest });
 
 		mockVSCode.window.activeTextEditor = undefined;
 
 		mockLanguageClient.mockReturnValue({
 			onNotification,
-			onReady,
+			start,
 			sendRequest,
 		} as unknown as LanguageClient);
 
@@ -115,7 +120,7 @@ describe('Extension entry point', () => {
 
 		expect(mockWorkspace.createFileSystemWatcher).toHaveBeenCalled();
 		expect(mockWorkspace.createFileSystemWatcher.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "**/{.stylelintrc{,.js,.json,.yaml,.yml},stylelint.config.js,.stylelintignore}",
 		]
 	`);
@@ -133,7 +138,7 @@ describe('Extension entry point', () => {
 		expect(mockCommands.registerCommand).toHaveBeenCalled();
 		// cspell:disable
 		expect(mockCommands.registerCommand.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "stylelint.executeAutofix",
 		  [Function],
 		]
@@ -143,7 +148,7 @@ describe('Extension entry point', () => {
 	});
 
 	it('with an active text editor, should send auto-fix commands to the language server', () => {
-		window.activeTextEditor = mockTextEditor;
+		mockVSCode.window.activeTextEditor = mockTextEditor;
 
 		activate(mockExtensionContext);
 
@@ -157,7 +162,7 @@ describe('Extension entry point', () => {
 	});
 
 	it('without an active text editor, should not send auto-fix commands to the language server', () => {
-		window.activeTextEditor = undefined;
+		mockVSCode.window.activeTextEditor = undefined;
 
 		activate(mockExtensionContext);
 
@@ -169,7 +174,7 @@ describe('Extension entry point', () => {
 	});
 
 	it('should show an error message if sending the command request fails', () => {
-		window.activeTextEditor = mockTextEditor;
+		mockVSCode.window.activeTextEditor = mockTextEditor;
 
 		activate(mockExtensionContext);
 
@@ -180,7 +185,7 @@ describe('Extension entry point', () => {
 		expect(afterSendRequest).toHaveBeenCalledTimes(1);
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(1);
 		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.",
 		]
 	`);
@@ -209,7 +214,7 @@ describe('Extension entry point', () => {
 
 		afterOnReady.mock.calls[0][0]();
 
-		expect(onReady).toHaveBeenCalled();
+		expect(start).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
 		expect(onNotification.mock.calls[0][0]).toBe(Notification.DidRegisterCodeActionRequestHandler);
 		expect(onNotification.mock.calls[0][1]).toBeInstanceOf(Function);
@@ -229,7 +234,7 @@ describe('Extension entry point', () => {
 
 		afterOnReady.mock.calls[0][0]();
 
-		expect(onReady).toHaveBeenCalled();
+		expect(start).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
 		expect(onNotification.mock.calls[1][0]).toBe(
 			Notification.DidRegisterDocumentFormattingEditProvider,
@@ -264,7 +269,7 @@ describe('Extension entry point', () => {
 
 		afterOnReady.mock.calls[0][0]();
 
-		expect(onReady).toHaveBeenCalled();
+		expect(start).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
 		expect(onNotification.mock.calls[2][0]).toBe(Notification.DidResetConfiguration);
 		expect(onNotification.mock.calls[2][1]).toBeInstanceOf(Function);
@@ -291,12 +296,12 @@ describe('Extension entry point', () => {
 
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
 		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Stylelint: Problem!",
 		]
 	`);
 		expect(mockWindow.showErrorMessage.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Stylelint: String problem!",
 		]
 	`);

@@ -3,8 +3,7 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
 	testMatch: ['<rootDir>/__tests__/**/*.[jt]s?(x)'],
-	preset: 'ts-jest',
-	globals: { 'ts-jest': { tsconfig: '<rootDir>/../../tsconfig.test.json' } },
+	transform: { '^.+\\.[jt]sx?$': '@swc/jest' },
 	testPathIgnorePatterns: ['.*jest-runner-vscode.config.js'],
 	verbose: true,
 	modulePathIgnorePatterns: [

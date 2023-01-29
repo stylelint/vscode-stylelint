@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"stylelint.configBasedir" setting should resolve referenced configs using the base directory 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "color-hex-case",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/color-hex-case",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/color-hex-case",
     },
-    "message": "Expected \\"#fff\\" to be \\"#FFF\\" (color-hex-case)",
-    "range": Object {
-      "end": Object {
+    "message": "Expected "#fff" to be "#FFF" (color-hex-case)",
+    "range": {
+      "end": {
         "character": 10,
         "line": 1,
       },
-      "start": Object {
+      "start": {
         "character": 9,
         "line": 1,
       },
@@ -21,18 +21,18 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "indentation",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/indentation",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 8 spaces (indentation)",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 3,
         "line": 1,
       },
-      "start": Object {
+      "start": {
         "character": 2,
         "line": 1,
       },

@@ -26,13 +26,15 @@ import { Position, TextEdit } from 'vscode-languageserver-types';
 import { Notification } from '../../types';
 import { FormatterModule } from '../formatter';
 
-const mockContext = serverMocks.getContext();
-const mockLogger = serverMocks.getLogger();
+let mockContext = serverMocks.getContext();
+let mockLogger = serverMocks.getLogger();
 
 describe('FormatterModule', () => {
 	beforeEach(() => {
+		jest.restoreAllMocks();
+		mockContext = serverMocks.getContext();
 		mockContext.__options.validate = [];
-		jest.clearAllMocks();
+		mockLogger = serverMocks.getLogger();
 	});
 
 	test('should be constructable', () => {
