@@ -39,6 +39,7 @@ export type RunnerOptions = {
 	customSyntax?: string;
 	ignoreDisables?: boolean;
 	packageManager?: PackageManager;
+	reportDescriptionlessDisables?: boolean;
 	reportInvalidScopeDisables?: boolean;
 	reportNeedlessDisables?: boolean;
 	snippet?: string[];

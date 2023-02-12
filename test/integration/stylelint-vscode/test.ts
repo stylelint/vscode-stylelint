@@ -436,6 +436,52 @@ describe('StylelintRunner with customSyntax', () => {
 	});
 });
 
+describe('StylelintRunner with reportDescriptionlessDisables', () => {
+	test('should work properly if reportDescriptionlessDisables is true', async () => {
+		expect.assertions(1);
+		const runner = new StylelintRunner();
+		const result = await runner.lintDocument(
+			createDocument(
+				'test.css',
+				'css',
+				`
+.baz {
+    /* stylelint-disable-next-line indentation */
+  color: red;
+}
+/* stylelint-disable indentation */
+.baz {
+  color: red;
+}
+/* stylelint-enable indentation */
+.baz {
+  color: red; /* stylelint-disable-line indentation */
+}
+
+.baz {
+    /* stylelint-disable-next-line indentation -- with a description */
+  color: red;
+}
+/* stylelint-disable indentation -- with a description */
+.baz {
+  color: red;
+}
+/* stylelint-enable indentation */
+.baz {
+  color: red; /* stylelint-disable-line indentation -- with a description */
+}
+`,
+			),
+			{
+				config: { rules: { indentation: [4] } },
+				reportDescriptionlessDisables: true,
+			},
+		);
+
+		expect(result).toMatchSnapshot();
+	});
+});
+
 describe('StylelintRunner with reportNeedlessDisables', () => {
 	test('should work properly if reportNeedlessDisables is true', async () => {
 		expect.assertions(1);

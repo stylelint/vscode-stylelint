@@ -342,6 +342,61 @@ Object {
 }
 `;
 
+exports[`StylelintRunner with reportDescriptionlessDisables should work properly if reportDescriptionlessDisables is true 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "--report-descriptionless-disables",
+      "message": "Disable for \\"indentation\\" is missing a description",
+      "range": Object {
+        "end": Object {
+          "character": 5,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 4,
+          "line": 2,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    Object {
+      "code": "--report-descriptionless-disables",
+      "message": "Disable for \\"indentation\\" is missing a description",
+      "range": Object {
+        "end": Object {
+          "character": 1,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 5,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    Object {
+      "code": "--report-descriptionless-disables",
+      "message": "Disable for \\"indentation\\" is missing a description",
+      "range": Object {
+        "end": Object {
+          "character": 15,
+          "line": 11,
+        },
+        "start": Object {
+          "character": 14,
+          "line": 11,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+}
+`;
+
 exports[`StylelintRunner with reportInvalidScopeDisables should work properly if reportInvalidScopeDisables is true 1`] = `
 Object {
   "diagnostics": Array [
