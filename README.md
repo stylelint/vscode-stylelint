@@ -332,7 +332,7 @@ Thank you to all our backers! [Become a backer](https://opencollective.com/style
 [`config`]: https://stylelint.io/user-guide/usage/node-api#config
 [`configfile`]: https://stylelint.io/user-guide/usage/options#configfile
 [`configbasedir`]: https://stylelint.io/user-guide/usage/options#configbasedir
-[`reportDescriptionlessDisables`]: https://stylelint.io/user-guide/usage/options#reportdescriptionlessdisables
+[`reportdescriptionlessdisables`]: https://stylelint.io/user-guide/usage/options#reportdescriptionlessdisables
 [`ignoredisables`]: https://stylelint.io/user-guide/usage/options#ignoredisables
 [`reportneedlessdisables`]: https://stylelint.io/user-guide/usage/options#reportneedlessdisables
 [`reportinvalidscopedisables`]: https://stylelint.io/user-guide/usage/options#reportInvalidScopeDisables
