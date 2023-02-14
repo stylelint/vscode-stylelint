@@ -38,6 +38,7 @@ const defaultOptions: LanguageServerOptions = {
 	customSyntax: '',
 	ignoreDisables: false,
 	packageManager: 'npm',
+	reportDescriptionlessDisables: false,
 	reportInvalidScopeDisables: false,
 	reportNeedlessDisables: false,
 	snippet: ['css', 'postcss'],

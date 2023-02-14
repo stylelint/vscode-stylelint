@@ -101,11 +101,17 @@
           "default": "",
           "description": "An absolute path to a custom PostCSS-compatible syntax module."
         },
+        "stylelint.reportDescriptionlessDisables": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": false,
+          "description": "Report `stylelint-disable` comments without a description."
+        },
         "stylelint.ignoreDisables": {
           "scope": "resource",
           "type": "boolean",
           "default": false,
-          "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
+          "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments."
         },
         "stylelint.reportNeedlessDisables": {
           "scope": "resource",
