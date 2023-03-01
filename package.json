@@ -201,7 +201,7 @@
     "serialize-error": "^8.1.0",
     "triple-beam": "^1.3.0",
     "vscode-languageclient": "^7.0.0",
-    "vscode-languageserver": "^7.0.0",
+    "vscode-languageserver": "^8.1.0",
     "vscode-languageserver-protocol": "^3.16.0",
     "vscode-languageserver-textdocument": "^1.0.5",
     "vscode-languageserver-types": "^3.16.0",
