@@ -224,6 +224,13 @@ Controls the package manager to be used to resolve the Stylelint library. This s
 
 An array of language identifiers specifying which files to enable snippets for.
 
+### `stylelint.run`
+
+> Type: `"onType" | "onSave"`
+> Default: `"onType"`
+
+Controls when Stylelint is run. Valid values are `"onType"` or `"onSave"`. When set to `"onType"`, styles are validated on every keystroke. When set to `"onSave"`, validation is postponed until the document is saved.
+
 ### `editor.codeActionsOnSave`
 
 This extension provides an action that you can use with VS Code's [`editor.codeActionsOnSave`][vscode settings] setting. If provided a `source.fixAll.stylelint` property set to `true`, all auto-fixable Stylelint errors will be fixed on save.
