@@ -221,6 +221,7 @@ export type LanguageServerOptions = {
 			location: 'separateLine' | 'sameLine';
 		};
 	};
+	run?: 'onType' | 'onSave';
 	config?: stylelint.Config | null;
 	configBasedir?: string;
 	configFile?: string;
