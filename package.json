@@ -162,7 +162,6 @@
           },
           "default": [
             "css",
-            "less",
             "postcss"
           ],
           "description": "An array of language ids which snippets are provided by Stylelint."
