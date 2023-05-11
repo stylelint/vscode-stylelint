@@ -150,7 +150,6 @@
           },
           "default": [
             "css",
-            "less",
             "postcss"
           ],
           "description": "An array of language ids which should be validated by Stylelint."
