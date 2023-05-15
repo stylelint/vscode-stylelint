@@ -13,6 +13,9 @@
   "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
   "bugs": "https://github.com/stylelint/vscode-stylelint/issues",
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
+  "sponsor": {
+    "url": "https://opencollective.com/stylelint"
+  },
   "icon": "media/stylelint.png",
   "engines": {
     "vscode": ">=1.56.0",
