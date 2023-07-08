@@ -200,7 +200,7 @@
     "fast-diff": "^1.2.0",
     "path-is-inside": "^1.0.2",
     "rfdc": "^1.3.0",
-    "semver": "^7.3.5",
+    "semver": "^7.5.2",
     "serialize-error": "^8.1.0",
     "triple-beam": "^1.3.0",
     "vscode-languageclient": "^7.0.0",
