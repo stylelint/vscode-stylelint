@@ -11,8 +11,6 @@ jest.mock('../../documents');
 import os from 'os';
 import path from 'path';
 import stylelint from 'stylelint';
-import { version as stylelintVersion } from 'stylelint/package.json';
-import semver from 'semver';
 import type winston from 'winston';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';

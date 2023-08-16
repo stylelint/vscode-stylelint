@@ -20,8 +20,15 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [18]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
         stylelint: [14, 15]
+        include:
+          - stylelint: 15
+            node-version: 14
+            os: windows-latest
+          - stylelint: 14
+            node-version: 14
+            os: windows-latest
     steps:
       - uses: actions/checkout@v2
 
