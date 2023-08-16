@@ -221,43 +221,20 @@ describe('StylelintRunner', () => {
 		expect(results).toMatchSnapshot();
 	});
 
-	if (semver.satisfies(stylelintVersion, '>=15'))
-		test('should return processed lint results from Stylelint with configured rules', async () => {
-			expect.assertions(1);
+	test('should return processed lint results from Stylelint with configured rules', async () => {
+		expect.assertions(1);
 
-			mockedPath.__mockPlatform();
+		mockedPath.__mockPlatform();
 
-			mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
+		mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
 
-			const results = await new StylelintRunner(mockConnection).lintDocument(
-				createMockDocument('a {}', '/path/to/file.css'),
-				{ config: { rules: { 'block-no-empty': true } } },
-			);
+		const results = await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {}', '/path/to/file.css'),
+			{ config: { rules: { 'block-no-empty': true } } },
+		);
 
-			expect(results).toEqual({
-				diagnostics: [
-					{
-						code: 'block-no-empty',
-						codeDescription: {
-							href: 'https://stylelint.io/user-guide/rules/block-no-empty',
-						},
-						message: 'Unexpected empty block (block-no-empty)',
-						range: {
-							end: {
-								character: 3,
-								line: 0,
-							},
-							start: {
-								character: 2,
-								line: 0,
-							},
-						},
-						severity: 1,
-						source: 'Stylelint',
-					},
-				],
-			});
-		});
+		expect(results).toMatchSnapshot();
+	});
 
 	test('should throw errors thrown by Stylelint', async () => {
 		expect.assertions(1);

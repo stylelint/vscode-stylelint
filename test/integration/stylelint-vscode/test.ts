@@ -132,7 +132,50 @@ font: normal
 			},
 		);
 
-		expect(result.diagnostics).toMatchSnapshot();
+		expect(result.diagnostics).toEqual([
+			{
+				code: 'font-weight-notation',
+				codeDescription: {
+					href: 'https://stylelint.io/user-guide/rules/font-weight-notation',
+				},
+				message: semver.satisfies(stylelintVersion, '>=15')
+					? 'Expected "bold" to be "700" (font-weight-notation)'
+					: 'Expected numeric font-weight notation (font-weight-notation)',
+				range: {
+					end: {
+						character: 30,
+						line: 2,
+					},
+					start: {
+						character: 29,
+						line: 2,
+					},
+				},
+				severity: 1,
+				source: 'Stylelint',
+			},
+			{
+				code: 'font-weight-notation',
+				codeDescription: {
+					href: 'https://stylelint.io/user-guide/rules/font-weight-notation',
+				},
+				message: semver.satisfies(stylelintVersion, '>=15')
+					? 'Expected "normal" to be "400" (font-weight-notation)'
+					: 'Expected numeric font-weight notation (font-weight-notation)',
+				range: {
+					end: {
+						character: 7,
+						line: 4,
+					},
+					start: {
+						character: 6,
+						line: 4,
+					},
+				},
+				severity: 1,
+				source: 'Stylelint',
+			},
+		]);
 	});
 
 	test('should set `codeFilename` option from a TextDocument', async () => {

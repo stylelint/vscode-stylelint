@@ -172,49 +172,6 @@ exports[`StylelintRunner should reject with a reason when it takes incorrect opt
 Invalid option value \\"foo\\" for rule \\"color-hex-case\\""
 `;
 
-exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
-Array [
-  Object {
-    "code": "font-weight-notation",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
-    },
-    "message": "Expected numeric font-weight notation (font-weight-notation)",
-    "range": Object {
-      "end": Object {
-        "character": 30,
-        "line": 2,
-      },
-      "start": Object {
-        "character": 29,
-        "line": 2,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
-  Object {
-    "code": "font-weight-notation",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
-    },
-    "message": "Expected numeric font-weight notation (font-weight-notation)",
-    "range": Object {
-      "end": Object {
-        "character": 7,
-        "line": 4,
-      },
-      "start": Object {
-        "character": 6,
-        "line": 4,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
-]
-`;
-
 exports[`StylelintRunner with a configuration file should adhere to configuration file settings 1`] = `
 Array [
   Object {
