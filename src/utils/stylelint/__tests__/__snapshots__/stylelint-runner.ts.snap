@@ -20,32 +20,6 @@ Object {
 }
 `;
 
-exports[`StylelintRunner should return processed lint results from Stylelint with configured rules 1`] = `
-Object {
-  "diagnostics": Array [
-    Object {
-      "code": "block-no-empty",
-      "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/block-no-empty",
-      },
-      "message": "Unexpected empty block (block-no-empty)",
-      "range": Object {
-        "end": Object {
-          "character": 3,
-          "line": 0,
-        },
-        "start": Object {
-          "character": 2,
-          "line": 0,
-        },
-      },
-      "severity": 1,
-      "source": "Stylelint",
-    },
-  ],
-}
-`;
-
 exports[`StylelintRunner should return processed lint results from Stylelint without configured rules 1`] = `
 Object {
   "diagnostics": Array [

@@ -234,7 +234,29 @@ describe('StylelintRunner', () => {
 				{ config: { rules: { 'block-no-empty': true } } },
 			);
 
-			expect(results).toMatchSnapshot();
+			expect(results).toEqual({
+				diagnostics: [
+					{
+						code: 'block-no-empty',
+						codeDescription: {
+							href: 'https://stylelint.io/user-guide/rules/block-no-empty',
+						},
+						message: 'Unexpected empty block (block-no-empty)',
+						range: {
+							end: {
+								character: 3,
+								line: 0,
+							},
+							start: {
+								character: 2,
+								line: 0,
+							},
+						},
+						severity: 1,
+						source: 'Stylelint',
+					},
+				],
+			});
 		});
 
 	test('should throw errors thrown by Stylelint', async () => {
