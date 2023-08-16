@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14.x]
+        node-version: [18]
 
     steps:
       - name: Checkout
@@ -53,3 +53,6 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Build
+        run: npm run build

@@ -1,4 +1,5 @@
 import type stylelint from 'stylelint';
+import { Stylelint } from '../types';
 import { processLinterResult } from '../process-linter-result';
 
 const mockStylelint = {
@@ -6,7 +7,7 @@ const mockStylelint = {
 		'unit-no-unknown': {},
 		'at-rule-no-unknown': {},
 	},
-} as unknown as stylelint.PublicApi;
+} as unknown as Stylelint;
 
 const createMockResult = (
 	mockResults: Partial<stylelint.LintResult>[],

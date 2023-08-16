@@ -11,6 +11,8 @@ jest.mock('../../documents');
 import os from 'os';
 import path from 'path';
 import stylelint from 'stylelint';
+import { version as stylelintVersion } from 'stylelint/package.json';
+import semver from 'semver';
 import type winston from 'winston';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
@@ -219,20 +221,21 @@ describe('StylelintRunner', () => {
 		expect(results).toMatchSnapshot();
 	});
 
-	test('should return processed lint results from Stylelint with configured rules', async () => {
-		expect.assertions(1);
+	if (semver.satisfies(stylelintVersion, '>=15'))
+		test('should return processed lint results from Stylelint with configured rules', async () => {
+			expect.assertions(1);
 
-		mockedPath.__mockPlatform();
+			mockedPath.__mockPlatform();
 
-		mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
+			mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
 
-		const results = await new StylelintRunner(mockConnection).lintDocument(
-			createMockDocument('a {}', '/path/to/file.css'),
-			{ config: { rules: { 'block-no-empty': true } } },
-		);
+			const results = await new StylelintRunner(mockConnection).lintDocument(
+				createMockDocument('a {}', '/path/to/file.css'),
+				{ config: { rules: { 'block-no-empty': true } } },
+			);
 
-		expect(results).toMatchSnapshot();
-	});
+			expect(results).toMatchSnapshot();
+		});
 
 	test('should throw errors thrown by Stylelint', async () => {
 		expect.assertions(1);

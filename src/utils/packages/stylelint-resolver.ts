@@ -2,8 +2,6 @@ import fs from 'fs/promises';
 import { createRequire } from 'module';
 import path from 'path';
 import process from 'process';
-// eslint-disable-next-line node/no-unpublished-import
-import type stylelint from 'stylelint';
 
 import type winston from 'winston';
 import { Connection, Files } from 'vscode-languageserver/node';
@@ -15,6 +13,7 @@ import { findPackageRoot } from './find-package-root';
 import { GlobalPathResolver } from './global-path-resolver';
 import { getFirstResolvedValue, lazyCallAsync } from '../functions';
 import type { PackageManager, StylelintResolutionResult, ResolverOptions, TracerFn } from './types';
+import { Stylelint } from '../stylelint';
 
 /**
  * Utility for resolving the path to the Stylelint package. Each instance caches
@@ -133,7 +132,7 @@ export class StylelintResolver {
 				return undefined;
 			}
 
-			const stylelint = rootRelativeRequire('stylelint') as stylelint.PublicApi;
+			const stylelint = rootRelativeRequire('stylelint') as Stylelint;
 
 			const result = {
 				stylelint,
@@ -166,7 +165,7 @@ export class StylelintResolver {
 
 			const result = {
 				// eslint-disable-next-line @typescript-eslint/no-var-requires
-				stylelint: require(stylelintPath) as stylelint.PublicApi,
+				stylelint: require(stylelintPath) as Stylelint,
 				resolvedPath: stylelintPath,
 			};
 
@@ -220,7 +219,7 @@ export class StylelintResolver {
 			const requirePath = await this.#getRequirePath(stylelintPath, getWorkspaceFolderFn);
 
 			// eslint-disable-next-line @typescript-eslint/no-var-requires
-			const stylelint = require(requirePath) as stylelint.PublicApi;
+			const stylelint = require(requirePath) as Stylelint;
 
 			if (stylelint && typeof stylelint.lint === 'function') {
 				return {
