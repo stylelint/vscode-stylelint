@@ -24,10 +24,10 @@ jobs:
         stylelint: [14, 15]
         include:
           - stylelint: 15
-            node-version: 14
+            node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
             os: windows-latest
           - stylelint: 14
-            node-version: 14
+            node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
             os: windows-latest
     steps:
       - uses: actions/checkout@v2
