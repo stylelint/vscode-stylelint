@@ -2,6 +2,8 @@ import { join, resolve } from 'path';
 import { pathToFileURL } from 'url';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { StylelintRunner } from '../../../src/utils/stylelint';
+import { version as stylelintVersion } from 'stylelint/package.json';
+import semver from 'semver';
 
 const createDocument = (uri: string | null, languageId: string, contents: string): TextDocument =>
 	TextDocument.create(
@@ -157,21 +159,42 @@ a { color: #000 }
 		expect(result.diagnostics).toEqual([]);
 	});
 
-	test('should support `processors` option', async () => {
-		expect.assertions(1);
-		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(
-			createDocument('processors.tsx', 'typescriptreact', 'styled.p`"`'),
-			{
-				config: {
-					processors: ['stylelint-processor-styled-components'],
-					rules: {},
+	if (semver.satisfies(stylelintVersion, '^14')) {
+		test('should support `processors` option', async () => {
+			expect.assertions(1);
+			const runner = new StylelintRunner();
+			const result = await runner.lintDocument(
+				createDocument('processors.tsx', 'typescriptreact', 'styled.p`"`'),
+				{
+					config: {
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- for stylelint v14
+						// @ts-ignore for stylelint v14
+						processors: ['stylelint-processor-styled-components'],
+						rules: {},
+					},
 				},
-			},
-		);
+			);
 
-		expect(result.diagnostics).toMatchSnapshot();
-	});
+			expect(result.diagnostics).toEqual([
+				{
+					code: 'CssSyntaxError',
+					message: 'Unclosed string (CssSyntaxError)',
+					range: {
+						end: {
+							character: 10,
+							line: 0,
+						},
+						start: {
+							character: 9,
+							line: 0,
+						},
+					},
+					severity: 1,
+					source: 'Stylelint',
+				},
+			]);
+		});
+	}
 
 	test('should check CSS syntax even if no configuration is provided', async () => {
 		expect.assertions(1);
@@ -431,6 +454,52 @@ describe('StylelintRunner with customSyntax', () => {
 			customSyntax: 'postcss-sass',
 			fix: true,
 		});
+
+		expect(result).toMatchSnapshot();
+	});
+});
+
+describe('StylelintRunner with reportDescriptionlessDisables', () => {
+	test('should work properly if reportDescriptionlessDisables is true', async () => {
+		expect.assertions(1);
+		const runner = new StylelintRunner();
+		const result = await runner.lintDocument(
+			createDocument(
+				'test.css',
+				'css',
+				`
+.baz {
+    /* stylelint-disable-next-line indentation */
+  color: red;
+}
+/* stylelint-disable indentation */
+.baz {
+  color: red;
+}
+/* stylelint-enable indentation */
+.baz {
+  color: red; /* stylelint-disable-line indentation */
+}
+
+.baz {
+    /* stylelint-disable-next-line indentation -- with a description */
+  color: red;
+}
+/* stylelint-disable indentation -- with a description */
+.baz {
+  color: red;
+}
+/* stylelint-enable indentation */
+.baz {
+  color: red; /* stylelint-disable-line indentation -- with a description */
+}
+`,
+			),
+			{
+				config: { rules: { indentation: [4] } },
+				reportDescriptionlessDisables: true,
+			},
+		);
 
 		expect(result).toMatchSnapshot();
 	});

@@ -84,6 +84,7 @@ describe('buildStylelintOptions', () => {
 			customSyntax: 'postcss-scss',
 			ignoreDisables: false,
 			ignorePath: '/.stylelintignore',
+			reportDescriptionlessDisables: false,
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -103,6 +104,7 @@ describe('buildStylelintOptions', () => {
 			customSyntax: 'postcss-scss',
 			ignoreDisables: true,
 			ignorePath: '/.stylelintignore',
+			reportDescriptionlessDisables: true,
 			reportNeedlessDisables: true,
 			reportInvalidScopeDisables: true,
 		};
@@ -113,6 +115,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: '/workspace',
 			customSyntax: 'postcss-html',
 			ignoreDisables: false,
+			reportDescriptionlessDisables: false,
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -140,6 +143,7 @@ describe('buildStylelintOptions', () => {
 			customSyntax: 'postcss-scss',
 			ignoreDisables: true,
 			ignorePath: '/.stylelintignore',
+			reportDescriptionlessDisables: true,
 			reportNeedlessDisables: true,
 			reportInvalidScopeDisables: true,
 		};
@@ -150,6 +154,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: '/workspace',
 			customSyntax: '${workspaceFolder}/postcss-html',
 			ignoreDisables: false,
+			reportDescriptionlessDisables: false,
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -181,6 +186,7 @@ describe('buildStylelintOptions', () => {
 			customSyntax: 'postcss-scss',
 			ignoreDisables: true,
 			ignorePath: '/.stylelintignore',
+			reportDescriptionlessDisables: true,
 			reportNeedlessDisables: true,
 			reportInvalidScopeDisables: true,
 		};
@@ -191,6 +197,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: '/workspace',
 			customSyntax: '${workspaceFolder}/postcss-html',
 			ignoreDisables: false,
+			reportDescriptionlessDisables: false,
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -220,6 +227,7 @@ describe('buildStylelintOptions', () => {
 			customSyntax: 'postcss-scss',
 			ignoreDisables: true,
 			ignorePath: '/.stylelintignore',
+			reportDescriptionlessDisables: true,
 			reportNeedlessDisables: true,
 			reportInvalidScopeDisables: true,
 		};
@@ -230,6 +238,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: './base',
 			customSyntax: '/workspace/postcss-html',
 			ignoreDisables: false,
+			reportDescriptionlessDisables: false,
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};
@@ -259,6 +268,7 @@ describe('buildStylelintOptions', () => {
 			customSyntax: 'postcss-scss',
 			ignoreDisables: true,
 			ignorePath: '/.stylelintignore',
+			reportDescriptionlessDisables: true,
 			reportNeedlessDisables: true,
 			reportInvalidScopeDisables: true,
 		};
@@ -269,6 +279,7 @@ describe('buildStylelintOptions', () => {
 			configBasedir: './base',
 			customSyntax: '/workspace/postcss-html',
 			ignoreDisables: false,
+			reportDescriptionlessDisables: false,
 			reportNeedlessDisables: false,
 			reportInvalidScopeDisables: false,
 		};

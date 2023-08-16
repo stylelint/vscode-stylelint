@@ -20,6 +20,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 - Files are now re-linted when a Stylelint configuration file is changed in the workspace ([#356](https://github.com/stylelint/vscode-stylelint/pull/356)).
 
+## [1.2.4](https://github.com/stylelint/vscode-stylelint/compare/v1.2.3...v1.2.4) (2023-02-14)
+
+### Added
+
+- Add "stylelint.reportDescriptionlessDisables" option ([#442](https://github.com/stylelint/vscode-stylelint/pull/442)).
+
 ## [1.2.3](https://github.com/stylelint/vscode-stylelint/compare/v1.2.2...v1.2.3) (2022-08-16)
 
 ### Fixed

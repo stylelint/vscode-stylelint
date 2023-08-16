@@ -2,6 +2,7 @@ import { warningToDiagnostic } from './warning-to-diagnostic';
 // eslint-disable-next-line node/no-unpublished-import
 import type stylelint from 'stylelint';
 import { LintDiagnostics, InvalidOptionError } from './types';
+import { Stylelint } from './types';
 
 /**
  * Processes the results of a Stylelint lint run.
@@ -16,7 +17,7 @@ import { LintDiagnostics, InvalidOptionError } from './types';
  * @param result The results returned by Stylelint.
  */
 export function processLinterResult(
-	stylelint: stylelint.PublicApi,
+	stylelint: Stylelint,
 	{ results, output, ruleMetadata }: stylelint.LinterResult,
 ): LintDiagnostics {
 	if (results.length === 0) {

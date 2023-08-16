@@ -22,6 +22,7 @@ describe('getFixes', () => {
 				customSyntax: 'postcss-scss',
 			},
 			fix: false,
+			reportDescriptionlessDisables: false,
 			reportNeedlessDisables: true,
 			reportInvalidScopeDisables: false,
 		};

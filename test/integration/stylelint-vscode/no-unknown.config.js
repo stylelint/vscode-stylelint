@@ -1,11 +1,9 @@
 'use strict';
 
-const baseConfig = require('./stylelint.config');
-
 module.exports = {
-	...baseConfig,
+	customSyntax: '@stylelint/postcss-css-in-js',
 	rules: {
-		...baseConfig.rules,
+		'length-zero-no-unit': true,
 		'property-no-unknown': [true, { ignoreProperties: 'what' }],
 	},
 };
