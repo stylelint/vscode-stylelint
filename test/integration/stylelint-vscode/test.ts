@@ -2,6 +2,8 @@ import { join, resolve } from 'path';
 import { pathToFileURL } from 'url';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { StylelintRunner } from '../../../src/utils/stylelint';
+import { version as stylelintVersion } from 'stylelint/package.json';
+import semver from 'semver';
 
 const createDocument = (uri: string | null, languageId: string, contents: string): TextDocument =>
 	TextDocument.create(
@@ -157,21 +159,24 @@ a { color: #000 }
 		expect(result.diagnostics).toEqual([]);
 	});
 
-	test('should support `processors` option', async () => {
-		expect.assertions(1);
-		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(
-			createDocument('processors.tsx', 'typescriptreact', 'styled.p`"`'),
-			{
-				config: {
-					processors: ['stylelint-processor-styled-components'],
-					rules: {},
+	if (semver.satisfies(stylelintVersion, '^14'))
+		test('should support `processors` option', async () => {
+			expect.assertions(1);
+			const runner = new StylelintRunner();
+			const result = await runner.lintDocument(
+				createDocument('processors.tsx', 'typescriptreact', 'styled.p`"`'),
+				{
+					config: {
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- for stylelint v14
+						// @ts-ignore for stylelint v14
+						processors: ['stylelint-processor-styled-components'],
+						rules: {},
+					},
 				},
-			},
-		);
+			);
 
-		expect(result.diagnostics).toMatchSnapshot();
-	});
+			expect(result.diagnostics).toMatchSnapshot();
+		});
 
 	test('should check CSS syntax even if no configuration is provided', async () => {
 		expect.assertions(1);

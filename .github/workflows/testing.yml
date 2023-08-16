@@ -14,7 +14,7 @@ env:
 
 jobs:
   test:
-    name: Test on Node.js ${{ matrix.node-version }} and ${{ matrix.os }}
+    name: Test for Stylelint ${{ matrix.stylelint }} on Node.js ${{ matrix.node-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
