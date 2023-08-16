@@ -159,7 +159,7 @@ a { color: #000 }
 		expect(result.diagnostics).toEqual([]);
 	});
 
-	if (semver.satisfies(stylelintVersion, '^14'))
+	if (semver.satisfies(stylelintVersion, '^14')) {
 		test('should support `processors` option', async () => {
 			expect.assertions(1);
 			const runner = new StylelintRunner();
@@ -175,8 +175,26 @@ a { color: #000 }
 				},
 			);
 
-			expect(result.diagnostics).toMatchSnapshot();
+			expect(result.diagnostics).toEqual([
+				{
+					code: 'CssSyntaxError',
+					message: 'Unclosed string (CssSyntaxError)',
+					range: {
+						end: {
+							character: 10,
+							line: 0,
+						},
+						start: {
+							character: 9,
+							line: 0,
+						},
+					},
+					severity: 1,
+					source: 'Stylelint',
+				},
+			]);
 		});
+	}
 
 	test('should check CSS syntax even if no configuration is provided', async () => {
 		expect.assertions(1);
