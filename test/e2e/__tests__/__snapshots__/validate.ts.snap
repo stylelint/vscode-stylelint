@@ -5,7 +5,7 @@ Array [
   Object {
     "code": "indentation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/indentation",
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
     "range": Object {

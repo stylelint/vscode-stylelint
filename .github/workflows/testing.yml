@@ -14,13 +14,21 @@ env:
 
 jobs:
   test:
-    name: Test on Node.js ${{ matrix.node-version }} and ${{ matrix.os }}
+    name: Test for Stylelint ${{ matrix.stylelint }} on Node.js ${{ matrix.node-version }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        node-version: [14]
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        node-version: [18]
+        os: [ubuntu-latest, macos-latest]
+        stylelint: [14, 15]
+        include:
+          - stylelint: 15
+            node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
+            os: windows-latest
+          - stylelint: 14
+            node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
+            os: windows-latest
     steps:
       - uses: actions/checkout@v2
 
@@ -50,6 +58,14 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+
+      - name: Install stylelint v15
+        run: npm i -D stylelint@^15
+        if: matrix.stylelint == 15
+
+      - name: Install stylelint v14
+        run: npm i -D stylelint@^14 stylelint-scss@^4.3.0
+        if: matrix.stylelint == 14
 
       - name: Cache VS Code binaries
         uses: actions/cache@v2
