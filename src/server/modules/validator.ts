@@ -113,11 +113,25 @@ export class ValidatorModule implements LanguageServerModule {
 
 		this.#logger?.debug('onDidChangeWatchedFiles handler registered');
 
-		this.#context.documents.onDidChangeContent(
-			async ({ document }) => await this.#validate(document),
-		);
+		this.#context.documents.onDidChangeContent(async ({ document }) => {
+			const options = await this.#context.getOptions(document.uri);
+
+			if (options.run !== 'onSave') {
+				await this.#validate(document);
+			}
+		});
 
 		this.#logger?.debug('onDidChangeContent handler registered');
+
+		this.#context.documents.onDidSave(async ({ document }) => {
+			const options = await this.#context.getOptions(document.uri);
+
+			if (options.run === 'onSave') {
+				await this.#validate(document);
+			}
+		});
+
+		this.#logger?.debug('onDidSave handler registered');
 
 		this.#context.documents.onDidClose(({ document }) => {
 			this.#clearDiagnostics(document);

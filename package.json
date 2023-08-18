@@ -77,6 +77,16 @@
           "additionalProperties": false,
           "description": "Options for the disable lint rule action in the quick fix menu."
         },
+        "stylelint.run": {
+          "scope": "resource",
+          "type": "string",
+          "enum": [
+            "onType",
+            "onSave"
+          ],
+          "default": "onType",
+          "description": "Control when Stylelint valiation is performed."
+        },
         "stylelint.config": {
           "scope": "resource",
           "type": [
