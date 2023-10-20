@@ -20,6 +20,7 @@ export async function buildStylelintOptions(
 		configBasedir,
 		customSyntax,
 		ignoreDisables,
+		reportDescriptionlessDisables,
 		reportNeedlessDisables,
 		reportInvalidScopeDisables,
 	}: RunnerOptions = {},
@@ -48,6 +49,9 @@ export async function buildStylelintOptions(
 			: baseOptions.customSyntax,
 
 		ignoreDisables: ignoreDisables ?? baseOptions.ignoreDisables,
+
+		reportDescriptionlessDisables:
+			reportDescriptionlessDisables ?? baseOptions.reportDescriptionlessDisables,
 
 		reportNeedlessDisables: reportNeedlessDisables ?? baseOptions.reportNeedlessDisables,
 

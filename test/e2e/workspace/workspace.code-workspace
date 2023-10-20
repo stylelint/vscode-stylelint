@@ -4,6 +4,7 @@
 		{ "path": "config" },
 		{ "path": "custom-syntax" },
 		{ "path": "defaults" },
+		{ "path": "descriptionless-disables" },
 		{ "path": "ignore-disables" },
 		{ "path": "report-disables" },
 		{ "path": "stylelint-path" },

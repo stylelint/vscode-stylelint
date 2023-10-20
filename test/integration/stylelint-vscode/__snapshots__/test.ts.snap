@@ -29,7 +29,7 @@ Array [
   Object {
     "code": "string-quotes",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/string-quotes",
+      "href": "https://stylelint.io/user-guide/rules/string-quotes",
     },
     "message": "Expected single quotes (string-quotes)",
     "range": Object {
@@ -48,7 +48,7 @@ Array [
   Object {
     "code": "indentation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/indentation",
+      "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 0 tabs (indentation)",
     "range": Object {
@@ -172,35 +172,14 @@ exports[`StylelintRunner should reject with a reason when it takes incorrect opt
 Invalid option value \\"foo\\" for rule \\"color-hex-case\\""
 `;
 
-exports[`StylelintRunner should support \`processors\` option 1`] = `
-Array [
-  Object {
-    "code": "CssSyntaxError",
-    "message": "Unclosed string (CssSyntaxError)",
-    "range": Object {
-      "end": Object {
-        "character": 10,
-        "line": 0,
-      },
-      "start": Object {
-        "character": 9,
-        "line": 0,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
-]
-`;
-
 exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
 Array [
   Object {
     "code": "font-weight-notation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/font-weight-notation",
+      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
     },
-    "message": "Expected numeric font-weight notation (font-weight-notation)",
+    "message": "Expected \\"bold\\" to be \\"700\\" (font-weight-notation)",
     "range": Object {
       "end": Object {
         "character": 33,
@@ -217,9 +196,9 @@ Array [
   Object {
     "code": "font-weight-notation",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/font-weight-notation",
+      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
     },
-    "message": "Expected numeric font-weight notation (font-weight-notation)",
+    "message": "Expected \\"normal\\" to be \\"400\\" (font-weight-notation)",
     "range": Object {
       "end": Object {
         "character": 12,
@@ -241,7 +220,7 @@ Array [
   Object {
     "code": "length-zero-no-unit",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/length-zero-no-unit",
+      "href": "https://stylelint.io/user-guide/rules/length-zero-no-unit",
     },
     "message": "Unexpected unit (length-zero-no-unit)",
     "range": Object {
@@ -266,7 +245,7 @@ Object {
     Object {
       "code": "selector-type-no-unknown",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/list/selector-type-no-unknown",
+        "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
       },
       "message": "Unexpected unknown type selector \\"unknown\\" (selector-type-no-unknown)",
       "range": Object {
@@ -322,7 +301,7 @@ Object {
     Object {
       "code": "indentation",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/list/indentation",
+        "href": "https://stylelint.io/user-guide/rules/indentation",
       },
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {
@@ -333,6 +312,61 @@ Object {
         "start": Object {
           "character": 3,
           "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+}
+`;
+
+exports[`StylelintRunner with reportDescriptionlessDisables should work properly if reportDescriptionlessDisables is true 1`] = `
+Object {
+  "diagnostics": Array [
+    Object {
+      "code": "--report-descriptionless-disables",
+      "message": "Disable for \\"indentation\\" is missing a description",
+      "range": Object {
+        "end": Object {
+          "character": 5,
+          "line": 2,
+        },
+        "start": Object {
+          "character": 4,
+          "line": 2,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    Object {
+      "code": "--report-descriptionless-disables",
+      "message": "Disable for \\"indentation\\" is missing a description",
+      "range": Object {
+        "end": Object {
+          "character": 1,
+          "line": 5,
+        },
+        "start": Object {
+          "character": 0,
+          "line": 5,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    Object {
+      "code": "--report-descriptionless-disables",
+      "message": "Disable for \\"indentation\\" is missing a description",
+      "range": Object {
+        "end": Object {
+          "character": 15,
+          "line": 11,
+        },
+        "start": Object {
+          "character": 14,
+          "line": 11,
         },
       },
       "severity": 1,
@@ -403,7 +437,7 @@ Object {
     Object {
       "code": "indentation",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/list/indentation",
+        "href": "https://stylelint.io/user-guide/rules/indentation",
       },
       "message": "Expected indentation of 4 spaces (indentation)",
       "range": Object {
@@ -516,7 +550,7 @@ Object {
     Object {
       "code": "indentation",
       "codeDescription": Object {
-        "href": "https://stylelint.io/user-guide/rules/list/indentation",
+        "href": "https://stylelint.io/user-guide/rules/indentation",
       },
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {

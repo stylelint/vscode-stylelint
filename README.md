@@ -168,6 +168,13 @@ e.g.
   "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
 ```
 
+### `stylelint.reportDescriptionlessDisables`
+
+> Type: `boolean`  
+> Default: `false`
+
+Sets the Stylelint [`reportDescriptionlessDisables`] option. If `true`, Stylelint reports `stylelint-disable` comments without a description.
+
 ### `stylelint.ignoreDisables`
 
 > Type: `boolean`  
@@ -278,6 +285,26 @@ And on Windows by running:
 cmd /C "set NODE_ENV=development&&code"
 ```
 
+## Contributors
+
+Stylelint is maintained by volunteers. Without the code contributions from [all these fantastic people](https://github.com/stylelint/vscode-stylelint/graphs/contributors), Stylelint would not exist. [Become a contributor](https://github.com/stylelint/vscode-stylelint/contribute).
+
+### Sponsors
+
+<object data="https://opencollective.com/stylelint/sponsors.svg?width=420&button=false" type="image/svg+xml">
+  <img src="https://opencollective.com/stylelint/sponsors.svg?width=840&button=false" />
+</object>
+
+Thank you to all our sponsors! [Become a sponsor](https://opencollective.com/stylelint).
+
+### Backers
+
+<object data="https://opencollective.com/stylelint/backers.svg?width=420&avatarHeight=48&button=false" type="image/svg+xml">
+  <img src="https://opencollective.com/stylelint/backers.svg?width=840&avatarHeight=48&button=false" />
+</object>
+
+Thank you to all our backers! [Become a backer](https://opencollective.com/stylelint).
+
 ## Licence
 
 [MIT](LICENSE)
@@ -299,12 +326,13 @@ cmd /C "set NODE_ENV=development&&code"
 
 [stylelint]: https://stylelint.io/
 [stylelint getting started guide]: https://stylelint.io/user-guide/get-started
-[stylelint configuration file]: https://stylelint.io/user-guide/configuration
+[stylelint configuration file]: https://stylelint.io/user-guide/configure
 [stylelint 14 migration guide]: https://github.com/stylelint/stylelint/blob/main/docs/migration-guide/to-14.md
 [`customsyntax`]: https://stylelint.io/user-guide/usage/options/#customsyntax
 [`config`]: https://stylelint.io/user-guide/usage/node-api#config
 [`configfile`]: https://stylelint.io/user-guide/usage/options#configfile
 [`configbasedir`]: https://stylelint.io/user-guide/usage/options#configbasedir
+[`reportdescriptionlessdisables`]: https://stylelint.io/user-guide/usage/options#reportdescriptionlessdisables
 [`ignoredisables`]: https://stylelint.io/user-guide/usage/options#ignoredisables
 [`reportneedlessdisables`]: https://stylelint.io/user-guide/usage/options#reportneedlessdisables
 [`reportinvalidscopedisables`]: https://stylelint.io/user-guide/usage/options#reportInvalidScopeDisables

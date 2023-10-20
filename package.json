@@ -1,6 +1,6 @@
 {
   "name": "vscode-stylelint",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "license": "MIT",
   "description": "Official Stylelint extension for Visual Studio Code",
   "main": "dist/index.js",
@@ -13,6 +13,9 @@
   "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
   "bugs": "https://github.com/stylelint/vscode-stylelint/issues",
   "qna": "https://stackoverflow.com/questions/tagged/vscode+stylelint",
+  "sponsor": {
+    "url": "https://opencollective.com/stylelint"
+  },
   "icon": "media/stylelint.png",
   "engines": {
     "vscode": ">=1.56.0",
@@ -101,11 +104,17 @@
           "default": "",
           "description": "An absolute path to a custom PostCSS-compatible syntax module."
         },
+        "stylelint.reportDescriptionlessDisables": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": false,
+          "description": "Report `stylelint-disable` comments without a description."
+        },
         "stylelint.ignoreDisables": {
           "scope": "resource",
           "type": "boolean",
           "default": false,
-          "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments"
+          "description": "Ignore `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments."
         },
         "stylelint.reportNeedlessDisables": {
           "scope": "resource",
@@ -236,11 +245,11 @@
     "postcss": "^8.4.4",
     "postcss-sass": "^0.5.0",
     "postcss-scss": "^4.0.2",
-    "prettier": "^2.5.0",
-    "stylelint": "^14.11.0",
+    "prettier": "^2.7.1",
+    "stylelint": "^15.10.2",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
-    "stylelint-scss": "^4.3.0",
+    "stylelint-scss": "^5.1.0",
     "ts-jest": "^27.0.7",
     "ts-node": "^10.4.0",
     "typed-emitter": "^1.4.0",
@@ -252,17 +261,17 @@
     "build-bundle-watch": "run:p build-watch bundle-watch",
     "build-watch": "npm run build -- --watch",
     "bundle": "npm run bundle-base -- --sourcemap",
-    "bundle-base": "ts-node -P tsconfig.scripts.json scripts/bundle.ts",
+    "bundle-base": "ts-node --transpile-only -P tsconfig.scripts.json scripts/bundle.ts",
     "bundle-watch": "npm run bundle-base -- --sourcemap --watch",
     "build-bundle": "run-s build bundle",
-    "download-vscode": "ts-node -P tsconfig.scripts.json scripts/download-vscode.ts",
+    "download-vscode": "ts-node --transpile-only -P tsconfig.scripts.json scripts/download-vscode.ts",
     "format": "prettier . --write",
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
     "lint:js": "eslint --report-unused-disable-directives .",
     "lint:spelling": "cspell lint --no-progress",
     "lint:types": "tsc -b",
-    "lint:unit-tests": "ts-node -P tsconfig.scripts.json scripts/enforce-unit-tests-per-file.ts",
+    "lint:unit-tests": "ts-node --transpile-only -P tsconfig.scripts.json scripts/enforce-unit-tests-per-file.ts",
     "test": "npm run build-bundle && jest",
     "test:e2e": "npm run build-bundle && jest --projects test/e2e",
     "test:integration": "jest --projects test/integration",

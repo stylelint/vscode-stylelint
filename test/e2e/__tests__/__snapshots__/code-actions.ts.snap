@@ -107,7 +107,7 @@ Array [
     "command": Object {
       "arguments": Array [
         Object {
-          "uri": "https://stylelint.io/user-guide/rules/list/indentation",
+          "uri": "https://stylelint.io/user-guide/rules/indentation",
         },
       ],
       "command": "stylelint.openRuleDoc",
