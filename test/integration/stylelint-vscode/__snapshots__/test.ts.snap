@@ -1,29 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StylelintRunner should be resolved with diagnostic plugin rule URL 1`] = `
-Array [
-  Object {
-    "code": "scss/at-rule-no-unknown",
-    "codeDescription": Object {
-      "href": "https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown",
-    },
-    "message": "Unexpected unknown at-rule \\"@unknown\\" (scss/at-rule-no-unknown)",
-    "range": Object {
-      "end": Object {
-        "character": 8,
-        "line": 0,
-      },
-      "start": Object {
-        "character": 0,
-        "line": 0,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
-]
-`;
-
 exports[`StylelintRunner should be resolved with diagnostics when it lints CSS successfully 1`] = `
 Array [
   Object {

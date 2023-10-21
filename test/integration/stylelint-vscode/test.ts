@@ -281,7 +281,27 @@ a { color: #000 }
 				},
 			);
 
-			expect(result.diagnostics).toMatchSnapshot();
+			expect(result.diagnostics).toEqual([
+				{
+					code: 'scss/at-rule-no-unknown',
+					codeDescription: {
+						href: 'https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown',
+					},
+					message: 'Unexpected unknown at-rule "@unknown" (scss/at-rule-no-unknown)',
+					range: {
+						end: {
+							character: 8,
+							line: 0,
+						},
+						start: {
+							character: 0,
+							line: 0,
+						},
+					},
+					severity: 1,
+					source: 'Stylelint',
+				},
+			]);
 		});
 	}
 });
