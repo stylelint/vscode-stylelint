@@ -3,6 +3,7 @@ import { pathToFileURL } from 'url';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { StylelintRunner } from '../../../src/utils/stylelint';
 import { version as stylelintVersion } from 'stylelint/package.json';
+import { version as stylelintScssVersion } from 'stylelint-scss/package.json';
 import semver from 'semver';
 
 const createDocument = (uri: string | null, languageId: string, contents: string): TextDocument =>
@@ -264,23 +265,25 @@ a { color: #000 }
 		expect(result.diagnostics).toMatchSnapshot();
 	});
 
-	test('should be resolved with diagnostic plugin rule URL', async () => {
-		expect.assertions(1);
-		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(
-			createDocument('unknown-rule.scss', 'scss', '@unknown (max-width: 960px) {}'),
-			{
-				config: {
-					plugins: ['stylelint-scss'],
-					rules: {
-						'scss/at-rule-no-unknown': true,
+	if (semver.satisfies(stylelintScssVersion, '^15')) {
+		test('should be resolved with diagnostic plugin rule URL', async () => {
+			expect.assertions(1);
+			const runner = new StylelintRunner();
+			const result = await runner.lintDocument(
+				createDocument('unknown-rule.scss', 'scss', '@unknown (max-width: 960px) {}'),
+				{
+					config: {
+						plugins: ['stylelint-scss'],
+						rules: {
+							'scss/at-rule-no-unknown': true,
+						},
 					},
 				},
-			},
-		);
+			);
 
-		expect(result.diagnostics).toMatchSnapshot();
-	});
+			expect(result.diagnostics).toMatchSnapshot();
+		});
+	}
 });
 
 describe('StylelintRunner with a configuration file', () => {
