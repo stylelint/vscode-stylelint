@@ -10,7 +10,7 @@ Array [
     "message": "Unexpected unknown at-rule \\"@unknown\\" (scss/at-rule-no-unknown)",
     "range": Object {
       "end": Object {
-        "character": 30,
+        "character": 8,
         "line": 0,
       },
       "start": Object {
@@ -74,7 +74,7 @@ Array [
     "message": "Unknown rule this-rule-does-not-exist.",
     "range": Object {
       "end": Object {
-        "character": 1,
+        "character": 4,
         "line": 0,
       },
       "start": Object {
@@ -90,7 +90,7 @@ Array [
     "message": "Unknown rule this-rule-also-does-not-exist.",
     "range": Object {
       "end": Object {
-        "character": 1,
+        "character": 4,
         "line": 0,
       },
       "start": Object {
@@ -225,8 +225,8 @@ Array [
     "message": "Unexpected unit (length-zero-no-unit)",
     "range": Object {
       "end": Object {
-        "character": 10,
-        "line": 1,
+        "character": 12,
+        "line": 3,
       },
       "start": Object {
         "character": 10,
@@ -329,7 +329,7 @@ Object {
       "message": "Disable for \\"indentation\\" is missing a description",
       "range": Object {
         "end": Object {
-          "character": 5,
+          "character": 48,
           "line": 2,
         },
         "start": Object {
@@ -345,7 +345,7 @@ Object {
       "message": "Disable for \\"indentation\\" is missing a description",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 34,
           "line": 5,
         },
         "start": Object {
@@ -361,7 +361,7 @@ Object {
       "message": "Disable for \\"indentation\\" is missing a description",
       "range": Object {
         "end": Object {
-          "character": 15,
+          "character": 53,
           "line": 11,
         },
         "start": Object {
