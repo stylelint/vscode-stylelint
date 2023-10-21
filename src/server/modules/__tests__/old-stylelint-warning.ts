@@ -5,12 +5,12 @@ jest.mock('path');
 
 import fs from 'fs/promises';
 import path from 'path';
-import type stylelint from 'stylelint';
 import type LSP from 'vscode-languageserver-protocol';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { getWorkspaceFolder } from '../../../utils/documents';
 import { findPackageRoot } from '../../../utils/packages';
 import { OldStylelintWarningModule } from '../old-stylelint-warning';
+import { Stylelint } from '../../../utils/stylelint';
 
 const mockedFS = fs as tests.mocks.FSPromisesModule;
 const mockedPath = path as tests.mocks.PathModule;
@@ -102,7 +102,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue(undefined);
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -135,7 +135,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/usr/local/lib/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -170,7 +170,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -203,7 +203,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -240,7 +240,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -269,7 +269,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -303,7 +303,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -332,7 +332,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -361,7 +361,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -392,7 +392,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -429,7 +429,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -473,7 +473,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -516,7 +516,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {} as unknown as stylelint.PublicApi,
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['baz'];
