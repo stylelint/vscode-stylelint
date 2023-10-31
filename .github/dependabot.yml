@@ -14,3 +14,10 @@ updates:
         update-types: [version-update:semver-major]
       - dependency-name: '@types/vscode'
         update-types: [version-update:semver-minor]
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: monthly
+    labels:
+      - 'Dependencies'
+      - 'For Uncommitted Issue'
