@@ -2,7 +2,8 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"typeRoots": ["./types", "./node_modules/@types"],
-		"noEmit": true
+		"noEmit": true,
+		"isolatedModules": true
 	},
 	"include": ["src/**/*", "test/**/*", "__mocks__/**/*", "types/*.d.ts"],
 	"exclude": ["**/coverage", "test/e2e/workspace"]

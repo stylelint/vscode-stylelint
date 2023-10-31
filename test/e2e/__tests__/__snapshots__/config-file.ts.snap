@@ -5,7 +5,7 @@ Array [
   Object {
     "code": "block-no-empty",
     "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/list/block-no-empty",
+      "href": "https://stylelint.io/user-guide/rules/block-no-empty",
     },
     "message": "Unexpected empty block (block-no-empty)",
     "range": Object {

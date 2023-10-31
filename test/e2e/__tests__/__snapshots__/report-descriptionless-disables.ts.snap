@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`"stylelint.reportDescriptionlessDisables" setting should report invalid-scope disables when enabled 1`] = `
+Array [
+  Object {
+    "code": "--report-descriptionless-disables",
+    "message": "Disable for \\"indentation\\" is missing a description",
+    "range": Object {
+      "end": Object {
+        "character": 5,
+        "line": 2,
+      },
+      "start": Object {
+        "character": 4,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+]
+`;

@@ -164,6 +164,7 @@ Array [
       "customSyntax": "",
       "ignoreDisables": false,
       "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
       "snippet": Array [
@@ -195,6 +196,7 @@ Array [
       "customSyntax": "",
       "ignoreDisables": false,
       "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
       "snippet": Array [
@@ -232,6 +234,7 @@ Array [
       "customSyntax": "",
       "ignoreDisables": false,
       "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
       "snippet": Array [
@@ -262,6 +265,7 @@ Array [
       "customSyntax": "",
       "ignoreDisables": false,
       "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
       "snippet": Array [
@@ -317,6 +321,7 @@ Object {
   "customSyntax": "",
   "ignoreDisables": false,
   "packageManager": "yarn",
+  "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
   "snippet": Array [
@@ -344,6 +349,7 @@ Object {
   "customSyntax": "",
   "ignoreDisables": false,
   "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
   "snippet": Array [
@@ -370,6 +376,7 @@ Object {
   "customSyntax": "",
   "ignoreDisables": false,
   "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
   "snippet": Array [
@@ -397,6 +404,7 @@ Object {
   "customSyntax": "",
   "ignoreDisables": false,
   "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
   "snippet": Array [
@@ -423,6 +431,7 @@ Object {
   "customSyntax": "",
   "ignoreDisables": false,
   "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
   "snippet": Array [

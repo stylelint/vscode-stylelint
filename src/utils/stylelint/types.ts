@@ -2,6 +2,8 @@ import type LSP from 'vscode-languageserver-protocol';
 // eslint-disable-next-line node/no-unpublished-import
 import type stylelint from 'stylelint';
 import type { PackageManager } from '../packages';
+export type Stylelint = typeof stylelint;
+export type ConfigurationError = Error & { code: 78 };
 
 /**
  * Diagnostics for a lint run.
@@ -39,6 +41,7 @@ export type RunnerOptions = {
 	customSyntax?: string;
 	ignoreDisables?: boolean;
 	packageManager?: PackageManager;
+	reportDescriptionlessDisables?: boolean;
 	reportInvalidScopeDisables?: boolean;
 	reportNeedlessDisables?: boolean;
 	snippet?: string[];
