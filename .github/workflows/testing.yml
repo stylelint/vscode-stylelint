@@ -30,7 +30,7 @@ jobs:
             node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
             os: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
