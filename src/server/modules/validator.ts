@@ -26,9 +26,19 @@ export class ValidatorModule implements LanguageServerModule {
 	 */
 	#documentDiagnostics = new Map<LSP.DocumentUri, LSP.Diagnostic[]>();
 
+	/**
+	 * Disposables for handlers.
+	 */
+	#disposables: LSP.Disposable[] = [];
+
 	constructor({ context, logger }: LanguageServerModuleConstructorParameters) {
 		this.#context = context;
 		this.#logger = logger;
+	}
+
+	dispose(): void {
+		this.#disposables.forEach((disposable) => disposable.dispose());
+		this.#disposables.length = 0;
 	}
 
 	async #shouldValidate(document: TextDocument): Promise<boolean> {
@@ -106,22 +116,28 @@ export class ValidatorModule implements LanguageServerModule {
 	onDidRegisterHandlers(): void {
 		this.#logger?.debug('Registering handlers');
 
-		this.#context.notifications.on(
-			DidChangeWatchedFilesNotification.type,
-			async () => await this.#validateAll(),
+		this.#disposables.push(
+			this.#context.notifications.on(
+				DidChangeWatchedFilesNotification.type,
+				async () => await this.#validateAll(),
+			),
 		);
 
 		this.#logger?.debug('onDidChangeWatchedFiles handler registered');
 
-		this.#context.documents.onDidChangeContent(
-			async ({ document }) => await this.#validate(document),
+		this.#disposables.push(
+			this.#context.documents.onDidChangeContent(
+				async ({ document }) => await this.#validate(document),
+			),
 		);
 
 		this.#logger?.debug('onDidChangeContent handler registered');
 
-		this.#context.documents.onDidClose(({ document }) => {
-			this.#clearDiagnostics(document);
-		});
+		this.#disposables.push(
+			this.#context.documents.onDidClose(({ document }) => {
+				this.#clearDiagnostics(document);
+			}),
+		);
 
 		this.#logger?.debug('onDidClose handler registered');
 		this.#logger?.debug('Handlers registered');

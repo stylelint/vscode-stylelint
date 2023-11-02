@@ -1,5 +1,5 @@
 import * as LSP from 'vscode-languageserver-protocol';
-import { Connection } from 'vscode-languageserver';
+import { Connection, Disposable } from 'vscode-languageserver';
 import type winston from 'winston';
 import { MaybeAsync } from '../types';
 
@@ -10,13 +10,13 @@ type Handlers = Map<
 	| LSP.NotificationType<unknown>
 	| string
 	| undefined,
-	MaybeAsync<LSP.GenericNotificationHandler>[]
+	Set<MaybeAsync<LSP.GenericNotificationHandler>>
 >;
 
 /**
  * Allows registering multiple handlers for the same notification type.
  */
-export class NotificationManager {
+export class NotificationManager implements Disposable {
 	/**
 	 * The connection to the server.
 	 */
@@ -40,6 +40,23 @@ export class NotificationManager {
 		this.#logger = logger;
 	}
 
+	dispose(): void {
+		this.#logger?.debug('Disposing notification manager');
+
+		for (const [type] of this.#notifications) {
+			if (type) {
+				this.#connection.onNotification(
+					type as LSP.ProtocolNotificationType<unknown, unknown>,
+					() => undefined,
+				);
+			} else {
+				this.#connection.onNotification(() => undefined);
+			}
+		}
+
+		this.#notifications.clear();
+	}
+
 	async #handleNotification<P, R0>(
 		key:
 			| LSP.ProtocolNotificationType0<R0>
@@ -61,8 +78,10 @@ export class NotificationManager {
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const handlers = this.#notifications.get(key)!;
 
-		await Promise.all(
-			handlers.map(async (handler) => {
+		const funcs: (() => Promise<void>)[] = [];
+
+		for (const handler of handlers) {
+			funcs.push(async () => {
 				try {
 					await handler(...params);
 				} catch (error) {
@@ -71,8 +90,10 @@ export class NotificationManager {
 						error,
 					});
 				}
-			}),
-		);
+			});
+		}
+
+		await Promise.all(funcs.map((func) => func()));
 	}
 
 	/**
@@ -81,15 +102,15 @@ export class NotificationManager {
 	on<R0>(
 		type: LSP.ProtocolNotificationType0<R0>,
 		handler: MaybeAsync<LSP.NotificationHandler0>,
-	): void;
+	): Disposable;
 	on<P, R0>(
 		type: LSP.ProtocolNotificationType<P, R0>,
 		handler: MaybeAsync<LSP.NotificationHandler<P>>,
-	): void;
-	on(type: LSP.NotificationType0, handler: MaybeAsync<LSP.NotificationHandler0>): void;
-	on<P>(type: LSP.NotificationType<P>, handler: MaybeAsync<LSP.NotificationHandler<P>>): void;
-	on(type: string, handler: MaybeAsync<LSP.GenericNotificationHandler>): void;
-	on(handler: LSP.StarNotificationHandler): void;
+	): Disposable;
+	on(type: LSP.NotificationType0, handler: MaybeAsync<LSP.NotificationHandler0>): Disposable;
+	on<P>(type: LSP.NotificationType<P>, handler: MaybeAsync<LSP.NotificationHandler<P>>): Disposable;
+	on(type: string, handler: MaybeAsync<LSP.GenericNotificationHandler>): Disposable;
+	on(handler: LSP.StarNotificationHandler): Disposable;
 	on<P, R0>(
 		type:
 			| LSP.ProtocolNotificationType0<R0>
@@ -97,9 +118,9 @@ export class NotificationManager {
 			| LSP.NotificationType0
 			| LSP.NotificationType<P>
 			| string
-			| LSP.StarNotificationHandler,
+			| MaybeAsync<LSP.StarNotificationHandler>,
 		handler?: MaybeAsync<LSP.GenericNotificationHandler>,
-	): void {
+	): Disposable {
 		const isStar = typeof type === 'function';
 		const [key, func] = isStar ? [undefined, type] : [type, handler];
 
@@ -107,21 +128,27 @@ export class NotificationManager {
 			throw new Error('Handler must be defined');
 		}
 
+		const disposable = {
+			dispose: () => {
+				this.#notifications.get(key)?.delete(func);
+			},
+		};
+
 		const existing = this.#notifications.get(key);
 
 		if (existing) {
-			existing.push(func);
+			existing.add(func);
 
-			return;
+			return disposable;
 		}
 
-		this.#notifications.set(key, [func]);
+		this.#notifications.set(key, new Set([func]));
 
 		if (isStar) {
 			// eslint-disable-next-line @typescript-eslint/no-misused-promises
 			this.#connection.onNotification((...params) => this.#handleNotification(undefined, params));
 
-			return;
+			return disposable;
 		}
 
 		this.#connection.onNotification<P, R0>(
@@ -129,5 +156,7 @@ export class NotificationManager {
 			// eslint-disable-next-line @typescript-eslint/no-misused-promises
 			(...params) => this.#handleNotification(type, params),
 		);
+
+		return disposable;
 	}
 }

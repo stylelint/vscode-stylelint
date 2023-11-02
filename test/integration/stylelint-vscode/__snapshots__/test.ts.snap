@@ -1,29 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StylelintRunner should be resolved with diagnostic plugin rule URL 1`] = `
-Array [
-  Object {
-    "code": "scss/at-rule-no-unknown",
-    "codeDescription": Object {
-      "href": "https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown",
-    },
-    "message": "Unexpected unknown at-rule \\"@unknown\\" (scss/at-rule-no-unknown)",
-    "range": Object {
-      "end": Object {
-        "character": 1,
-        "line": 0,
-      },
-      "start": Object {
-        "character": 0,
-        "line": 0,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
-]
-`;
-
 exports[`StylelintRunner should be resolved with diagnostics when it lints CSS successfully 1`] = `
 Array [
   Object {
@@ -53,7 +29,7 @@ Array [
     "message": "Expected indentation of 0 tabs (indentation)",
     "range": Object {
       "end": Object {
-        "character": 3,
+        "character": 14,
         "line": 0,
       },
       "start": Object {
@@ -74,7 +50,7 @@ Array [
     "message": "Unknown rule this-rule-does-not-exist.",
     "range": Object {
       "end": Object {
-        "character": 1,
+        "character": 4,
         "line": 0,
       },
       "start": Object {
@@ -90,7 +66,7 @@ Array [
     "message": "Unknown rule this-rule-also-does-not-exist.",
     "range": Object {
       "end": Object {
-        "character": 1,
+        "character": 4,
         "line": 0,
       },
       "start": Object {
@@ -182,7 +158,7 @@ Array [
     "message": "Expected \\"bold\\" to be \\"700\\" (font-weight-notation)",
     "range": Object {
       "end": Object {
-        "character": 30,
+        "character": 33,
         "line": 2,
       },
       "start": Object {
@@ -201,7 +177,7 @@ Array [
     "message": "Expected \\"normal\\" to be \\"400\\" (font-weight-notation)",
     "range": Object {
       "end": Object {
-        "character": 7,
+        "character": 12,
         "line": 4,
       },
       "start": Object {
@@ -225,7 +201,7 @@ Array [
     "message": "Unexpected unit (length-zero-no-unit)",
     "range": Object {
       "end": Object {
-        "character": 11,
+        "character": 12,
         "line": 3,
       },
       "start": Object {
@@ -250,7 +226,7 @@ Object {
       "message": "Unexpected unknown type selector \\"unknown\\" (selector-type-no-unknown)",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 7,
           "line": 1,
         },
         "start": Object {
@@ -306,7 +282,7 @@ Object {
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {
         "end": Object {
-          "character": 4,
+          "character": 12,
           "line": 1,
         },
         "start": Object {
@@ -329,7 +305,7 @@ Object {
       "message": "Disable for \\"indentation\\" is missing a description",
       "range": Object {
         "end": Object {
-          "character": 5,
+          "character": 48,
           "line": 2,
         },
         "start": Object {
@@ -345,7 +321,7 @@ Object {
       "message": "Disable for \\"indentation\\" is missing a description",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 34,
           "line": 5,
         },
         "start": Object {
@@ -361,7 +337,7 @@ Object {
       "message": "Disable for \\"indentation\\" is missing a description",
       "range": Object {
         "end": Object {
-          "character": 15,
+          "character": 53,
           "line": 11,
         },
         "start": Object {
@@ -384,7 +360,7 @@ Object {
       "message": "Rule \\"foo\\" isn't enabled",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 36,
           "line": 1,
         },
         "start": Object {
@@ -400,7 +376,7 @@ Object {
       "message": "Rule \\"foo\\" isn't enabled",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 31,
           "line": 3,
         },
         "start": Object {
@@ -416,7 +392,7 @@ Object {
       "message": "Rule \\"foo\\" isn't enabled",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 26,
           "line": 5,
         },
         "start": Object {
@@ -442,7 +418,7 @@ Object {
       "message": "Expected indentation of 4 spaces (indentation)",
       "range": Object {
         "end": Object {
-          "character": 3,
+          "character": 47,
           "line": 2,
         },
         "start": Object {
@@ -458,7 +434,7 @@ Object {
       "message": "Needless disable for \\"indentation\\"",
       "range": Object {
         "end": Object {
-          "character": 3,
+          "character": 46,
           "line": 2,
         },
         "start": Object {
@@ -474,7 +450,7 @@ Object {
       "message": "Needless disable for \\"indentation\\"",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 34,
           "line": 6,
         },
         "start": Object {
@@ -490,7 +466,7 @@ Object {
       "message": "Needless disable for \\"indentation\\"",
       "range": Object {
         "end": Object {
-          "character": 17,
+          "character": 55,
           "line": 13,
         },
         "start": Object {
@@ -506,7 +482,7 @@ Object {
       "message": "Needless disable for \\"indentation\\"",
       "range": Object {
         "end": Object {
-          "character": 1,
+          "character": 34,
           "line": 16,
         },
         "start": Object {
@@ -555,7 +531,7 @@ Object {
       "message": "Expected indentation of 2 spaces (indentation)",
       "range": Object {
         "end": Object {
-          "character": 4,
+          "character": 12,
           "line": 1,
         },
         "start": Object {

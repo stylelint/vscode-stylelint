@@ -1,4 +1,5 @@
 /* eslint-disable jest/no-standalone-expect */
+import fs from 'fs/promises';
 import path from 'path';
 
 import * as JSONC from 'jsonc-parser';
@@ -34,9 +35,21 @@ const jsPath = path.resolve(workspaceDir, 'code-actions/test.js');
 const settingsPath = path.resolve(workspaceDir, 'code-actions/.vscode/settings.json');
 
 const defaultSettings = {
+	'[css]': {
+		'editor.codeActionsOnSave': {
+			'source.fixAll.stylelint': true,
+		},
+	},
 	'stylelint.reportNeedlessDisables': true,
 	'stylelint.validate': ['css', 'javascript'],
 };
+
+const css = `a {
+  font-size: 1.2em;
+    /* stylelint-disable-next-line comment-no-empty */
+  color: #00;
+}
+`;
 
 // TODO: Investigate why editing tests intermittently fail on CI
 const localIt = process.env.CI ? it.skip : it;
@@ -49,6 +62,8 @@ describe('Code actions', () => {
 	});
 
 	afterEach(async () => {
+		await fs.writeFile(cssPath, css);
+
 		const settingsEditor = await openDocument(settingsPath);
 		const text = settingsEditor.document.getText();
 		const settings = JSONC.parse(text) as unknown;
@@ -103,6 +118,23 @@ describe('Code actions', () => {
 		const actions = await getCodeActions(editor);
 
 		expect(actions).toHaveLength(0);
+	});
+
+	test('should run auto-fix action on save', async () => {
+		const editor = await openDocument(cssPath);
+
+		await waitForDiagnostics(editor);
+
+		await getCodeActions(editor);
+
+		// API won't save unless we dirty the document, unlike saving via the UI
+		await editor.edit((editBuilder) => {
+			editBuilder.insert(new Position(3, 0), ' ');
+		});
+
+		await editor.document.save();
+
+		expect(editor.document.getText()).toMatchSnapshot();
 	});
 
 	localIt('should disable rules for an entire file', async () => {
@@ -173,7 +205,7 @@ describe('Code actions', () => {
 
 		await settingsEditor.edit((edit) =>
 			edit.insert(
-				new Position(5, 2),
+				new Position(10, 2),
 				',\n\t"stylelint.codeAction.disableRuleComment": { "location": "sameLine" }',
 			),
 		);

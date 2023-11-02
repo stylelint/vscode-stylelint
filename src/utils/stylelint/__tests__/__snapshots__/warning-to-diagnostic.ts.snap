@@ -47,7 +47,7 @@ Object {
   "message": "Expected \\"#bbbbbb\\" to be \\"#bbb\\" (color-hex-length)",
   "range": Object {
     "end": Object {
-      "character": 19,
+      "character": 25,
       "line": 2,
     },
     "start": Object {

@@ -7,7 +7,7 @@ Array [
     "message": "Disable for \\"indentation\\" is missing a description",
     "range": Object {
       "end": Object {
-        "character": 5,
+        "character": 48,
         "line": 2,
       },
       "start": Object {

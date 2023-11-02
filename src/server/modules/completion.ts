@@ -30,6 +30,10 @@ export class CompletionModule implements LanguageServerModule {
 		this.#logger = logger;
 	}
 
+	dispose(): void {
+		this.#context.connection.onCompletion(() => undefined);
+	}
+
 	onInitialize(): Partial<LSP.InitializeResult> {
 		return {
 			capabilities: {

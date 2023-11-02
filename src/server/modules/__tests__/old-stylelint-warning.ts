@@ -6,9 +6,11 @@ jest.mock('path');
 import fs from 'fs/promises';
 import path from 'path';
 import type LSP from 'vscode-languageserver-protocol';
+import { TextDocument } from 'vscode-languageserver-textdocument';
 import { getWorkspaceFolder } from '../../../utils/documents';
 import { findPackageRoot } from '../../../utils/packages';
 import { OldStylelintWarningModule } from '../old-stylelint-warning';
+import { Stylelint } from '../../../utils/stylelint';
 
 const mockedFS = fs as tests.mocks.FSPromisesModule;
 const mockedPath = path as tests.mocks.PathModule;
@@ -17,14 +19,16 @@ const mockedGetWorkspaceFolder = getWorkspaceFolder as jest.MockedFunction<
 >;
 const mockedFindPackageRoot = findPackageRoot as jest.MockedFunction<typeof findPackageRoot>;
 
-const mockContext = serverMocks.getContext();
-const mockLogger = serverMocks.getLogger();
+let mockContext: ReturnType<typeof serverMocks.getContext>;
+let mockLogger: ReturnType<typeof serverMocks.getLogger>;
 
 describe('OldStylelintWarningModule', () => {
 	beforeEach(() => {
-		mockedPath.__mockPlatform('posix');
-		mockContext.__options.validate = [];
 		jest.clearAllMocks();
+		mockedPath.__mockPlatform('posix');
+		mockContext = serverMocks.getContext();
+		mockLogger = serverMocks.getLogger();
+		mockContext.__options.validate = [];
 	});
 
 	test('should be constructable', () => {
@@ -38,32 +42,6 @@ describe('OldStylelintWarningModule', () => {
 
 		expect(mockContext.documents.onDidOpen).toHaveBeenCalledTimes(1);
 		expect(mockContext.documents.onDidOpen).toHaveBeenCalledWith(expect.any(Function));
-	});
-
-	test('if document language ID is not in options, should not warn', async () => {
-		mockContext.__options.validate = ['baz'];
-
-		const module = new OldStylelintWarningModule({
-			context: mockContext.__typed(),
-			logger: mockLogger,
-		});
-
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
-
-		module.onDidRegisterHandlers();
-
-		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
-
-		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
-		});
-
-		expect(mockContext.resolveStylelint).not.toHaveBeenCalled();
-		expect(mockContext.connection.window.showWarningMessage).not.toHaveBeenCalled();
-		expect(mockLogger.debug).toHaveBeenLastCalledWith(
-			'Document should not be validated, ignoring',
-			{ uri: 'foo', language: 'bar' },
-		);
 	});
 
 	test('if document is not part of a workspace, should not warn', async () => {
@@ -82,7 +60,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).not.toHaveBeenCalled();
@@ -106,15 +84,11 @@ describe('OldStylelintWarningModule', () => {
 
 		module.onDidRegisterHandlers();
 
+		const document = TextDocument.create('foo', 'bar', 1, 'a {}');
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
-		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
-		});
-
-		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
-		});
+		await handler({ document });
+		await handler({ document });
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
 		expect(mockContext.connection.window.showWarningMessage).not.toHaveBeenCalled();
@@ -128,7 +102,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue(undefined);
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -145,7 +119,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -155,13 +129,13 @@ describe('OldStylelintWarningModule', () => {
 		});
 	});
 
-	test('if Stylelint package manifest cannot be read, should not warn', async () => {
+	test('if Stylelint package root is not in workspace, should not warn', async () => {
 		const error = new Error('foo');
 
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
-		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
+		mockedFindPackageRoot.mockResolvedValue('/usr/local/lib/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -179,7 +153,42 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
+		});
+
+		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
+		expect(mockContext.connection.window.showWarningMessage).not.toHaveBeenCalled();
+		expect(mockLogger.debug).toHaveBeenLastCalledWith(
+			'Stylelint package root is not inside the workspace',
+			{ uri: 'foo' },
+		);
+	});
+
+	test('if Stylelint package manifest cannot be read, should not warn', async () => {
+		const error = new Error('foo');
+
+		mockedGetWorkspaceFolder.mockResolvedValue('/path');
+		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
+		mockContext.resolveStylelint.mockResolvedValue({
+			stylelint: {} as unknown as Stylelint,
+			resolvedPath: '/path/node_modules/stylelint',
+		});
+		mockContext.__options.validate = ['bar'];
+		mockedFS.readFile.mockRejectedValue(error);
+
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
+
+		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+
+		module.onDidRegisterHandlers();
+
+		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
+
+		await handler({
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -194,7 +203,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -212,7 +221,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -231,7 +240,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -249,7 +258,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -260,7 +269,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -278,7 +287,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -294,7 +303,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -312,7 +321,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -323,7 +332,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -341,7 +350,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -352,7 +361,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -370,7 +379,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -383,7 +392,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -408,7 +417,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -420,7 +429,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -450,7 +459,7 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
@@ -464,7 +473,7 @@ describe('OldStylelintWarningModule', () => {
 		mockedGetWorkspaceFolder.mockResolvedValue('/path');
 		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
 		mockContext.resolveStylelint.mockResolvedValue({
-			stylelint: {},
+			stylelint: {} as unknown as Stylelint,
 			resolvedPath: '/path/node_modules/stylelint',
 		});
 		mockContext.__options.validate = ['bar'];
@@ -494,12 +503,65 @@ describe('OldStylelintWarningModule', () => {
 		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
 
 		await handler({
-			document: { uri: 'foo', languageId: 'bar' },
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
 		});
 
 		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
 		expect(mockContext.connection.window.showWarningMessage).toHaveBeenCalledTimes(1);
 		expect(mockContext.connection.window.showDocument).toHaveBeenCalledTimes(1);
 		expect(mockLogger.warn).toHaveBeenCalledWith('Failed to open migration guide');
+	});
+
+	test('if document language ID is not in options, should warn', async () => {
+		mockedGetWorkspaceFolder.mockResolvedValue('/path');
+		mockedFindPackageRoot.mockResolvedValue('/path/node_modules/stylelint');
+		mockContext.resolveStylelint.mockResolvedValue({
+			stylelint: {} as unknown as Stylelint,
+			resolvedPath: '/path/node_modules/stylelint',
+		});
+		mockContext.__options.validate = ['baz'];
+
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
+
+		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+
+		module.onDidRegisterHandlers();
+
+		const handler = mockContext.documents.onDidOpen.mock.calls[0][0];
+
+		await handler({
+			document: TextDocument.create('foo', 'bar', 1, 'a {}'),
+		});
+
+		expect(mockContext.resolveStylelint).toHaveBeenCalledTimes(1);
+		expect(mockContext.connection.window.showWarningMessage).toHaveBeenCalledTimes(1);
+		expect(mockContext.connection.window.showDocument).not.toHaveBeenCalled();
+	});
+
+	it('should be disposable', () => {
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
+
+		expect(module).toHaveProperty('dispose');
+		expect(module.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should dispose all handler registrations when disposed', () => {
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
+
+		module.onDidRegisterHandlers();
+		module.dispose();
+
+		const disposable = mockContext.documents.onDidOpen.mock.results[0].value;
+
+		expect(disposable.dispose).toHaveBeenCalledTimes(1);
 	});
 });

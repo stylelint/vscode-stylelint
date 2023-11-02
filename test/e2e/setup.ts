@@ -8,10 +8,9 @@ import {
 	workspace,
 	TextEditor,
 	TextDocument,
-	languages,
 	Diagnostic,
 } from 'vscode';
-import type { ApiEvent, ExtensionEvents, PublicApi } from '../../src/extension';
+import type { ExtensionEvents, PublicApi } from '../../src/extension';
 import { getStylelintDiagnostics } from './utils';
 
 Object.defineProperty(global, 'workspaceDir', {
@@ -20,7 +19,7 @@ Object.defineProperty(global, 'workspaceDir', {
 	},
 });
 
-let openEditors: TextEditor[] = [];
+const openEditors: TextEditor[] = [];
 
 Object.defineProperty(global, 'openDocument', {
 	get() {
@@ -124,7 +123,7 @@ global.afterEach(async () => {
 		await commands.executeCommand('workbench.action.files.revert');
 	}
 
-	openEditors = [];
+	openEditors.length = 0;
 
 	await commands.executeCommand('workbench.action.closeAllEditors');
 });

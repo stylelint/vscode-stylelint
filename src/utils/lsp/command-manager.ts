@@ -1,11 +1,11 @@
 import * as LSP from 'vscode-languageserver-protocol';
-import type { Connection, ServerRequestHandler } from 'vscode-languageserver';
+import type { Connection, Disposable, ServerRequestHandler } from 'vscode-languageserver';
 import type winston from 'winston';
 
 /**
  * Allows registering and executing commands and their handlers by name.
  */
-export class CommandManager {
+export class CommandManager implements Disposable {
 	/**
 	 * The language server connection.
 	 */
@@ -32,6 +32,13 @@ export class CommandManager {
 		this.#logger = logger;
 	}
 
+	dispose(): void {
+		this.#logger?.debug('Disposing command manager');
+
+		this.#commands.clear();
+		this.#connection.onExecuteCommand(() => undefined);
+	}
+
 	/**
 	 * Registers a handler for a command.
 	 */
@@ -43,22 +50,36 @@ export class CommandManager {
 			never,
 			void
 		>,
-	): void {
+	): Disposable {
 		if (Array.isArray(name)) {
-			this.#logger?.debug('Registering commands', {
-				commands: name,
-			});
+			this.#logger?.debug('Registering commands', { commands: name });
 
 			for (const commandName of name) {
 				this.#commands.set(commandName, handler);
 			}
-		} else {
-			this.#logger?.debug('Registering command', {
-				command: name,
-			});
 
-			this.#commands.set(name, handler);
+			return {
+				dispose: () => {
+					this.#logger?.debug('Deregistering commands', { commands: name });
+
+					for (const commandName of name) {
+						this.#commands.delete(commandName);
+					}
+				},
+			};
 		}
+
+		this.#logger?.debug('Registering command', { command: name });
+
+		this.#commands.set(name, handler);
+
+		return {
+			dispose: () => {
+				this.#logger?.debug('Deregistering command', { command: name });
+
+				this.#commands.delete(name);
+			},
+		};
 	}
 
 	/**

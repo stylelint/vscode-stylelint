@@ -140,4 +140,58 @@ describe('NotificationManager', () => {
 			error,
 		});
 	});
+
+	it('should return disposables when registering notifications', () => {
+		const manager = new NotificationManager(mockConnection);
+		const disposable = manager.on('test', () => undefined);
+
+		expect(disposable).toHaveProperty('dispose');
+		expect(disposable.dispose).toBeInstanceOf(Function);
+	});
+
+	it("should deregister the notification handler when disposing a notification's disposable", () => {
+		const manager = new NotificationManager(mockConnection);
+		const handler = jest.fn();
+
+		manager.on('test', handler).dispose();
+
+		const onNotificationHandler = mockConnectionBase.onNotification.mock.calls[0][1];
+
+		onNotificationHandler({ prop: 'test' }, 'test');
+
+		expect(handler).not.toHaveBeenCalled();
+	});
+
+	it('should be disposable', () => {
+		const manager = new NotificationManager(mockConnection);
+
+		expect(manager).toHaveProperty('dispose');
+		expect(manager.dispose).toBeInstanceOf(Function);
+	});
+
+	it('should dispose of all notification handlers when disposed', () => {
+		const manager = new NotificationManager(mockConnection);
+		const handler1 = jest.fn();
+		const handler2 = jest.fn();
+
+		manager.on('test', handler1);
+		manager.on(handler2);
+
+		manager.dispose();
+
+		const onNotificationHandler =
+			mockConnectionBase.onNotification.mock.calls[
+				mockConnectionBase.onNotification.mock.calls.length - 2
+			][1];
+		const onStarNotificationHandler =
+			mockConnectionBase.onNotification.mock.calls[
+				mockConnectionBase.onNotification.mock.calls.length - 1
+			][0];
+
+		onNotificationHandler({ prop: 'test' }, 'test');
+		onStarNotificationHandler({ prop: 'test' }, 'test');
+
+		expect(handler1).not.toHaveBeenCalled();
+		expect(handler2).not.toHaveBeenCalled();
+	});
 });

@@ -1,4 +1,4 @@
-import type { Connection } from 'vscode-languageserver';
+import type { Connection, Disposable } from 'vscode-languageserver';
 import type { TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import { CodeActionKind as VSCodeActionKind } from 'vscode-languageserver-types';
@@ -31,7 +31,7 @@ export const CodeActionKind = {
  */
 export enum Notification {
 	DidRegisterCodeActionRequestHandler = 'stylelint/didRegisterCodeActionRequestHandler',
-	DidRegisterDocumentFormattingEditProvider = 'textDocument/didRegisterDocumentFormattingEditProvider',
+	DidRegisterDocumentFormattingEditProvider = 'stylelint/didRegisterDocumentFormattingEditProvider',
 	DidResetConfiguration = 'stylelint/didResetConfiguration',
 }
 
@@ -127,7 +127,7 @@ export interface LanguageServerContext {
 /**
  * A language server module.
  */
-export interface LanguageServerModule {
+export interface LanguageServerModule extends Disposable {
 	/**
 	 * Handler called when the server is initializing.
 	 */
@@ -202,7 +202,7 @@ export type LanguageServerConstructorParameters = {
 	connection: Connection;
 
 	/**
-	 * The logger to use.
+	 * The logger to use. If not provided, a default logger will be used.
 	 */
 	logger?: winston.Logger;
 

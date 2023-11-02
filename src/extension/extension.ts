@@ -34,34 +34,36 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 			documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
 			diagnosticCollectionName: 'Stylelint',
 			synchronize: {
-				fileEvents: workspace.createFileSystemWatcher(
-					'**/{.stylelintrc{,.js,.json,.yaml,.yml},stylelint.config.js,.stylelintignore}',
-				),
+				fileEvents: [
+					workspace.createFileSystemWatcher('**/.stylelintrc{,.js,.json,.yaml,.yml}'),
+					workspace.createFileSystemWatcher('**/{stylelint.config.js,.stylelintignore}'),
+				],
 			},
 		},
 	);
 
-	client
-		.onReady()
-		.then(() => {
-			client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
-				api.codeActionReady = true;
-			});
-			client.onNotification(
-				Notification.DidRegisterDocumentFormattingEditProvider,
-				(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
-					api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
-				},
-			);
-			client.onNotification(Notification.DidResetConfiguration, () => {
-				api.emit(ApiEvent.DidResetConfiguration);
-			});
-		})
-		.catch(async (error) => {
-			await window.showErrorMessage(
-				`Stylelint: ${error instanceof Error ? error.message : String(error)}`,
-			);
+	const readyHandler = (): void => {
+		client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
+			api.codeActionReady = true;
 		});
+		client.onNotification(
+			Notification.DidRegisterDocumentFormattingEditProvider,
+			(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
+				api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
+			},
+		);
+		client.onNotification(Notification.DidResetConfiguration, () => {
+			api.emit(ApiEvent.DidResetConfiguration);
+		});
+	};
+
+	const errorHandler = async (error: unknown): Promise<void> => {
+		await window.showErrorMessage(
+			`Stylelint: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	};
+
+	client.onReady().then(readyHandler).catch(errorHandler);
 
 	subscriptions.push(
 		// cspell:disable-next-line
@@ -81,11 +83,27 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 				arguments: [textDocument],
 			};
 
-			await client.sendRequest(ExecuteCommandRequest.type, params).then(undefined, async () => {
+			try {
+				await client.sendRequest(ExecuteCommandRequest.type, params);
+			} catch {
 				await window.showErrorMessage(
 					'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
 				);
-			});
+			}
+		}),
+	);
+
+	subscriptions.push(
+		commands.registerCommand('stylelint.restart', async () => {
+			await client.stop();
+			client.start();
+
+			try {
+				await client.onReady();
+				readyHandler();
+			} catch (error: unknown) {
+				await errorHandler(error);
+			}
 		}),
 	);
 

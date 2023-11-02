@@ -5,6 +5,7 @@ Object {
   "context": Object {
     "commands": Object {
       "__typed": [Function],
+      "dispose": [MockFunction],
       "on": [MockFunction],
       "register": [MockFunction],
     },
@@ -122,8 +123,17 @@ Object {
     },
     "displayError": [Function],
     "documents": Object {
+      "__typed": [Function],
+      "all": [MockFunction],
+      "get": [MockFunction],
+      "keys": [MockFunction],
       "listen": [MockFunction],
+      "onDidChangeContent": [MockFunction],
       "onDidClose": [MockFunction],
+      "onDidOpen": [MockFunction],
+      "onDidSave": [MockFunction],
+      "onWillSave": [MockFunction],
+      "onWillSaveWaitUntil": [MockFunction],
     },
     "getFixes": [Function],
     "getModule": [Function],
@@ -131,6 +141,7 @@ Object {
     "lintDocument": [Function],
     "notifications": Object {
       "__typed": [Function],
+      "dispose": [MockFunction],
       "on": [MockFunction],
     },
     "resolveStylelint": [Function],
