@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [1.3.0](https://github.com/stylelint/vscode-stylelint/compare/v1.2.4...v1.3.0) (2023-11-02)
+
 ### Added
 
 - Language server can now be restarted with the "Restart Stylelint Server" command ([#339](https://github.com/stylelint/vscode-stylelint/pull/339)).
