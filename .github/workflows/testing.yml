@@ -30,10 +30,10 @@ jobs:
             node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
             os: windows-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -43,7 +43,7 @@ jobs:
           echo "::set-output name=dir::$(npm config get cache)"
 
       - name: Cache npm cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: npm-cache
         with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
@@ -68,7 +68,7 @@ jobs:
         if: matrix.stylelint == 14
 
       - name: Cache VS Code binaries
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: vscode-cache
         with:
           path: .vscode-test
