@@ -1,7 +1,7 @@
 # vscode-stylelint
 
-[![Testing](https://github.com/stylelint/vscode-stylelint/workflows/Testing/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml)
-[![Linting](https://github.com/stylelint/vscode-stylelint/workflows/Linting/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/linting.yml)
+[![Testing](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml)
+[![Linting](https://github.com/stylelint/vscode-stylelint/actions/workflows/linting.yml/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/linting.yml)
 
 The official [Visual Studio Code] extension for [Stylelint]
 
