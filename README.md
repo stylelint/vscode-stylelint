@@ -226,11 +226,11 @@ An array of language identifiers specifying which files to enable snippets for.
 
 ### `editor.codeActionsOnSave`
 
-This extension provides an action that you can use with VS Code's [`editor.codeActionsOnSave`][vscode settings] setting. If provided a `source.fixAll.stylelint` property set to `true`, all auto-fixable Stylelint errors will be fixed on save.
+This extension provides an action that you can use with VS Code's [`editor.codeActionsOnSave`][vscode settings] setting. If provided a `source.fixAll.stylelint` property set to `explicit`, all auto-fixable Stylelint errors will be fixed on save.
 
 ```json
   "editor.codeActionsOnSave": {
-    "source.fixAll.stylelint": true
+    "source.fixAll.stylelint": "explicit"
   }
 ```
 
@@ -238,7 +238,7 @@ The following turns on auto fix for all providers, not just Stylelint:
 
 ```json
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.fixAll": "explicit"
   }
 ```
 
@@ -246,8 +246,8 @@ You can also selectively disable Stylelint:
 
 ```json
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.fixAll.stylelint": false
+    "source.fixAll": "explicit",
+    "source.fixAll.stylelint": "never"
   }
 ```
 
@@ -256,7 +256,7 @@ You can also selectively enable and disable specific languages using VS Code's l
 ```json
   "[html]": {
     "editor.codeActionsOnSave": {
-      "source.fixAll.stylelint": false
+      "source.fixAll.stylelint": "never"
     }
   }
 ```
