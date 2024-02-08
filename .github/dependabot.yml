@@ -7,8 +7,7 @@ updates:
     open-pull-requests-limit: 5
     versioning-strategy: increase
     labels:
-      - 'Dependencies'
-      - 'For Uncommitted Issue'
+      - 'pr: dependencies'
     ignore:
       - dependency-name: p-wait-for
         update-types: [version-update:semver-major]
@@ -19,5 +18,4 @@ updates:
     schedule:
       interval: monthly
     labels:
-      - 'Dependencies'
-      - 'For Uncommitted Issue'
+      - 'pr: dependencies'
