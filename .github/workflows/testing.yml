@@ -37,10 +37,11 @@ jobs:
 
       # TODO: npm@8.4 is broken on Windows. See https://github.com/npm/cli/issues/4341
       - name: Workaround for npm installation failure on Node.js 14 and Windows
-        if: ${{ startsWith(matrix.node-version, '14') && runner.os == 'Windows' }}
+        if: ${{ matrix.node-version == '14' && runner.os == 'Windows' }}
         run: npm install --global npm@8.3
 
       - name: Install latest npm
+        if: ${{ matrix.node-version == '18' }}
         run: npm install --global npm@latest
 
       - name: Install dependencies
