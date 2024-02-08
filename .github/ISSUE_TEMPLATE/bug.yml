@@ -1,7 +1,7 @@
 name: "\U0001F41B Bug Report"
 description: File a bug report
 title: '[Bug]: '
-labels: ['Bug']
+labels: []
 body:
   - type: markdown
     attributes:
