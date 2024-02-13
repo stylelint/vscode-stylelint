@@ -215,7 +215,7 @@
     "vscode-languageserver-types": "^3.16.0",
     "vscode-uri": "^3.0.2",
     "winston": "^3.3.3",
-    "winston-transport": "^4.4.0"
+    "winston-transport": "^4.7.0"
   },
   "devDependencies": {
     "@stylelint/postcss-css-in-js": "^0.37.2",
