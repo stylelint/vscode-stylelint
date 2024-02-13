@@ -3,7 +3,7 @@
 const path = require('node:path');
 const { readFileSync } = require('node:fs');
 
-const vscodeVersion = '1.86.1';
+const vscodeVersion = '1.82.3';
 
 const pkg = JSON.parse(readFileSync(path.join(__dirname, '../../package.json'), 'utf8'));
 const requiredVscodeVersion = pkg.engines.vscode.match(/\d+\.\d+\.\d+/)?.[0];

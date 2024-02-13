@@ -18,8 +18,8 @@
   },
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.86.1",
-    "node": ">=18.17.1"
+    "vscode": ">=1.82.3",
+    "node": ">=18.15.0"
   },
   "galleryBanner": {
     "color": "#000000",
@@ -225,7 +225,7 @@
     "@types/jest": "^27.0.3",
     "@types/path-is-inside": "^1.0.0",
     "@types/semver": "^7.3.9",
-    "@types/vscode": "1.86.0",
+    "@types/vscode": "1.82.0",
     "@typescript-eslint/eslint-plugin": "^5.5.0",
     "@typescript-eslint/parser": "^5.30.5",
     "@typescript/lib-dom": "npm:@types/web@^0.0.47",
