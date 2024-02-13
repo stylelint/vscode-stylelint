@@ -1,10 +1,11 @@
 'use strict';
 
-const path = require('path');
-
-const pkg = require('../../package.json');
+const path = require('node:path');
+const { readFileSync } = require('node:fs');
 
 const vscodeVersion = '1.86.1';
+
+const pkg = JSON.parse(readFileSync(path.join(__dirname, '../../package.json'), 'utf8'));
 const requiredVscodeVersion = pkg.engines.vscode.match(/\d+\.\d+\.\d+/)?.[0];
 
 if (!requiredVscodeVersion) {
@@ -13,7 +14,7 @@ if (!requiredVscodeVersion) {
 
 if (vscodeVersion !== requiredVscodeVersion) {
 	throw new Error(
-		`The VSCode version '${requiredVscodeVersion}' is required in package.json, but actually '${vscodeVersion}'`,
+		`The required VSCode version in package.json is '${requiredVscodeVersion}', but actually '${vscodeVersion}'`,
 	);
 }
 
