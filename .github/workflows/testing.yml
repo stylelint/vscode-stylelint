@@ -11,37 +11,23 @@ on:
 
 jobs:
   test:
-    name: Test for Stylelint ${{ matrix.stylelint }} on Node.js ${{ matrix.node-version }} and ${{ matrix.os }}
+    name: Test for Stylelint ${{ matrix.stylelint }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18]
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         stylelint: [14, 15]
-        include:
-          - stylelint: 15
-            node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
-            os: windows-latest
-          - stylelint: 14
-            node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
-            os: windows-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: .nvmrc
           cache: npm
 
-      # TODO: npm@8.4 is broken on Windows. See https://github.com/npm/cli/issues/4341
-      - name: Workaround for npm installation failure on Node.js 14 and Windows
-        if: ${{ matrix.node-version == '14' && runner.os == 'Windows' }}
-        run: npm install --global npm@8.3
-
       - name: Install latest npm
-        if: ${{ matrix.node-version == '18' }}
         run: npm install --global npm@latest
 
       - name: Install dependencies
