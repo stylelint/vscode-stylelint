@@ -8,6 +8,9 @@ updates:
     versioning-strategy: increase
     labels:
       - 'pr: dependencies'
+    groups:
+      jest:
+        patterns: ['jest', 'jest-runner-vscode', 'ts-jest', '@types/jest']
     ignore:
       - dependency-name: p-wait-for
         update-types: [version-update:semver-major]
