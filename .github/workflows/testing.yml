@@ -26,6 +26,9 @@ jobs:
           - stylelint: 14
             node-version: 14 # For some reason jest-runner-vscode doesn't work well with Node v18 and Windows.
             os: windows-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
