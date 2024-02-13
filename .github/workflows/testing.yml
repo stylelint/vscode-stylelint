@@ -9,9 +9,6 @@ on:
     branches:
       - '**'
 
-env:
-  CI: true
-
 jobs:
   test:
     name: Test for Stylelint ${{ matrix.stylelint }} on Node.js ${{ matrix.node-version }} and ${{ matrix.os }}
@@ -36,25 +33,16 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+          cache: npm
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
-      - name: Cache npm cache
-        uses: actions/cache@v3
-        id: npm-cache
-        with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+      # TODO: npm@8.4 is broken on Windows. See https://github.com/npm/cli/issues/4341
+      - name: Workaround for npm installation failure on Node.js 14 and Windows
+        if: ${{ matrix.node-version == '14' && runner.os == 'Windows' }}
+        run: npm install --global npm@8.3
 
       - name: Install latest npm
-        run: npm install --global npm@8.3
-        # TODO: npm@8.4 is broken on Windows. See https://github.com/npm/cli/issues/4341
-        # run: npm install --global npm@latest
+        if: ${{ matrix.node-version == '18' }}
+        run: npm install --global npm@latest
 
       - name: Install dependencies
         run: npm ci
