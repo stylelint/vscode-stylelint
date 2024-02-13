@@ -83,7 +83,7 @@ Array [
       ],
     ],
     "isPreferred": undefined,
-    "kind": Z {
+    "kind": _ {
       "value": "quickfix",
     },
     "title": "Disable indentation for this line",
@@ -112,7 +112,7 @@ Array [
       ],
     ],
     "isPreferred": undefined,
-    "kind": Z {
+    "kind": _ {
       "value": "quickfix",
     },
     "title": "Disable indentation for the entire file",
@@ -128,7 +128,7 @@ Array [
       "title": "Open documentation for indentation",
     },
     "isPreferred": undefined,
-    "kind": Z {
+    "kind": _ {
       "value": "quickfix",
     },
     "title": "Show documentation for indentation",
