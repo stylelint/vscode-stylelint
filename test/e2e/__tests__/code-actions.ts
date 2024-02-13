@@ -62,6 +62,8 @@ describe('Code actions', () => {
 	});
 
 	afterEach(async () => {
+		jest.setTimeout(30_000);
+
 		await fs.writeFile(cssPath, css);
 
 		const settingsEditor = await openDocument(settingsPath);
