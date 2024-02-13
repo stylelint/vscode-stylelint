@@ -49,11 +49,11 @@ jobs:
 
       - name: Install stylelint v15
         run: npm i -D stylelint@^15
-        if: matrix.stylelint == 15
+        if: ${{ matrix.stylelint == '15' }}
 
       - name: Install stylelint v14
         run: npm i -D stylelint@^14 stylelint-scss@^4.3.0
-        if: matrix.stylelint == 14
+        if: ${{ matrix.stylelint == '14' }}
 
       - name: Cache VS Code binaries
         uses: actions/cache@v4
@@ -68,15 +68,25 @@ jobs:
         run: npm run download-vscode
 
       - name: Run unit tests
+        run: npm run test:unit
+        if: ${{ runner.os != 'Linux' }}
+
+      - name: Run unit tests (coverage)
         run: npm run test:unit -- --coverage
+        if: ${{ runner.os == 'Linux' }}
 
       - name: Run integration tests
+        run: npm run test:integration
+        if: ${{ runner.os != 'Linux' }}
+
+      - name: Run integration tests (coverage)
         run: npm run test:integration -- --coverage
+        if: ${{ runner.os == 'Linux' }}
 
       - name: Run end-to-end tests (Linux)
-        if: runner.os == 'Linux'
         run: xvfb-run -a npm run test:e2e -- --silent
+        if: ${{ runner.os == 'Linux' }}
 
       - name: Run end-to-end tests (non-Linux)
-        if: runner.os != 'Linux'
         run: npm run test:e2e -- --silent
+        if: ${{ runner.os != 'Linux' }}
