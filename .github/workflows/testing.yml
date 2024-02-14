@@ -55,9 +55,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vscode-
 
-      - name: Download VS Code
-        run: npm run download-vscode
-
       - name: Run end-to-end tests (Linux)
         if: runner.os == 'Linux'
         run: xvfb-run -a npm run test:e2e -- --silent

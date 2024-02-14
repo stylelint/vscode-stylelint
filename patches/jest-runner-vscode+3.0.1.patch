@@ -1,27 +1,8 @@
 diff --git a/node_modules/jest-runner-vscode/dist/run-vscode.js b/node_modules/jest-runner-vscode/dist/run-vscode.js
-index 5d8e513..2d97e27 100644
+index 5d8e513..e7ee69d 100644
 --- a/node_modules/jest-runner-vscode/dist/run-vscode.js
 +++ b/node_modules/jest-runner-vscode/dist/run-vscode.js
-@@ -32,8 +32,10 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
-             testsByPath.set(test.path, test);
-         }
-         const completedTests = new Set();
-+        console.dir({ tests, testsByPath }, { depth: 2 });
-         const onTestFileResult = async ({ test, testResult, }) => {
-             const matchingTest = testsByPath.get(test.path);
-+            console.dir({ path: test.path, matchingTest }, { depth: 2 });
-             if (!matchingTest) {
-                 return;
-             }
-@@ -83,6 +85,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
-         ipc.server.on('stderr', onStderr);
-         ipc.server.on('error', onError);
-         const vscode = child_process_1.default.spawn(vscodePath, args, { env: environment });
-+        console.dir({ vscodePath, args, environment, vscode }, { depth: 2 });
-         if (!silent && !filterOutput) {
-             vscode.stdout.pipe(process.stdout);
-             vscode.stderr.pipe(process.stderr);
-@@ -114,8 +117,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+@@ -114,8 +114,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
                  for (const test of tests) {
                      const completed = completedTests.has(test);
                      if (!completed) {
