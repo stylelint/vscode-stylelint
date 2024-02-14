@@ -25,7 +25,8 @@ const config = {
 	openInFolder: true,
 	workspaceDir: path.join(__dirname, 'workspace/workspace.code-workspace'),
 	extensionDevelopmentPath: path.join(__dirname, '../..'),
-	filterOutput: true,
+	filterOutput: false,
+	quiet: false,
 };
 
 module.exports = config;
