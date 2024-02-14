@@ -17,21 +17,28 @@ async function bundle(): Promise<void> {
 		await fs.remove(item);
 	}
 
+	const options: esbuild.BuildOptions = {
+		absWorkingDir: rootDir,
+		entryPoints,
+		entryNames: '[name]',
+		bundle: true,
+		outdir: 'dist',
+		external: ['vscode'],
+		format: 'cjs',
+		platform: 'node',
+		logLevel: 'info',
+		sourcemap: args.has('--sourcemap'),
+		minify: args.has('--minify'),
+	};
+
 	try {
-		await esbuild.build({
-			absWorkingDir: rootDir,
-			entryPoints,
-			entryNames: '[name]',
-			bundle: true,
-			outdir: 'dist',
-			external: ['vscode'],
-			format: 'cjs',
-			platform: 'node',
-			logLevel: 'info',
-			watch: args.has('--watch'),
-			sourcemap: args.has('--sourcemap'),
-			minify: args.has('--minify'),
-		});
+		if (args.has('--watch')) {
+			const context = await esbuild.context(options);
+
+			await context.watch();
+		} else {
+			await esbuild.build(options);
+		}
 	} catch (error) {
 		console.error(error);
 		process.exit(1);
