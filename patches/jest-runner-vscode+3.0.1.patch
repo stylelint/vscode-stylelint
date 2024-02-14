@@ -33,7 +33,7 @@ index 5d8e513..2d97e27 100644
                  }
              }
 diff --git a/node_modules/jest-runner-vscode/dist/runner.js b/node_modules/jest-runner-vscode/dist/runner.js
-index e24c976..88bb99c 100644
+index e24c976..7bf619e 100644
 --- a/node_modules/jest-runner-vscode/dist/runner.js
 +++ b/node_modules/jest-runner-vscode/dist/runner.js
 @@ -50,8 +50,10 @@ class VSCodeTestRunner {
@@ -55,3 +55,11 @@ index e24c976..88bb99c 100644
          // Start IPC server.
          const { DEBUG_VSCODE_IPC } = process_1.default.env;
          const ipc = new node_ipc_1.IPC();
+@@ -83,6 +86,7 @@ class VSCodeTestRunner {
+                 };
+                 const vscodePath = vscodeOptions.vscodeExecutablePath ??
+                     (await (0, download_vscode_1.default)(vscodeOptions.version, vscodeOptions.platform, vscodeOptions.quiet || this._globalConfig.silent, this._globalConfig.json || this._globalConfig.useStderr));
++                console.dir({ vscodeOptions, vscodePath }, { depth: 2 });
+                 const args = [
+                     '-n',
+                     '--no-sandbox',
