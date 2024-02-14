@@ -7,7 +7,9 @@ const config = {
 		'<rootDir>/server/__tests__/**/*.[jt]s?(x)',
 	],
 	preset: 'ts-jest',
-	globals: { 'ts-jest': { tsconfig: '<rootDir>/../../tsconfig.test.json' } },
+	transform: {
+		'^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/../../tsconfig.test.json' }],
+	},
 	verbose: true,
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	modulePathIgnorePatterns: [
