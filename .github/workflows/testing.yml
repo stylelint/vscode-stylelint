@@ -55,6 +55,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-vscode-
 
+      - name: Download VS Code
+        shell: bash
+        run: |
+          VSCODE_EXECUTABLE_PATH=$(npm run download-vscode | tail -1)
+          echo "VSCODE_EXECUTABLE_PATH=${VSCODE_EXECUTABLE_PATH}" >> "$GITHUB_ENV"
+
       - name: Run end-to-end tests (Linux)
         if: runner.os == 'Linux'
         run: xvfb-run -a npm run test:e2e -- --silent

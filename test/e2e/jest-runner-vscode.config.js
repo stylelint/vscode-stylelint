@@ -27,6 +27,7 @@ const config = {
 	extensionDevelopmentPath: path.join(__dirname, '../..'),
 	filterOutput: false,
 	quiet: false,
+	vscodeExecutablePath: process.env.VSCODE_EXECUTABLE_PATH,
 };
 
 module.exports = config;
