@@ -33,10 +33,10 @@ index 5d8e513..2d97e27 100644
                  }
              }
 diff --git a/node_modules/jest-runner-vscode/dist/runner.js b/node_modules/jest-runner-vscode/dist/runner.js
-index e24c976..7bd95ba 100644
+index e24c976..dd6a7e8 100644
 --- a/node_modules/jest-runner-vscode/dist/runner.js
 +++ b/node_modules/jest-runner-vscode/dist/runner.js
-@@ -81,8 +81,10 @@ class VSCodeTestRunner {
+@@ -81,8 +81,11 @@ class VSCodeTestRunner {
                      ...((await (0, cosmiconfig_1.cosmiconfig)('jest-runner-vscode').search(testDir))
                          ?.config ?? {}),
                  };
@@ -44,14 +44,15 @@ index e24c976..7bd95ba 100644
                  const vscodePath = vscodeOptions.vscodeExecutablePath ??
                      (await (0, download_vscode_1.default)(vscodeOptions.version, vscodeOptions.platform, vscodeOptions.quiet || this._globalConfig.silent, this._globalConfig.json || this._globalConfig.useStderr));
 +                console.dir({ vscodePath }, { depth: 2 });
++                console.dir(`Start running VSCode: '${vscodePath}'`);
                  const args = [
                      '-n',
                      '--no-sandbox',
-@@ -110,6 +112,7 @@ class VSCodeTestRunner {
+@@ -110,6 +113,7 @@ class VSCodeTestRunner {
                  });
              }
              catch (error) {
-+                console.dir({ error }, { depth: null });
++                if (true) throw error;
                  for (const test of testGroup) {
                      await onFailure(test, error);
                  }
