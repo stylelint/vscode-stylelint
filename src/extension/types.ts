@@ -5,12 +5,12 @@ import type { DidRegisterDocumentFormattingEditProviderNotificationParams } from
 /**
  * VS Code extension event names.
  */
-export interface ExtensionEvents {
+export type ExtensionEvents = {
 	DidRegisterDocumentFormattingEditProvider: (
 		params: DidRegisterDocumentFormattingEditProviderNotificationParams,
 	) => void;
 	DidResetConfiguration: () => void;
-}
+};
 
 /**
  * VS Code extension public API.
