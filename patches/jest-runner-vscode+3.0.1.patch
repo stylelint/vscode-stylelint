@@ -1,0 +1,15 @@
+diff --git a/node_modules/jest-runner-vscode/dist/run-vscode.js b/node_modules/jest-runner-vscode/dist/run-vscode.js
+index 5d8e513..baaeedf 100644
+--- a/node_modules/jest-runner-vscode/dist/run-vscode.js
++++ b/node_modules/jest-runner-vscode/dist/run-vscode.js
+@@ -32,8 +32,10 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+             testsByPath.set(test.path, test);
+         }
+         const completedTests = new Set();
++        console.dir({ testsByPath }, { depth: 2 });
+         const onTestFileResult = async ({ test, testResult, }) => {
+             const matchingTest = testsByPath.get(test.path);
++            console.dir({ path: test.path, matchingTest }, { depth: 2 });
+             if (!matchingTest) {
+                 return;
+             }

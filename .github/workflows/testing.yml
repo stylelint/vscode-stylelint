@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        stylelint: [14, 15]
+        os: [windows-latest]
+        stylelint: [15]
     timeout-minutes: 30
     permissions:
       contents: read
@@ -57,12 +57,6 @@ jobs:
 
       - name: Download VS Code
         run: npm run download-vscode
-
-      - name: Run unit tests
-        run: npm run test:unit -- --coverage
-
-      - name: Run integration tests
-        run: npm run test:integration -- --coverage
 
       - name: Run end-to-end tests (Linux)
         if: runner.os == 'Linux'

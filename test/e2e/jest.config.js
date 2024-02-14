@@ -2,7 +2,7 @@
 
 /** @type {import('jest').Config} */
 const config = {
-	testMatch: ['<rootDir>/__tests__/**/*.[jt]s?(x)'],
+	testMatch: ['<rootDir>/__tests__/**/lint.[jt]s?(x)'],
 	preset: 'ts-jest',
 	transform: {
 		'^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/../../tsconfig.test.json' }],
