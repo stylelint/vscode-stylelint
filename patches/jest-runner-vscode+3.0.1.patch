@@ -33,7 +33,7 @@ index 5d8e513..2d97e27 100644
                  }
              }
 diff --git a/node_modules/jest-runner-vscode/dist/runner.js b/node_modules/jest-runner-vscode/dist/runner.js
-index e24c976..d4a2fcb 100644
+index e24c976..4c3af42 100644
 --- a/node_modules/jest-runner-vscode/dist/runner.js
 +++ b/node_modules/jest-runner-vscode/dist/runner.js
 @@ -50,8 +50,10 @@ class VSCodeTestRunner {
@@ -43,7 +43,7 @@ index e24c976..d4a2fcb 100644
 +        console.dir({ tests }, { depth: 2 });
          for (const test of tests) {
              const dir = path_1.default.dirname(test.path);
-+            console.dir({ dir }, { depth: 2 });
++            console.dir({ dir, config: cosmiconfig_1.cosmiconfigSync('jest-runner-vscode').search(dir) }, { depth: 2 });
              const existingTests = testsByDir.get(dir);
              if (existingTests) {
                  existingTests.push(test);
