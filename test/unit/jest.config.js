@@ -1,6 +1,6 @@
 'use strict';
 
-/** @type {import('@jest/types').Config.InitialOptions} */
+/** @type {import('jest').Config} */
 const config = {
 	rootDir: '../..',
 	testMatch: ['<rootDir>/src/**/__tests__/**/*.[jt]s?(x)'],
