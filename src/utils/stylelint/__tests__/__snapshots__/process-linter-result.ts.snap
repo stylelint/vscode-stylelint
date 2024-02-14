@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`processLinterResult should return diagnostics for each warning 1`] = `
-Object {
-  "diagnostics": Array [
-    Object {
+{
+  "diagnostics": [
+    {
       "code": "unit-no-unknown",
       "message": "unit-no-unknown",
-      "range": Object {
-        "end": Object {
+      "range": {
+        "end": {
           "character": 1,
           "line": 0,
         },
-        "start": Object {
+        "start": {
           "character": 0,
           "line": 0,
         },
@@ -19,15 +19,15 @@ Object {
       "severity": 1,
       "source": "Stylelint",
     },
-    Object {
+    {
       "code": "at-rule-no-unknown",
       "message": "at-rule-no-unknown",
-      "range": Object {
-        "end": Object {
+      "range": {
+        "end": {
           "character": 1,
           "line": 0,
         },
-        "start": Object {
+        "start": {
           "character": 0,
           "line": 0,
         },
@@ -35,15 +35,15 @@ Object {
       "severity": 1,
       "source": "Stylelint",
     },
-    Object {
+    {
       "code": "alpha-value-notation",
       "message": "alpha-value-notation",
-      "range": Object {
-        "end": Object {
+      "range": {
+        "end": {
           "character": 1,
           "line": 0,
         },
-        "start": Object {
+        "start": {
           "character": 0,
           "line": 0,
         },
@@ -56,17 +56,17 @@ Object {
 `;
 
 exports[`processLinterResult should return output if given 1`] = `
-Object {
-  "diagnostics": Array [
-    Object {
+{
+  "diagnostics": [
+    {
       "code": "unit-no-unknown",
       "message": "unit-no-unknown",
-      "range": Object {
-        "end": Object {
+      "range": {
+        "end": {
           "character": 1,
           "line": 0,
         },
-        "start": Object {
+        "start": {
           "character": 0,
           "line": 0,
         },

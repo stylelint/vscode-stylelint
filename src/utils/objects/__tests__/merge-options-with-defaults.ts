@@ -161,11 +161,11 @@ describe('mergeOptionsWithDefaults', () => {
 		const result = mergeOptionsWithDefaults(options, defaults);
 
 		expect(result).toMatchInlineSnapshot(`
-		Object {
+		{
 		  "a": 4,
-		  "b": Object {
+		  "b": {
 		    "c": 1,
-		    "d": Object {
+		    "d": {
 		      "a": 4,
 		      "b": [Circular],
 		    },

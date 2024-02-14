@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CodeActionModule onInitialize should return results 1`] = `
-Object {
-  "capabilities": Object {
-    "codeActionProvider": Object {
-      "codeActionKinds": Array [
+{
+  "capabilities": {
+    "codeActionProvider": {
+      "codeActionKinds": [
         "quickfix",
         "source.fixAll.stylelint",
       ],
     },
-    "executeCommandProvider": Object {
-      "commands": Array [
+    "executeCommandProvider": {
+      "commands": [
         "stylelint.openRuleDoc",
       ],
     },
@@ -19,11 +19,11 @@ Object {
 `;
 
 exports[`CodeActionModule with action kind Source, should create fix-all code actions 1`] = `
-Array [
-  Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
+[
+  {
+    "command": {
+      "arguments": [
+        {
           "uri": "foo",
           "version": 1,
         },
@@ -38,27 +38,27 @@ Array [
 `;
 
 exports[`CodeActionModule with action kind SourceFixAll, should create fix-all code actions 1`] = `
-Array [
-  Object {
-    "edit": Object {
-      "documentChanges": Array [
-        Object {
-          "edits": Array [
-            Object {
+[
+  {
+    "edit": {
+      "documentChanges": [
+        {
+          "edits": [
+            {
               "newText": "text",
-              "range": Object {
-                "end": Object {
+              "range": {
+                "end": {
                   "character": 0,
                   "line": 0,
                 },
-                "start": Object {
+                "start": {
                   "character": 0,
                   "line": 0,
                 },
               },
             },
           ],
-          "textDocument": Object {
+          "textDocument": {
             "uri": "foo",
             "version": 1,
           },
@@ -72,27 +72,27 @@ Array [
 `;
 
 exports[`CodeActionModule with action kind StylelintSourceFixAll, should create fix-all code actions 1`] = `
-Array [
-  Object {
-    "edit": Object {
-      "documentChanges": Array [
-        Object {
-          "edits": Array [
-            Object {
+[
+  {
+    "edit": {
+      "documentChanges": [
+        {
+          "edits": [
+            {
               "newText": "text",
-              "range": Object {
-                "end": Object {
+              "range": {
+                "end": {
                   "character": 0,
                   "line": 0,
                 },
-                "start": Object {
+                "start": {
                   "character": 0,
                   "line": 0,
                 },
               },
             },
           ],
-          "textDocument": Object {
+          "textDocument": {
             "uri": "foo",
             "version": 1,
           },
@@ -106,29 +106,29 @@ Array [
 `;
 
 exports[`CodeActionModule with no action kind, should create actions for each Stylelint diagnostic 1`] = `
-Array [
-  Object {
-    "edit": Object {
+[
+  {
+    "edit": {
       "changeAnnotations": undefined,
-      "documentChanges": Array [
-        Object {
-          "edits": Array [
-            Object {
+      "documentChanges": [
+        {
+          "edits": [
+            {
               "newText": "/* stylelint-disable-next-line rule 1 */
 ",
-              "range": Object {
-                "end": Object {
+              "range": {
+                "end": {
                   "character": 0,
                   "line": 0,
                 },
-                "start": Object {
+                "start": {
                   "character": 0,
                   "line": 0,
                 },
               },
             },
           ],
-          "textDocument": Object {
+          "textDocument": {
             "uri": "foo",
             "version": 1,
           },
@@ -138,28 +138,28 @@ Array [
     "kind": "quickfix",
     "title": "Disable rule 1 for this line",
   },
-  Object {
-    "edit": Object {
+  {
+    "edit": {
       "changeAnnotations": undefined,
-      "documentChanges": Array [
-        Object {
-          "edits": Array [
-            Object {
+      "documentChanges": [
+        {
+          "edits": [
+            {
               "newText": "/* stylelint-disable rule 1 */
 ",
-              "range": Object {
-                "end": Object {
+              "range": {
+                "end": {
                   "character": 0,
                   "line": 0,
                 },
-                "start": Object {
+                "start": {
                   "character": 0,
                   "line": 0,
                 },
               },
             },
           ],
-          "textDocument": Object {
+          "textDocument": {
             "uri": "foo",
             "version": 1,
           },
@@ -169,10 +169,10 @@ Array [
     "kind": "quickfix",
     "title": "Disable rule 1 for the entire file",
   },
-  Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
+  {
+    "command": {
+      "arguments": [
+        {
           "uri": "https://stylelint.io/user-guide/rules/rule",
         },
       ],
@@ -182,28 +182,28 @@ Array [
     "kind": "quickfix",
     "title": "Show documentation for rule 1",
   },
-  Object {
-    "edit": Object {
+  {
+    "edit": {
       "changeAnnotations": undefined,
-      "documentChanges": Array [
-        Object {
-          "edits": Array [
-            Object {
+      "documentChanges": [
+        {
+          "edits": [
+            {
               "newText": "/* stylelint-disable-next-line rule 3 */
 ",
-              "range": Object {
-                "end": Object {
+              "range": {
+                "end": {
                   "character": 0,
                   "line": 0,
                 },
-                "start": Object {
+                "start": {
                   "character": 0,
                   "line": 0,
                 },
               },
             },
           ],
-          "textDocument": Object {
+          "textDocument": {
             "uri": "foo",
             "version": 1,
           },
@@ -213,28 +213,28 @@ Array [
     "kind": "quickfix",
     "title": "Disable rule 3 for this line",
   },
-  Object {
-    "edit": Object {
+  {
+    "edit": {
       "changeAnnotations": undefined,
-      "documentChanges": Array [
-        Object {
-          "edits": Array [
-            Object {
+      "documentChanges": [
+        {
+          "edits": [
+            {
               "newText": "/* stylelint-disable rule 3 */
 ",
-              "range": Object {
-                "end": Object {
+              "range": {
+                "end": {
                   "character": 0,
                   "line": 0,
                 },
-                "start": Object {
+                "start": {
                   "character": 0,
                   "line": 0,
                 },
               },
             },
           ],
-          "textDocument": Object {
+          "textDocument": {
             "uri": "foo",
             "version": 1,
           },
