@@ -4,7 +4,6 @@
 const config = {
 	version: '0.2',
 	language: 'en-GB',
-	globRoot: __dirname,
 	files: ['**/*.js', '**/*.ts', '**/*.json', '**/*.md', '**/*.yml', '**/*.css', '**/*.scss'],
 	ignorePaths: ['**/node_modules', '**/.yarn', '**/coverage', 'dist'],
 	words: [
