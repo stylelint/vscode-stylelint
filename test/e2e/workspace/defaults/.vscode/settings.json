@@ -2,5 +2,6 @@
 	"[css]": {
 		"editor.defaultFormatter": "stylelint.vscode-stylelint"
 	},
-	"css.validate": false
+	"css.validate": false,
+	"stylelint.configFile": "${workspaceFolder}/stylelint.config.js"
 }

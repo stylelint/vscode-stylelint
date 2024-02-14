@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Linting should display rule documentation links when one is available 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "plugin/foo-bar",
     "message": "Bar (plugin/foo-bar)",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 6,
         "line": 0,
       },
-      "start": Object {
+      "start": {
         "character": 5,
         "line": 0,
       },
@@ -18,18 +18,18 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "color-no-invalid-hex",
-    "codeDescription": Object {
+    "codeDescription": {
       "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
     },
-    "message": "Unexpected invalid hex color \\"#y3\\" (color-no-invalid-hex)",
-    "range": Object {
-      "end": Object {
+    "message": "Unexpected invalid hex color "#y3" (color-no-invalid-hex)",
+    "range": {
+      "end": {
         "character": 14,
         "line": 6,
       },
-      "start": Object {
+      "start": {
         "character": 11,
         "line": 6,
       },
@@ -37,18 +37,18 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "indentation",
-    "codeDescription": Object {
+    "codeDescription": {
       "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 13,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 2,
         "line": 2,
       },
@@ -60,19 +60,19 @@ Array [
 `;
 
 exports[`Linting should lint CSS documents 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "indentation",
-    "codeDescription": Object {
+    "codeDescription": {
       "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 13,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 2,
         "line": 2,
       },

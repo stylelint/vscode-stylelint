@@ -1,4 +1,5 @@
 {
+	"stylelint.configFile": "${workspaceFolder}/stylelint.config.js",
 	"stylelint.reportInvalidScopeDisables": true,
 	"stylelint.reportNeedlessDisables": true,
 	"editor.codeActionsOnSave": {

@@ -1,3 +1,4 @@
 {
+	"stylelint.configFile": "${workspaceFolder}/stylelint.config.js",
 	"stylelint.validate": ["scss"]
 }

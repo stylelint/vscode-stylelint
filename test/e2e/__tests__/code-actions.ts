@@ -40,6 +40,7 @@ const defaultSettings = {
 			'source.fixAll.stylelint': true,
 		},
 	},
+	'stylelint.configFile': '${workspaceFolder}/stylelint.config.js',
 	'stylelint.reportNeedlessDisables': true,
 	'stylelint.validate': ['css', 'javascript'],
 };

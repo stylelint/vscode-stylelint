@@ -12,24 +12,11 @@ exports[`Code actions should disable rules for a specific line with a comment on
 
 exports[`Code actions should disable rules for a specific line with a comment on the same line 1`] = `
 "a {
-  font-size: 1.2em; /* stylelint-disable-line indentation */
+  /* stylelint-disable-next-line indentation */
+  font-size: 1.2em;
     /* stylelint-disable-next-line comment-no-empty */
   color: #00;
 }
-"
-`;
-
-exports[`Code actions should disable rules for a specific line with a comment on the same line 2`] = `
-"#!/usr/bin/env node
-/* stylelint-disable color-no-invalid-hex */
-/* eslint-disable node/shebang */
-'use strict';
-
-const css = css\`
-	.foo {
-		color: #00;
-	}
-\`;
 "
 `;
 
@@ -58,22 +45,22 @@ const css = css\`
 `;
 
 exports[`Code actions should provide code actions for problems 1`] = `
-Array [
-  Object {
-    "edit": Array [
-      Array [
+[
+  {
+    "edit": [
+      [
         "<uri>",
-        Array [
-          Object {
+        [
+          {
             "newEol": undefined,
             "newText": "  /* stylelint-disable-next-line indentation */
 ",
-            "range": Array [
-              Object {
+            "range": [
+              {
                 "character": 0,
                 "line": 1,
               },
-              Object {
+              {
                 "character": 0,
                 "line": 1,
               },
@@ -88,21 +75,21 @@ Array [
     },
     "title": "Disable indentation for this line",
   },
-  Object {
-    "edit": Array [
-      Array [
+  {
+    "edit": [
+      [
         "<uri>",
-        Array [
-          Object {
+        [
+          {
             "newEol": undefined,
             "newText": "/* stylelint-disable indentation */
 ",
-            "range": Array [
-              Object {
+            "range": [
+              {
                 "character": 0,
                 "line": 0,
               },
-              Object {
+              {
                 "character": 0,
                 "line": 0,
               },
@@ -117,10 +104,10 @@ Array [
     },
     "title": "Disable indentation for the entire file",
   },
-  Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
+  {
+    "command": {
+      "arguments": [
+        {
           "uri": "https://stylelint.io/user-guide/rules/indentation",
         },
       ],

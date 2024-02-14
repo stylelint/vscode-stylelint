@@ -1,4 +1,5 @@
 {
+	"stylelint.configFile": "${workspaceFolder}/stylelint.config.js",
 	"stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js",
 	"editor.codeActionsOnSave": {
 		"source.fixAll.stylelint": "explicit"
