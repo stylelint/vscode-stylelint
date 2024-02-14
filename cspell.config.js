@@ -1,6 +1,6 @@
 'use strict';
 
-/** @type {import('cspell').CSpellSettings} */
+/** @type {import('@cspell/cspell-types').CSpellUserSettings} */
 const config = {
 	version: '0.2',
 	language: 'en-GB',
