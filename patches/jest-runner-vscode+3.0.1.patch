@@ -33,45 +33,21 @@ index 5d8e513..2d97e27 100644
                  }
              }
 diff --git a/node_modules/jest-runner-vscode/dist/runner.js b/node_modules/jest-runner-vscode/dist/runner.js
-index e24c976..4c3af42 100644
+index e24c976..7bd95ba 100644
 --- a/node_modules/jest-runner-vscode/dist/runner.js
 +++ b/node_modules/jest-runner-vscode/dist/runner.js
-@@ -50,8 +50,10 @@ class VSCodeTestRunner {
-         //   /project/__tests__/needs_dir2/test.js  --> runs in a separate process
-         // Group tests by directory.
-         const testsByDir = new Map();
-+        console.dir({ tests }, { depth: 2 });
-         for (const test of tests) {
-             const dir = path_1.default.dirname(test.path);
-+            console.dir({ dir, config: cosmiconfig_1.cosmiconfigSync('jest-runner-vscode').search(dir) }, { depth: 2 });
-             const existingTests = testsByDir.get(dir);
-             if (existingTests) {
-                 existingTests.push(test);
-@@ -60,6 +62,7 @@ class VSCodeTestRunner {
-                 testsByDir.set(dir, [test]);
-             }
-         }
-+        console.dir({ testsByDir }, { depth: 2 });
-         // Start IPC server.
-         const { DEBUG_VSCODE_IPC } = process_1.default.env;
-         const ipc = new node_ipc_1.IPC();
-@@ -76,6 +79,7 @@ class VSCodeTestRunner {
-                 throw Object.assign(new Error(), { name: 'CancelRun' });
-             }
-             try {
-+                console.dir({ testDir, baseVSCodeOptions }, { depth: 2 });
-                 const vscodeOptions = {
-                     ...baseVSCodeOptions,
+@@ -81,8 +81,10 @@ class VSCodeTestRunner {
                      ...((await (0, cosmiconfig_1.cosmiconfig)('jest-runner-vscode').search(testDir))
-@@ -83,6 +87,7 @@ class VSCodeTestRunner {
+                         ?.config ?? {}),
                  };
++                console.dir({ testDir, baseVSCodeOptions, vscodeOptions }, { depth: 2 });
                  const vscodePath = vscodeOptions.vscodeExecutablePath ??
                      (await (0, download_vscode_1.default)(vscodeOptions.version, vscodeOptions.platform, vscodeOptions.quiet || this._globalConfig.silent, this._globalConfig.json || this._globalConfig.useStderr));
-+                console.dir({ vscodeOptions, vscodePath }, { depth: 2 });
++                console.dir({ vscodePath }, { depth: 2 });
                  const args = [
                      '-n',
                      '--no-sandbox',
-@@ -110,6 +115,7 @@ class VSCodeTestRunner {
+@@ -110,6 +112,7 @@ class VSCodeTestRunner {
                  });
              }
              catch (error) {
