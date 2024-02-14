@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"typeRoots": ["./types", "./node_modules/@types"],
 		"types": ["node", "babel__core"],
-		"noEmit": true
+		"noEmit": true,
+		"skipLibCheck": true
 	},
 	"include": [
 		"*.js",
