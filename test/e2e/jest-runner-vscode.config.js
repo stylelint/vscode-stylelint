@@ -25,7 +25,9 @@ const config = {
 	openInFolder: true,
 	workspaceDir: path.join(__dirname, 'workspace/workspace.code-workspace'),
 	extensionDevelopmentPath: path.join(__dirname, '../..'),
-	filterOutput: true,
+	filterOutput: false,
+	quiet: false,
+	vscodeExecutablePath: process.env.VSCODE_EXECUTABLE_PATH,
 };
 
 module.exports = config;

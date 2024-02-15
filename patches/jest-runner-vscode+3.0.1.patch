@@ -1,0 +1,90 @@
+diff --git a/node_modules/jest-runner-vscode/dist/child/runner.js b/node_modules/jest-runner-vscode/dist/child/runner.js
+index 0663c5c..ed9598a 100644
+--- a/node_modules/jest-runner-vscode/dist/child/runner.js
++++ b/node_modules/jest-runner-vscode/dist/child/runner.js
+@@ -18,10 +18,11 @@ async function run() {
+     const ipc = new ipc_client_1.default('child');
+     const disconnected = new Promise(resolve => ipc.on('disconnect', resolve));
+     try {
+-        const { PARENT_JEST_OPTIONS } = process_1.default.env;
++        const { PARENT_JEST_OPTIONS, PARENT_CWD } = process_1.default.env;
+         if (!PARENT_JEST_OPTIONS) {
+             throw new Error('PARENT_JEST_OPTIONS is not defined');
+         }
++        process.chdir(PARENT_CWD);
+         const options = JSON.parse(PARENT_JEST_OPTIONS);
+         const jestOptions = [
+             ...options.args,
+@@ -39,6 +40,7 @@ async function run() {
+             ...(argv.projects?.map(project => path_1.default.resolve(project)) || []),
+             options.workspacePath,
+         ]);
++        console.dir({ options, jestOptions, argv, projects, cwd: process.cwd() }, { depth: 3 });
+         await (0, core_1.runCLI)(argv, [...projects]);
+     }
+     catch (error) {
+diff --git a/node_modules/jest-runner-vscode/dist/run-vscode.js b/node_modules/jest-runner-vscode/dist/run-vscode.js
+index 5d8e513..75af8dc 100644
+--- a/node_modules/jest-runner-vscode/dist/run-vscode.js
++++ b/node_modules/jest-runner-vscode/dist/run-vscode.js
+@@ -11,7 +11,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+         const log = useStdErr
+             ? console_1.default.error.bind(console_1.default)
+             : console_1.default.log.bind(console_1.default);
+-        const { silent } = globalConfig;
++        // const { silent } = globalConfig;
++        const silent = false;
++        console.dir({ quiet, silent, globalConfig }, { depth: 2 });
+         const remoteOptions = {
+             args: jestArgs,
+             testPaths: tests.map(test => test.path),
+@@ -27,6 +29,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+             PARENT_CWD: process.cwd(),
+             IPC_CHANNEL: ipc.config.id,
+         };
++        console.dir({ environment }, { depth: 2 });
+         const testsByPath = new Map();
+         for (const test of tests) {
+             testsByPath.set(test.path, test);
+@@ -99,6 +102,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+             exited = true;
+             const exit = code ?? signal ?? '<unknown>';
+             const message = `VS Code exited with exit code ${exit}`;
++            console.dir({ code, signal, message }, { depth: 2 });
+             if (typeof code !== 'number' || code !== 0) {
+                 silent || quiet || console_1.default.error(message);
+                 const error = vscodeError ?? childError ?? new Error(message);
+@@ -114,8 +118,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+                 for (const test of tests) {
+                     const completed = completedTests.has(test);
+                     if (!completed) {
++                        const util = require('node:util');
+                         await onFailure(test, (childError ??
+-                            new Error(`No test result returned for ${test.path}`)));
++                            new Error(`(debug) No test result returned for ${test.path} in ${util.inspect(tests)}`)));
+                     }
+                 }
+             }
+diff --git a/node_modules/jest-runner-vscode/dist/runner.js b/node_modules/jest-runner-vscode/dist/runner.js
+index e24c976..5b4f986 100644
+--- a/node_modules/jest-runner-vscode/dist/runner.js
++++ b/node_modules/jest-runner-vscode/dist/runner.js
+@@ -81,8 +81,10 @@ class VSCodeTestRunner {
+                     ...((await (0, cosmiconfig_1.cosmiconfig)('jest-runner-vscode').search(testDir))
+                         ?.config ?? {}),
+                 };
++                console.dir({ testDir, baseVSCodeOptions, vscodeOptions }, { depth: 2 });
+                 const vscodePath = vscodeOptions.vscodeExecutablePath ??
+                     (await (0, download_vscode_1.default)(vscodeOptions.version, vscodeOptions.platform, vscodeOptions.quiet || this._globalConfig.silent, this._globalConfig.json || this._globalConfig.useStderr));
++                console.dir({ vscodePath }, { depth: 2 });
+                 const args = [
+                     '-n',
+                     '--no-sandbox',
+@@ -110,6 +112,7 @@ class VSCodeTestRunner {
+                 });
+             }
+             catch (error) {
++                if (true) throw error;
+                 for (const test of testGroup) {
+                     await onFailure(test, error);
+                 }

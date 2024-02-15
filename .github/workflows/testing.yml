@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        stylelint: [14, 15]
+        os: [windows-latest]
+        stylelint: [15]
     timeout-minutes: 30
     permissions:
       contents: read
@@ -56,13 +56,10 @@ jobs:
             ${{ runner.os }}-vscode-
 
       - name: Download VS Code
-        run: npm run download-vscode
-
-      - name: Run unit tests
-        run: npm run test:unit -- --coverage
-
-      - name: Run integration tests
-        run: npm run test:integration -- --coverage
+        shell: bash
+        run: |
+          VSCODE_EXECUTABLE_PATH=$(npm run download-vscode | tail -1)
+          echo "VSCODE_EXECUTABLE_PATH=${VSCODE_EXECUTABLE_PATH}" >> "$GITHUB_ENV"
 
       - name: Run end-to-end tests (Linux)
         if: runner.os == 'Linux'
@@ -71,3 +68,5 @@ jobs:
       - name: Run end-to-end tests (non-Linux)
         if: runner.os != 'Linux'
         run: npm run test:e2e -- --silent
+        env:
+          DEBUG_VSCODE_IPC: true
