@@ -15,7 +15,6 @@ const config = {
 	],
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	runner: 'vscode',
-	silent: false,
 };
 
 module.exports = config;
