@@ -11,7 +11,7 @@ index 0663c5c..0c91a58 100644
      }
      catch (error) {
 diff --git a/node_modules/jest-runner-vscode/dist/run-vscode.js b/node_modules/jest-runner-vscode/dist/run-vscode.js
-index 5d8e513..bdbda2b 100644
+index 5d8e513..75af8dc 100644
 --- a/node_modules/jest-runner-vscode/dist/run-vscode.js
 +++ b/node_modules/jest-runner-vscode/dist/run-vscode.js
 @@ -11,7 +11,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
@@ -25,7 +25,15 @@ index 5d8e513..bdbda2b 100644
          const remoteOptions = {
              args: jestArgs,
              testPaths: tests.map(test => test.path),
-@@ -99,6 +101,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+@@ -27,6 +29,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+             PARENT_CWD: process.cwd(),
+             IPC_CHANNEL: ipc.config.id,
+         };
++        console.dir({ environment }, { depth: 2 });
+         const testsByPath = new Map();
+         for (const test of tests) {
+             testsByPath.set(test.path, test);
+@@ -99,6 +102,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
              exited = true;
              const exit = code ?? signal ?? '<unknown>';
              const message = `VS Code exited with exit code ${exit}`;
@@ -33,7 +41,7 @@ index 5d8e513..bdbda2b 100644
              if (typeof code !== 'number' || code !== 0) {
                  silent || quiet || console_1.default.error(message);
                  const error = vscodeError ?? childError ?? new Error(message);
-@@ -114,8 +117,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+@@ -114,8 +118,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
                  for (const test of tests) {
                      const completed = completedTests.has(test);
                      if (!completed) {
