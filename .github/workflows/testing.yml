@@ -68,3 +68,5 @@ jobs:
       - name: Run end-to-end tests (non-Linux)
         if: runner.os != 'Linux'
         run: npm run test:e2e -- --silent
+        env:
+          DEBUG_VSCODE_IPC: true
