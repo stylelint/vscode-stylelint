@@ -11,7 +11,7 @@ index 0663c5c..bfe525f 100644
      }
      catch (error) {
 diff --git a/node_modules/jest-runner-vscode/dist/run-vscode.js b/node_modules/jest-runner-vscode/dist/run-vscode.js
-index 5d8e513..75af8dc 100644
+index 5d8e513..8585df1 100644
 --- a/node_modules/jest-runner-vscode/dist/run-vscode.js
 +++ b/node_modules/jest-runner-vscode/dist/run-vscode.js
 @@ -11,7 +11,9 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
@@ -33,6 +33,15 @@ index 5d8e513..75af8dc 100644
          const testsByPath = new Map();
          for (const test of tests) {
              testsByPath.set(test.path, test);
+@@ -82,7 +85,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
+         ipc.server.on('stdout', onStdout);
+         ipc.server.on('stderr', onStderr);
+         ipc.server.on('error', onError);
+-        const vscode = child_process_1.default.spawn(vscodePath, args, { env: environment });
++        const vscode = child_process_1.default.spawn(vscodePath, args, { env: environment, cwd: process.cwd() });
+         if (!silent && !filterOutput) {
+             vscode.stdout.pipe(process.stdout);
+             vscode.stderr.pipe(process.stderr);
 @@ -99,6 +102,7 @@ async function runVSCode({ vscodePath, args, jestArgs, env, tests, globalConfig,
              exited = true;
              const exit = code ?? signal ?? '<unknown>';
