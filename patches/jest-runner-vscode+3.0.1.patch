@@ -1,12 +1,12 @@
 diff --git a/node_modules/jest-runner-vscode/dist/child/runner.js b/node_modules/jest-runner-vscode/dist/child/runner.js
-index 0663c5c..0c91a58 100644
+index 0663c5c..bfe525f 100644
 --- a/node_modules/jest-runner-vscode/dist/child/runner.js
 +++ b/node_modules/jest-runner-vscode/dist/child/runner.js
 @@ -39,6 +39,7 @@ async function run() {
              ...(argv.projects?.map(project => path_1.default.resolve(project)) || []),
              options.workspacePath,
          ]);
-+        console.dir({ options, jestOptions, argv, projects }, { depth: 3 });
++        console.dir({ options, jestOptions, argv, projects, cwd: process.cwd() }, { depth: 3 });
          await (0, core_1.runCLI)(argv, [...projects]);
      }
      catch (error) {
