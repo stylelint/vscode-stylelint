@@ -1,0 +1,22 @@
+diff --git a/node_modules/jest-runner-vscode/dist/child/runner.js b/node_modules/jest-runner-vscode/dist/child/runner.js
+index 0663c5c..e07bae9 100644
+--- a/node_modules/jest-runner-vscode/dist/child/runner.js
++++ b/node_modules/jest-runner-vscode/dist/child/runner.js
+@@ -18,10 +18,16 @@ async function run() {
+     const ipc = new ipc_client_1.default('child');
+     const disconnected = new Promise(resolve => ipc.on('disconnect', resolve));
+     try {
+-        const { PARENT_JEST_OPTIONS } = process_1.default.env;
++        const { PARENT_JEST_OPTIONS, PARENT_CWD } = process_1.default.env;
+         if (!PARENT_JEST_OPTIONS) {
+             throw new Error('PARENT_JEST_OPTIONS is not defined');
+         }
++
++        // HACK: On Windows, the current directory becomes the VSCode installation directory for some reason.
++        // E.g. 'D:\\a\\vscode-stylelint\\vscode-stylelint\\.vscode-test\\vscode-win32-x64-archive-1.82.3'
++        // See https://github.com/stylelint/vscode-stylelint/pull/514
++        process.chdir(PARENT_CWD);
++
+         const options = JSON.parse(PARENT_JEST_OPTIONS);
+         const jestOptions = [
+             ...options.args,
