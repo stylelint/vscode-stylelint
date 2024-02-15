@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`createTextEdits should create text edits for deletions 1`] = `
-Array [
-  Object {
+[
+  {
     "newText": "",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 4,
         "line": 3,
       },
-      "start": Object {
+      "start": {
         "character": 4,
         "line": 2,
       },
@@ -19,16 +19,16 @@ Array [
 `;
 
 exports[`createTextEdits should create text edits for insertions 1`] = `
-Array [
-  Object {
+[
+  {
     "newText": "	font-size: 12px;
 			",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 3,
         "line": 3,
       },
-      "start": Object {
+      "start": {
         "character": 3,
         "line": 3,
       },
@@ -38,119 +38,119 @@ Array [
 `;
 
 exports[`createTextEdits should create text edits for insertions and deletions 1`] = `
-Array [
-  Object {
+[
+  {
     "newText": "",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 17,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 16,
         "line": 2,
       },
     },
   },
-  Object {
+  {
     "newText": "4",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 17,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 17,
         "line": 2,
       },
     },
   },
-  Object {
+  {
     "newText": "",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 21,
         "line": 3,
       },
-      "start": Object {
+      "start": {
         "character": 19,
         "line": 2,
       },
     },
   },
-  Object {
+  {
     "newText": "",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 20,
         "line": 8,
       },
-      "start": Object {
+      "start": {
         "character": 17,
         "line": 8,
       },
     },
   },
-  Object {
+  {
     "newText": "e2e2e2",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 20,
         "line": 8,
       },
-      "start": Object {
+      "start": {
         "character": 20,
         "line": 8,
       },
     },
   },
-  Object {
+  {
     "newText": "'",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 25,
         "line": 8,
       },
-      "start": Object {
+      "start": {
         "character": 25,
         "line": 8,
       },
     },
   },
-  Object {
+  {
     "newText": "",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 29,
         "line": 8,
       },
-      "start": Object {
+      "start": {
         "character": 26,
         "line": 8,
       },
     },
   },
-  Object {
+  {
     "newText": "bar",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 29,
         "line": 8,
       },
-      "start": Object {
+      "start": {
         "character": 29,
         "line": 8,
       },
     },
   },
-  Object {
+  {
     "newText": "'",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 33,
         "line": 8,
       },
-      "start": Object {
+      "start": {
         "character": 33,
         "line": 8,
       },

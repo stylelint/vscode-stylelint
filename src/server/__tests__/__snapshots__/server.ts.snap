@@ -1,21 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`StylelintLanguageServer should accept server modules 1`] = `
-Object {
-  "context": Object {
-    "commands": Object {
+{
+  "context": {
+    "commands": {
       "__typed": [Function],
       "dispose": [MockFunction],
       "on": [MockFunction],
       "register": [MockFunction],
     },
-    "connection": Object {
+    "connection": {
       "__typed": [Function],
-      "client": Object {
+      "client": {
         "connection": [Circular],
         "register": [MockFunction],
       },
-      "console": Object {
+      "console": {
         "connection": [Circular],
         "error": [MockFunction],
         "info": [MockFunction],
@@ -23,20 +23,20 @@ Object {
         "warn": [MockFunction],
       },
       "dispose": [MockFunction],
-      "languages": Object {
+      "languages": {
         "attachPartialResultProgress": [MockFunction],
         "attachWorkDoneProgress": [MockFunction],
-        "callHierarchy": Object {
+        "callHierarchy": {
           "onIncomingCalls": [MockFunction],
           "onOutgoingCalls": [MockFunction],
           "onPrepare": [MockFunction],
         },
         "connection": [Circular],
-        "moniker": Object {
+        "moniker": {
           "on": [MockFunction],
         },
         "onLinkedEditingRange": [MockFunction],
-        "semanticTokens": Object {
+        "semanticTokens": {
           "on": [MockFunction],
           "onDelta": [MockFunction],
           "onRange": [MockFunction],
@@ -90,15 +90,15 @@ Object {
       "sendNotification": [MockFunction],
       "sendProgress": [MockFunction],
       "sendRequest": [MockFunction],
-      "telemetry": Object {
+      "telemetry": {
         "connection": [Circular],
         "logEvent": [MockFunction],
       },
-      "tracer": Object {
+      "tracer": {
         "connection": [Circular],
         "log": [MockFunction],
       },
-      "window": Object {
+      "window": {
         "attachWorkDoneProgress": [MockFunction],
         "connection": [Circular],
         "createWorkDoneProgress": [MockFunction],
@@ -107,7 +107,7 @@ Object {
         "showInformationMessage": [MockFunction],
         "showWarningMessage": [MockFunction],
       },
-      "workspace": Object {
+      "workspace": {
         "applyEdit": [MockFunction],
         "connection": [Circular],
         "getConfiguration": [MockFunction],
@@ -122,7 +122,7 @@ Object {
       },
     },
     "displayError": [Function],
-    "documents": Object {
+    "documents": {
       "__typed": [Function],
       "all": [MockFunction],
       "get": [MockFunction],
@@ -139,7 +139,7 @@ Object {
     "getModule": [Function],
     "getOptions": [Function],
     "lintDocument": [Function],
-    "notifications": Object {
+    "notifications": {
       "__typed": [Function],
       "dispose": [MockFunction],
       "on": [MockFunction],
@@ -154,18 +154,18 @@ Object {
 `;
 
 exports[`StylelintLanguageServer should allow modules to get fixes for documents using context.getFixes 1`] = `
-Array [
-  Array [
-    Object {},
-    Object {
+[
+  [
+    {},
+    {
       "uri": "file:///test.css",
     },
-    Object {
+    {
       "maxWarnings": 1,
     },
-    Object {
-      "codeAction": Object {
-        "disableRuleComment": Object {
+    {
+      "codeAction": {
+        "disableRuleComment": {
           "location": "separateLine",
         },
       },
@@ -178,26 +178,26 @@ Array [
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
-      "snippet": Array [
+      "snippet": [
         "css",
         "postcss",
       ],
       "stylelintPath": "",
-      "validate": Array [
+      "validate": [
         "css",
         "postcss",
       ],
     },
   ],
-  Array [
-    Object {},
-    Object {
+  [
+    {},
+    {
       "uri": "file:///test.css",
     },
-    Object {},
-    Object {
-      "codeAction": Object {
-        "disableRuleComment": Object {
+    {},
+    {
+      "codeAction": {
+        "disableRuleComment": {
           "location": "separateLine",
         },
       },
@@ -210,12 +210,12 @@ Array [
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
-      "snippet": Array [
+      "snippet": [
         "css",
         "postcss",
       ],
       "stylelintPath": "",
-      "validate": Array [
+      "validate": [
         "css",
         "postcss",
       ],
@@ -225,17 +225,17 @@ Array [
 `;
 
 exports[`StylelintLanguageServer should allow modules to lint documents using context.lintDocument 1`] = `
-Array [
-  Array [
-    Object {
+[
+  [
+    {
       "uri": "file:///test.css",
     },
-    Object {
+    {
       "maxWarnings": 1,
     },
-    Object {
-      "codeAction": Object {
-        "disableRuleComment": Object {
+    {
+      "codeAction": {
+        "disableRuleComment": {
           "location": "separateLine",
         },
       },
@@ -248,25 +248,25 @@ Array [
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
-      "snippet": Array [
+      "snippet": [
         "css",
         "postcss",
       ],
       "stylelintPath": "",
-      "validate": Array [
+      "validate": [
         "css",
         "postcss",
       ],
     },
   ],
-  Array [
-    Object {
+  [
+    {
       "uri": "file:///test.css",
     },
-    Object {},
-    Object {
-      "codeAction": Object {
-        "disableRuleComment": Object {
+    {},
+    {
+      "codeAction": {
+        "disableRuleComment": {
           "location": "separateLine",
         },
       },
@@ -279,12 +279,12 @@ Array [
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
-      "snippet": Array [
+      "snippet": [
         "css",
         "postcss",
       ],
       "stylelintPath": "",
-      "validate": Array [
+      "validate": [
         "css",
         "postcss",
       ],
@@ -294,16 +294,16 @@ Array [
 `;
 
 exports[`StylelintLanguageServer should combine initialization results from modules 1`] = `
-Object {
-  "capabilities": Object {
+{
+  "capabilities": {
     "callHierarchyProvider": true,
-    "textDocumentSync": Object {
+    "textDocumentSync": {
       "change": 1,
       "openClose": true,
     },
     "typeDefinitionProvider": true,
-    "workspace": Object {
-      "workspaceFolders": Object {
+    "workspace": {
+      "workspaceFolders": {
         "supported": true,
       },
     },
@@ -313,16 +313,16 @@ Object {
 
 exports[`StylelintLanguageServer should not accept modules with a non-string ID 1`] = `"Module IDs must be strings"`;
 
-exports[`StylelintLanguageServer should not accept modules with duplicate IDs 1`] = `"Module with ID \\"test-module\\" already registered"`;
+exports[`StylelintLanguageServer should not accept modules with duplicate IDs 1`] = `"Module with ID "test-module" already registered"`;
 
 exports[`StylelintLanguageServer should not accept modules without an ID 1`] = `"Modules must have an ID"`;
 
 exports[`StylelintLanguageServer should prevent modules from modifying context properties 1`] = `"Cannot set read-only property"`;
 
 exports[`StylelintLanguageServer when workspace/configuration is available, context.getOptions should return resource-scoped options 1`] = `
-Object {
-  "codeAction": Object {
-    "disableRuleComment": Object {
+{
+  "codeAction": {
+    "disableRuleComment": {
       "location": "separateLine",
     },
   },
@@ -335,12 +335,12 @@ Object {
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
-  "snippet": Array [
+  "snippet": [
     "css",
     "postcss",
   ],
   "stylelintPath": "",
-  "validate": Array [
+  "validate": [
     "css",
     "postcss",
   ],
@@ -348,9 +348,9 @@ Object {
 `;
 
 exports[`StylelintLanguageServer when workspace/configuration is available, context.getOptions should return resource-scoped options 2`] = `
-Object {
-  "codeAction": Object {
-    "disableRuleComment": Object {
+{
+  "codeAction": {
+    "disableRuleComment": {
       "location": "separateLine",
     },
   },
@@ -363,11 +363,11 @@ Object {
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
-  "snippet": Array [
+  "snippet": [
     "scss",
   ],
   "stylelintPath": "",
-  "validate": Array [
+  "validate": [
     "css",
     "postcss",
   ],
@@ -375,9 +375,9 @@ Object {
 `;
 
 exports[`StylelintLanguageServer when workspace/configuration is not available, context.getOptions should gracefully handle missing section 1`] = `
-Object {
-  "codeAction": Object {
-    "disableRuleComment": Object {
+{
+  "codeAction": {
+    "disableRuleComment": {
       "location": "separateLine",
     },
   },
@@ -390,12 +390,12 @@ Object {
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
-  "snippet": Array [
+  "snippet": [
     "css",
     "postcss",
   ],
   "stylelintPath": "",
-  "validate": Array [
+  "validate": [
     "css",
     "postcss",
   ],
@@ -403,9 +403,9 @@ Object {
 `;
 
 exports[`StylelintLanguageServer when workspace/configuration is not available, context.getOptions should gracefully handle missing section 2`] = `
-Object {
-  "codeAction": Object {
-    "disableRuleComment": Object {
+{
+  "codeAction": {
+    "disableRuleComment": {
       "location": "separateLine",
     },
   },
@@ -418,21 +418,21 @@ Object {
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
-  "snippet": Array [
+  "snippet": [
     "css",
     "postcss",
   ],
   "stylelintPath": "",
-  "validate": Array [
+  "validate": [
     "css",
   ],
 }
 `;
 
 exports[`StylelintLanguageServer when workspace/configuration is not available, context.getOptions should return global options 1`] = `
-Object {
-  "codeAction": Object {
-    "disableRuleComment": Object {
+{
+  "codeAction": {
+    "disableRuleComment": {
       "location": "separateLine",
     },
   },
@@ -445,12 +445,12 @@ Object {
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
-  "snippet": Array [
+  "snippet": [
     "css",
     "postcss",
   ],
   "stylelintPath": "",
-  "validate": Array [
+  "validate": [
     "css",
     "postcss",
   ],

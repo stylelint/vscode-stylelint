@@ -1,6 +1,6 @@
 'use strict';
 
-/** @type {import('@jest/types').Config.InitialOptions} */
+/** @type {import('jest').Config} */
 const config = {
 	projects: [
 		'<rootDir>/test/unit/jest.config.js',

@@ -38,7 +38,7 @@ Object.defineProperty(global, 'waitForDiagnostics', {
 	get() {
 		return (
 			editorOrDocument: TextEditor | TextDocument,
-			timeout = 5000,
+			timeout = 10000,
 			interval = 20,
 		): Promise<Diagnostic[]> => {
 			const uri =

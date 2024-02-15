@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`OldStylelintWarningModule with openDocument support, if Stylelint version is less than 14.x and user clicks button, should warn and open URL 1`] = `
-Array [
-  Object {
+[
+  {
     "external": true,
     "uri": "https://github.com/stylelint/vscode-stylelint#migrating-from-vscode-stylelint-0xstylelint-13x",
   },
@@ -10,7 +10,7 @@ Array [
 `;
 
 exports[`OldStylelintWarningModule without openDocument support, if Stylelint version is less than 14.x, should warn and provide link to migration guide 1`] = `
-Array [
+[
   "Stylelint version 13.0.0 is no longer supported. While it may continue to work for a while, you may encounter unexpected behavior. Please upgrade to version 14.0.0 or newer. See the migration guide for more information.",
 ]
 `;

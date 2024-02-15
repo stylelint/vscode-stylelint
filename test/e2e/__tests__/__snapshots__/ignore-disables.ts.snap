@@ -1,19 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"stylelint.ignoreDisables" setting should ignore disable directives when enabled 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "color-hex-case",
-    "codeDescription": Object {
+    "codeDescription": {
       "href": "https://stylelint.io/user-guide/rules/color-hex-case",
     },
-    "message": "Expected \\"#fff\\" to be \\"#FFF\\" (color-hex-case)",
-    "range": Object {
-      "end": Object {
+    "message": "Expected "#fff" to be "#FFF" (color-hex-case)",
+    "range": {
+      "end": {
         "character": 10,
         "line": 3,
       },
-      "start": Object {
+      "start": {
         "character": 9,
         "line": 3,
       },
@@ -21,18 +21,18 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "indentation",
-    "codeDescription": Object {
+    "codeDescription": {
       "href": "https://stylelint.io/user-guide/rules/indentation",
     },
     "message": "Expected indentation of 4 spaces (indentation)",
-    "range": Object {
-      "end": Object {
+    "range": {
+      "end": {
         "character": 14,
         "line": 3,
       },
-      "start": Object {
+      "start": {
         "character": 2,
         "line": 3,
       },

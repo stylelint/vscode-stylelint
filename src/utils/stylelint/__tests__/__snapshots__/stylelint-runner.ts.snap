@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`StylelintRunner should call stylelint.lint with the document path and given options 1`] = `
-Object {
+{
   "code": "a {}",
   "codeFilename": "/path/to/file.scss",
-  "config": Object {
+  "config": {
     "customSyntax": "postcss-scss",
   },
   "configBasedir": undefined,
@@ -21,20 +21,20 @@ Object {
 `;
 
 exports[`StylelintRunner should return processed lint results from Stylelint with configured rules 1`] = `
-Object {
-  "diagnostics": Array [
-    Object {
+{
+  "diagnostics": [
+    {
       "code": "block-no-empty",
-      "codeDescription": Object {
+      "codeDescription": {
         "href": "https://stylelint.io/user-guide/rules/block-no-empty",
       },
       "message": "Unexpected empty block (block-no-empty)",
-      "range": Object {
-        "end": Object {
+      "range": {
+        "end": {
           "character": 4,
           "line": 0,
         },
-        "start": Object {
+        "start": {
           "character": 2,
           "line": 0,
         },
@@ -47,17 +47,17 @@ Object {
 `;
 
 exports[`StylelintRunner should return processed lint results from Stylelint without configured rules 1`] = `
-Object {
-  "diagnostics": Array [
-    Object {
+{
+  "diagnostics": [
+    {
       "code": "CssSyntaxError",
       "message": "Unclosed block (CssSyntaxError)",
-      "range": Object {
-        "end": Object {
+      "range": {
+        "end": {
           "character": 1,
           "line": 0,
         },
-        "start": Object {
+        "start": {
           "character": 0,
           "line": 0,
         },

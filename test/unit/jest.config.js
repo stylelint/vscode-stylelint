@@ -1,11 +1,13 @@
 'use strict';
 
-/** @type {import('@jest/types').Config.InitialOptions} */
+/** @type {import('jest').Config} */
 const config = {
 	rootDir: '../..',
 	testMatch: ['<rootDir>/src/**/__tests__/**/*.[jt]s?(x)'],
 	preset: 'ts-jest',
-	globals: { 'ts-jest': { tsconfig: '<rootDir>/tsconfig.test.json' } },
+	transform: {
+		'^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }],
+	},
 	verbose: true,
 	modulePathIgnorePatterns: [
 		'<rootDir>/.vscode-test',

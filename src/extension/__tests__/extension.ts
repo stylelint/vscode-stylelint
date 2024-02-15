@@ -119,12 +119,12 @@ describe('Extension entry point', () => {
 
 		expect(mockWorkspace.createFileSystemWatcher).toHaveBeenCalledTimes(2);
 		expect(mockWorkspace.createFileSystemWatcher.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "**/.stylelintrc{,.js,.json,.yaml,.yml}",
 		]
 	`);
 		expect(mockWorkspace.createFileSystemWatcher.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "**/{stylelint.config.js,.stylelintignore}",
 		]
 	`);
@@ -142,7 +142,7 @@ describe('Extension entry point', () => {
 		expect(mockCommands.registerCommand).toHaveBeenCalled();
 		// cspell:disable
 		expect(mockCommands.registerCommand.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "stylelint.executeAutofix",
 		  [Function],
 		]
@@ -186,7 +186,7 @@ describe('Extension entry point', () => {
 		expect(sendRequest).toHaveBeenCalledTimes(1);
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(1);
 		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.",
 		]
 	`);
@@ -203,7 +203,7 @@ describe('Extension entry point', () => {
 
 		expect(mockCommands.registerCommand).toHaveBeenCalled();
 		expect(mockCommands.registerCommand.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "stylelint.restart",
 		  [Function],
 		]
@@ -339,12 +339,12 @@ describe('Extension entry point', () => {
 
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
 		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Stylelint: Problem!",
 		]
 	`);
 		expect(mockWindow.showErrorMessage.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Stylelint: String problem!",
 		]
 	`);
@@ -369,12 +369,12 @@ describe('Extension entry point', () => {
 
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
 		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Stylelint: Problem!",
 		]
 	`);
 		expect(mockWindow.showErrorMessage.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
+		[
 		  "Stylelint: String problem!",
 		]
 	`);
