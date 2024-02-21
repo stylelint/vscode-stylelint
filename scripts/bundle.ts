@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs-extra';
+import path from 'node:path';
+import { rm } from 'node:fs/promises';
 import * as esbuild from 'esbuild';
 import glob from 'fast-glob';
 
@@ -14,7 +14,7 @@ async function bundle(): Promise<void> {
 	const entryPoints = ['build/extension/index.js', 'build/extension/start-server.js'];
 
 	for (const item of await glob('dist/*', { cwd: rootDir })) {
-		await fs.remove(item);
+		await rm(item);
 	}
 
 	const options: esbuild.BuildOptions = {
