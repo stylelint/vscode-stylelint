@@ -5,8 +5,8 @@ const config = {
 	rules: {
 		'no-console': 'off',
 		'no-process-exit': 'off',
-		'node/no-unpublished-require': 'off',
-		'node/no-unpublished-import': 'off',
+		'n/no-unpublished-require': 'off',
+		'n/no-unpublished-import': 'off',
 	},
 };
 
