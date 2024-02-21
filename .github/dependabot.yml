@@ -13,6 +13,8 @@ updates:
         patterns: ['jest', 'jest-runner-vscode', 'ts-jest', '@types/jest']
       eslint:
         patterns: ['eslint', 'eslint-config-*', '@typescript-eslint/*', '@types/eslint']
+      vscode:
+        patterns: ['vscode-*', '@vscode/*']
     ignore:
       - dependency-name: p-wait-for
         update-types: [version-update:semver-major]
