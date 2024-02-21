@@ -12,8 +12,8 @@ import type {
 } from 'vscode-languageserver';
 import type winston from 'winston';
 import type { LanguageServerContext, LanguageServerOptions } from '../../src/server/types';
-import type { CommandManager, NotificationManager } from '../../src/utils/lsp';
-import type { StylelintRunner } from '../../src/utils/stylelint';
+import type { CommandManager, NotificationManager } from '../../src/utils/lsp/index';
+import type { StylelintRunner } from '../../src/utils/stylelint/index';
 import { MaybeAsync, PublicOnly, PublicOnlyDeep } from '../../src/utils/types';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

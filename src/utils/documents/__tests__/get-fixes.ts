@@ -1,7 +1,6 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type stylelint from 'stylelint';
-import type { StylelintRunner } from '../../stylelint';
-import type { RunnerOptions } from '../../stylelint';
+import type { StylelintRunner, RunnerOptions } from '../../stylelint/index';
 
 import { getFixes } from '../get-fixes';
 

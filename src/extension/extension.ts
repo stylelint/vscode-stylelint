@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+// eslint-disable-next-line n/no-missing-import
 import { LanguageClient, SettingMonitor, ExecuteCommandRequest } from 'vscode-languageclient/node';
 import { workspace, commands, window } from 'vscode';
 import { ApiEvent, PublicApi } from './types';
@@ -6,7 +7,7 @@ import {
 	CommandId,
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
 	Notification,
-} from '../server';
+} from '../server/index';
 import type vscode from 'vscode';
 
 /**

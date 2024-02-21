@@ -1,5 +1,5 @@
 import { CodeAction } from 'vscode-languageserver-types';
-import { RuleCodeActionsCollection } from '..';
+import { RuleCodeActionsCollection } from '../index';
 
 describe('RuleCodeActionsCollection', () => {
 	it('should be constructable', () => {

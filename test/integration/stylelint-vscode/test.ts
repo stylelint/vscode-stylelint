@@ -1,7 +1,7 @@
 import { join, resolve } from 'path';
 import { pathToFileURL } from 'url';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { StylelintRunner } from '../../../src/utils/stylelint';
+import { StylelintRunner } from '../../../src/utils/stylelint/index';
 import { version as stylelintVersion } from 'stylelint/package.json';
 import { version as stylelintScssVersion } from 'stylelint-scss/package.json';
 import semver from 'semver';

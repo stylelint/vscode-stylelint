@@ -1,4 +1,4 @@
-import { DisableReportRuleNames, isDisableReportRule } from '..';
+import { DisableReportRuleNames, isDisableReportRule } from '../index';
 
 describe('isDisableReportRule', () => {
 	it('should return true if the rule is a disable report rule', () => {

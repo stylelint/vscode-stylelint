@@ -1,5 +1,5 @@
 import * as LSP from 'vscode-languageserver-protocol';
-import { StylelintLanguageServer } from '../../../../src/server';
+import { StylelintLanguageServer } from '../../../../src/server/index';
 
 describe('Initialization', () => {
 	const connectionManager = new ConnectionManager();

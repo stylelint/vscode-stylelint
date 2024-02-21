@@ -1,6 +1,6 @@
 import { isIterableObject } from '../iterables';
 import type { Connection } from 'vscode-languageserver';
-import type { InvalidOptionError, ConfigurationError } from '../stylelint';
+import type { InvalidOptionError, ConfigurationError } from '../stylelint/index';
 
 /**
  * Takes an error and displays it in the UI using the given connection.

@@ -1,6 +1,6 @@
-// eslint-disable-next-line node/no-unpublished-import
+// eslint-disable-next-line n/no-unpublished-import
 import type TypedEventEmitter from 'typed-emitter';
-import type { DidRegisterDocumentFormattingEditProviderNotificationParams } from '../server';
+import type { DidRegisterDocumentFormattingEditProviderNotificationParams } from '../server/index';
 
 /**
  * VS Code extension event names.

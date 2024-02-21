@@ -1,8 +1,8 @@
 import path from 'path';
 import pathIsInside from 'path-is-inside';
 import { URI } from 'vscode-uri';
-import { findPackageRoot } from '../packages';
-// eslint-disable-next-line node/no-unpublished-import
+import { findPackageRoot } from '../packages/index';
+// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type { RunnerOptions } from './types';
 

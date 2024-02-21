@@ -3,7 +3,7 @@ import * as LSP from 'vscode-languageserver-protocol';
 import { CodeActionKind as StylelintCodeActionKind } from '../../types';
 
 import { CodeActionModule } from '../code-action';
-import { CommandId, Notification } from '../..';
+import { CommandId, Notification } from '../../index';
 import { WorkDoneProgressReporter } from 'vscode-languageserver';
 
 const mockContext = serverMocks.getContext();

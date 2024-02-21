@@ -8,14 +8,16 @@ jest.mock('module');
 import path from 'path';
 import fs from 'fs/promises';
 import module from 'module';
+import process from 'process';
 import type winston from 'winston';
+// eslint-disable-next-line n/no-missing-import
 import { Connection, Files } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { GlobalPathResolver } from '../global-path-resolver';
 import { findPackageRoot } from '../find-package-root';
 import { StylelintResolver } from '../stylelint-resolver';
 import type { Stats } from 'fs';
-import type { PackageManager } from '..';
+import type { PackageManager } from '../index';
 
 const mockedPath = path as tests.mocks.PathModule;
 const mockedFS = fs as jest.Mocked<typeof fs>;
@@ -478,8 +480,8 @@ describe('StylelintResolver', () => {
 
 	test("should resolve to undefined if Stylelint path can't be determined using PnP", async () => {
 		mockCWD = mockedPath.join('/fake', 'pnp');
-		mockedFindPackageRoot.mockImplementation(async (startPath) =>
-			startPath === mockedPath.join('/fake', 'cwd') ? __dirname : undefined,
+		mockedFindPackageRoot.mockImplementation((startPath) =>
+			Promise.resolve(startPath === mockedPath.join('/fake', 'cwd') ? __dirname : undefined),
 		);
 		mockedFS.stat.mockResolvedValueOnce({ isFile: () => true } as unknown as Stats);
 		mockedModule.createRequire.mockImplementation(

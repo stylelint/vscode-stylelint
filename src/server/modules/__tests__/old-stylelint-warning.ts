@@ -7,10 +7,10 @@ import fs from 'fs/promises';
 import path from 'path';
 import type LSP from 'vscode-languageserver-protocol';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { getWorkspaceFolder } from '../../../utils/documents';
-import { findPackageRoot } from '../../../utils/packages';
+import { getWorkspaceFolder } from '../../../utils/documents/index';
+import { findPackageRoot } from '../../../utils/packages/index';
 import { OldStylelintWarningModule } from '../old-stylelint-warning';
-import { Stylelint } from '../../../utils/stylelint';
+import { Stylelint } from '../../../utils/stylelint/index';
 
 const mockedFS = fs as tests.mocks.FSPromisesModule;
 const mockedPath = path as tests.mocks.PathModule;

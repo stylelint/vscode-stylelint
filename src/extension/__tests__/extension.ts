@@ -9,11 +9,12 @@ jest.mock('vscode-languageclient/node', () => ({
 
 import { EventEmitter } from 'events';
 import vscode, { window } from 'vscode';
+// eslint-disable-next-line n/no-missing-import
 import { LanguageClient, SettingMonitor, NodeModule } from 'vscode-languageclient/node';
 import {
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
 	Notification,
-} from '../../server';
+} from '../../server/index';
 import { activate } from '../extension';
 import { ApiEvent } from '../types';
 

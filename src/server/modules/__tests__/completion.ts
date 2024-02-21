@@ -1,7 +1,7 @@
 import { Position, Range } from 'vscode-languageserver-types';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type LSP from 'vscode-languageserver-protocol';
-import { DisableReportRuleNames } from '../../../utils/stylelint';
+import { DisableReportRuleNames } from '../../../utils/stylelint/index';
 
 import { CompletionModule } from '../completion';
 import { WorkDoneProgressReporter } from 'vscode-languageserver';

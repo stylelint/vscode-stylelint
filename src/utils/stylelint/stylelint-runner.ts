@@ -2,12 +2,12 @@ import os from 'os';
 import { URI } from 'vscode-uri';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-// eslint-disable-next-line node/no-unpublished-import
+// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type winston from 'winston';
 
-import { StylelintResolver } from '../packages';
-import { getWorkspaceFolder } from '../documents';
+import { StylelintResolver } from '../packages/index';
+import { getWorkspaceFolder } from '../documents/index';
 import { processLinterResult } from './process-linter-result';
 import { buildStylelintOptions } from './build-stylelint-options';
 import type { LintDiagnostics, RunnerOptions } from './types';

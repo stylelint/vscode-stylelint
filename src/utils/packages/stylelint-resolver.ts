@@ -4,16 +4,17 @@ import path from 'path';
 import process from 'process';
 
 import type winston from 'winston';
+// eslint-disable-next-line n/no-missing-import
 import { Connection, Files } from 'vscode-languageserver/node';
 import { URI } from 'vscode-uri';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { getWorkspaceFolder } from '../documents';
+import { getWorkspaceFolder } from '../documents/index';
 import { findPackageRoot } from './find-package-root';
 import { GlobalPathResolver } from './global-path-resolver';
-import { getFirstResolvedValue, lazyCallAsync } from '../functions';
+import { getFirstResolvedValue, lazyCallAsync } from '../functions/index';
 import type { PackageManager, StylelintResolutionResult, ResolverOptions, TracerFn } from './types';
-import { Stylelint } from '../stylelint';
+import { Stylelint } from '../stylelint/index';
 
 /**
  * Utility for resolving the path to the Stylelint package. Each instance caches

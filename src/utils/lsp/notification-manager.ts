@@ -75,7 +75,6 @@ export class NotificationManager implements Disposable {
 		this.#logger?.debug('Received notification', { notificationType: key ?? '<all>', params });
 
 		// This function is only ever called if the handler is registered.
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const handlers = this.#notifications.get(key)!;
 
 		const funcs: (() => Promise<void>)[] = [];

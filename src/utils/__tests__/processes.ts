@@ -14,9 +14,9 @@ describe('runProcessFindLine', () => {
 	});
 
 	it('should run the process and return the line when it is found', async () => {
-		const result = await runProcessFindLine('foo', ['bar'], undefined, (line) =>
-			line === 'stdout' ? `output: ${line}` : undefined,
-		);
+		const result = await runProcessFindLine('foo', ['bar'], undefined, (line) => {
+			return line === 'stdout' ? `output: ${line}` : undefined;
+		});
 
 		expect(result).toBe('output: stdout');
 	});
@@ -31,9 +31,9 @@ describe('runProcessFindLine', () => {
 		expect.assertions(1);
 
 		await expect(
-			runProcessFindLine('foo', ['qux'], undefined, (line) =>
-				line === 'stdout' ? `output: ${line}` : undefined,
-			),
+			runProcessFindLine('foo', ['qux'], undefined, (line) => {
+				return line === 'stdout' ? `output: ${line}` : undefined;
+			}),
 		).rejects.toThrowErrorMatchingSnapshot();
 	});
 
@@ -41,9 +41,9 @@ describe('runProcessFindLine', () => {
 		expect.assertions(1);
 
 		await expect(
-			runProcessFindLine('foo', ['quz'], undefined, (line) =>
-				line === 'stdout' ? `output: ${line}` : undefined,
-			),
+			runProcessFindLine('foo', ['quz'], undefined, (line) => {
+				return line === 'stdout' ? `output: ${line}` : undefined;
+			}),
 		).rejects.toThrowErrorMatchingSnapshot();
 	});
 
@@ -51,9 +51,9 @@ describe('runProcessFindLine', () => {
 		expect.assertions(1);
 
 		await expect(
-			runProcessFindLine('foo', ['quuz'], undefined, (line) =>
-				line === 'stdout' ? `output: ${line}` : undefined,
-			),
+			runProcessFindLine('foo', ['quuz'], undefined, (line) => {
+				return line === 'stdout' ? `output: ${line}` : undefined;
+			}),
 		).rejects.toThrowErrorMatchingSnapshot();
 	});
 

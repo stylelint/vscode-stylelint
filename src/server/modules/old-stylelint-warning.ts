@@ -4,8 +4,8 @@ import semver from 'semver';
 import pathIsInside from 'path-is-inside';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type LSP from 'vscode-languageserver-protocol';
-import { getWorkspaceFolder } from '../../utils/documents';
-import { findPackageRoot } from '../../utils/packages';
+import { getWorkspaceFolder } from '../../utils/documents/index';
+import { findPackageRoot } from '../../utils/packages/index';
 import type {
 	LanguageServerContext,
 	LanguageServerModuleConstructorParameters,

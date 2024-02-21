@@ -6,7 +6,7 @@ import os from 'os';
 import path from 'path';
 import type winston from 'winston';
 import * as processes from '../../processes';
-import { GlobalPathResolver, PackageManager } from '..';
+import { GlobalPathResolver, PackageManager } from '../index';
 
 const mockedOS = os as tests.mocks.OSModule;
 const mockedPath = path as tests.mocks.PathModule;

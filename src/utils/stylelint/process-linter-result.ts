@@ -1,5 +1,5 @@
 import { warningToDiagnostic } from './warning-to-diagnostic';
-// eslint-disable-next-line node/no-unpublished-import
+// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import { LintDiagnostics, InvalidOptionError } from './types';
 import { Stylelint } from './types';

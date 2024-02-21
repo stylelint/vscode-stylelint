@@ -81,7 +81,7 @@ unit test file with the same name in the __tests__ directory adjacent to the
 module.`);
 	}
 
-	process.exit(exitCode);
+	process.exit(exitCode); // eslint-disable-line n/no-process-exit
 }
 
 void enforceUnitTestsPerFile();

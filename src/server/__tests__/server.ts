@@ -11,12 +11,13 @@ import {
 	WorkDoneProgressReporter,
 } from 'vscode-languageserver';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
+// eslint-disable-next-line n/no-missing-import
 import { TextDocuments } from 'vscode-languageserver/node';
 import * as LSP from 'vscode-languageserver-protocol';
-import { displayError, NotificationManager, CommandManager } from '../../utils/lsp';
-import { LintDiagnostics, StylelintRunner } from '../../utils/stylelint';
-import { getFixes } from '../../utils/documents';
-import { StylelintResolver } from '../../utils/packages';
+import { displayError, NotificationManager, CommandManager } from '../../utils/lsp/index';
+import { LintDiagnostics, StylelintRunner } from '../../utils/stylelint/index';
+import { getFixes } from '../../utils/documents/index';
+import { StylelintResolver } from '../../utils/packages/index';
 import { StylelintLanguageServer } from '../server';
 import {
 	LanguageServerContext,

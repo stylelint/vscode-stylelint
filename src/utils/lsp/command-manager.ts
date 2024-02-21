@@ -21,7 +21,7 @@ export class CommandManager implements Disposable {
 	 */
 	#commands = new Map<
 		string,
-		ServerRequestHandler<LSP.ExecuteCommandParams, unknown | undefined | null, never, void>
+		ServerRequestHandler<LSP.ExecuteCommandParams, unknown, never, void>
 	>();
 
 	/**
