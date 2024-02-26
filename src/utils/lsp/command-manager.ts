@@ -44,12 +44,7 @@ export class CommandManager implements Disposable {
 	 */
 	on(
 		name: string | string[],
-		handler: ServerRequestHandler<
-			LSP.ExecuteCommandParams,
-			unknown | undefined | null,
-			never,
-			void
-		>,
+		handler: ServerRequestHandler<LSP.ExecuteCommandParams, unknown, never, void>,
 	): Disposable {
 		if (Array.isArray(name)) {
 			this.#logger?.debug('Registering commands', { commands: name });
