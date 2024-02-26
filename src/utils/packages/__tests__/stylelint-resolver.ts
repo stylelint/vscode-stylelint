@@ -8,7 +8,6 @@ jest.mock('module');
 import path from 'path';
 import fs from 'fs/promises';
 import module from 'module';
-import process from 'process';
 import type winston from 'winston';
 // eslint-disable-next-line n/no-missing-import
 import { Connection, Files } from 'vscode-languageserver/node';
@@ -118,7 +117,6 @@ describe('StylelintResolver', () => {
 		mockPnPVersion = undefined;
 		mockedFS.stat.mockReset();
 		mockedFindPackageRoot.mockReset();
-		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 	});
 
 	test('should resolve valid custom Stylelint paths', async () => {
@@ -383,7 +381,6 @@ describe('StylelintResolver', () => {
 					resolve: () => goodStylelintPath,
 				}) as unknown as NodeRequire,
 		);
-		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 
 		const connection = createMockConnection();
 		const logger = createMockLogger();
@@ -405,7 +402,6 @@ describe('StylelintResolver', () => {
 					resolve: () => goodStylelintPath,
 				}) as unknown as NodeRequire,
 		);
-		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 
 		const connection = createMockConnection();
 		const logger = createMockLogger();
@@ -429,7 +425,6 @@ describe('StylelintResolver', () => {
 					resolve: () => goodStylelintPath,
 				}) as unknown as NodeRequire,
 		);
-		Object.defineProperty(process.versions, 'pnp', { value: undefined });
 
 		const connection = createMockConnection();
 		const logger = createMockLogger();
