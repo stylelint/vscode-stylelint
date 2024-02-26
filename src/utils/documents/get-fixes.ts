@@ -1,8 +1,8 @@
 import { createTextEdits } from './create-text-edits';
-// eslint-disable-next-line node/no-unpublished-import
+// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
-import type { StylelintRunner, RunnerOptions } from '../stylelint';
+import type { StylelintRunner, RunnerOptions } from '../stylelint/index';
 
 /**
  * Runs Stylelint and returns fix text edits for the given document.

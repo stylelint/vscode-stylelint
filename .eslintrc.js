@@ -2,7 +2,7 @@
 
 /** @type {import('eslint').Linter.Config} */
 const config = {
-	extends: ['stylelint', 'plugin:node/recommended', 'prettier'],
+	extends: ['stylelint'],
 	parser: '@typescript-eslint/parser',
 	plugins: ['@typescript-eslint'],
 	parserOptions: {
@@ -14,15 +14,16 @@ const config = {
 		node: true,
 		es2020: true,
 	},
+	reportUnusedDisableDirectives: true,
 	rules: {
 		strict: ['error', 'safe'],
-		'node/no-missing-require': [
+		'n/no-missing-require': [
 			'error',
 			{ allowModules: ['vscode'], tryExtensions: ['.js', '.json', '.ts'] },
 		],
-		'node/no-missing-import': [
+		'n/no-missing-import': [
 			'error',
-			{ allowModules: ['vscode'], tryExtensions: ['.js', '.json', '.ts'] },
+			{ allowModules: ['vscode'], typescriptExtensionMap: [['.ts', '']] },
 		],
 		'require-jsdoc': 'error',
 		'no-warning-comments': ['warn', { terms: ['todo'], location: 'start' }],
@@ -39,7 +40,7 @@ const config = {
 				'no-shadow': 'off',
 				'no-use-before-define': 'off',
 				strict: ['error', 'never'],
-				'node/no-unsupported-features/es-syntax': 'off',
+				'n/no-unsupported-features/es-syntax': 'off',
 				'@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
 				'@typescript-eslint/explicit-module-boundary-types': ['error'],
 				'@typescript-eslint/no-shadow': ['error'],
@@ -58,15 +59,15 @@ const config = {
 			files: ['**/*.d.ts'],
 			rules: {
 				'@typescript-eslint/no-unused-vars': 'off',
-				'node/no-unpublished-import': 'off',
+				'n/no-unpublished-import': 'off',
 			},
 		},
 		{
 			files: ['**/__tests__/**/*', '**/__mocks__/**/*', 'test/**/*'],
-			plugins: ['jest'],
+			extends: ['stylelint/jest'],
 			rules: {
-				'node/no-unpublished-require': 'off',
-				'node/no-unpublished-import': 'off',
+				'n/no-unpublished-require': 'off',
+				'n/no-unpublished-import': 'off',
 				'@typescript-eslint/explicit-function-return-type': 'off',
 				'@typescript-eslint/explicit-module-boundary-types': 'off',
 				'@typescript-eslint/require-await': 'off',

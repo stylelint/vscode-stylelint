@@ -14,8 +14,8 @@ import stylelint from 'stylelint';
 import type winston from 'winston';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import { StylelintResolver, ResolverOptions } from '../../packages';
-import { getWorkspaceFolder } from '../../documents';
+import { StylelintResolver, ResolverOptions } from '../../packages/index';
+import { getWorkspaceFolder } from '../../documents/index';
 import { StylelintRunner } from '../stylelint-runner';
 
 const mockedOS = os as tests.mocks.OSModule;
@@ -38,7 +38,7 @@ const createMockResolver =
 	(lint?: FakeLintFunction, resolve?: FakeResolveFunction): (() => StylelintResolver) =>
 	() =>
 		({
-			resolve: resolve ?? (async () => (lint ? { stylelint: { lint } } : undefined)),
+			resolve: resolve ?? (() => Promise.resolve(lint ? { stylelint: { lint } } : undefined)),
 		} as unknown as StylelintResolver);
 
 const createMockDocument = (code: string, uri = '/path/to/file.css'): TextDocument =>

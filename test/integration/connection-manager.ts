@@ -8,7 +8,8 @@ import {
 	StreamMessageReader,
 	StreamMessageWriter,
 	WatchDog,
-} from 'vscode-languageserver/node';
+} from 'vscode-languageserver/node'; // eslint-disable-line n/no-missing-import
+// eslint-disable-next-line n/no-missing-import
 import { createConnection } from 'vscode-languageserver/lib/common/server';
 
 class TestStream extends Duplex {

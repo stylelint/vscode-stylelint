@@ -1,9 +1,9 @@
 import { CompletionItemKind } from 'vscode-languageserver-types';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type LSP from 'vscode-languageserver-protocol';
-import { getDisableType } from '../../utils/documents';
-import { createDisableCompletionItem } from '../../utils/lsp';
-import { DisableMetadataLookupTable, DisableReportRuleNames } from '../../utils/stylelint';
+import { getDisableType } from '../../utils/documents/index';
+import { createDisableCompletionItem } from '../../utils/lsp/index';
+import { DisableMetadataLookupTable, DisableReportRuleNames } from '../../utils/stylelint/index';
 import type {
 	LanguageServerContext,
 	LanguageServerModuleConstructorParameters,

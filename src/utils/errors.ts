@@ -1,6 +1,6 @@
 import { serializeError } from 'serialize-error';
 import { isIterable } from './iterables';
-import { isObject } from './objects';
+import { isObject } from './objects/index';
 
 /**
  * Takes an object with errors, returning a new object in which each error has

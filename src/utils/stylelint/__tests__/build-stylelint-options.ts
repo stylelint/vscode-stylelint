@@ -9,7 +9,7 @@ jest.mock('../../packages');
 import path from 'path';
 import type stylelint from 'stylelint';
 import type { RunnerOptions } from '../types';
-import * as packages from '../../packages';
+import * as packages from '../../packages/index';
 import { buildStylelintOptions } from '../build-stylelint-options';
 
 const mockedPath = path as tests.mocks.PathModule;

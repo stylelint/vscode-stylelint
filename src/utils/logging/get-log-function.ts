@@ -1,3 +1,4 @@
+// eslint-disable-next-line n/no-missing-import
 import type { RemoteConsole } from 'vscode-languageserver/node';
 import type { ExtractKeysOfValueType } from '../types';
 

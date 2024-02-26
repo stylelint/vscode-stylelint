@@ -4,7 +4,7 @@ import {
 	InsertTextFormat,
 	MarkupKind,
 } from 'vscode-languageserver-types';
-import type { DisableType } from '../documents';
+import type { DisableType } from '../documents/index';
 
 /**
  * Creates a disable completion item for the given disable type. Uses the given rule if one is

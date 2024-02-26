@@ -1,6 +1,7 @@
 import TransportStream from 'winston-transport';
 import { LEVEL, MESSAGE } from 'triple-beam';
 import type winston from 'winston';
+// eslint-disable-next-line n/no-missing-import
 import type { Connection, RemoteConsole } from 'vscode-languageserver/node';
 import type { TransportStreamOptions } from 'winston-transport';
 

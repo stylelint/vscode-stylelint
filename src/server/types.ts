@@ -1,15 +1,16 @@
 import type { Connection, Disposable } from 'vscode-languageserver';
+// eslint-disable-next-line n/no-missing-import
 import type { TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import { CodeActionKind as VSCodeActionKind } from 'vscode-languageserver-types';
 import type LSP from 'vscode-languageserver-protocol';
-// eslint-disable-next-line node/no-unpublished-import
+// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type winston from 'winston';
-import type { StylelintRunner, LintDiagnostics } from '../utils/stylelint';
+import type { StylelintRunner, LintDiagnostics } from '../utils/stylelint/index';
 import type { ExtractKeysOfValueType } from '../utils/types';
-import type { PackageManager, StylelintResolutionResult } from '../utils/packages';
-import type { NotificationManager, CommandManager } from '../utils/lsp';
+import type { PackageManager, StylelintResolutionResult } from '../utils/packages/index';
+import type { NotificationManager, CommandManager } from '../utils/lsp/index';
 
 /**
  * Command IDs
@@ -173,10 +174,7 @@ export type LanguageServerModuleConstructorParameters = {
 /**
  * Language server event handler names.
  */
-export type LanguageServerHandlers = ExtractKeysOfValueType<
-	LanguageServerModule,
-	() => unknown | undefined
->;
+export type LanguageServerHandlers = ExtractKeysOfValueType<LanguageServerModule, () => unknown>;
 
 /**
  * Parameters for language server event handlers, keyed by the handler name.

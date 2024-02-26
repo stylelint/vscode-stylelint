@@ -1,4 +1,4 @@
-import type { TracerFn } from '../../src/utils/packages';
+import type { TracerFn } from '../../src/utils/packages/index';
 
 const nodeLSP = jest.createMockFromModule<tests.mocks.VSCodeLanguageServerModule.Node>(
 	'vscode-languageserver/node',

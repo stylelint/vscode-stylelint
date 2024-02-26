@@ -6,8 +6,8 @@ import {
 	RuleCodeActionsCollection,
 	createDisableRuleFileCodeAction,
 	createDisableRuleLineCodeAction,
-} from '../../utils/lsp';
-import { isDisableReportRule } from '../../utils/stylelint';
+} from '../../utils/lsp/index';
+import { isDisableReportRule } from '../../utils/stylelint/index';
 import type {
 	LanguageServerContext,
 	LanguageServerModuleConstructorParameters,

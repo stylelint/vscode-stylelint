@@ -1,7 +1,7 @@
 import path from 'path';
 import { commands } from 'vscode';
 import { URI } from 'vscode-uri';
-import { ApiEvent } from '../../../src/extension';
+import { ApiEvent } from '../../../src/extension/index';
 
 describe('Document formatting', () => {
 	it('should format document using formatting options', async () => {

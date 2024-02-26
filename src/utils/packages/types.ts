@@ -1,4 +1,4 @@
-import { Stylelint } from '../stylelint';
+import { Stylelint } from '../stylelint/index';
 
 /**
  * Package manager identifiers.

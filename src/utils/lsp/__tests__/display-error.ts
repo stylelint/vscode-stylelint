@@ -1,5 +1,5 @@
 import type { Connection } from 'vscode-languageserver';
-import { InvalidOptionError } from '../../stylelint';
+import { InvalidOptionError } from '../../stylelint/index';
 import { displayError } from '../display-error';
 
 const mockConnection = { window: { showErrorMessage: jest.fn() } } as unknown as Connection;

@@ -1,6 +1,6 @@
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import * as LSP from 'vscode-languageserver-protocol';
-import { formattingOptionsToRules } from '../../utils/stylelint';
+import { formattingOptionsToRules } from '../../utils/stylelint/index';
 import { Notification } from '../types';
 import type {
 	LanguageServerContext,

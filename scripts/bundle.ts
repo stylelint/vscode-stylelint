@@ -1,4 +1,5 @@
 import path from 'node:path';
+import process from 'node:process';
 import { rm } from 'node:fs/promises';
 import * as esbuild from 'esbuild';
 import glob from 'fast-glob';
@@ -41,7 +42,7 @@ async function bundle(): Promise<void> {
 		}
 	} catch (error) {
 		console.error(error);
-		process.exit(1);
+		process.exit(1); // eslint-disable-line n/no-process-exit
 	}
 }
 

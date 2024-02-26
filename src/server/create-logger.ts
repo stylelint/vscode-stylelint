@@ -1,6 +1,10 @@
 import winston from 'winston';
 import { Connection } from 'vscode-languageserver';
-import { ErrorFormatter, LanguageServerFormatter, LanguageServerTransport } from '../utils/logging';
+import {
+	ErrorFormatter,
+	LanguageServerFormatter,
+	LanguageServerTransport,
+} from '../utils/logging/index';
 
 /**
  * Returns a Winston logger configured for the language server.

@@ -4,13 +4,14 @@ import type os from 'os';
 import type cp from 'child_process';
 import type fs from 'fs/promises';
 import type path from 'path';
+// eslint-disable-next-line n/no-missing-import
 import type VSLanguageServerNode from 'vscode-languageserver/node';
 import type * as ProcessesActual from '../src/utils/processes';
 import type { OptionalExcept } from '../src/utils/types';
-import type { TracerFn } from '../src/utils/packages';
+import type { TracerFn } from '../src/utils/packages/index';
 import type * as ServerMocks from './unit/server-mocks';
 import type { ConnectionManager as ConnectionManagerConstructor } from './integration/connection-manager';
-import type { ExtensionEvents } from '../src/extension';
+import type { ExtensionEvents } from '../src/extension/index';
 
 declare global {
 	/**

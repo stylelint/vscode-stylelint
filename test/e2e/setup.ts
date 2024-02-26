@@ -10,7 +10,7 @@ import {
 	TextDocument,
 	Diagnostic,
 } from 'vscode';
-import type { ExtensionEvents, PublicApi } from '../../src/extension';
+import type { ExtensionEvents, PublicApi } from '../../src/extension/index';
 import { getStylelintDiagnostics } from './utils';
 
 Object.defineProperty(global, 'workspaceDir', {

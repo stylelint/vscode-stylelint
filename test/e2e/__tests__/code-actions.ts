@@ -1,6 +1,7 @@
 /* eslint-disable jest/no-standalone-expect */
 import fs from 'fs/promises';
 import path from 'path';
+import process from 'process';
 
 import * as JSONC from 'jsonc-parser';
 import deepEqual from 'fast-deep-equal';
@@ -15,7 +16,7 @@ import {
 	CodeAction,
 	TextEditor,
 } from 'vscode';
-import { ApiEvent, PublicApi } from '../../../src/extension';
+import { ApiEvent, PublicApi } from '../../../src/extension/index';
 
 const getCodeActions = async (editor: TextEditor): Promise<CodeAction[]> =>
 	(await commands.executeCommand(
@@ -152,7 +153,6 @@ describe('Code actions', () => {
 
 		expect(fileAction?.edit).toBeDefined();
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		await workspace.applyEdit(fileAction!.edit!);
 
 		expect(editor.document.getText()).toMatchSnapshot();
@@ -173,7 +173,6 @@ describe('Code actions', () => {
 
 		expect(fileAction?.edit).toBeDefined();
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		await workspace.applyEdit(fileAction!.edit!);
 
 		expect(editor.document.getText()).toMatchSnapshot();
@@ -193,7 +192,6 @@ describe('Code actions', () => {
 
 			expect(lineAction?.edit).toBeDefined();
 
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			await workspace.applyEdit(lineAction!.edit!);
 
 			expect(editor.document.getText()).toMatchSnapshot();
@@ -228,7 +226,6 @@ describe('Code actions', () => {
 
 		expect(lineAction?.edit).toBeDefined();
 
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		await workspace.applyEdit(lineAction!.edit!);
 
 		expect(editor.document.getText()).toMatchSnapshot();

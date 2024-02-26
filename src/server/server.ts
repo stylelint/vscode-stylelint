@@ -1,6 +1,7 @@
 import { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import type { Connection, TextDocumentChangeEvent } from 'vscode-languageserver';
 import type LSP from 'vscode-languageserver-protocol';
+// eslint-disable-next-line n/no-missing-import
 import { TextDocuments } from 'vscode-languageserver/node';
 import {
 	DidChangeConfigurationNotification,
@@ -8,15 +9,15 @@ import {
 	InitializedNotification,
 	TextDocumentSyncKind,
 } from 'vscode-languageserver-protocol';
-// eslint-disable-next-line node/no-unpublished-import
+// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type winston from 'winston';
 
-import { getFixes } from '../utils/documents';
-import { displayError, CommandManager, NotificationManager } from '../utils/lsp';
-import { mergeAssign, mergeOptionsWithDefaults } from '../utils/objects';
-import { StylelintRunner, LintDiagnostics } from '../utils/stylelint';
-import { StylelintResolver, StylelintResolutionResult } from '../utils/packages';
+import { getFixes } from '../utils/documents/index';
+import { displayError, CommandManager, NotificationManager } from '../utils/lsp/index';
+import { mergeAssign, mergeOptionsWithDefaults } from '../utils/objects/index';
+import { StylelintRunner, LintDiagnostics } from '../utils/stylelint/index';
+import { StylelintResolver, StylelintResolutionResult } from '../utils/packages/index';
 import {
 	LanguageServerOptions,
 	LanguageServerContext,
