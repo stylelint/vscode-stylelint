@@ -13,8 +13,10 @@
 				"--disable-extensions",
 				"--trace-warnings"
 			],
-			"env": { "NODE_ENV": "development" },
-			"stopOnEntry": false
+			"outFiles": [
+				"${workspaceFolder}/**/*.(m|c|)js",
+				"!**/node_modules/**"
+			]
 		},
 		{
 			"type": "node",
@@ -23,8 +25,10 @@
 			"address": "localhost",
 			"protocol": "inspector",
 			"port": 6004,
-			"sourceMaps": false,
-			"outFiles": ["${workspaceRoot}/server.js"]
+			"outFiles": [
+				"${workspaceFolder}/**/*.(m|c|)js",
+				"!**/node_modules/**"
+			]
 		},
 		{
 			"name": "Launch Tests",
