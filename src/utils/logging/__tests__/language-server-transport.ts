@@ -75,7 +75,7 @@ describe('LanguageServerTransport', () => {
 	});
 
 	test("should use the remote console's log method for logs with a level unimplemented by the console", () => {
-		const info = createMockInfo('test', 'debug');
+		const info = createMockInfo('test', 'foo');
 
 		transport.log(info, () => undefined);
 

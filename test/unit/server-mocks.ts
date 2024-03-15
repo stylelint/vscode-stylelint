@@ -102,6 +102,8 @@ export function getConnection(): MockConnection {
 				return connection;
 			},
 			register: jest.fn(),
+			fillServerCapabilities: jest.fn(),
+			initialize: jest.fn(),
 		},
 		console: {
 			get connection() {
@@ -110,6 +112,9 @@ export function getConnection(): MockConnection {
 			error: jest.fn(),
 			info: jest.fn(),
 			log: jest.fn(),
+			debug: jest.fn(),
+			initialize: jest.fn(),
+			fillServerCapabilities: jest.fn(),
 			warn: jest.fn(),
 		},
 		dispose: jest.fn(),
@@ -129,9 +134,35 @@ export function getConnection(): MockConnection {
 			},
 			onLinkedEditingRange: jest.fn(),
 			semanticTokens: {
+				refresh: jest.fn(),
 				on: jest.fn(),
 				onDelta: jest.fn(),
 				onRange: jest.fn(),
+			},
+			fillServerCapabilities: jest.fn(),
+			initialize: jest.fn(),
+			diagnostics: {
+				on: jest.fn(),
+				onWorkspace: jest.fn(),
+				refresh: jest.fn(),
+			},
+			foldingRange: {
+				on: jest.fn(),
+				refresh: jest.fn(),
+			},
+			inlayHint: {
+				on: jest.fn(),
+				refresh: jest.fn(),
+				resolve: jest.fn(),
+			},
+			inlineValue: {
+				on: jest.fn(),
+				refresh: jest.fn(),
+			},
+			typeHierarchy: {	
+				onPrepare: jest.fn(),
+				onSubtypes: jest.fn(),
+				onSupertypes: jest.fn()
 			},
 		},
 		listen: jest.fn(),
@@ -187,12 +218,16 @@ export function getConnection(): MockConnection {
 				return connection;
 			},
 			logEvent: jest.fn(),
+			fillServerCapabilities: jest.fn(),
+			initialize: jest.fn(),
 		},
 		tracer: {
 			get connection() {
 				return connection;
 			},
 			log: jest.fn(),
+			fillServerCapabilities: jest.fn(),
+			initialize: jest.fn(),
 		},
 		window: {
 			get connection() {
@@ -204,6 +239,8 @@ export function getConnection(): MockConnection {
 			showErrorMessage: jest.fn(),
 			showInformationMessage: jest.fn(),
 			showWarningMessage: jest.fn(),
+			fillServerCapabilities: jest.fn(),
+			initialize: jest.fn(),
 		},
 		workspace: {
 			get connection() {
@@ -219,7 +256,26 @@ export function getConnection(): MockConnection {
 			onWillCreateFiles: jest.fn(),
 			onWillDeleteFiles: jest.fn(),
 			onWillRenameFiles: jest.fn(),
+			fillServerCapabilities: jest.fn(),
+			initialize: jest.fn(),
 		},
+		notebooks: {
+			attachPartialResultProgress: jest.fn(),
+			attachWorkDoneProgress: jest.fn(),
+			get connection() {
+				// Returning actual mock connections can cause infinite recursion in tests
+				return {}  as unknown as MockConnection;
+			},
+			fillServerCapabilities: jest.fn(),
+			initialize: jest.fn(),
+			synchronization: {
+				onDidChangeNotebookDocument: jest.fn(),
+				onDidCloseNotebookDocument: jest.fn(),
+				onDidOpenNotebookDocument: jest.fn(),
+				onDidSaveNotebookDocument: jest.fn(),
+			}
+		},
+		onWorkspaceSymbolResolve: jest.fn(),
 	};
 
 	return connection;
