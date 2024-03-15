@@ -10,15 +10,17 @@ import {
 } from '../server/index';
 import type vscode from 'vscode';
 
+let client: LanguageClient;
+
 /**
  * Activates the extension.
  */
-export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi {
+export async function activate({ subscriptions }: vscode.ExtensionContext): Promise<PublicApi> {
 	const serverPath = require.resolve('./start-server');
 
 	const api = Object.assign(new EventEmitter(), { codeActionReady: false }) as PublicApi;
 
-	const client = new LanguageClient(
+	client = new LanguageClient(
 		'Stylelint',
 		{
 			run: {
@@ -43,7 +45,13 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 		},
 	);
 
-	const readyHandler = (): void => {
+	const errorHandler = async (error: unknown): Promise<void> => {
+		await window.showErrorMessage(
+			`Stylelint: ${error instanceof Error ? error.message : String(error)}`,
+		);
+	};
+
+	const notificationHandlers = (): void => {
 		client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
 			api.codeActionReady = true;
 		});
@@ -58,13 +66,13 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 		});
 	};
 
-	const errorHandler = async (error: unknown): Promise<void> => {
-		await window.showErrorMessage(
-			`Stylelint: ${error instanceof Error ? error.message : String(error)}`,
-		);
-	};
 
-	client.onReady().then(readyHandler).catch(errorHandler);
+	try {
+		await client.start();
+		notificationHandlers();
+	} catch(err) {
+		await errorHandler(err);
+	}
 
 	subscriptions.push(
 		// cspell:disable-next-line
@@ -97,11 +105,10 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 	subscriptions.push(
 		commands.registerCommand('stylelint.restart', async () => {
 			await client.stop();
-			client.start();
 
 			try {
-				await client.onReady();
-				readyHandler();
+				await client.start();
+				notificationHandlers();
 			} catch (error: unknown) {
 				await errorHandler(error);
 			}
@@ -110,5 +117,23 @@ export function activate({ subscriptions }: vscode.ExtensionContext): PublicApi 
 
 	subscriptions.push(new SettingMonitor(client, 'stylelint.enable').start());
 
-	return api;
+	return Promise.resolve(api);
+}
+
+/**
+ * @returns A promise that resolves when the client has been deactivated.
+ */
+export async function deactivate(): Promise<void> {
+	if (client) {
+		try {
+			return client.stop();
+		} catch (err) {
+			const msg = err && (err as Error) ? (err as Error).message : 'unknown';
+
+			await window.showErrorMessage(`error stopping stylelint language server: ${msg}`);
+			throw err;
+		}
+	}
+
+	return Promise.resolve();
 }
