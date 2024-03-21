@@ -396,7 +396,9 @@ describe('Extension entry point', () => {
 		}
 
 		expect(window.showErrorMessage).toHaveBeenCalledTimes(1);
-		expect(window.showErrorMessage).toHaveBeenCalledWith("error stopping stylelint language server: foo");
+		expect(window.showErrorMessage).toHaveBeenCalledWith(
+			'error stopping stylelint language server: foo',
+		);
 	});
 
 	it('should show unknown error message when deactivate fails to stop the client', async () => {
@@ -413,6 +415,8 @@ describe('Extension entry point', () => {
 		}
 
 		expect(window.showErrorMessage).toHaveBeenCalledTimes(1);
-		expect(window.showErrorMessage).toHaveBeenCalledWith("error stopping stylelint language server: unknown");
+		expect(window.showErrorMessage).toHaveBeenCalledWith(
+			'error stopping stylelint language server: unknown',
+		);
 	});
 });
