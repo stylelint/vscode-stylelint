@@ -133,6 +133,5 @@ export async function deactivate(): Promise<void> {
 			throw err;
 		}
 	}
-
-	return Promise.resolve();
 }
+

@@ -15,7 +15,7 @@ import {
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
 	Notification,
 } from '../../server/index';
-import { activate } from '../extension';
+import { activate, deactivate } from '../extension';
 import { ApiEvent } from '../types';
 
 const mockVSCode = vscode as jest.Mocked<typeof vscode>;
@@ -373,5 +373,46 @@ describe('Extension entry point', () => {
 		  "Stylelint: String problem!",
 		]
 	`);
+	});
+
+	it('should stop language client on deactivate', async () => {
+		await activate(mockExtensionContext);
+		await deactivate();
+
+		expect(stop).toHaveBeenCalledTimes(1);
+	});
+
+	it('should show error message when deactivate fails to stop the client', async () => {
+		stop.mockImplementation(() => {
+			throw new Error('foo');
+		});
+
+		await activate(mockExtensionContext);
+
+		try {
+			await deactivate();
+		} catch {
+			/* empty */
+		}
+
+		expect(window.showErrorMessage).toHaveBeenCalledTimes(1);
+		expect(window.showErrorMessage).toHaveBeenCalledWith("error stopping stylelint language server: foo");
+	});
+
+	it('should show unknown error message when deactivate fails to stop the client', async () => {
+		stop.mockImplementation(() => {
+			throw undefined;
+		});
+
+		await activate(mockExtensionContext);
+
+		try {
+			await deactivate();
+		} catch {
+			/* empty */
+		}
+
+		expect(window.showErrorMessage).toHaveBeenCalledTimes(1);
+		expect(window.showErrorMessage).toHaveBeenCalledWith("error stopping stylelint language server: unknown");
 	});
 });
