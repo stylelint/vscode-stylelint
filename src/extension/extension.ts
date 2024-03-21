@@ -66,11 +66,10 @@ export async function activate({ subscriptions }: vscode.ExtensionContext): Prom
 		});
 	};
 
-
 	try {
 		await client.start();
 		notificationHandlers();
-	} catch(err) {
+	} catch (err) {
 		await errorHandler(err);
 	}
 

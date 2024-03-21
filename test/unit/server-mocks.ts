@@ -159,10 +159,10 @@ export function getConnection(): MockConnection {
 				on: jest.fn(),
 				refresh: jest.fn(),
 			},
-			typeHierarchy: {	
+			typeHierarchy: {
 				onPrepare: jest.fn(),
 				onSubtypes: jest.fn(),
-				onSupertypes: jest.fn()
+				onSupertypes: jest.fn(),
 			},
 		},
 		listen: jest.fn(),
@@ -264,7 +264,7 @@ export function getConnection(): MockConnection {
 			attachWorkDoneProgress: jest.fn(),
 			get connection() {
 				// Returning actual mock connections can cause infinite recursion in tests
-				return {}  as unknown as MockConnection;
+				return {} as unknown as MockConnection;
 			},
 			fillServerCapabilities: jest.fn(),
 			initialize: jest.fn(),
@@ -273,7 +273,7 @@ export function getConnection(): MockConnection {
 				onDidCloseNotebookDocument: jest.fn(),
 				onDidOpenNotebookDocument: jest.fn(),
 				onDidSaveNotebookDocument: jest.fn(),
-			}
+			},
 		},
 		onWorkspaceSymbolResolve: jest.fn(),
 	};
