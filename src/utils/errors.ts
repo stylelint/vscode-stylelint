@@ -20,7 +20,7 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 		visited: WeakMap<object, unknown>,
 	): RInner => {
 		if (!obj || typeof obj !== 'object') {
-			return obj as RInner;
+			return obj as unknown as RInner;
 		}
 
 		if (visited.has(obj as unknown as object)) {
