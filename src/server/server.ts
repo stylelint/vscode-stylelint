@@ -517,7 +517,7 @@ export class StylelintLanguageServer implements Disposable {
 		this.#scopedOptions.delete(document.uri);
 	}
 
-	#onDidChangeConfiguration(params: LSP.DidChangeConfigurationParams): void {
+	async #onDidChangeConfiguration(params: LSP.DidChangeConfigurationParams): Promise<void> {
 		if (this.#hasConfigurationCapability) {
 			this.#logger.debug('received onDidChangeConfiguration, clearing cached options', { params });
 
@@ -525,7 +525,7 @@ export class StylelintLanguageServer implements Disposable {
 
 			this.#invokeHandlers('onDidChangeConfiguration');
 
-			this.#connection.sendNotification(Notification.DidResetConfiguration);
+			await this.#connection.sendNotification(Notification.DidResetConfiguration);
 
 			return;
 		}
