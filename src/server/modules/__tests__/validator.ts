@@ -165,7 +165,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(4, 5, 1, 4),
 							},
 						],
-				  }
+					}
 				: {
 						diagnostics: [
 							{
@@ -174,7 +174,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(2, 2, 2, 6),
 							},
 						],
-				  };
+					};
 		});
 		mockContext.documents.all.mockReturnValueOnce([
 			TextDocument.create('foo', 'baz', 1, 'a {}'),
@@ -226,7 +226,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(4, 5, 1, 4),
 							},
 						],
-				  }
+					}
 				: {
 						diagnostics: [
 							{
@@ -235,7 +235,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(2, 2, 2, 6),
 							},
 						],
-				  };
+					};
 		});
 		mockContext.documents.all.mockReturnValueOnce([
 			TextDocument.create('foo', 'baz', 1, 'a {}'),
@@ -290,7 +290,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(4, 5, 1, 4),
 							},
 						],
-				  }
+					}
 				: {
 						diagnostics: [
 							{
@@ -299,7 +299,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(2, 2, 2, 6),
 							},
 						],
-				  };
+					};
 		});
 		mockContext.documents.all.mockReturnValueOnce([
 			TextDocument.create('foo', 'baz', 1, 'a {}'),
@@ -426,7 +426,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(4, 5, 1, 4),
 							},
 						],
-				  }
+					}
 				: {
 						diagnostics: [
 							{
@@ -435,7 +435,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(2, 2, 2, 6),
 							},
 						],
-				  };
+					};
 		});
 		mockContext.documents.all.mockReturnValue([
 			TextDocument.create('foo', 'baz', 1, 'a {}'),
@@ -483,7 +483,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(4, 5, 1, 4),
 							},
 						],
-				  }
+					}
 				: {
 						diagnostics: [
 							{
@@ -492,7 +492,7 @@ describe('ValidatorModule', () => {
 								range: Range.create(2, 2, 2, 6),
 							},
 						],
-				  };
+					};
 		});
 		mockContext.documents.all.mockReturnValue([
 			TextDocument.create('foo', 'baz', 1, 'a {}'),

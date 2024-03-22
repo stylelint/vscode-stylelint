@@ -29,7 +29,7 @@ const createMockConnection = (workspaceFolders?: string[]) => {
 	} as Connection;
 };
 
-const createMockTextDocument = (uri: string) => ({ uri } as TextDocument);
+const createMockTextDocument = (uri: string) => ({ uri }) as TextDocument;
 
 describe('getWorkspaceFolder', () => {
 	beforeEach(() => {

@@ -39,13 +39,13 @@ const createMockResolver =
 	() =>
 		({
 			resolve: resolve ?? (() => Promise.resolve(lint ? { stylelint: { lint } } : undefined)),
-		} as unknown as StylelintResolver);
+		}) as unknown as StylelintResolver;
 
 const createMockDocument = (code: string, uri = '/path/to/file.css'): TextDocument =>
 	({
 		getText: () => code,
 		uri,
-	} as TextDocument);
+	}) as TextDocument;
 
 const mockConnection = {} as unknown as Connection;
 

@@ -8,6 +8,6 @@
 		{ "path": "ignore-disables" },
 		{ "path": "report-disables" },
 		{ "path": "stylelint-path" },
-		{ "path": "validate" }
-	]
+		{ "path": "validate" },
+	],
 }

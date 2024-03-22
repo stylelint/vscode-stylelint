@@ -87,6 +87,6 @@ const runProcessFindLine = async <T>(
 
 processes.runProcessFindLine = jest.fn(
 	runProcessFindLine,
-) as typeof processes['runProcessFindLine'];
+) as (typeof processes)['runProcessFindLine'];
 
 module.exports = processes;

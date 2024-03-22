@@ -41,8 +41,8 @@ function mergeOptionsWithDefaultsInner<T extends object>(
 				const value: unknown = Array.isArray(fromOptions)
 					? fromOptions.map((item: unknown) => deepClone(item))
 					: isObject(fromDefaults) && !Array.isArray(fromDefaults)
-					? mergeOptionsWithDefaultsInner(fromOptions, fromDefaults, seen, mapped, circulars)
-					: deepClone(fromOptions);
+						? mergeOptionsWithDefaultsInner(fromOptions, fromDefaults, seen, mapped, circulars)
+						: deepClone(fromOptions);
 
 				mapped.set(fromOptions, value);
 

@@ -7,7 +7,7 @@ import { getFixes } from '../get-fixes';
 const createMockRunner = (output?: string) =>
 	({
 		lintDocument: jest.fn(async () => ({ diagnostics: [], output })),
-	} as unknown as StylelintRunner);
+	}) as unknown as StylelintRunner;
 
 const createDocument = (code: string) =>
 	TextDocument.create('file:///path/test.css', 'css', 1, code);
