@@ -3,8 +3,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import process from 'process';
 
-import * as JSONC from 'jsonc-parser';
-import deepEqual from 'fast-deep-equal';
 import pWaitFor from 'p-wait-for';
 import {
 	commands,
@@ -35,23 +33,6 @@ const cssPath = path.resolve(workspaceDir, 'code-actions/test.css');
 const jsPath = path.resolve(workspaceDir, 'code-actions/test.js');
 const settingsPath = path.resolve(workspaceDir, 'code-actions/.vscode/settings.json');
 
-const defaultSettings = {
-	'[css]': {
-		'editor.codeActionsOnSave': {
-			'source.fixAll.stylelint': true,
-		},
-	},
-	'stylelint.reportNeedlessDisables': true,
-	'stylelint.validate': ['css', 'javascript'],
-};
-
-const css = `a {
-  font-size: 1.2em;
-    /* stylelint-disable-next-line comment-no-empty */
-  color: #00;
-}
-`;
-
 // TODO: Investigate why editing tests intermittently fail on CI
 const localIt = process.env.CI ? it.skip : it;
 
@@ -62,39 +43,19 @@ describe('Code actions', () => {
 		await pWaitFor(() => api.codeActionReady, { timeout: 5000 });
 	});
 
+	let savedFiles: Map<string, string>;
+
+	beforeEach(async () => {
+		savedFiles = new Map([
+			[cssPath, await fs.readFile(cssPath, 'utf8')],
+			[settingsPath, await fs.readFile(settingsPath, 'utf8')],
+		]);
+	});
+
 	afterEach(async () => {
-		await fs.writeFile(cssPath, css);
-
-		const settingsEditor = await openDocument(settingsPath);
-		const text = settingsEditor.document.getText();
-		const settings = JSONC.parse(text) as unknown;
-		const areEqual = deepEqual(settings, defaultSettings);
-
-		if (!settingsEditor.document.isDirty && areEqual) {
-			return;
+		for (const [filePath, content] of savedFiles.entries()) {
+			await fs.writeFile(filePath, content);
 		}
-
-		await settingsEditor.edit((editBuilder) => {
-			editBuilder.replace(
-				new Range(
-					settingsEditor.document.positionAt(0),
-					settingsEditor.document.positionAt(text.length - 1),
-				),
-				JSON.stringify(defaultSettings, null, '\t'),
-			);
-		});
-
-		if (areEqual) {
-			await settingsEditor.document.save();
-
-			return;
-		}
-
-		const resetPromise = waitForApiEvent(ApiEvent.DidResetConfiguration);
-
-		await settingsEditor.document.save();
-
-		await resetPromise;
 	});
 
 	it('should provide code actions for problems', async () => {
