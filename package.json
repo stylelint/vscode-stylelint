@@ -199,13 +199,13 @@
     ]
   },
   "dependencies": {
-    "@types/triple-beam": "^1.3.2",
+    "@types/triple-beam": "^1.3.5",
     "fast-diff": "^1.2.0",
     "path-is-inside": "^1.0.2",
     "rfdc": "^1.3.0",
     "semver": "^7.3.5",
     "serialize-error": "^8.1.0",
-    "triple-beam": "^1.3.0",
+    "triple-beam": "^1.4.1",
     "vscode-languageclient": "^9.0.1",
     "vscode-languageserver": "^9.0.1",
     "vscode-languageserver-protocol": "^3.17.5",
