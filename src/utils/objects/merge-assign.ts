@@ -7,7 +7,11 @@ import { isObject } from './is-object';
  * @param source1 The first source object from which to copy properties.
  * @param source2 The second source object from which to copy properties.
  */
-export function mergeAssign<T, U, V>(target: T, source1: U, source2?: V): T & U & V {
+export function mergeAssign<T extends object, U extends object, V extends object>(
+	target: T,
+	source1: U | undefined,
+	source2?: V,
+): T & U & V {
 	const targetAsUnion = target as T & U & V;
 
 	for (const object of [source1, source2]) {
@@ -37,7 +41,9 @@ export function mergeAssign<T, U, V>(target: T, source1: U, source2?: V): T & U 
 					targetAsUnion[key] = {} as (T & U & V)[typeof key];
 				}
 
-				targetAsUnion[key] = mergeAssign(targetAsUnion[key], value);
+				targetAsUnion[key] = mergeAssign(targetAsUnion[key] as object, value) as (T &
+					U &
+					V)[typeof key];
 			} else {
 				targetAsUnion[key] = value as (T & U & V)[typeof key];
 			}
