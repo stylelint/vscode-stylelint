@@ -1,22 +1,23 @@
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'node:events';
+import path from 'node:path';
+
 // eslint-disable-next-line n/no-missing-import
 import { LanguageClient, SettingMonitor, ExecuteCommandRequest } from 'vscode-languageclient/node';
-import { workspace, commands, window } from 'vscode';
+import { workspace, commands, window, type ExtensionContext } from 'vscode';
 import { ApiEvent, PublicApi } from './types';
 import {
 	CommandId,
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
 	Notification,
 } from '../server/index';
-import type vscode from 'vscode';
 
 let client: LanguageClient;
 
 /**
  * Activates the extension.
  */
-export async function activate({ subscriptions }: vscode.ExtensionContext): Promise<PublicApi> {
-	const serverPath = require.resolve('./start-server');
+export async function activate({ subscriptions }: ExtensionContext): Promise<PublicApi> {
+	const serverPath = path.join(__dirname, 'start-server.js');
 
 	const api = Object.assign(new EventEmitter(), { codeActionReady: false }) as PublicApi;
 
