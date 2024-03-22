@@ -96,7 +96,7 @@ export class FormatterModule implements LanguageServerModule {
 
 		this.#logger?.debug('Registering formatter for document', { uri: document.uri, options });
 
-		this.#context.connection.sendNotification(
+		await this.#context.connection.sendNotification(
 			Notification.DidRegisterDocumentFormattingEditProvider,
 			{ uri: document.uri, options },
 		);

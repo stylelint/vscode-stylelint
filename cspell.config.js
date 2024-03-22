@@ -34,6 +34,7 @@ const config = {
 		'uinteger',
 		'vscodeignore',
 		'Xerus',
+		'Supertypes',
 	],
 	overrides: [
 		{

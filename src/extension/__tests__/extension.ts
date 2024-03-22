@@ -15,7 +15,7 @@ import {
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
 	Notification,
 } from '../../server/index';
-import { activate } from '../extension';
+import { activate, deactivate } from '../extension';
 import { ApiEvent } from '../types';
 
 const mockVSCode = vscode as jest.Mocked<typeof vscode>;
@@ -51,7 +51,6 @@ mockVSCode.window = mockWindow as unknown as typeof vscode.window;
 const start = jest.fn();
 const stop = jest.fn();
 const onNotification = jest.fn();
-const onReady = jest.fn();
 const sendRequest = jest.fn();
 const settingMonitorStart = jest.fn();
 
@@ -84,12 +83,10 @@ describe('Extension entry point', () => {
 		mockVSCode.window.activeTextEditor = undefined;
 
 		start.mockImplementation(async () => undefined);
-		onReady.mockImplementation(async () => undefined);
 		sendRequest.mockImplementation(async () => undefined);
 
 		mockLanguageClient.mockReturnValue({
 			onNotification,
-			onReady,
 			sendRequest,
 			start,
 			stop,
@@ -102,21 +99,21 @@ describe('Extension entry point', () => {
 		(mockExtensionContext as { subscriptions: unknown[] }).subscriptions = [];
 	});
 
-	it('should provide a public API', () => {
-		const api = activate(mockExtensionContext);
+	it('should provide a public API', async () => {
+		const api = await activate(mockExtensionContext);
 
 		expect(api).toBeInstanceOf(EventEmitter);
 	});
 
-	it('should create a language client', () => {
-		activate(mockExtensionContext);
+	it('should create a language client', async () => {
+		await activate(mockExtensionContext);
 
 		expect(mockLanguageClient).toHaveBeenCalled();
 		expect(stripPaths(mockLanguageClient.mock.calls[0])).toMatchSnapshot();
 	});
 
-	it('should watch for changes to Stylelint configuration files', () => {
-		activate(mockExtensionContext);
+	it('should watch for changes to Stylelint configuration files', async () => {
+		await activate(mockExtensionContext);
 
 		expect(mockWorkspace.createFileSystemWatcher).toHaveBeenCalledTimes(2);
 		expect(mockWorkspace.createFileSystemWatcher.mock.calls[0]).toMatchInlineSnapshot(`
@@ -131,12 +128,12 @@ describe('Extension entry point', () => {
 	`);
 	});
 
-	it('should register an auto-fix command', () => {
+	it('should register an auto-fix command', async () => {
 		const disposable = { dispose: () => undefined };
 
 		mockCommands.registerCommand.mockReturnValueOnce(disposable);
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		const { subscriptions } = mockExtensionContext;
 
@@ -155,7 +152,7 @@ describe('Extension entry point', () => {
 	it('with an active text editor, should send auto-fix commands to the language server', async () => {
 		window.activeTextEditor = mockTextEditor;
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await mockCommands.registerCommand.mock.calls[0][1](undefined);
 
@@ -167,7 +164,7 @@ describe('Extension entry point', () => {
 	it('without an active text editor, should not send auto-fix commands to the language server', async () => {
 		window.activeTextEditor = undefined;
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await mockCommands.registerCommand.mock.calls[0][1](undefined);
 
@@ -178,7 +175,7 @@ describe('Extension entry point', () => {
 	it('should show an error message if sending the command request fails', async () => {
 		window.activeTextEditor = mockTextEditor;
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		sendRequest.mockRejectedValueOnce(new Error('mock error'));
 
@@ -193,12 +190,12 @@ describe('Extension entry point', () => {
 	`);
 	});
 
-	it('should register a restart server command', () => {
+	it('should register a restart server command', async () => {
 		const disposable = { dispose: () => undefined };
 
 		mockCommands.registerCommand.mockReturnValue(disposable);
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		const { subscriptions } = mockExtensionContext;
 
@@ -213,7 +210,7 @@ describe('Extension entry point', () => {
 	});
 
 	it('should restart the language server', async () => {
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await mockCommands.registerCommand.mock.calls[1][1]();
 
@@ -221,12 +218,12 @@ describe('Extension entry point', () => {
 		expect(start).toHaveBeenCalled();
 	});
 
-	it('should monitor settings', () => {
+	it('should monitor settings', async () => {
 		const disposable = { dispose: () => undefined };
 
 		settingMonitorStart.mockReturnValueOnce(disposable);
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		const { subscriptions } = mockExtensionContext;
 
@@ -240,18 +237,17 @@ describe('Extension entry point', () => {
 	});
 
 	it('should listen for the DidRegisterCodeActionRequestHandler notification', async () => {
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await new Promise((resolve) => setImmediate(resolve));
 
-		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
 		expect(onNotification.mock.calls[0][0]).toBe(Notification.DidRegisterCodeActionRequestHandler);
 		expect(onNotification.mock.calls[0][1]).toBeInstanceOf(Function);
 	});
 
 	it('should set codeActionReady to true when the DidRegisterCodeActionRequestHandler notification is received', async () => {
-		const api = activate(mockExtensionContext);
+		const api = await activate(mockExtensionContext);
 
 		await new Promise((resolve) => setImmediate(resolve));
 
@@ -261,11 +257,10 @@ describe('Extension entry point', () => {
 	});
 
 	it('should listen for the DidRegisterDocumentFormattingEditProvider notification', async () => {
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await new Promise((resolve) => setImmediate(resolve));
 
-		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
 		expect(onNotification.mock.calls[1][0]).toBe(
 			Notification.DidRegisterDocumentFormattingEditProvider,
@@ -274,7 +269,7 @@ describe('Extension entry point', () => {
 	});
 
 	it('should emit the DidRegisterDocumentFormattingEditProvider event when the DidRegisterDocumentFormattingEditProvider notification is received', async () => {
-		const api = activate(mockExtensionContext);
+		const api = await activate(mockExtensionContext);
 
 		const promise = new Promise<DidRegisterDocumentFormattingEditProviderNotificationParams>(
 			(resolve) => {
@@ -297,18 +292,17 @@ describe('Extension entry point', () => {
 	});
 
 	it('should listen for the DidResetConfiguration notification', async () => {
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await new Promise((resolve) => setImmediate(resolve));
 
-		expect(onReady).toHaveBeenCalled();
 		expect(onNotification).toHaveBeenCalled();
 		expect(onNotification.mock.calls[2][0]).toBe(Notification.DidResetConfiguration);
 		expect(onNotification.mock.calls[2][1]).toBeInstanceOf(Function);
 	});
 
 	it('should emit the DidResetConfiguration event when the DidResetConfiguration notification is received', async () => {
-		const api = activate(mockExtensionContext);
+		const api = await activate(mockExtensionContext);
 
 		const promise = new Promise<void>((resolve) => {
 			api.on(ApiEvent.DidResetConfiguration, resolve);
@@ -326,7 +320,7 @@ describe('Extension entry point', () => {
 			throw new Error('Problem!');
 		});
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await new Promise((resolve) => setImmediate(resolve));
 
@@ -334,7 +328,7 @@ describe('Extension entry point', () => {
 			throw 'String problem!';
 		});
 
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await new Promise((resolve) => setImmediate(resolve));
 
@@ -352,17 +346,17 @@ describe('Extension entry point', () => {
 	});
 
 	it('should show an error message if restarting the language server fails', async () => {
-		activate(mockExtensionContext);
+		await activate(mockExtensionContext);
 
 		await new Promise((resolve) => setImmediate(resolve));
 
-		onReady.mockImplementation((): void => {
+		start.mockImplementation((): void => {
 			throw new Error('Problem!');
 		});
 
 		await mockCommands.registerCommand.mock.calls[1][1]();
 
-		onReady.mockImplementation((): void => {
+		start.mockImplementation((): void => {
 			throw 'String problem!';
 		});
 
@@ -379,5 +373,50 @@ describe('Extension entry point', () => {
 		  "Stylelint: String problem!",
 		]
 	`);
+	});
+
+	it('should stop language client on deactivate', async () => {
+		await activate(mockExtensionContext);
+		await deactivate();
+
+		expect(stop).toHaveBeenCalledTimes(1);
+	});
+
+	it('should show error message when deactivate fails to stop the client', async () => {
+		stop.mockImplementation(() => {
+			throw new Error('foo');
+		});
+
+		await activate(mockExtensionContext);
+
+		try {
+			await deactivate();
+		} catch {
+			/* empty */
+		}
+
+		expect(window.showErrorMessage).toHaveBeenCalledTimes(1);
+		expect(window.showErrorMessage).toHaveBeenCalledWith(
+			'error stopping stylelint language server: foo',
+		);
+	});
+
+	it('should show unknown error message when deactivate fails to stop the client', async () => {
+		stop.mockImplementation(() => {
+			throw undefined;
+		});
+
+		await activate(mockExtensionContext);
+
+		try {
+			await deactivate();
+		} catch {
+			/* empty */
+		}
+
+		expect(window.showErrorMessage).toHaveBeenCalledTimes(1);
+		expect(window.showErrorMessage).toHaveBeenCalledWith(
+			'error stopping stylelint language server: unknown',
+		);
 	});
 });

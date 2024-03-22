@@ -407,6 +407,10 @@ describe('ValidatorModule', () => {
 			uri: 'foo',
 			diagnostics: [],
 		});
+
+		// Flush all promises
+		// eslint-disable-next-line jest/unbound-method, n/prefer-global/process
+		await new Promise(process.nextTick);
 		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics cleared', { uri: 'foo' });
 	});
 

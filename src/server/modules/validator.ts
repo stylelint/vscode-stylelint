@@ -54,7 +54,7 @@ export class ValidatorModule implements LanguageServerModule {
 					uri: document.uri,
 					language: document.languageId,
 				});
-				this.#clearDiagnostics(document);
+				await this.#clearDiagnostics(document);
 			} else {
 				this.#logger?.debug('Document should not be validated, ignoring', {
 					uri: document.uri,
@@ -76,7 +76,7 @@ export class ValidatorModule implements LanguageServerModule {
 		this.#logger?.debug('Sending diagnostics', { uri: document.uri, result });
 
 		try {
-			this.#context.connection.sendDiagnostics({
+			await this.#context.connection.sendDiagnostics({
 				uri: document.uri,
 				diagnostics: result.diagnostics,
 			});
@@ -96,11 +96,11 @@ export class ValidatorModule implements LanguageServerModule {
 		);
 	}
 
-	#clearDiagnostics({ uri }: TextDocument): void {
+	async #clearDiagnostics({ uri }: TextDocument): Promise<void> {
 		this.#logger?.debug('Clearing diagnostics for document', { uri });
 
 		this.#documentDiagnostics.delete(uri);
-		this.#context.connection.sendDiagnostics({ uri, diagnostics: [] });
+		await this.#context.connection.sendDiagnostics({ uri, diagnostics: [] });
 
 		this.#logger?.debug('Diagnostics cleared', { uri });
 	}
@@ -134,8 +134,8 @@ export class ValidatorModule implements LanguageServerModule {
 		this.#logger?.debug('onDidChangeContent handler registered');
 
 		this.#disposables.push(
-			this.#context.documents.onDidClose(({ document }) => {
-				this.#clearDiagnostics(document);
+			this.#context.documents.onDidClose(async ({ document }) => {
+				await this.#clearDiagnostics(document);
 			}),
 		);
 
