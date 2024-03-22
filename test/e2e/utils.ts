@@ -51,7 +51,7 @@ function normalizeCode(message: vscode.Diagnostic): tests.CodePart {
 		: {
 				code: message.code.value,
 				codeDescription: { href: URI.from(message.code.target).toString() },
-		  };
+			};
 }
 
 /**

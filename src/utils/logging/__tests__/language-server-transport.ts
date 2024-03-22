@@ -10,7 +10,7 @@ const createMockInfo = (message: string, level: string) =>
 	({
 		[MESSAGE]: message,
 		[LEVEL]: level,
-	} as unknown as winston.Logform.TransformableInfo);
+	}) as unknown as winston.Logform.TransformableInfo;
 
 describe('LanguageServerTransport', () => {
 	let transport: LanguageServerTransport;

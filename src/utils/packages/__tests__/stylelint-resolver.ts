@@ -45,7 +45,7 @@ const createMockConnection = () =>
 		console: { error: jest.fn() },
 		window: { showErrorMessage: jest.fn() },
 		tracer: { log: jest.fn() },
-	} as unknown as Connection);
+	}) as unknown as Connection;
 
 const createMockLogger = () =>
 	({
@@ -53,12 +53,12 @@ const createMockLogger = () =>
 		info: jest.fn(),
 		warn: jest.fn(),
 		error: jest.fn(),
-	} as unknown as winston.Logger);
+	}) as unknown as winston.Logger;
 
 const createMockTextDocument = (nonFileURI = false) =>
 	({
 		uri: nonFileURI ? 'scheme:///fake/cwd/document.css' : 'file:///fake/cwd/document.css',
-	} as TextDocument);
+	}) as TextDocument;
 
 const goodStylelintPath = mockedPath.join(__dirname, 'stylelint.js');
 const badStylelintPath = mockedPath.join(__dirname, 'bad-stylelint.js');
@@ -106,7 +106,7 @@ mockedGlobalPathResolver.mockImplementation(
 	() =>
 		({
 			resolve: jest.fn(async (packageManager: PackageManager) => mockGlobalPaths[packageManager]),
-		} as unknown as GlobalPathResolver),
+		}) as unknown as GlobalPathResolver,
 );
 
 describe('StylelintResolver', () => {

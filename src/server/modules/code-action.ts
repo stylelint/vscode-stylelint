@@ -147,7 +147,7 @@ export class CodeActionModule implements LanguageServerModule {
 					'Fix all Stylelint auto-fixable problems',
 					{ documentChanges: [LSP.TextDocumentEdit.create(identifier, edits)] },
 					StylelintCodeActionKind.StylelintSourceFixAll,
-			  )
+				)
 			: undefined;
 	}
 

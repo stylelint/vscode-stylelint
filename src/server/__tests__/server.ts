@@ -766,7 +766,7 @@ describe('StylelintLanguageServer', () => {
 					lintDocument: async () => {
 						throw error;
 					},
-				} as unknown as StylelintRunner),
+				}) as unknown as StylelintRunner,
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
@@ -798,7 +798,7 @@ describe('StylelintLanguageServer', () => {
 	});
 
 	test('should allow modules to get fixes for documents using context.getFixes', async () => {
-		mockRunner.mockImplementation(() => ({} as unknown as StylelintRunner));
+		mockRunner.mockImplementation(() => ({}) as unknown as StylelintRunner);
 		mockGetFixes.mockImplementation(async () => ['test'] as unknown as TextEdit[]);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
@@ -869,7 +869,7 @@ describe('StylelintLanguageServer', () => {
 						stylelint: { fake: 'package' },
 						resolvedPath: 'fake/path',
 					}),
-				} as unknown as StylelintResolver),
+				}) as unknown as StylelintResolver,
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
@@ -906,7 +906,7 @@ describe('StylelintLanguageServer', () => {
 					resolve: async () => {
 						throw error;
 					},
-				} as unknown as StylelintResolver),
+				}) as unknown as StylelintResolver,
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
@@ -944,7 +944,7 @@ describe('StylelintLanguageServer', () => {
 					resolve: async () => {
 						return undefined;
 					},
-				} as unknown as StylelintResolver),
+				}) as unknown as StylelintResolver,
 		);
 
 		const document = { uri: 'file:///test.css' } as TextDocument;
