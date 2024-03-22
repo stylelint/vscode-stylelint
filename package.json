@@ -226,7 +226,7 @@
     "@typescript-eslint/parser": "^7.3.1",
     "@typescript/lib-dom": "npm:@types/web@^0.0.47",
     "@vscode/test-electron": "^1.6.2",
-    "cspell": "^8.3.2",
+    "cspell": "^8.6.0",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
     "eslint-config-stylelint": "^21.0.0",
