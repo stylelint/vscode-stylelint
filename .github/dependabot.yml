@@ -12,7 +12,7 @@ updates:
       jest:
         patterns: ['jest', 'jest-runner-vscode', 'ts-jest', '@types/jest']
       eslint:
-        patterns: ['eslint', 'eslint-config-*', '@typescript-eslint/*', '@types/eslint']
+        patterns: ['eslint', 'eslint-config-*', '@typescript-eslint/*']
       vscode:
         patterns: ['vscode-*', '@vscode/*']
     ignore:
