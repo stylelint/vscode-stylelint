@@ -55,7 +55,7 @@ export function processLinterResult(
 	}
 
 	const diagnostics = warnings.map((warning) => warningToDiagnostic(warning, ruleMetadata));
-	const output = linterResult.report || linterResult.output;
+	const output = ('report' in linterResult && linterResult.report) || linterResult.output;
 
 	return output ? { output, diagnostics } : { diagnostics };
 }
