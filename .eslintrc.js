@@ -1,6 +1,5 @@
 'use strict';
 
-/** @type {import('eslint').Linter.Config} */
 const config = {
 	extends: ['stylelint'],
 	parser: '@typescript-eslint/parser',
