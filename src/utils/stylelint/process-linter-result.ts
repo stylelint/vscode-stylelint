@@ -39,7 +39,8 @@ export function processLinterResult(
 			{},
 			{
 				get: (_, key: string) => {
-					// @ts-expect-error -- (TS7053) `stylelint.rules` has returned `Promise` values since v16.
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore -- (TS7053) `stylelint.rules` has returned `Promise` values since v16.
 					// See https://stylelint.io/migration-guide/to-16#changed-nodejs-api-stylelintrules-object
 					//
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
