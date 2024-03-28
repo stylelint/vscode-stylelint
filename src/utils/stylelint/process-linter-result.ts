@@ -1,8 +1,7 @@
 import { warningToDiagnostic } from './warning-to-diagnostic';
 // eslint-disable-next-line n/no-unpublished-import
-import type stylelint from 'stylelint';
-import { LintDiagnostics, InvalidOptionError } from './types';
-import { Stylelint } from './types';
+import type { LinterResult } from 'stylelint';
+import { type LintDiagnostics, type Stylelint, InvalidOptionError } from './types';
 
 /**
  * Processes the results of a Stylelint lint run.
@@ -18,8 +17,10 @@ import { Stylelint } from './types';
  */
 export function processLinterResult(
 	stylelint: Stylelint,
-	{ results, output, ruleMetadata }: stylelint.LinterResult,
+	linterResult: LinterResult,
 ): LintDiagnostics {
+	const { results } = linterResult;
+
 	if (results.length === 0) {
 		return { diagnostics: [] };
 	}
@@ -34,12 +35,19 @@ export function processLinterResult(
 		throw new InvalidOptionError(invalidOptionWarnings);
 	}
 
+	let { ruleMetadata } = linterResult;
+
 	if (!ruleMetadata) {
 		// Create built-in rule metadata for backwards compatibility.
 		ruleMetadata = new Proxy(
 			{},
 			{
 				get: (_, key: string) => {
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore -- (TS7053) `stylelint.rules` has returned `Promise` values since v16.
+					// See https://stylelint.io/migration-guide/to-16#changed-nodejs-api-stylelintrules-object
+					//
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-member-access
 					return stylelint.rules?.[key]?.meta;
 				},
 			},
@@ -47,6 +55,7 @@ export function processLinterResult(
 	}
 
 	const diagnostics = warnings.map((warning) => warningToDiagnostic(warning, ruleMetadata));
+	const output = ('report' in linterResult && linterResult.report) || linterResult.output;
 
-	return output ? { output: output as string, diagnostics } : { diagnostics };
+	return output ? { output, diagnostics } : { diagnostics };
 }

@@ -2,14 +2,14 @@
 
 exports[`warningToDiagnostic should add a rule documentation URL if a matching rule exists 1`] = `
 Object {
-  "code": "color-hex-case",
+  "code": "color-no-invalid-hex",
   "codeDescription": Object {
-    "href": "https://stylelint.io/rules/color-hex-case",
+    "href": "https://stylelint.io/rules/color-no-invalid-hex",
   },
-  "message": "Expected \\"#AAA\\" to be \\"#aaa\\" (color-hex-case)",
+  "message": "Unexpected invalid hex color \\"#AA\\" (color-no-invalid-hex)",
   "range": Object {
     "end": Object {
-      "character": 12,
+      "character": 14,
       "line": 1,
     },
     "start": Object {
@@ -24,25 +24,6 @@ Object {
 
 exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 1`] = `
 Object {
-  "code": "color-hex-case",
-  "message": "Expected \\"#AAA\\" to be \\"#aaa\\" (color-hex-case)",
-  "range": Object {
-    "end": Object {
-      "character": 12,
-      "line": 1,
-    },
-    "start": Object {
-      "character": 11,
-      "line": 1,
-    },
-  },
-  "severity": 1,
-  "source": "Stylelint",
-}
-`;
-
-exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 2`] = `
-Object {
   "code": "color-hex-length",
   "message": "Expected \\"#bbbbbb\\" to be \\"#bbb\\" (color-hex-length)",
   "range": Object {
@@ -56,6 +37,25 @@ Object {
     },
   },
   "severity": 2,
+  "source": "Stylelint",
+}
+`;
+
+exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 2`] = `
+Object {
+  "code": "color-no-invalid-hex",
+  "message": "Unexpected invalid hex color \\"#AA\\" (color-no-invalid-hex)",
+  "range": Object {
+    "end": Object {
+      "character": 14,
+      "line": 1,
+    },
+    "start": Object {
+      "character": 11,
+      "line": 1,
+    },
+  },
+  "severity": 1,
   "source": "Stylelint",
 }
 `;
