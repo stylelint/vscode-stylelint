@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
-## [1.4.0](https://github.com/stylelint/vscode-stylelint/compare/v1.3.0...v1.4.0) (2024-03-xx)
+## [1.4.0](https://github.com/stylelint/vscode-stylelint/compare/v1.3.0...v1.4.0) (2024-03-28)
 
 ### Changed
 
