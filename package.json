@@ -219,7 +219,7 @@
     "@stylelint/postcss-css-in-js": "^0.38.0",
     "@stylelint/prettier-config": "^3.0.0",
     "@types/jest": "^27.0.3",
-    "@types/path-is-inside": "^1.0.0",
+    "@types/path-is-inside": "^1.0.3",
     "@types/semver": "^7.5.8",
     "@types/vscode": "1.82.0",
     "@typescript-eslint/eslint-plugin": "^7.3.1",
