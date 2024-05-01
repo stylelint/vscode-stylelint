@@ -230,7 +230,7 @@
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
     "eslint-config-stylelint": "^21.0.0",
-    "eslint-plugin-jest": "^27.9.0",
+    "eslint-plugin-jest": "^28.3.0",
     "fast-glob": "^3.2.7",
     "jest": "^27.4.3",
     "jest-runner-vscode": "^2.1.0",
