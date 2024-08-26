@@ -7,7 +7,7 @@ import {
 	getStylelintDiagnostics,
 	executeAutofix,
 	closeAllEditors,
-} from '../common';
+} from '../helpers';
 
 describe('"stylelint.validate" setting', () => {
 	describe('when set to ["scss"]', () => {

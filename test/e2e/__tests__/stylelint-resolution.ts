@@ -1,4 +1,4 @@
-import { openDocument, waitForDiagnostics, assertDiagnostics, closeAllEditors } from '../common';
+import { openDocument, waitForDiagnostics, assertDiagnostics, closeAllEditors } from '../helpers';
 
 describe('Stylelint resolution', () => {
 	afterEach(async () => {
