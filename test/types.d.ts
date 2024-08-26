@@ -15,11 +15,6 @@ import type { ExtensionEvents } from '../src/extension/index';
 
 declare global {
 	/**
-	 * The test workspace directory. Only available in end-to-end tests.
-	 */
-	//const workspaceDir: string;
-
-	/**
 	 * Server mocks. Only available in unit tests.
 	 */
 	const serverMocks: typeof ServerMocks;
