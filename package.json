@@ -258,7 +258,6 @@
     "bundle-base": "ts-node --transpile-only -P tsconfig.scripts.json scripts/bundle.ts",
     "bundle-watch": "npm run bundle-base -- --sourcemap --watch",
     "build-bundle": "run-s build bundle",
-    "download-vscode": "ts-node --transpile-only -P tsconfig.scripts.json scripts/download-vscode.ts",
     "format": "prettier . --write",
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
