@@ -16,6 +16,10 @@ const config = {
 				'plugin/foo-bar': true,
 			},
 		},
+		{
+			files: ['restart.css'],
+			rules: { 'block-no-empty': true },
+		},
 	],
 };
 

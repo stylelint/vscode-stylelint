@@ -10,7 +10,7 @@ describe('Restart command', () => {
 	});
 
 	it('should restart the language server', async () => {
-		const { document } = await openDocument('defaults/lint.css');
+		const { document } = await openDocument('defaults/restart.css');
 		const diagnostics1 = await waitForDiagnostics(document);
 
 		await commands.executeCommand('stylelint.restart');
