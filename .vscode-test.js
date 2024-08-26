@@ -10,7 +10,11 @@ if (!minimumVscodeVersion) throw new Error(`"engines.vscode" is unexpected: ${pk
 
 module.exports = defineConfig({
 	// TODO: files: ['test/e2e/__tests__/**/*.ts'],
-	files: ['test/e2e/__tests__/stylelint-resolution.ts', 'test/e2e/__tests__/validate.ts'],
+	files: [
+		'test/e2e/__tests__/restart.ts',
+		'test/e2e/__tests__/stylelint-resolution.ts',
+		'test/e2e/__tests__/validate.ts',
+	],
 	workspaceFolder: 'test/e2e/workspace/workspace.code-workspace',
 	version: minimumVscodeVersion,
 	mocha: {

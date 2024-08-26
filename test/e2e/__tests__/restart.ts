@@ -1,20 +1,24 @@
-import path from 'path';
+import * as assert from 'node:assert/strict';
+
 import { commands, languages } from 'vscode';
 
-// Skipped for now because of https://github.com/microsoft/vscode-languageserver-node/issues/723
-// Should work with LSP 3.17 when released
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip('Restart command', () => {
+import { openDocument, waitForDiagnostics, closeAllEditors } from '../helpers';
+
+describe('Restart command', () => {
+	afterEach(async () => {
+		await closeAllEditors();
+	});
+
 	it('should restart the language server', async () => {
-		const { document } = await openDocument(path.resolve(workspaceDir, 'defaults/lint.css'));
+		const { document } = await openDocument('defaults/lint.css');
 		const diagnostics1 = await waitForDiagnostics(document);
 
 		await commands.executeCommand('stylelint.restart');
 
-		expect(languages.getDiagnostics(document.uri)).toEqual([]);
+		assert.equal(languages.getDiagnostics(document.uri).length, 0);
 
-		const diagnostics2 = await waitForDiagnostics(document);
+		const diagnostics2 = await waitForDiagnostics(document, { timeout: 10000 });
 
-		expect(diagnostics2).toEqual(diagnostics1);
+		assert.deepEqual(diagnostics2, diagnostics1);
 	});
 });
