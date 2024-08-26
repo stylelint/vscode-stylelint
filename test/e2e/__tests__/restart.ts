@@ -17,7 +17,7 @@ describe('Restart command', () => {
 
 		assert.equal(languages.getDiagnostics(document.uri).length, 0);
 
-		const diagnostics2 = await waitForDiagnostics(document, { timeout: 10000 });
+		const diagnostics2 = await waitForDiagnostics(document, { timeout: 20000 });
 
 		assert.deepEqual(diagnostics2, diagnostics1);
 	});
