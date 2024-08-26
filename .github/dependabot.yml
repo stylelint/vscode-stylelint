@@ -10,7 +10,7 @@ updates:
       - 'pr: dependencies'
     groups:
       jest:
-        patterns: ['jest', 'jest-runner-vscode', 'ts-jest', '@types/jest']
+        patterns: ['jest', 'ts-jest', '@types/jest']
       eslint:
         patterns: ['eslint', 'eslint-config-*', '@typescript-eslint/*']
       vscode:
