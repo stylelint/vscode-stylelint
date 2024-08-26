@@ -16,8 +16,6 @@ updates:
       vscode:
         patterns: ['vscode-*', '@vscode/*']
     ignore:
-      - dependency-name: p-wait-for
-        update-types: [version-update:semver-major]
       - dependency-name: '@types/vscode'
         update-types: [version-update:semver-minor]
   - package-ecosystem: 'github-actions'
