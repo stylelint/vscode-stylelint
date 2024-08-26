@@ -11,6 +11,7 @@ if (!minimumVscodeVersion) throw new Error(`"engines.vscode" is unexpected: ${pk
 module.exports = defineConfig({
 	// TODO: files: ['test/e2e/__tests__/**/*.ts'],
 	files: [
+		'test/e2e/__tests__/ignore.ts',
 		'test/e2e/__tests__/lint.ts',
 		'test/e2e/__tests__/report-descriptionless-disables.ts',
 		'test/e2e/__tests__/report-invalid-scope-disables.ts',
