@@ -10,6 +10,5 @@
 		{ "path": "stylelint-path" },
 		{ "path": "validate" },
 	],
-	"settings": {
-	},
+	"settings": {},
 }

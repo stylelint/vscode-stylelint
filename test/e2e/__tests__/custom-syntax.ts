@@ -1,26 +1,22 @@
-import path from 'path';
-import pWaitFor from 'p-wait-for';
-import { commands } from 'vscode';
+import * as assert from 'node:assert/strict';
+
+import { openDocument, executeAutofix, closeAllEditors } from '../helpers';
 
 describe('"stylelint.customSyntax" setting', () => {
+	afterEach(async () => {
+		await closeAllEditors();
+	});
+
 	it('should auto-fix using the specified custom syntax', async () => {
-		const { document } = await openDocument(path.resolve(workspaceDir, 'custom-syntax/test.css'));
+		const { document } = await openDocument('custom-syntax/test.css');
 
-		await pWaitFor(
-			async () => {
-				const names = await commands.getCommands();
+		await executeAutofix();
 
-				return (
-					// cspell:disable-next-line
-					names.includes('stylelint.executeAutofix') && names.includes('stylelint.applyAutoFix')
-				);
-			},
-			{ timeout: 2000 },
+		assert.equal(
+			document.getText(),
+			`/* prettier-ignore */
+.foo .bar
+    color: red`,
 		);
-
-		// cspell:disable-next-line
-		await commands.executeCommand('stylelint.executeAutofix');
-
-		expect(document.getText()).toMatchSnapshot();
 	});
 });
