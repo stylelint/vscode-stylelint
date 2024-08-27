@@ -79,6 +79,12 @@ const config = {
 				'jest/unbound-method': 'error',
 			},
 		},
+		{
+			files: ['test/e2e/__tests__/**/*'],
+			rules: {
+				'jest/expect-expect': 'off',
+			},
+		},
 	],
 };
 

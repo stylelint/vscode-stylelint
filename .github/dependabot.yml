@@ -10,14 +10,12 @@ updates:
       - 'pr: dependencies'
     groups:
       jest:
-        patterns: ['jest', 'jest-runner-vscode', 'ts-jest', '@types/jest']
+        patterns: ['jest', 'ts-jest', '@types/jest']
       eslint:
         patterns: ['eslint', 'eslint-config-*', '@typescript-eslint/*']
       vscode:
         patterns: ['vscode-*', '@vscode/*']
     ignore:
-      - dependency-name: p-wait-for
-        update-types: [version-update:semver-major]
       - dependency-name: '@types/vscode'
         update-types: [version-update:semver-minor]
   - package-ecosystem: 'github-actions'

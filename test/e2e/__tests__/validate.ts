@@ -1,62 +1,81 @@
-import path from 'path';
-import pWaitFor from 'p-wait-for';
-import { commands } from 'vscode';
-import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
+import * as assert from 'node:assert/strict';
+
+import {
+	openDocument,
+	waitForDiagnostics,
+	assertDiagnostics,
+	getStylelintDiagnostics,
+	executeAutofix,
+	closeAllEditors,
+} from '../helpers';
 
 describe('"stylelint.validate" setting', () => {
-	beforeAll(async () => {
-		await pWaitFor(
-			async () => {
-				const names = await commands.getCommands();
-
-				return (
-					// cspell:disable-next-line
-					names.includes('stylelint.executeAutofix') && names.includes('stylelint.applyAutoFix')
-				);
-			},
-			{ timeout: 2000 },
-		);
-	});
-
 	describe('when set to ["scss"]', () => {
+		afterEach(async () => {
+			await closeAllEditors();
+		});
+
 		it("shouldn't lint or fix css", async () => {
-			const { document } = await openDocument(path.resolve(workspaceDir, 'validate/test.css'));
+			const { document } = await openDocument('validate/test.css');
 
-			// TODO: find a better way to wait for linting to finish
-			await new Promise((resolve) => setTimeout(resolve, 2000));
+			assert.deepEqual(getStylelintDiagnostics(document.uri), []);
 
-			expect(getStylelintDiagnostics(document.uri)).toEqual([]);
+			await executeAutofix();
 
-			// cspell:disable-next-line
-			await commands.executeCommand('stylelint.executeAutofix');
-
-			expect(document.getText()).toMatchSnapshot();
+			assert.equal(
+				document.getText(),
+				`/* prettier-ignore */
+a {
+  color: red;
+}
+`,
+			);
 		});
 
 		it('should lint and auto-fix scss', async () => {
-			const { document } = await openDocument(path.resolve(workspaceDir, 'validate/test.scss'));
+			const { document } = await openDocument('validate/test.scss');
 			const diagnostics = await waitForDiagnostics(document);
 
-			expect(diagnostics.map(normalizeDiagnostic)).toMatchSnapshot();
+			assertDiagnostics(diagnostics, [
+				{
+					code: 'indentation',
+					codeDescription: 'https://stylelint.io/user-guide/rules/indentation',
+					message: 'Expected indentation of 4 spaces (indentation)',
+					range: [2, 2, 2, 13],
+					severity: 'error',
+				},
+			]);
 
-			// cspell:disable-next-line
-			await commands.executeCommand('stylelint.executeAutofix');
+			await executeAutofix();
 
-			expect(document.getText()).toMatchSnapshot();
+			assert.equal(
+				document.getText(),
+				`/* prettier-ignore */
+a {
+    color: red;
+}
+`,
+			);
 		});
 
 		it("shouldn't lint or fix markdown", async () => {
-			const { document } = await openDocument(path.resolve(workspaceDir, 'validate/test.md'));
+			const { document } = await openDocument('validate/test.md');
 
-			// TODO: find a better way to wait for linting to finish
-			await new Promise((resolve) => setTimeout(resolve, 2000));
+			assert.deepEqual(getStylelintDiagnostics(document.uri), []);
 
-			expect(getStylelintDiagnostics(document.uri)).toEqual([]);
+			await executeAutofix();
 
-			// cspell:disable-next-line
-			await commands.executeCommand('stylelint.executeAutofix');
+			assert.equal(
+				document.getText(),
+				`# title
 
-			expect(document.getText()).toMatchSnapshot();
+\`\`\`css
+a {
+  color: red;
+}
+\`\`\`
+`,
+			);
 		});
 	});
 });
