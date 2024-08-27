@@ -202,7 +202,7 @@
     "@types/triple-beam": "^1.3.5",
     "fast-diff": "^1.3.0",
     "path-is-inside": "^1.0.2",
-    "rfdc": "^1.3.1",
+    "rfdc": "^1.4.1",
     "semver": "^7.6.0",
     "serialize-error": "^8.1.0",
     "triple-beam": "^1.4.1",
