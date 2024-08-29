@@ -1,28 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`createDisableRuleFileCodeAction should create a code action to disable a rule for an entire file 1`] = `
-Object {
-  "edit": Object {
+{
+  "edit": {
     "changeAnnotations": undefined,
-    "documentChanges": Array [
-      Object {
-        "edits": Array [
-          Object {
+    "documentChanges": [
+      {
+        "edits": [
+          {
             "newText": "/* stylelint-disable rule */
 ",
-            "range": Object {
-              "end": Object {
+            "range": {
+              "end": {
                 "character": 0,
                 "line": 0,
               },
-              "start": Object {
+              "start": {
                 "character": 0,
                 "line": 0,
               },
             },
           },
         ],
-        "textDocument": Object {
+        "textDocument": {
           "uri": "file:///home/user/src/file.css",
           "version": 1,
         },
@@ -35,28 +35,28 @@ Object {
 `;
 
 exports[`createDisableRuleFileCodeAction should place the code action on the second line if the file has a shebang 1`] = `
-Object {
-  "edit": Object {
+{
+  "edit": {
     "changeAnnotations": undefined,
-    "documentChanges": Array [
-      Object {
-        "edits": Array [
-          Object {
+    "documentChanges": [
+      {
+        "edits": [
+          {
             "newText": "/* stylelint-disable rule */
 ",
-            "range": Object {
-              "end": Object {
+            "range": {
+              "end": {
                 "character": 0,
                 "line": 1,
               },
-              "start": Object {
+              "start": {
                 "character": 0,
                 "line": 1,
               },
             },
           },
         ],
-        "textDocument": Object {
+        "textDocument": {
           "uri": "file:///home/user/src/file.js",
           "version": 1,
         },

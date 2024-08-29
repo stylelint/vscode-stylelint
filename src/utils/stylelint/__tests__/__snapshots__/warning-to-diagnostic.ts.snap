@@ -1,18 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`warningToDiagnostic should add a rule documentation URL if a matching rule exists 1`] = `
-Object {
+{
   "code": "color-hex-case",
-  "codeDescription": Object {
+  "codeDescription": {
     "href": "https://stylelint.io/rules/color-hex-case",
   },
-  "message": "Expected \\"#AAA\\" to be \\"#aaa\\" (color-hex-case)",
-  "range": Object {
-    "end": Object {
+  "message": "Expected "#AAA" to be "#aaa" (color-hex-case)",
+  "range": {
+    "end": {
       "character": 12,
       "line": 1,
     },
-    "start": Object {
+    "start": {
       "character": 11,
       "line": 1,
     },
@@ -23,15 +23,15 @@ Object {
 `;
 
 exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 1`] = `
-Object {
+{
   "code": "color-hex-case",
-  "message": "Expected \\"#AAA\\" to be \\"#aaa\\" (color-hex-case)",
-  "range": Object {
-    "end": Object {
+  "message": "Expected "#AAA" to be "#aaa" (color-hex-case)",
+  "range": {
+    "end": {
       "character": 12,
       "line": 1,
     },
-    "start": Object {
+    "start": {
       "character": 11,
       "line": 1,
     },
@@ -42,15 +42,15 @@ Object {
 `;
 
 exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 2`] = `
-Object {
+{
   "code": "color-hex-length",
-  "message": "Expected \\"#bbbbbb\\" to be \\"#bbb\\" (color-hex-length)",
-  "range": Object {
-    "end": Object {
+  "message": "Expected "#bbbbbb" to be "#bbb" (color-hex-length)",
+  "range": {
+    "end": {
       "character": 25,
       "line": 2,
     },
-    "start": Object {
+    "start": {
       "character": 18,
       "line": 2,
     },

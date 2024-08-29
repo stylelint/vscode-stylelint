@@ -160,18 +160,7 @@ describe('mergeOptionsWithDefaults', () => {
 
 		const result = mergeOptionsWithDefaults(options, defaults);
 
-		expect(result).toMatchInlineSnapshot(`
-		Object {
-		  "a": 4,
-		  "b": Object {
-		    "c": 1,
-		    "d": Object {
-		      "a": 4,
-		      "b": [Circular],
-		    },
-		  },
-		}
-	`);
+		expect(result).toMatchSnapshot();
 	});
 
 	it('should not merge properties on arrays', () => {
