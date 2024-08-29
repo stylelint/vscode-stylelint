@@ -1,7 +1,6 @@
 # vscode-stylelint
 
 [![Testing](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml)
-[![Linting](https://github.com/stylelint/vscode-stylelint/actions/workflows/linting.yml/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/linting.yml)
 
 The official [Visual Studio Code] extension for [Stylelint]
 
@@ -121,35 +120,35 @@ Though relying on a [Stylelint configuration file] in your project is highly rec
 
 ### `stylelint.enable`
 
-> Type: `boolean`  
+> Type: `boolean`
 > Default: `true`
 
 Controls whether this extension is enabled or not.
 
 ### `stylelint.config`
 
-> Type: `Object`  
+> Type: `Object`
 > Default: `null`
 
 Sets the Stylelint [`config`] option. Note that when this option is enabled, Stylelint doesn't load configuration files.
 
 ### `stylelint.configFile`
 
-> Type: `string`  
+> Type: `string`
 > Default: `""`
 
 Sets the Stylelint [`configFile`] option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want Stylelint to search for a configuration file.
 
 ### `stylelint.configBasedir`
 
-> Type: `string`  
+> Type: `string`
 > Default: `""`
 
 Sets the Stylelint [`configBasedir`] option. The path to the directory to which relative paths defining "extends" and "plugins" are relative. Only necessary if these values are relative paths.
 
 ### `stylelint.customSyntax`
 
-> Type: `string`  
+> Type: `string`
 > Default: `""`
 
 Sets the Stylelint [`customSyntax`] option, which points to a [PostCSS syntax] module. Must be either the package name or an absolute path to the module.
@@ -170,56 +169,56 @@ e.g.
 
 ### `stylelint.reportDescriptionlessDisables`
 
-> Type: `boolean`  
+> Type: `boolean`
 > Default: `false`
 
 Sets the Stylelint [`reportDescriptionlessDisables`] option. If `true`, Stylelint reports `stylelint-disable` comments without a description.
 
 ### `stylelint.ignoreDisables`
 
-> Type: `boolean`  
+> Type: `boolean`
 > Default: `false`
 
 Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
 
 ### `stylelint.reportNeedlessDisables`
 
-> Type: `boolean`  
+> Type: `boolean`
 > Default: `false`
 
 Sets the Stylelint [`reportNeedlessDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments that are not blocking a lint warning.
 
 ### `stylelint.reportInvalidScopeDisables`
 
-> Type: `boolean`  
+> Type: `boolean`
 > Default: `false`
 
 Sets the Stylelint [`reportInvalidScopeDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments referring to rules that don't exist within the configuration object.
 
 ### `stylelint.validate`
 
-> Type: `string[]`  
+> Type: `string[]`
 > Default: `["css", "postcss"]`
 
 An array of language identifiers specifying which files to validate.
 
 ### `stylelint.stylelintPath`
 
-> Type: `string`  
+> Type: `string`
 > Default: `""`
 
 Used to supply a custom path to the Stylelint module.
 
 ### `stylelint.packageManager`
 
-> Type: `"npm" | "yarn" | "pnpm"`  
+> Type: `"npm" | "yarn" | "pnpm"`
 > Default: `"npm"`
 
 Controls the package manager to be used to resolve the Stylelint library. This setting only has an effect if the Stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
 
 ### `stylelint.snippet`
 
-> Type: `string[]`  
+> Type: `string[]`
 > Default: `["css", "postcss"]`
 
 An array of language identifiers specifying which files to enable snippets for.
