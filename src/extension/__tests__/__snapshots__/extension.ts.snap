@@ -1,34 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Extension entry point should create a language client 1`] = `
-Array [
+[
   "Stylelint",
-  Object {
-    "debug": Object {
+  {
+    "debug": {
       "module": "mock-path",
-      "options": Object {
-        "execArgv": Array [
+      "options": {
+        "execArgv": [
           "--nolazy",
           "--inspect=6004",
         ],
       },
     },
-    "run": Object {
+    "run": {
       "module": "mock-path",
     },
   },
-  Object {
+  {
     "diagnosticCollectionName": "Stylelint",
-    "documentSelector": Array [
-      Object {
+    "documentSelector": [
+      {
         "scheme": "file",
       },
-      Object {
+      {
         "scheme": "untitled",
       },
     ],
-    "synchronize": Object {
-      "fileEvents": Array [
+    "synchronize": {
+      "fileEvents": [
         undefined,
         undefined,
       ],
@@ -38,11 +38,11 @@ Array [
 `;
 
 exports[`Extension entry point with an active text editor, should send auto-fix commands to the language server 1`] = `
-Array [
+[
   "executeCommand",
-  Object {
-    "arguments": Array [
-      Object {
+  {
+    "arguments": [
+      {
         "uri": "file:///path/to/file.ts",
         "version": 1,
       },

@@ -115,16 +115,12 @@ describe('Extension entry point', () => {
 		await activate(mockExtensionContext);
 
 		expect(mockWorkspace.createFileSystemWatcher).toHaveBeenCalledTimes(2);
-		expect(mockWorkspace.createFileSystemWatcher.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
-		  "**/.stylelintrc{,.js,.json,.yaml,.yml}",
-		]
-	`);
-		expect(mockWorkspace.createFileSystemWatcher.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
-		  "**/{stylelint.config.js,.stylelintignore}",
-		]
-	`);
+		expect(mockWorkspace.createFileSystemWatcher.mock.calls[0]).toEqual([
+			'**/.stylelintrc{,.js,.json,.yaml,.yml}',
+		]);
+		expect(mockWorkspace.createFileSystemWatcher.mock.calls[1]).toEqual([
+			'**/{stylelint.config.js,.stylelintignore}',
+		]);
 	});
 
 	it('should register an auto-fix command', async () => {
@@ -138,12 +134,10 @@ describe('Extension entry point', () => {
 
 		expect(mockCommands.registerCommand).toHaveBeenCalled();
 		// cspell:disable
-		expect(mockCommands.registerCommand.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
-		  "stylelint.executeAutofix",
-		  [Function],
-		]
-	`);
+		expect(mockCommands.registerCommand.mock.calls[0]).toMatchObject([
+			'stylelint.executeAutofix',
+			expect.any(Function),
+		]);
 		// cspell:enable
 		expect(subscriptions).toContain(disposable);
 	});
@@ -182,11 +176,9 @@ describe('Extension entry point', () => {
 
 		expect(sendRequest).toHaveBeenCalledTimes(1);
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(1);
-		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
-		  "Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.",
-		]
-	`);
+		expect(mockWindow.showErrorMessage.mock.calls[0]).toEqual([
+			'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
+		]);
 	});
 
 	it('should register a restart server command', async () => {
@@ -199,12 +191,10 @@ describe('Extension entry point', () => {
 		const { subscriptions } = mockExtensionContext;
 
 		expect(mockCommands.registerCommand).toHaveBeenCalled();
-		expect(mockCommands.registerCommand.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
-		  "stylelint.restart",
-		  [Function],
-		]
-	`);
+		expect(mockCommands.registerCommand.mock.calls[1]).toMatchObject([
+			'stylelint.restart',
+			expect.any(Function),
+		]);
 		expect(subscriptions).toContain(disposable);
 	});
 
@@ -332,16 +322,8 @@ describe('Extension entry point', () => {
 		await new Promise((resolve) => setImmediate(resolve));
 
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
-		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
-		  "Stylelint: Problem!",
-		]
-	`);
-		expect(mockWindow.showErrorMessage.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
-		  "Stylelint: String problem!",
-		]
-	`);
+		expect(mockWindow.showErrorMessage.mock.calls[0]).toEqual(['Stylelint: Problem!']);
+		expect(mockWindow.showErrorMessage.mock.calls[1]).toEqual(['Stylelint: String problem!']);
 	});
 
 	it('should show an error message if restarting the language server fails', async () => {
@@ -362,16 +344,8 @@ describe('Extension entry point', () => {
 		await mockCommands.registerCommand.mock.calls[1][1]();
 
 		expect(mockWindow.showErrorMessage).toHaveBeenCalledTimes(2);
-		expect(mockWindow.showErrorMessage.mock.calls[0]).toMatchInlineSnapshot(`
-		Array [
-		  "Stylelint: Problem!",
-		]
-	`);
-		expect(mockWindow.showErrorMessage.mock.calls[1]).toMatchInlineSnapshot(`
-		Array [
-		  "Stylelint: String problem!",
-		]
-	`);
+		expect(mockWindow.showErrorMessage.mock.calls[0]).toEqual(['Stylelint: Problem!']);
+		expect(mockWindow.showErrorMessage.mock.calls[1]).toEqual(['Stylelint: String problem!']);
 	});
 
 	it('should stop language client on deactivate', async () => {
