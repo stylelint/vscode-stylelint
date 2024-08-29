@@ -22,7 +22,7 @@ const config = {
 		],
 		'n/no-missing-import': [
 			'error',
-			{ allowModules: ['vscode'], typescriptExtensionMap: [['.ts', '']] },
+			{ allowModules: ['vscode'], tryExtensions: ['.js', '.json', '.ts'] },
 		],
 		'require-jsdoc': 'error',
 		'no-warning-comments': ['warn', { terms: ['todo'], location: 'start' }],

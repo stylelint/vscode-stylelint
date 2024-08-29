@@ -1,4 +1,3 @@
-// eslint-disable-next-line n/no-missing-import
 import type { RemoteConsole } from 'vscode-languageserver/node';
 
 type RemoteConsoleLogLevels = 'info' | 'debug' | 'error' | 'warn' | 'log';
@@ -11,7 +10,6 @@ type RemoteConsoleLogFunctions = RemoteConsole[RemoteConsoleLogLevels];
 export const getLogFunction = (
 	remoteConsole: RemoteConsole,
 	level: string,
-	// eslint-disable-next-line @typescript-eslint/ban-types
 ): RemoteConsoleLogFunctions | undefined => {
 	const logFunction = remoteConsole[level as RemoteConsoleLogLevels];
 

@@ -9,7 +9,6 @@ jest.mock('vscode-languageclient/node', () => ({
 
 import { EventEmitter } from 'events';
 import vscode, { window } from 'vscode';
-// eslint-disable-next-line n/no-missing-import
 import { LanguageClient, SettingMonitor, NodeModule } from 'vscode-languageclient/node';
 import {
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
@@ -325,7 +324,7 @@ describe('Extension entry point', () => {
 		await new Promise((resolve) => setImmediate(resolve));
 
 		onNotification.mockImplementation((): void => {
-			throw 'String problem!';
+			throw new Error('String problem!');
 		});
 
 		await activate(mockExtensionContext);
@@ -357,7 +356,7 @@ describe('Extension entry point', () => {
 		await mockCommands.registerCommand.mock.calls[1][1]();
 
 		start.mockImplementation((): void => {
-			throw 'String problem!';
+			throw new Error('String problem!');
 		});
 
 		await mockCommands.registerCommand.mock.calls[1][1]();
@@ -403,7 +402,7 @@ describe('Extension entry point', () => {
 
 	it('should show unknown error message when deactivate fails to stop the client', async () => {
 		stop.mockImplementation(() => {
-			throw undefined;
+			throw new Error('unknown');
 		});
 
 		await activate(mockExtensionContext);

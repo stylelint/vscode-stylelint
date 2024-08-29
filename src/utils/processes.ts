@@ -64,7 +64,7 @@ export function runProcessFindLine<T>(
 				// ignore
 			}
 
-			reject(error);
+			reject(error); // eslint-disable-line @typescript-eslint/prefer-promise-reject-errors
 		};
 
 		stdoutReader.on('line', (line) => {

@@ -11,7 +11,6 @@ import {
 	WorkDoneProgressReporter,
 } from 'vscode-languageserver';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
-// eslint-disable-next-line n/no-missing-import
 import { TextDocuments } from 'vscode-languageserver/node';
 import * as LSP from 'vscode-languageserver-protocol';
 import { displayError, NotificationManager, CommandManager } from '../../utils/lsp/index';
