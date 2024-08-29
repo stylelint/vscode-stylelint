@@ -324,7 +324,7 @@ describe('Extension entry point', () => {
 		await new Promise((resolve) => setImmediate(resolve));
 
 		onNotification.mockImplementation((): void => {
-			throw new Error('String problem!');
+			throw 'String problem!'; // eslint-disable-line @typescript-eslint/only-throw-error
 		});
 
 		await activate(mockExtensionContext);
@@ -356,7 +356,7 @@ describe('Extension entry point', () => {
 		await mockCommands.registerCommand.mock.calls[1][1]();
 
 		start.mockImplementation((): void => {
-			throw new Error('String problem!');
+			throw 'String problem!'; // eslint-disable-line @typescript-eslint/only-throw-error
 		});
 
 		await mockCommands.registerCommand.mock.calls[1][1]();
@@ -402,7 +402,7 @@ describe('Extension entry point', () => {
 
 	it('should show unknown error message when deactivate fails to stop the client', async () => {
 		stop.mockImplementation(() => {
-			throw new Error('unknown');
+			throw undefined; // eslint-disable-line @typescript-eslint/only-throw-error
 		});
 
 		await activate(mockExtensionContext);
