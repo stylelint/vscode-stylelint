@@ -1,5 +1,4 @@
 import type { Connection, Disposable } from 'vscode-languageserver';
-// eslint-disable-next-line n/no-missing-import
 import type { TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import { CodeActionKind as VSCodeActionKind } from 'vscode-languageserver-types';
@@ -144,7 +143,7 @@ export interface LanguageServerModule extends Disposable {
 	 * Handler called after the language server has finished responding to the
 	 * onDidChangeConfiguration event.
 	 */
-	onDidChangeConfiguration?: () => void;
+	onDidChangeConfiguration?: () => Promise<void>;
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	[key: string | symbol]: any;

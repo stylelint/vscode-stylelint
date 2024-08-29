@@ -4,7 +4,6 @@ import type os from 'os';
 import type cp from 'child_process';
 import type fs from 'fs/promises';
 import type path from 'path';
-// eslint-disable-next-line n/no-missing-import
 import type VSLanguageServerNode from 'vscode-languageserver/node';
 import type * as ProcessesActual from '../src/utils/processes';
 import type { OptionalExcept } from '../src/utils/types';

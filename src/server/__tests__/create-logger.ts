@@ -10,7 +10,6 @@ jest.mock('winston', () => {
 	};
 });
 
-// eslint-disable-next-line n/no-missing-import
 import type transports from 'winston/lib/winston/transports';
 import winston from 'winston';
 import { createLogger } from '../create-logger';
