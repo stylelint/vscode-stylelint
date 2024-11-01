@@ -217,7 +217,7 @@
   "devDependencies": {
     "@stylelint/postcss-css-in-js": "^0.38.0",
     "@stylelint/prettier-config": "^3.0.0",
-    "@types/jest": "^29.5.12",
+    "@types/jest": "^29.5.14",
     "@types/path-is-inside": "^1.0.3",
     "@types/semver": "^7.5.8",
     "@types/triple-beam": "^1.3.5",
