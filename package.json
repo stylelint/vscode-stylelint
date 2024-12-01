@@ -245,7 +245,7 @@
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typed-emitter": "^2.1.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.7.2"
   },
   "scripts": {
     "build": "tsc -p tsconfig.src.json",
