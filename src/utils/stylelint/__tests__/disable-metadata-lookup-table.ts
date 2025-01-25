@@ -221,7 +221,10 @@ describe('DisableMetadataLookupTable', () => {
 		]);
 
 		expect(
-			table.find({ type: DisableReportRuleNames.Descriptionless, range: Range.create(9, 7, 1, 2) }),
+			table.find({
+				type: DisableReportRuleNames.Descriptionless,
+				range: Range.create(9, 7, 1, 2),
+			}),
 		).toStrictEqual(
 			new Set([
 				createDisableDiagnostic({

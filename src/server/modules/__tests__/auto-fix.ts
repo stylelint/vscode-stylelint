@@ -43,9 +43,14 @@ describe('AutoFixModule', () => {
 		mockContext.documents.get.mockReturnValue(document);
 		mockContext.__options.validate = ['bar'];
 		mockContext.getFixes.mockResolvedValue([TextEdit.insert(Position.create(0, 0), 'text')]);
-		mockContext.connection.workspace.applyEdit.mockResolvedValue({ applied: true });
+		mockContext.connection.workspace.applyEdit.mockResolvedValue({
+			applied: true,
+		});
 
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -108,7 +113,10 @@ describe('AutoFixModule', () => {
 	test('if no matching document exists, should not attempt to auto-fix', async () => {
 		mockContext.documents.get.mockReturnValue(undefined);
 
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -134,7 +142,10 @@ describe('AutoFixModule', () => {
 		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 1, 'a {}'));
 		mockContext.__options.validate = ['baz'];
 
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -167,7 +178,10 @@ describe('AutoFixModule', () => {
 		mockContext.__options.validate = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -195,7 +209,10 @@ describe('AutoFixModule', () => {
 		mockContext.documents.get.mockReturnValue(TextDocument.create('foo', 'bar', 2, 'a {}'));
 		mockContext.__options.validate = ['bar'];
 
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -227,7 +244,10 @@ describe('AutoFixModule', () => {
 		mockContext.getFixes.mockResolvedValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 		mockContext.connection.workspace.applyEdit.mockResolvedValue(response);
 
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -259,7 +279,10 @@ describe('AutoFixModule', () => {
 		mockContext.getFixes.mockResolvedValue([TextEdit.insert(Position.create(0, 0), 'text')]);
 		mockContext.connection.workspace.applyEdit.mockRejectedValue(error);
 
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -284,14 +307,20 @@ describe('AutoFixModule', () => {
 	});
 
 	it('should be disposable', () => {
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		expect(module).toHaveProperty('dispose');
 		expect(module.dispose).toBeInstanceOf(Function);
 	});
 
 	it('should dispose all handler registrations when disposed', () => {
-		const module = new AutoFixModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new AutoFixModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 		module.dispose();

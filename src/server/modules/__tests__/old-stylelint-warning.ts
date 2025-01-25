@@ -36,7 +36,9 @@ describe('OldStylelintWarningModule', () => {
 	});
 
 	test('onDidRegisterHandlers should register an onDidOpen handler', () => {
-		const module = new OldStylelintWarningModule({ context: mockContext.__typed() });
+		const module = new OldStylelintWarningModule({
+			context: mockContext.__typed(),
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -53,7 +55,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -80,7 +84,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -112,7 +118,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -146,7 +154,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -181,7 +191,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -195,7 +207,11 @@ describe('OldStylelintWarningModule', () => {
 		expect(mockContext.connection.window.showWarningMessage).not.toHaveBeenCalled();
 		expect(mockLogger.debug).toHaveBeenLastCalledWith(
 			'Stylelint package manifest could not be read',
-			{ uri: 'foo', manifestPath: '/path/node_modules/stylelint/package.json', error },
+			{
+				uri: 'foo',
+				manifestPath: '/path/node_modules/stylelint/package.json',
+				error,
+			},
 		);
 	});
 
@@ -214,7 +230,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -251,7 +269,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -280,7 +300,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -314,7 +336,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -343,7 +367,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -372,7 +398,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 
@@ -526,7 +554,9 @@ describe('OldStylelintWarningModule', () => {
 			logger: mockLogger,
 		});
 
-		module.onInitialize({ capabilities: {} } as unknown as LSP.InitializeParams);
+		module.onInitialize({
+			capabilities: {},
+		} as unknown as LSP.InitializeParams);
 
 		module.onDidRegisterHandlers();
 

@@ -91,7 +91,10 @@ describe('buildStylelintOptions', () => {
 
 		const result = await buildStylelintOptions('/path/to/file.css', '/path', options);
 
-		expect(result).toEqual({ ...options, ignorePath: '/path/.stylelintignore' });
+		expect(result).toEqual({
+			...options,
+			ignorePath: '/path/.stylelintignore',
+		});
 	});
 
 	test('with runner options, should override base options', async () => {

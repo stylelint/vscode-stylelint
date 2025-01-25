@@ -35,7 +35,10 @@ describe('ValidatorModule', () => {
 	test('if document language ID is not in options, should not validate', async () => {
 		mockContext.__options.validate = ['baz'];
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -55,7 +58,10 @@ describe('ValidatorModule', () => {
 	test('if linting produces no results, should not validate', async () => {
 		mockContext.__options.validate = ['bar'];
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -81,7 +87,10 @@ describe('ValidatorModule', () => {
 			],
 		});
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -103,7 +112,9 @@ describe('ValidatorModule', () => {
 				},
 			],
 		});
-		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics sent', { uri: 'foo' });
+		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics sent', {
+			uri: 'foo',
+		});
 	});
 
 	test('if sending diagnostics fails, should display the error', async () => {
@@ -123,7 +134,10 @@ describe('ValidatorModule', () => {
 			throw error;
 		});
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -181,7 +195,10 @@ describe('ValidatorModule', () => {
 			TextDocument.create('bar', 'baz', 1, 'a {}'),
 		]);
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onInitialize();
 
@@ -210,8 +227,12 @@ describe('ValidatorModule', () => {
 				},
 			],
 		});
-		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', { uri: 'foo' });
-		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', { uri: 'bar' });
+		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', {
+			uri: 'foo',
+		});
+		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', {
+			uri: 'bar',
+		});
 	});
 
 	test('onDidChangeWatchedFiles should validate all documents', async () => {
@@ -242,7 +263,10 @@ describe('ValidatorModule', () => {
 			TextDocument.create('bar', 'baz', 1, 'a {}'),
 		]);
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -274,8 +298,12 @@ describe('ValidatorModule', () => {
 				},
 			],
 		});
-		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', { uri: 'foo' });
-		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', { uri: 'bar' });
+		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', {
+			uri: 'foo',
+		});
+		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', {
+			uri: 'bar',
+		});
 	});
 
 	test('onDidChangeConfiguration should validate all documents', async () => {
@@ -306,7 +334,10 @@ describe('ValidatorModule', () => {
 			TextDocument.create('bar', 'baz', 1, 'a {}'),
 		]);
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		await module.onDidChangeConfiguration();
 
@@ -332,8 +363,12 @@ describe('ValidatorModule', () => {
 				},
 			],
 		});
-		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', { uri: 'foo' });
-		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', { uri: 'bar' });
+		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', {
+			uri: 'foo',
+		});
+		expect(mockLogger.debug).toHaveBeenCalledWith('Diagnostics sent', {
+			uri: 'bar',
+		});
 	});
 
 	test('getDiagnostics should return cached diagnostics per document', async () => {
@@ -348,7 +383,10 @@ describe('ValidatorModule', () => {
 
 		mockContext.lintDocument.mockResolvedValueOnce({ diagnostics });
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -367,7 +405,9 @@ describe('ValidatorModule', () => {
 			uri: 'foo',
 			diagnostics,
 		});
-		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics sent', { uri: 'foo' });
+		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics sent', {
+			uri: 'foo',
+		});
 	});
 
 	test('onDidClose should clear diagnostics', async () => {
@@ -382,7 +422,10 @@ describe('ValidatorModule', () => {
 
 		mockContext.lintDocument.mockResolvedValueOnce({ diagnostics });
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -411,7 +454,9 @@ describe('ValidatorModule', () => {
 		// Flush all promises
 		// eslint-disable-next-line jest/unbound-method, n/prefer-global/process
 		await new Promise(process.nextTick);
-		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics cleared', { uri: 'foo' });
+		expect(mockLogger.debug).toHaveBeenLastCalledWith('Diagnostics cleared', {
+			uri: 'foo',
+		});
 	});
 
 	test('when the configuration is updated, all documents should be revalidated', async () => {
@@ -442,7 +487,10 @@ describe('ValidatorModule', () => {
 			TextDocument.create('bar', 'qux', 1, 'a {}'),
 		]);
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		await module.onDidChangeConfiguration();
 
@@ -499,7 +547,10 @@ describe('ValidatorModule', () => {
 			TextDocument.create('bar', 'qux', 1, 'a {}'),
 		]);
 
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		await module.onDidChangeConfiguration();
 
@@ -543,14 +594,20 @@ describe('ValidatorModule', () => {
 	});
 
 	it('should be disposable', () => {
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		expect(module).toHaveProperty('dispose');
 		expect(module.dispose).toBeInstanceOf(Function);
 	});
 
 	it('should dispose all handler registrations when disposed', () => {
-		const module = new ValidatorModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new ValidatorModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 		module.dispose();

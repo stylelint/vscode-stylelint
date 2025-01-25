@@ -41,7 +41,9 @@ describe('warningToDiagnostic', () => {
 		});
 
 		const rules = {
-			'color-no-invalid-hex': { url: 'https://stylelint.io/rules/color-no-invalid-hex' },
+			'color-no-invalid-hex': {
+				url: 'https://stylelint.io/rules/color-no-invalid-hex',
+			},
 		} as {
 			[name: string]: Partial<stylelint.RuleMeta>;
 		};

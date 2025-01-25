@@ -239,7 +239,7 @@
     "postcss": "^8.4.31",
     "postcss-sass": "^0.5.0",
     "postcss-scss": "^4.0.9",
-    "prettier": "^3.2.5",
+    "prettier": "^3.4.2",
     "stylelint": "^16.2.1",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",

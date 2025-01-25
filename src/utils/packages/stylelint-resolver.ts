@@ -76,7 +76,10 @@ export class StylelintResolver {
 					return pnpPath;
 				}
 			} catch (error) {
-				this.#logger?.debug('Did not find PnP loader at tested path', { path: pnpPath, error });
+				this.#logger?.debug('Did not find PnP loader at tested path', {
+					path: pnpPath,
+					error,
+				});
 			}
 		}
 
@@ -146,7 +149,10 @@ export class StylelintResolver {
 
 			return result;
 		} catch (error) {
-			this.#logger?.warn('Could not load Stylelint using PnP', { path: root, error });
+			this.#logger?.warn('Could not load Stylelint using PnP', {
+				path: root,
+				error,
+			});
 
 			return undefined;
 		}
@@ -176,7 +182,9 @@ export class StylelintResolver {
 
 			return result;
 		} catch (error) {
-			this.#logger?.warn('Could not load Stylelint from node_modules', { error });
+			this.#logger?.warn('Could not load Stylelint from node_modules', {
+				error,
+			});
 
 			return undefined;
 		}

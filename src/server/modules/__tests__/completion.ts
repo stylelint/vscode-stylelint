@@ -53,7 +53,10 @@ describe('CompletionModule', () => {
 	test('if no matching document exists, should not return completions', async () => {
 		mockContext.documents.get.mockReturnValue(undefined);
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -78,7 +81,10 @@ describe('CompletionModule', () => {
 		mockContext.__options.validate = ['baz'];
 		mockContext.__options.snippet = ['bar'];
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -109,7 +115,10 @@ describe('CompletionModule', () => {
 		mockContext.__options.validate = ['bar'];
 		mockContext.__options.snippet = ['baz'];
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -141,7 +150,10 @@ describe('CompletionModule', () => {
 		mockContext.__options.snippet = ['baz'];
 		mockLogger.isDebugEnabled.mockReturnValue(false);
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -170,7 +182,10 @@ describe('CompletionModule', () => {
 		mockContext.__options.snippet = ['bar'];
 		mockContext.getModule.mockReturnValue(undefined);
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -198,7 +213,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -237,7 +255,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -271,7 +292,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -307,7 +331,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -345,7 +372,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -384,7 +414,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -423,7 +456,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -462,7 +498,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -502,7 +541,10 @@ describe('CompletionModule', () => {
 			dispose: () => undefined,
 		});
 
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -522,14 +564,20 @@ describe('CompletionModule', () => {
 	});
 
 	it('should be disposable', () => {
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		expect(module).toHaveProperty('dispose');
 		expect(module.dispose).toBeInstanceOf(Function);
 	});
 
 	it('should set a no-op completion handler when disposed', async () => {
-		const module = new CompletionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CompletionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 		module.dispose();

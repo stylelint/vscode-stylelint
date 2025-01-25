@@ -72,7 +72,10 @@ export class NotificationManager implements Disposable {
 			| LSP.StarNotificationHandler
 		>,
 	): Promise<void> {
-		this.#logger?.debug('Received notification', { notificationType: key ?? '<all>', params });
+		this.#logger?.debug('Received notification', {
+			notificationType: key ?? '<all>',
+			params,
+		});
 
 		// This function is only ever called if the handler is registered.
 		const handlers = this.#notifications.get(key)!;
