@@ -2,6 +2,6 @@
 
 module.exports = {
 	rules: {
-		indentation: [4],
+		'function-name-case': 'lower',
 	},
 };

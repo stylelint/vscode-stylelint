@@ -1,5 +1,4 @@
 /* prettier-ignore */
 a {
-    /* stylelint-disable-next-line indentation */
-  color: #fff;
+  background: #fff, RGB(0 0 0);
 }

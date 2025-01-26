@@ -2,7 +2,7 @@
 
 module.exports = {
 	rules: {
-		indentation: [4],
-		'color-hex-case': ['upper'],
+		'function-name-case': ['lower'],
+		'color-hex-length': ['long'],
 	},
 };

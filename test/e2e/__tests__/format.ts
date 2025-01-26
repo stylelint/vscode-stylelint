@@ -4,7 +4,13 @@ import { URI } from 'vscode-uri';
 import { ApiEvent } from '../../../src/extension/index';
 
 describe('Document formatting', () => {
-	it('should format document using formatting options', async () => {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const isStylelint16 = require('stylelint/package.json').version.startsWith('16.');
+
+	// Only Stylelint before 16 had formatting related rules
+	const pre16It = isStylelint16 ? it.skip : it;
+
+	pre16It('should format document using formatting options', async () => {
 		const documentPath = path.resolve(workspaceDir, 'defaults/format.css');
 
 		const eventPromise = waitForApiEvent(
@@ -21,6 +27,7 @@ describe('Document formatting', () => {
 
 		await commands.executeCommand('editor.action.formatDocument');
 
+		// eslint-disable-next-line jest/no-standalone-expect
 		expect(editor.document.getText()).toMatchSnapshot();
 	});
 });

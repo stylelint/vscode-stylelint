@@ -1,16 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"stylelint.reportInvalidScopeDisables" setting should report invalid-scope disables when enabled 1`] = `
-Array [
-  Object {
+[
+  {
     "code": "--report-invalid-scope-disables",
-    "message": "Rule \\"foo\\" isn't enabled",
-    "range": Object {
-      "end": Object {
+    "message": "Rule "foo" isn't enabled",
+    "range": {
+      "end": {
         "character": 36,
         "line": 0,
       },
-      "start": Object {
+      "start": {
         "character": 0,
         "line": 0,
       },
@@ -18,15 +18,15 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "--report-invalid-scope-disables",
-    "message": "Rule \\"foo\\" isn't enabled",
-    "range": Object {
-      "end": Object {
+    "message": "Rule "foo" isn't enabled",
+    "range": {
+      "end": {
         "character": 31,
         "line": 2,
       },
-      "start": Object {
+      "start": {
         "character": 0,
         "line": 2,
       },
@@ -34,15 +34,15 @@ Array [
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
+  {
     "code": "--report-invalid-scope-disables",
-    "message": "Rule \\"foo\\" isn't enabled",
-    "range": Object {
-      "end": Object {
+    "message": "Rule "foo" isn't enabled",
+    "range": {
+      "end": {
         "character": 26,
         "line": 4,
       },
-      "start": Object {
+      "start": {
         "character": 0,
         "line": 4,
       },

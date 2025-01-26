@@ -2,9 +2,9 @@
 
 exports[`Code actions should disable rules for a specific line with a comment on the previous line 1`] = `
 "a {
-  /* stylelint-disable-next-line indentation */
-  font-size: 1.2em;
-    /* stylelint-disable-next-line comment-no-empty */
+  /* stylelint-disable-next-line value-keyword-case */
+  display: BLOCK;
+  /* stylelint-disable-next-line comment-no-empty */
   color: #00;
 }
 "
@@ -12,32 +12,18 @@ exports[`Code actions should disable rules for a specific line with a comment on
 
 exports[`Code actions should disable rules for a specific line with a comment on the same line 1`] = `
 "a {
-  font-size: 1.2em; /* stylelint-disable-line indentation */
-    /* stylelint-disable-next-line comment-no-empty */
+  display: BLOCK; /* stylelint-disable-line value-keyword-case */
+  /* stylelint-disable-next-line comment-no-empty */
   color: #00;
 }
 "
 `;
 
-exports[`Code actions should disable rules for a specific line with a comment on the same line 2`] = `
-"#!/usr/bin/env node
-/* stylelint-disable color-no-invalid-hex */
-/* eslint-disable node/shebang */
-'use strict';
-
-const css = css\`
-	.foo {
-		color: #00;
-	}
-\`;
-"
-`;
-
 exports[`Code actions should disable rules for an entire file 1`] = `
-"/* stylelint-disable indentation */
+"/* stylelint-disable value-keyword-case */
 a {
-  font-size: 1.2em;
-    /* stylelint-disable-next-line comment-no-empty */
+  display: BLOCK;
+  /* stylelint-disable-next-line comment-no-empty */
   color: #00;
 }
 "
@@ -58,22 +44,22 @@ const css = css\`
 `;
 
 exports[`Code actions should provide code actions for problems 1`] = `
-Array [
-  Object {
-    "edit": Array [
-      Array [
+[
+  {
+    "edit": [
+      [
         "<uri>",
-        Array [
-          Object {
+        [
+          {
             "newEol": undefined,
-            "newText": "  /* stylelint-disable-next-line indentation */
+            "newText": "  /* stylelint-disable-next-line value-keyword-case */
 ",
-            "range": Array [
-              Object {
+            "range": [
+              {
                 "character": 0,
                 "line": 1,
               },
-              Object {
+              {
                 "character": 0,
                 "line": 1,
               },
@@ -86,23 +72,23 @@ Array [
     "kind": _ {
       "value": "quickfix",
     },
-    "title": "Disable indentation for this line",
+    "title": "Disable value-keyword-case for this line",
   },
-  Object {
-    "edit": Array [
-      Array [
+  {
+    "edit": [
+      [
         "<uri>",
-        Array [
-          Object {
+        [
+          {
             "newEol": undefined,
-            "newText": "/* stylelint-disable indentation */
+            "newText": "/* stylelint-disable value-keyword-case */
 ",
-            "range": Array [
-              Object {
+            "range": [
+              {
                 "character": 0,
                 "line": 0,
               },
-              Object {
+              {
                 "character": 0,
                 "line": 0,
               },
@@ -115,32 +101,32 @@ Array [
     "kind": _ {
       "value": "quickfix",
     },
-    "title": "Disable indentation for the entire file",
+    "title": "Disable value-keyword-case for the entire file",
   },
-  Object {
-    "command": Object {
-      "arguments": Array [
-        Object {
-          "uri": "https://stylelint.io/user-guide/rules/indentation",
+  {
+    "command": {
+      "arguments": [
+        {
+          "uri": "https://stylelint.io/user-guide/rules/value-keyword-case",
         },
       ],
       "command": "stylelint.openRuleDoc",
-      "title": "Open documentation for indentation",
+      "title": "Open documentation for value-keyword-case",
     },
     "isPreferred": undefined,
     "kind": _ {
       "value": "quickfix",
     },
-    "title": "Show documentation for indentation",
+    "title": "Show documentation for value-keyword-case",
   },
 ]
 `;
 
 exports[`Code actions should run auto-fix action on save 1`] = `
 "a {
-    font-size: 1.2em;
-    /* stylelint-disable-next-line comment-no-empty */
-    color: #00;
+  display: block;
+  /* stylelint-disable-next-line comment-no-empty */
+   color: #00;
 }
 "
 `;

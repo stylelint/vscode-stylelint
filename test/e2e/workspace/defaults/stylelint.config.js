@@ -5,13 +5,13 @@ const config = {
 	overrides: [
 		{
 			files: ['lint.css', 'ignored.css'],
-			rules: { indentation: [4] },
+			rules: { 'function-name-case': 'lower', },
 		},
 		{
 			files: ['rule-doc.css'],
 			plugins: [require.resolve('./test-plugin')],
 			rules: {
-				indentation: [4],
+				'function-name-case': 'lower',
 				'color-no-invalid-hex': true,
 				'plugin/foo-bar': true,
 			},

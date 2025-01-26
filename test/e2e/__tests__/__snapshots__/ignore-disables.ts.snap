@@ -1,40 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"stylelint.ignoreDisables" setting should ignore disable directives when enabled 1`] = `
-Array [
-  Object {
-    "code": "color-hex-case",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/color-hex-case",
+[
+  {
+    "code": "color-hex-length",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/color-hex-length",
     },
-    "message": "Expected \\"#fff\\" to be \\"#FFF\\" (color-hex-case)",
-    "range": Object {
-      "end": Object {
-        "character": 10,
-        "line": 3,
+    "message": "Expected "#fff" to be "#ffffff" (color-hex-length)",
+    "range": {
+      "end": {
+        "character": 18,
+        "line": 2,
       },
-      "start": Object {
-        "character": 9,
-        "line": 3,
+      "start": {
+        "character": 14,
+        "line": 2,
       },
     },
     "severity": 1,
     "source": "Stylelint",
   },
-  Object {
-    "code": "indentation",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
+  {
+    "code": "function-name-case",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/function-name-case",
     },
-    "message": "Expected indentation of 4 spaces (indentation)",
-    "range": Object {
-      "end": Object {
-        "character": 14,
-        "line": 3,
+    "message": "Expected "RGB" to be "rgb" (function-name-case)",
+    "range": {
+      "end": {
+        "character": 23,
+        "line": 2,
       },
-      "start": Object {
-        "character": 2,
-        "line": 3,
+      "start": {
+        "character": 20,
+        "line": 2,
       },
     },
     "severity": 1,

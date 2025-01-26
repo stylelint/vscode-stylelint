@@ -63,7 +63,7 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
+		editor.selection = new Selection(new Position(1, 11), new Position(1, 11));
 
 		const actions = await getCodeActions(editor);
 
@@ -75,7 +75,7 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		editor.selection = new Selection(new Position(2, 4), new Position(2, 4));
+		editor.selection = new Selection(new Position(2, 2), new Position(2, 2));
 
 		const actions = await getCodeActions(editor);
 
@@ -104,7 +104,7 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
+		editor.selection = new Selection(new Position(1, 11), new Position(1, 11));
 
 		const actions = await getCodeActions(editor);
 
@@ -144,7 +144,7 @@ describe('Code actions', () => {
 		async () => {
 			const editor = await openDocument(cssPath);
 
-			editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
+			editor.selection = new Selection(new Position(1, 11), new Position(1, 11));
 
 			await waitForDiagnostics(editor);
 
@@ -180,7 +180,7 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		editor.selection = new Selection(new Position(1, 2), new Position(1, 2));
+		editor.selection = new Selection(new Position(1, 11), new Position(1, 11));
 
 		const actions = await getCodeActions(editor);
 		const lineAction = actions.find((action) => action.title.match(/^Disable .+ for this line$/));

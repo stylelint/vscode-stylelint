@@ -1,10 +1,10 @@
 /* prettier-ignore */
 a {
-    /* stylelint-disable-next-line indentation */
-  color: #fff;
+    /* stylelint-disable-next-line function-name-case */
+  background: #fff, RGB(0 0 0);
 }
 
 a {
-    /* stylelint-disable-next-line indentation -- with a description */
-  color: #fff;
+    /* stylelint-disable-next-line function-name-case -- with a description */
+  background: #fff, RGB(0 0 0);
 }

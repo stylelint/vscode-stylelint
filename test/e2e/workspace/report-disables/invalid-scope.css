@@ -5,9 +5,9 @@
 /* stylelint-disable foo */
 /* stylelint-enable foo */
 
-/* stylelint-disable-next-line indentation */
+/* stylelint-disable-next-line function-name-case */
 
-/* stylelint-disable-line indentation */
+/* stylelint-disable-line function-name-case */
 
-/* stylelint-disable indentation */
-/* stylelint-enable indentation */
+/* stylelint-disable function-name-case */
+/* stylelint-enable function-name-case */

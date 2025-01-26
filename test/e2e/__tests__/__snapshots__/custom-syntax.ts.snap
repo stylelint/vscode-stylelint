@@ -3,5 +3,5 @@
 exports[`"stylelint.customSyntax" setting should auto-fix using the specified custom syntax 1`] = `
 "/* prettier-ignore */
 .foo .bar
-    color: red"
+  color: rgb(0 0 0)"
 `;

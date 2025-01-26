@@ -1,7 +1,7 @@
 import type LSP from 'vscode-languageserver-protocol';
 
 export type FormattingRules = {
-	indentation: [number | string];
+	indentation?: [number | string];
 	'no-missing-end-of-source-newline'?: true | null;
 	'no-eol-whitespace'?: true | null;
 };

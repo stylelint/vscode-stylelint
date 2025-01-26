@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`"stylelint.validate" setting when set to ["scss"] should lint and auto-fix scss 1`] = `
-Array [
-  Object {
-    "code": "indentation",
-    "codeDescription": Object {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
+[
+  {
+    "code": "function-name-case",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/function-name-case",
     },
-    "message": "Expected indentation of 4 spaces (indentation)",
-    "range": Object {
-      "end": Object {
-        "character": 13,
+    "message": "Expected "RGB" to be "rgb" (function-name-case)",
+    "range": {
+      "end": {
+        "character": 12,
         "line": 2,
       },
-      "start": Object {
-        "character": 2,
+      "start": {
+        "character": 9,
         "line": 2,
       },
     },
@@ -27,7 +27,7 @@ Array [
 exports[`"stylelint.validate" setting when set to ["scss"] should lint and auto-fix scss 2`] = `
 "/* prettier-ignore */
 a {
-    color: red;
+  color: rgb(0 0 0);
 }
 "
 `;
@@ -35,7 +35,7 @@ a {
 exports[`"stylelint.validate" setting when set to ["scss"] shouldn't lint or fix css 1`] = `
 "/* prettier-ignore */
 a {
-  color: red;
+  color: RGB(0 0 0);
 }
 "
 `;
@@ -45,7 +45,7 @@ exports[`"stylelint.validate" setting when set to ["scss"] shouldn't lint or fix
 
 \`\`\`css
 a {
-  color: red;
+  color: RGB(0 0 0);
 }
 \`\`\`
 "
