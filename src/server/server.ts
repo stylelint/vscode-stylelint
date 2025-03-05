@@ -131,6 +131,11 @@ export class StylelintLanguageServer implements Disposable {
 	#disposables: LSP.Disposable[] = [];
 
 	/**
+	 * Lint results.
+	 */
+	#lintResults = new Map<string, LintDiagnostics & { version: number }>();
+
+	/**
 	 * Creates a new Stylelint language server.
 	 */
 	constructor({ connection, logger, modules }: LanguageServerConstructorParameters) {
@@ -155,6 +160,7 @@ export class StylelintLanguageServer implements Disposable {
 			getFixes: this.#getFixes.bind(this),
 			displayError: this.#displayError.bind(this),
 			lintDocument: this.#lintDocument.bind(this),
+			getEditInfo: this.#getEditInfo.bind(this),
 			resolveStylelint: this.#resolveStylelint.bind(this),
 		};
 
@@ -361,6 +367,8 @@ export class StylelintLanguageServer implements Disposable {
 
 			const results = await this.#runner.lintDocument(document, linterOptions, options);
 
+			this.#lintResults.set(document.uri, { version: document.version, ...results });
+
 			this.#logger.debug('Lint run complete', { uri: document.uri, results });
 
 			return results;
@@ -373,6 +381,39 @@ export class StylelintLanguageServer implements Disposable {
 
 			return undefined;
 		}
+	}
+
+	#getEditInfo(
+		document: TextDocument,
+		diagnostic: LSP.Diagnostic,
+	): { label: string; edit: TextEdit } | undefined {
+		const result = this.#lintResults.get(document.uri);
+
+		if (!result || document.version !== result.version) {
+			return undefined;
+		}
+
+		const warning = result.getWarning?.(diagnostic);
+		if (!warning) {
+			return undefined;
+		}
+
+		const edit = warning.fix;
+
+		if (!edit) {
+			return undefined;
+		}
+
+		return {
+			label: `Fix this ${warning.rule} problem`,
+			edit: {
+				newText: edit.text,
+				range: {
+					start: document.positionAt(edit.range[0]),
+					end: document.positionAt(edit.range[1]),
+				},
+			},
+		};
 	}
 
 	/**
@@ -529,6 +570,7 @@ export class StylelintLanguageServer implements Disposable {
 		});
 
 		this.#scopedOptions.delete(document.uri);
+		this.#lintResults.delete(document.uri);
 	}
 
 	async #onDidChangeConfiguration(params: LSP.DidChangeConfigurationParams): Promise<void> {

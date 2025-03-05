@@ -569,6 +569,7 @@ export function getContext(): MockLanguageServerContext {
 		displayError: jest.fn(),
 		getOptions: jest.fn(async () => context.__options) as JestFn,
 		getFixes: jest.fn(),
+		getEditInfo: jest.fn(),
 		getModule: jest.fn(),
 		lintDocument: jest.fn(),
 		resolveStylelint: jest.fn(),

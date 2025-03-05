@@ -80,6 +80,7 @@ export class StylelintRunner {
 			...(await buildStylelintOptions(document.uri, workspaceFolder, linterOptions, runnerOptions)),
 			code: document.getText(),
 			formatter: () => '',
+			computeEditInfo: true,
 		};
 
 		if (codeFilename) {
