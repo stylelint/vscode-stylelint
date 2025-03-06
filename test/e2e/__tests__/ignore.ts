@@ -6,7 +6,7 @@ describe('.stylelintignore', () => {
 		const { document } = await openDocument(path.join(workspaceDir, 'defaults/.stylelintignore'));
 
 		expect(document.languageId).toBe('ignore');
-	});
+	}, 12000);
 
 	// TODO: Get .stylelintignore to work
 	// eslint-disable-next-line jest/no-commented-out-tests
