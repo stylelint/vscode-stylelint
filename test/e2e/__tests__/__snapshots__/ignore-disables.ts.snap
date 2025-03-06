@@ -11,30 +11,11 @@ exports[`"stylelint.ignoreDisables" setting should ignore disable directives whe
     "range": {
       "end": {
         "character": 18,
-        "line": 2,
+        "line": 3,
       },
       "start": {
         "character": 14,
-        "line": 2,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
-  {
-    "code": "function-name-case",
-    "codeDescription": {
-      "href": "https://stylelint.io/user-guide/rules/function-name-case",
-    },
-    "message": "Expected "RGB" to be "rgb" (function-name-case)",
-    "range": {
-      "end": {
-        "character": 23,
-        "line": 2,
-      },
-      "start": {
-        "character": 20,
-        "line": 2,
+        "line": 3,
       },
     },
     "severity": 1,

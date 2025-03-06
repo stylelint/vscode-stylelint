@@ -1,4 +1,5 @@
 /* prettier-ignore */
 a {
-  background: #fff, RGB(0 0 0);
+  /* stylelint-disable-next-line color-hex-length */
+  background: #fff;
 }

@@ -4,10 +4,10 @@ exports[`"stylelint.reportNeedlessDisables" setting should report needless disab
 [
   {
     "code": "--report-needless-disables",
-    "message": "Needless disable for "function-name-case"",
+    "message": "Needless disable for "color-hex-length"",
     "range": {
       "end": {
-        "character": 62,
+        "character": 60,
         "line": 2,
       },
       "start": {
@@ -20,10 +20,10 @@ exports[`"stylelint.reportNeedlessDisables" setting should report needless disab
   },
   {
     "code": "--report-needless-disables",
-    "message": "Needless disable for "function-name-case"",
+    "message": "Needless disable for "color-hex-length"",
     "range": {
       "end": {
-        "character": 41,
+        "character": 39,
         "line": 6,
       },
       "start": {
@@ -36,10 +36,10 @@ exports[`"stylelint.reportNeedlessDisables" setting should report needless disab
   },
   {
     "code": "--report-needless-disables",
-    "message": "Needless disable for "function-name-case"",
+    "message": "Needless disable for "color-hex-length"",
     "range": {
       "end": {
-        "character": 62,
+        "character": 60,
         "line": 14,
       },
       "start": {
@@ -52,10 +52,10 @@ exports[`"stylelint.reportNeedlessDisables" setting should report needless disab
   },
   {
     "code": "--report-needless-disables",
-    "message": "Needless disable for "function-name-case"",
+    "message": "Needless disable for "color-hex-length"",
     "range": {
       "end": {
-        "character": 41,
+        "character": 39,
         "line": 17,
       },
       "start": {
@@ -71,7 +71,7 @@ exports[`"stylelint.reportNeedlessDisables" setting should report needless disab
     "message": "Needless disable for "unknown"",
     "range": {
       "end": {
-        "character": 62,
+        "character": 60,
         "line": 2,
       },
       "start": {

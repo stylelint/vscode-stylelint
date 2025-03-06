@@ -1,10 +1,10 @@
 /* prettier-ignore */
 a {
-    /* stylelint-disable-next-line function-name-case */
-  background: #fff, RGB(0 0 0);
+    /* stylelint-disable-next-line color-hex-length */
+  background: #fff;
 }
 
 a {
-    /* stylelint-disable-next-line function-name-case -- with a description */
-  background: #fff, RGB(0 0 0);
+    /* stylelint-disable-next-line color-hex-length -- with a description */
+  background: #fff;
 }

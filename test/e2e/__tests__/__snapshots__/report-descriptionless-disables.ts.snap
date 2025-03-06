@@ -4,10 +4,10 @@ exports[`"stylelint.reportDescriptionlessDisables" setting should report invalid
 [
   {
     "code": "--report-descriptionless-disables",
-    "message": "Disable for "function-name-case" is missing a description",
+    "message": "Disable for "color-hex-length" is missing a description",
     "range": {
       "end": {
-        "character": 55,
+        "character": 53,
         "line": 2,
       },
       "start": {

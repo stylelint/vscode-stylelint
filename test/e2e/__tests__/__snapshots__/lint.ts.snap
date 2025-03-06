@@ -19,6 +19,25 @@ exports[`Linting should display rule documentation links when one is available 1
     "source": "Stylelint",
   },
   {
+    "code": "color-hex-length",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/color-hex-length",
+    },
+    "message": "Expected "#fff" to be "#ffffff" (color-hex-length)",
+    "range": {
+      "end": {
+        "character": 13,
+        "line": 2,
+      },
+      "start": {
+        "character": 9,
+        "line": 2,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+  {
     "code": "color-no-invalid-hex",
     "codeDescription": {
       "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
@@ -37,39 +56,20 @@ exports[`Linting should display rule documentation links when one is available 1
     "severity": 1,
     "source": "Stylelint",
   },
-  {
-    "code": "function-name-case",
-    "codeDescription": {
-      "href": "https://stylelint.io/user-guide/rules/function-name-case",
-    },
-    "message": "Expected "RGB" to be "rgb" (function-name-case)",
-    "range": {
-      "end": {
-        "character": 12,
-        "line": 2,
-      },
-      "start": {
-        "character": 9,
-        "line": 2,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
 ]
 `;
 
 exports[`Linting should lint CSS documents 1`] = `
 [
   {
-    "code": "function-name-case",
+    "code": "color-hex-length",
     "codeDescription": {
-      "href": "https://stylelint.io/user-guide/rules/function-name-case",
+      "href": "https://stylelint.io/user-guide/rules/color-hex-length",
     },
-    "message": "Expected "RGB" to be "rgb" (function-name-case)",
+    "message": "Expected "#fff" to be "#ffffff" (color-hex-length)",
     "range": {
       "end": {
-        "character": 12,
+        "character": 13,
         "line": 2,
       },
       "start": {

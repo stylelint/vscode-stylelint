@@ -3,14 +3,14 @@
 exports[`"stylelint.validate" setting when set to ["scss"] should lint and auto-fix scss 1`] = `
 [
   {
-    "code": "function-name-case",
+    "code": "color-hex-length",
     "codeDescription": {
-      "href": "https://stylelint.io/user-guide/rules/function-name-case",
+      "href": "https://stylelint.io/user-guide/rules/color-hex-length",
     },
-    "message": "Expected "RGB" to be "rgb" (function-name-case)",
+    "message": "Expected "#fff" to be "#ffffff" (color-hex-length)",
     "range": {
       "end": {
-        "character": 12,
+        "character": 13,
         "line": 2,
       },
       "start": {
@@ -27,7 +27,7 @@ exports[`"stylelint.validate" setting when set to ["scss"] should lint and auto-
 exports[`"stylelint.validate" setting when set to ["scss"] should lint and auto-fix scss 2`] = `
 "/* prettier-ignore */
 a {
-  color: rgb(0 0 0);
+  color: #ffffff;
 }
 "
 `;
@@ -35,7 +35,7 @@ a {
 exports[`"stylelint.validate" setting when set to ["scss"] shouldn't lint or fix css 1`] = `
 "/* prettier-ignore */
 a {
-  color: RGB(0 0 0);
+  color: #fff;
 }
 "
 `;
@@ -45,7 +45,7 @@ exports[`"stylelint.validate" setting when set to ["scss"] shouldn't lint or fix
 
 \`\`\`css
 a {
-  color: RGB(0 0 0);
+  color: #fff;
 }
 \`\`\`
 "

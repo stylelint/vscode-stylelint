@@ -5,13 +5,13 @@ const config = {
 	overrides: [
 		{
 			files: ['lint.css', 'ignored.css'],
-			rules: { 'function-name-case': 'lower', },
+			rules: { 'color-hex-length': 'long', },
 		},
 		{
 			files: ['rule-doc.css'],
 			plugins: [require.resolve('./test-plugin')],
 			rules: {
-				'function-name-case': 'lower',
+				'color-hex-length': 'long',
 				'color-no-invalid-hex': true,
 				'plugin/foo-bar': true,
 			},

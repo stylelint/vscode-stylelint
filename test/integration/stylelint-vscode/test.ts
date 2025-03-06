@@ -22,7 +22,7 @@ describe('StylelintRunner', () => {
 			config: {
 				rules: {
 					'color-no-invalid-hex': [true],
-					"selector-type-no-unknown": [true],
+					'selector-type-no-unknown': [true],
 				},
 			},
 		});
@@ -239,9 +239,9 @@ a { color: #000 }
 			{
 				config: {
 					rules: {
-					'color-no-invalid-hex': true,
-					'color-hex-alpha': 'foo',
-					"selector-type-no-unknown": [true, {bar: true}],
+						'color-no-invalid-hex': true,
+						'color-hex-alpha': 'foo',
+						'selector-type-no-unknown': [true, { bar: true }],
 					},
 				},
 			},
@@ -333,10 +333,13 @@ describe('StylelintRunner with auto-fix', () => {
 	test('auto-fix should work properly if configs are defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(createDocument(null, 'css', 'a\n{\ncolor:#ffffff;\n}'), {
-			config: { rules: { 'color-hex-length': 'short' } },
-			fix: true,
-		});
+		const result = await runner.lintDocument(
+			createDocument(null, 'css', 'a\n{\ncolor:#ffffff;\n}'),
+			{
+				config: { rules: { 'color-hex-length': 'short' } },
+				fix: true,
+			},
+		);
 
 		expect(result.output).toMatchSnapshot();
 	});
@@ -461,10 +464,13 @@ describe('StylelintRunner with customSyntax', () => {
 	test('should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(createDocument('test.css', 'css', 'a\n  color:#ffffff'), {
-			config: { rules: { 'color-hex-length': 'short', } },
-			customSyntax: 'postcss-sass',
-		});
+		const result = await runner.lintDocument(
+			createDocument('test.css', 'css', 'a\n  color:#ffffff'),
+			{
+				config: { rules: { 'color-hex-length': 'short' } },
+				customSyntax: 'postcss-sass',
+			},
+		);
 
 		expect(result).toMatchSnapshot();
 	});
@@ -472,17 +478,19 @@ describe('StylelintRunner with customSyntax', () => {
 	test('auto-fix should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
-		try{
-		const result = await runner.lintDocument(createDocument('test.css', 'css', 'a\n  color:#ffffff'), {
-			config: { rules: { 'color-hex-length': 'short', } },
-			customSyntax: 'postcss-sass',
-			fix: true,
-		});
-		expect(result).toMatchSnapshot();
-	}catch(e){
-		console.error(e)
-	}
-
+		try {
+			const result = await runner.lintDocument(
+				createDocument('test.css', 'css', 'a\n  color:#ffffff'),
+				{
+					config: { rules: { 'color-hex-length': 'short' } },
+					customSyntax: 'postcss-sass',
+					fix: true,
+				},
+			);
+			expect(result).toMatchSnapshot();
+		} catch (e) {
+			console.error(e);
+		}
 	});
 });
 
