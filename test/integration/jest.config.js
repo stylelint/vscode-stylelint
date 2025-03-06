@@ -15,6 +15,10 @@ const config = {
 		'<rootDir>/../e2e/workspace/defaults/yarn-[^/]+/stylelint',
 		'<rootDir>/../e2e/workspace/defaults/local-stylelint/node_modules',
 	],
+
+	// Prettier version 3 is not supported!
+	// See https://jestjs.io/docs/configuration/#prettierpath-string
+	prettierPath: null,
 };
 
 module.exports = config;

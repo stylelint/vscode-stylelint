@@ -14,6 +14,10 @@ const config = {
 	],
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	runner: 'vscode',
+
+	// Prettier version 3 is not supported!
+	// See https://jestjs.io/docs/configuration/#prettierpath-string
+	prettierPath: null,
 };
 
 module.exports = config;
