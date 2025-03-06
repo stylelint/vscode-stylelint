@@ -1,20 +1,21 @@
-import path from 'path';
-// import { normalizeDiagnostic, getStylelintDiagnostics } from '../utils';
+import * as assert from 'node:assert/strict';
+
+import { openDocument, closeAllEditors, getStylelintDiagnostics } from '../helpers';
 
 describe('.stylelintignore', () => {
+	afterEach(async () => {
+		await closeAllEditors();
+	});
+
 	it('should have syntax highlighting', async () => {
-		const { document } = await openDocument(path.join(workspaceDir, 'defaults/.stylelintignore'));
+		const { document } = await openDocument('defaults/.stylelintignore');
 
-		expect(document.languageId).toBe('ignore');
-	}, 12000);
+		assert.equal(document.languageId, 'ignore');
+	});
 
-	// TODO: Get .stylelintignore to work
-	// eslint-disable-next-line jest/no-commented-out-tests
-	// it('should be respected', async () => {
-	// 	const { document } = await openDocument(path.resolve(workspaceDir, 'defaults/ignored.css'));
+	it('should be respected', async () => {
+		const { document } = await openDocument('defaults/ignored.css');
 
-	// 	// Wait for diagnostics to be computed
-
-	// 	expect(getStylelintDiagnostics(document.uri).map(normalizeDiagnostic)).toEqual([]);
-	// });
+		assert.deepEqual(getStylelintDiagnostics(document.uri), []);
+	});
 });

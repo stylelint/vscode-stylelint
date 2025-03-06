@@ -4,7 +4,6 @@ import type os from 'os';
 import type cp from 'child_process';
 import type fs from 'fs/promises';
 import type path from 'path';
-// eslint-disable-next-line n/no-missing-import
 import type VSLanguageServerNode from 'vscode-languageserver/node';
 import type * as ProcessesActual from '../src/utils/processes';
 import type { OptionalExcept } from '../src/utils/types';
@@ -15,11 +14,6 @@ import type { ExtensionEvents } from '../src/extension/index';
 
 declare global {
 	/**
-	 * The test workspace directory. Only available in end-to-end tests.
-	 */
-	const workspaceDir: string;
-
-	/**
 	 * Server mocks. Only available in unit tests.
 	 */
 	const serverMocks: typeof ServerMocks;
@@ -28,44 +22,6 @@ declare global {
 	 * Connection manager. Only available in integration tests.
 	 */
 	const ConnectionManager: typeof ConnectionManagerConstructor;
-
-	/**
-	 * Opens a file in the editor. Only available in end-to-end tests.
-	 * @param fsPath The file path.
-	 */
-	const openDocument: (fsPath: string) => Promise<vscode.TextEditor>;
-
-	/**
-	 * Waits until the extension emits any diagnostics for a document. Resolves
-	 * to the diagnostics. Rejects if the timeout is reached. Only available in
-	 * end-to-end tests.
-	 * @param editorOrDocument The editor or document for which to wait.
-	 * @param timeout The timeout in milliseconds. Defaults to 5000.
-	 * @param interval The interval between checks in milliseconds. Defaults to
-	 * 20.
-	 */
-	const waitForDiagnostics: (
-		editorOrDocument: vscode.TextEditor | vscode.TextDocument,
-		timeout?: number,
-		interval?: number,
-	) => Promise<vscode.Diagnostic[]>;
-
-	/**
-	 * Waits until the extension emits the specified event. If `shouldResolve`
-	 * is provided, the promise will only resolve if `shouldResolve` returns
-	 * true. Resolves with the event's parameters. Rejects if the timeout is
-	 * reached. Only available in end-to-end tests.
-	 * @param event The event name.
-	 * @param shouldResolve A function that returns true if the event should
-	 * resolve the promise. If not provided, the promise will resolve on any
-	 * emitted event regardless of its parameters.
-	 * @param timeout The timeout in milliseconds. Defaults to 5000.
-	 */
-	const waitForApiEvent: <T extends keyof ExtensionEvents>(
-		event: T,
-		shouldResolve?: (...params: Parameters<ExtensionEvents[T]>) => boolean,
-		timeout?: number,
-	) => Promise<Parameters<ExtensionEvents[T]>>;
 
 	/**
 	 * Types used in tests.

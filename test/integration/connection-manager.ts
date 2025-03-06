@@ -8,8 +8,7 @@ import {
 	StreamMessageReader,
 	StreamMessageWriter,
 	WatchDog,
-} from 'vscode-languageserver/node'; // eslint-disable-line n/no-missing-import
-// eslint-disable-next-line n/no-missing-import
+} from 'vscode-languageserver/node';
 import { createConnection } from 'vscode-languageserver/lib/common/server';
 
 class TestStream extends Duplex {
@@ -131,7 +130,8 @@ export class ConnectionManager {
 			if (connection) {
 				connection.end();
 				connection.dispose();
-				timeoutRef && clearTimeout(timeoutRef);
+
+				if (timeoutRef) clearTimeout(timeoutRef);
 			} else {
 				throw new Error('Stopping server timed out');
 			}

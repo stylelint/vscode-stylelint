@@ -34,7 +34,7 @@ const tags = {
 async function fileExists(filePath: string): Promise<boolean> {
 	try {
 		return (await fs.stat(filePath)).isFile();
-	} catch (err) {
+	} catch {
 		return false;
 	}
 }

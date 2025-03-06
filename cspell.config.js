@@ -7,6 +7,7 @@ const config = {
 	files: ['**/*.js', '**/*.ts', '**/*.json', '**/*.md', '**/*.yml', '**/*.css', '**/*.scss'],
 	ignorePaths: ['**/node_modules', '**/.yarn', '**/coverage', 'dist'],
 	words: [
+		'Autofix',
 		'browserslist',
 		'caniuse',
 		'color',
@@ -35,13 +36,6 @@ const config = {
 		'vscodeignore',
 		'Xerus',
 		'Supertypes',
-	],
-	overrides: [
-		{
-			filename: 'package.json',
-			// cspell:disable-next-line
-			words: ['Autofix'],
-		},
 	],
 };
 

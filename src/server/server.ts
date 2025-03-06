@@ -1,7 +1,6 @@
 import { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import type { Connection, TextDocumentChangeEvent } from 'vscode-languageserver';
 import type LSP from 'vscode-languageserver-protocol';
-// eslint-disable-next-line n/no-missing-import
 import { TextDocuments } from 'vscode-languageserver/node';
 import {
 	DidChangeConfigurationNotification,

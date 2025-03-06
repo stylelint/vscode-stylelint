@@ -352,7 +352,7 @@ describe('StylelintRunner with auto-fix', () => {
 			fix: true,
 		});
 
-		expect(result.output).toMatchInlineSnapshot(`"a {}"`);
+		expect(result.output).toBe('a {}');
 	});
 
 	test('JS file auto-fix should not change the content if no rules are defined', async () => {
@@ -364,7 +364,7 @@ describe('StylelintRunner with auto-fix', () => {
 			fix: true,
 		});
 
-		expect(result.output).toMatchInlineSnapshot(`""a""`);
+		expect(result.output).toBe('"a"');
 	});
 
 	test('auto-fix should ignore if the file matches the ignoreFiles', async () => {

@@ -6,8 +6,9 @@ const config = {
 		'<rootDir>/stylelint-vscode/test.[jt]s?(x)',
 		'<rootDir>/server/__tests__/**/*.[jt]s?(x)',
 	],
-	preset: 'ts-jest',
-	globals: { 'ts-jest': { tsconfig: '<rootDir>/../../tsconfig.test.json' } },
+	transform: {
+		['^.+.[jt]s$']: ['ts-jest', { tsconfig: '<rootDir>/../../tsconfig.test.json' }],
+	},
 	verbose: true,
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	modulePathIgnorePatterns: [

@@ -39,6 +39,6 @@ export type PublicOnly<T> = Pick<T, keyof T>;
  * its descendants.
  */
 export type PublicOnlyDeep<T> = {
-	// eslint-disable-next-line @typescript-eslint/ban-types
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 	[K in keyof T]: T[K] extends Function ? T[K] : T[K] extends object ? PublicOnlyDeep<T[K]> : T[K];
 };

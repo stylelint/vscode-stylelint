@@ -10,14 +10,13 @@ updates:
       - 'pr: dependencies'
     groups:
       jest:
-        patterns: ['jest', 'jest-runner-vscode', 'ts-jest', '@types/jest']
+        patterns: ['jest', 'ts-jest', '@types/jest']
       eslint:
-        patterns: ['eslint', 'eslint-config-*', '@typescript-eslint/*']
+        # TODO: Re-add 'eslint' when it's possible to bump ESLint to v9.
+        patterns: ['eslint-config-*', '@typescript-eslint/*']
       vscode:
         patterns: ['vscode-*', '@vscode/*']
     ignore:
-      - dependency-name: p-wait-for
-        update-types: [version-update:semver-major]
       - dependency-name: '@types/vscode'
         update-types: [version-update:semver-minor]
   - package-ecosystem: 'github-actions'

@@ -22,7 +22,7 @@ const config = {
 		],
 		'n/no-missing-import': [
 			'error',
-			{ allowModules: ['vscode'], typescriptExtensionMap: [['.ts', '']] },
+			{ allowModules: ['vscode'], tryExtensions: ['.js', '.json', '.ts'] },
 		],
 		'require-jsdoc': 'error',
 		'no-warning-comments': ['warn', { terms: ['todo'], location: 'start' }],
@@ -77,6 +77,12 @@ const config = {
 				'@typescript-eslint/no-unsafe-return': 'off',
 				'@typescript-eslint/unbound-method': 'off',
 				'jest/unbound-method': 'error',
+			},
+		},
+		{
+			files: ['test/e2e/__tests__/**/*'],
+			rules: {
+				'jest/expect-expect': 'off',
 			},
 		},
 	],

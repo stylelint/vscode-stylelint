@@ -30,15 +30,13 @@ describe('Initialization', () => {
 
 		const result = await connection.sendRequest(LSP.InitializeRequest.type, init);
 
-		expect(result).toMatchInlineSnapshot(`
-		{
-		  "capabilities": {
-		    "textDocumentSync": {
-		      "change": 1,
-		      "openClose": true,
-		    },
-		  },
-		}
-	`);
+		expect(result).toEqual({
+			capabilities: {
+				textDocumentSync: {
+					change: 1,
+					openClose: true,
+				},
+			},
+		});
 	});
 });

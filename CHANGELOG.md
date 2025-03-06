@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ## [Unreleased]
 
+## [1.4.0](https://github.com/stylelint/vscode-stylelint/compare/v1.3.0...v1.4.0) (2024-03-28)
+
+### Changed
+
+- Bump vscode language server dependencies ([#521](https://github.com/stylelint/vscode-stylelint/pull/521)).
+
+### Fixed
+
+- Remove inconsistent `"less"` from defaults of `stylelint.validate` and `stylelint.snippet` ([#454](https://github.com/stylelint/vscode-stylelint/pull/454)).
+
 ## [1.3.0](https://github.com/stylelint/vscode-stylelint/compare/v1.2.4...v1.3.0) (2023-11-02)
 
 ### Added

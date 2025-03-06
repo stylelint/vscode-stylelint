@@ -1,7 +1,6 @@
 import { EventEmitter } from 'node:events';
 import path from 'node:path';
 
-// eslint-disable-next-line n/no-missing-import
 import { LanguageClient, SettingMonitor, ExecuteCommandRequest } from 'vscode-languageclient/node';
 import { workspace, commands, window, type ExtensionContext } from 'vscode';
 import { ApiEvent, PublicApi } from './types';

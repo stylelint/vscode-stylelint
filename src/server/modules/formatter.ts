@@ -117,7 +117,7 @@ export class FormatterModule implements LanguageServerModule {
 		this.#logger?.debug('Deregistering formatter for document', { uri });
 
 		registration
-			.then(({ dispose }) => dispose())
+			.then((d) => d.dispose())
 			.catch((error: unknown) => {
 				this.#logger?.error('Error deregistering formatter for document', {
 					uri,
@@ -133,7 +133,7 @@ export class FormatterModule implements LanguageServerModule {
 			this.#logger?.debug('Deregistering formatter for document', { uri });
 
 			registration
-				.then(({ dispose }) => dispose())
+				.then((d) => d.dispose())
 				.catch((error: unknown) => {
 					this.#logger?.error('Error deregistering formatter for document', {
 						uri,

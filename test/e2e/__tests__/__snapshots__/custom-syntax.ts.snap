@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`"stylelint.customSyntax" setting should auto-fix using the specified custom syntax 1`] = `
-"/* prettier-ignore */
-.foo .bar
-  color: #ffffff"
-`;

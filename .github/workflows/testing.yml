@@ -10,6 +10,9 @@ on:
       - '**'
 
 jobs:
+  lint:
+    uses: stylelint/.github/.github/workflows/lint.yml@main
+
   test:
     name: Test for Stylelint ${{ matrix.stylelint }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -50,23 +53,18 @@ jobs:
         run: npm i -D stylelint@14 stylelint-scss@4.3
         if: ${{ matrix.stylelint == '14' }}
 
-      - name: Cache VS Code binaries
-        uses: actions/cache@v4
-        id: vscode-cache
-        with:
-          path: .vscode-test
-          key: ${{ runner.os }}-vscode-${{ hashFiles('test/e2e/jest-runner-vscode.config.js') }}
-          restore-keys: |
-            ${{ runner.os }}-vscode-
-
-      - name: Download VS Code
-        run: npm run download-vscode
-
       - name: Run unit tests
         run: npm run test:unit -- --coverage
 
       - name: Run integration tests
         run: npm run test:integration -- --coverage
+
+      - name: Cache VS Code binaries
+        uses: actions/cache@v4
+        id: vscode-cache
+        with:
+          path: .vscode-test
+          key: ${{ runner.os }}-vscode-${{ hashFiles('package.json') }}
 
       - name: Run end-to-end tests (Linux)
         if: ${{ runner.os == 'Linux' }}

@@ -1,6 +1,5 @@
 import path from 'path';
 import process from 'process';
-// eslint-disable-next-line n/no-missing-import
 import { createConnection, ProposedFeatures } from 'vscode-languageserver/node';
 import { StylelintLanguageServer, modules, createLogger } from '../server/index';
 

@@ -1,4 +1,3 @@
-// eslint-disable-next-line n/no-missing-import
 import type { RemoteConsole } from 'vscode-languageserver/node';
 
 type RemoteConsoleLogLevels = 'info' | 'debug' | 'error' | 'warn' | 'log';

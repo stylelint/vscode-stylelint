@@ -9,7 +9,6 @@ import path from 'path';
 import fs from 'fs/promises';
 import module from 'module';
 import type winston from 'winston';
-// eslint-disable-next-line n/no-missing-import
 import { Connection, Files } from 'vscode-languageserver/node';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { GlobalPathResolver } from '../global-path-resolver';
@@ -85,14 +84,14 @@ jest.doMock(path.join(__dirname, '.pnp.js'), () => ({ setup: jest.fn() }), {
 	virtual: true,
 });
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockedPnP = require(pnpPath) as jest.Mocked<{ setup: () => void }>;
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockedJSPnP = require(pnpJSPath) as jest.Mocked<{ setup: () => void }>;
 
 const mockGlobalFileResolution = (packageManager: PackageManager, stylelintPath: string) => {
 	mockedFiles.__mockResolution('stylelint', (globalPath, cwd, trace) => {
-		trace && trace('Resolving globally');
+		if (trace) trace('Resolving globally');
 
 		return cwd === mockCWD && globalPath === mockGlobalPaths[packageManager]
 			? stylelintPath
@@ -102,7 +101,7 @@ const mockGlobalFileResolution = (packageManager: PackageManager, stylelintPath:
 
 const mockLocalFileResolution = (stylelintPath: string) => {
 	mockedFiles.__mockResolution('stylelint', (_, cwd, trace) => {
-		trace && trace('Resolving locally');
+		if (trace) trace('Resolving locally');
 
 		return cwd === mockCWD ? stylelintPath : undefined;
 	});
