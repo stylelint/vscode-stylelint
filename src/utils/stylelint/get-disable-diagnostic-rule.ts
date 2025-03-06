@@ -7,6 +7,7 @@ import { DisableReportRuleNames } from './types';
  * @param diagnostic The diagnostic corresponding to the Stylelint warning.
  */
 export function getDisableDiagnosticRule(diagnostic: LSP.Diagnostic): string | undefined {
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (diagnostic.code) {
 		case DisableReportRuleNames.Needless:
 			return diagnostic.message.match(/^Needless disable for "(.+)"$/)?.[1];

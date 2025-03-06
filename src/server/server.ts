@@ -206,6 +206,7 @@ export class StylelintLanguageServer implements Disposable {
 		}
 
 		// We only have a handful of states, so we can use a switch statement.
+		// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 		switch (this.#state) {
 			// We don't need to check State.New since the only invalid state
 			// transition from New is to Initialized, and the handler for
