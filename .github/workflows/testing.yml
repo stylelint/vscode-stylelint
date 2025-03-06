@@ -49,9 +49,13 @@ jobs:
         if: ${{ matrix.stylelint == '14' }}
 
       - name: Run unit tests
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         run: npm run test:unit -- --coverage
 
       - name: Run integration tests
+        env:
+          NODE_OPTIONS: --experimental-vm-modules
         run: npm run test:integration -- --coverage
 
       - name: Cache VS Code binaries
