@@ -14,6 +14,7 @@ const config = {
 	],
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	runner: 'vscode',
+	maxWorkers: 1,
 
 	// Prettier version 3 is not supported!
 	// See https://jestjs.io/docs/configuration/#prettierpath-string
