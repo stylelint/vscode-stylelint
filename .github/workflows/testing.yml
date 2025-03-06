@@ -33,11 +33,6 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      - name: Install latest npm
-        # TODO: npm 10 requires Node.js 18.17 or later.
-        # run: npm install --global npm@latest
-        run: npm install --global npm@9
-
       - name: Install dependencies
         run: npm ci
 
