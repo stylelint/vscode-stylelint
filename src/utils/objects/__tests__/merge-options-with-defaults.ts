@@ -169,7 +169,10 @@ describe('mergeOptionsWithDefaults', () => {
 		};
 
 		const defaults = {
-			a: Object.assign([1, 2, 3], { a: 'a', b: 'b' }) as number[] & { a?: string; b?: string },
+			a: Object.assign([1, 2, 3], { a: 'a', b: 'b' }) as number[] & {
+				a?: string;
+				b?: string;
+			},
 		};
 
 		const result = mergeOptionsWithDefaults(options, defaults);

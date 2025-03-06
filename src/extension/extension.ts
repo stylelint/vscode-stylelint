@@ -18,7 +18,9 @@ let client: LanguageClient;
 export async function activate({ subscriptions }: ExtensionContext): Promise<PublicApi> {
 	const serverPath = path.join(__dirname, 'start-server.js');
 
-	const api = Object.assign(new EventEmitter(), { codeActionReady: false }) as PublicApi;
+	const api = Object.assign(new EventEmitter(), {
+		codeActionReady: false,
+	}) as PublicApi;
 
 	client = new LanguageClient(
 		'Stylelint',

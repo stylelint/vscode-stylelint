@@ -3,8 +3,8 @@
 /** @type {import('stylelint').Config} */
 const config = {
 	rules: {
-		indentation: [4],
 		'color-no-invalid-hex': true,
+		'value-keyword-case': 'lower',
 	},
 	overrides: [
 		{

@@ -30,25 +30,25 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		const actions = await getCodeActions(editor, new Selection(1, 2, 1, 2));
+		const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
 
 		assert.equal(actions.length, 3);
 		assertTextEdits(actions[0].edit?.get(editor.document.uri), [
 			{
-				newText: `  /* stylelint-disable-next-line indentation */${EOL}`,
+				newText: `  /* stylelint-disable-next-line value-keyword-case */${EOL}`,
 				range: [1, 0, 1, 0],
 			},
 		]);
 		assertTextEdits(actions[1].edit?.get(editor.document.uri), [
 			{
-				newText: `/* stylelint-disable indentation */${EOL}`,
+				newText: `/* stylelint-disable value-keyword-case */${EOL}`,
 				range: [0, 0, 0, 0],
 			},
 		]);
 		assertCommand(actions[2].command, {
-			title: 'Open documentation for indentation',
+			title: 'Open documentation for value-keyword-case',
 			command: 'stylelint.openRuleDoc',
-			arguments: [{ uri: 'https://stylelint.io/user-guide/rules/indentation' }],
+			arguments: [{ uri: 'https://stylelint.io/user-guide/rules/value-keyword-case' }],
 		});
 	});
 
@@ -57,7 +57,7 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		const actions = await getCodeActions(editor, new Selection(2, 4, 2, 4));
+		const actions = await getCodeActions(editor, new Selection(2, 2, 2, 2));
 
 		assert.equal(actions.length, 0);
 	});
@@ -77,9 +77,9 @@ describe('Code actions', () => {
 		assert.equal(
 			editor.document.getText(),
 			`a {
-    font-size: 1.2em;
-    /* stylelint-disable-next-line comment-no-empty */
-    color: #00;
+  display: block;
+  /* stylelint-disable-next-line comment-no-empty */
+   color: #00;
 }
 `,
 		);
@@ -90,7 +90,7 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		const actions = await getCodeActions(editor, new Selection(1, 2, 1, 2));
+		const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
 
 		const fileAction = actions.find((action) =>
 			action.title.match(/^Disable .+ for the entire file$/),
@@ -102,10 +102,10 @@ describe('Code actions', () => {
 
 		assert.equal(
 			editor.document.getText(),
-			`/* stylelint-disable indentation */
+			`/* stylelint-disable value-keyword-case */
 a {
-  font-size: 1.2em;
-    /* stylelint-disable-next-line comment-no-empty */
+  display: BLOCK;
+  /* stylelint-disable-next-line comment-no-empty */
   color: #00;
 }
 `,
@@ -148,7 +148,7 @@ const css = css\`
 
 		await waitForDiagnostics(editor);
 
-		const actions = await getCodeActions(editor, new Selection(1, 2, 1, 2));
+		const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
 		const lineAction = actions.find((action) => action.title.match(/^Disable .+ for this line$/));
 
 		assert.ok(lineAction?.edit);
@@ -158,9 +158,9 @@ const css = css\`
 		assert.equal(
 			editor.document.getText(),
 			`a {
-  /* stylelint-disable-next-line indentation */
-  font-size: 1.2em;
-    /* stylelint-disable-next-line comment-no-empty */
+  /* stylelint-disable-next-line value-keyword-case */
+  display: BLOCK;
+  /* stylelint-disable-next-line comment-no-empty */
   color: #00;
 }
 `,
@@ -175,7 +175,7 @@ const css = css\`
 
 			await waitForDiagnostics(editor);
 
-			const actions = await getCodeActions(editor, new Selection(1, 2, 1, 2));
+			const actions = await getCodeActions(editor, new Selection(1, 12, 1, 12));
 			const lineAction = actions.find((action) => action.title.match(/^Disable .+ for this line$/));
 
 			assert.ok(lineAction?.edit);
@@ -185,8 +185,8 @@ const css = css\`
 			assert.equal(
 				editor.document.getText(),
 				`a {
-  font-size: 1.2em; /* stylelint-disable-line indentation */
-    /* stylelint-disable-next-line comment-no-empty */
+  display: BLOCK; /* stylelint-disable-line value-keyword-case */
+  /* stylelint-disable-next-line comment-no-empty */
   color: #00;
 }
 `,

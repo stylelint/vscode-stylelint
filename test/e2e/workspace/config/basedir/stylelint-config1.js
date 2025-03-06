@@ -2,6 +2,6 @@
 
 module.exports = {
 	rules: {
-		indentation: [8],
+		'color-hex-length': 'long',
 	},
 };

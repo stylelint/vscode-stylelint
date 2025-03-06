@@ -1,21 +1,21 @@
 /* prettier-ignore */
 .foo {
-  /* stylelint-disable-next-line indentation, unknown */
+  /* stylelint-disable-next-line color-hex-length, unknown */
     color: red;
 }
 
-/* stylelint-disable indentation */ /* prettier-ignore */
+/* stylelint-disable color-hex-length */ /* prettier-ignore */
 .bar {
     color: red;
 }
-/* stylelint-enable indentation */
+/* stylelint-enable color-hex-length */
 
 /* prettier-ignore */
 .baz {
-    color: red; /* stylelint-disable-line indentation */
+    color: red; /* stylelint-disable-line color-hex-length */
 }
 
-/* stylelint-disable indentation */ /* prettier-ignore */
+/* stylelint-disable color-hex-length */ /* prettier-ignore */
 .bar {
     color: red;
 }

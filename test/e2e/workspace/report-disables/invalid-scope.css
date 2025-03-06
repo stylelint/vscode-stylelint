@@ -5,9 +5,9 @@
 /* stylelint-disable foo */
 /* stylelint-enable foo */
 
-/* stylelint-disable-next-line indentation */
+/* stylelint-disable-next-line color-hex-length */
 
-/* stylelint-disable-line indentation */
+/* stylelint-disable-line color-hex-length */
 
-/* stylelint-disable indentation */
-/* stylelint-enable indentation */
+/* stylelint-disable color-hex-length */
+/* stylelint-enable color-hex-length */

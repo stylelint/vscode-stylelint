@@ -237,11 +237,11 @@
     "postcss": "^8.4.44",
     "postcss-sass": "^0.5.0",
     "postcss-scss": "^4.0.9",
-    "prettier": "^3.3.3",
-    "stylelint": "^15.10.2",
+    "prettier": "^3.4.2",
+    "stylelint": "^16.15.0",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
-    "stylelint-scss": "^5.3.2",
+    "stylelint-scss": "^6.11.1",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
     "typed-emitter": "^2.1.0",
@@ -262,15 +262,16 @@
     "lint:spelling": "cspell lint --no-progress",
     "lint:types": "tsc -b",
     "lint:unit-tests": "ts-node --transpile-only -P tsconfig.scripts.json scripts/enforce-unit-tests-per-file.ts",
-    "test": "npm run build-bundle && jest",
+    "test": "npm run build-bundle && npm run jest -- ",
     "test:e2e": "npm run build-bundle && vscode-test",
-    "test:integration": "jest --projects test/integration",
-    "test:unit": "jest --projects test/unit",
+    "test:integration": "npm run jest -- --projects test/integration",
+    "test:unit": "npm run jest -- --projects test/unit",
+    "jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "vscode:prepublish": "npm run build && npm run bundle-base -- --minify"
   },
   "prettier": "@stylelint/prettier-config",
   "volta": {
-    "node": "18.15.0",
-    "npm": "9.9.2"
+    "node": "22.13.1",
+    "npm": "11.0.0"
   }
 }

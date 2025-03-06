@@ -14,32 +14,32 @@ describe('"stylelint.reportNeedlessDisables" setting', () => {
 		assertDiagnostics(diagnostics, [
 			{
 				code: '--report-needless-disables',
-				message: 'Needless disable for "indentation"',
-				range: [2, 2, 2, 55],
+				message: 'Needless disable for "color-hex-length"',
+				range: [2, 2, 2, 60],
 				severity: 'error',
 			},
 			{
 				code: '--report-needless-disables',
-				message: 'Needless disable for "indentation"',
-				range: [6, 0, 6, 34],
+				message: 'Needless disable for "color-hex-length"',
+				range: [6, 0, 6, 39],
 				severity: 'error',
 			},
 			{
 				code: '--report-needless-disables',
-				message: 'Needless disable for "indentation"',
-				range: [14, 16, 14, 55],
+				message: 'Needless disable for "color-hex-length"',
+				range: [14, 16, 14, 60],
 				severity: 'error',
 			},
 			{
 				code: '--report-needless-disables',
-				message: 'Needless disable for "indentation"',
-				range: [17, 0, 17, 34],
+				message: 'Needless disable for "color-hex-length"',
+				range: [17, 0, 17, 39],
 				severity: 'error',
 			},
 			{
 				code: '--report-needless-disables',
 				message: 'Needless disable for "unknown"',
-				range: [2, 2, 2, 55],
+				range: [2, 2, 2, 60],
 				severity: 'error',
 			},
 		]);

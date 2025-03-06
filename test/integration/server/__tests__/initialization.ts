@@ -8,7 +8,9 @@ describe('Initialization', () => {
 
 	beforeAll(() => {
 		connectionManager.initialize();
-		server = new StylelintLanguageServer({ connection: connectionManager.serverConnection });
+		server = new StylelintLanguageServer({
+			connection: connectionManager.serverConnection,
+		});
 		server.start();
 		connectionManager.clientProtocolConnection.listen();
 		connection = connectionManager.clientProtocolConnection;

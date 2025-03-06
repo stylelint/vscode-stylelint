@@ -74,9 +74,15 @@ const mockGlobalPaths: { [packageManager in PackageManager]: string } = {
 jest.doMock(path.join(__dirname, 'stylelint.js'), () => ({ lint: jest.fn(() => 'good') }), {
 	virtual: true,
 });
-jest.doMock(path.join(__dirname, 'bad-stylelint.js'), () => ({}), { virtual: true });
-jest.doMock(path.join(__dirname, '.pnp.cjs'), () => ({ setup: jest.fn() }), { virtual: true });
-jest.doMock(path.join(__dirname, '.pnp.js'), () => ({ setup: jest.fn() }), { virtual: true });
+jest.doMock(path.join(__dirname, 'bad-stylelint.js'), () => ({}), {
+	virtual: true,
+});
+jest.doMock(path.join(__dirname, '.pnp.cjs'), () => ({ setup: jest.fn() }), {
+	virtual: true,
+});
+jest.doMock(path.join(__dirname, '.pnp.js'), () => ({ setup: jest.fn() }), {
+	virtual: true,
+});
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const mockedPnP = require(pnpPath) as jest.Mocked<{ setup: () => void }>;
@@ -296,7 +302,9 @@ describe('StylelintResolver', () => {
 	test('should resolve workspace Stylelint modules using PnP', async () => {
 		mockCWD = mockedPath.join('/fake', 'pnp');
 		mockedFindPackageRoot.mockResolvedValue(__dirname);
-		mockedFS.stat.mockResolvedValueOnce({ isFile: () => true } as unknown as Stats);
+		mockedFS.stat.mockResolvedValueOnce({
+			isFile: () => true,
+		} as unknown as Stats);
 		mockedModule.createRequire.mockImplementation(
 			() =>
 				Object.assign(() => ({ lint: () => 'from pnp' }), {
@@ -310,7 +318,9 @@ describe('StylelintResolver', () => {
 		const result = await stylelintResolver.resolve({}, createMockTextDocument());
 
 		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
-		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', { path: pnpPath });
+		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', {
+			path: pnpPath,
+		});
 		expect(result?.resolvedPath).toBe(__dirname);
 		expect(result?.stylelint?.lint({})).toBe('from pnp');
 	});
@@ -339,7 +349,9 @@ describe('StylelintResolver', () => {
 		const result = await stylelintResolver.resolve({}, createMockTextDocument());
 
 		expect(mockedJSPnP.setup).toHaveBeenCalledTimes(1);
-		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', { path: pnpJSPath });
+		expect(logger.debug).toHaveBeenCalledWith('Resolved Stylelint using PnP', {
+			path: pnpJSPath,
+		});
 		expect(result?.resolvedPath).toBe(__dirname);
 		expect(result?.stylelint?.lint({})).toBe('from pnp');
 	});
@@ -347,7 +359,9 @@ describe('StylelintResolver', () => {
 	test('should not try to setup PnP if it is already setup', async () => {
 		mockCWD = mockedPath.join('/fake', 'pnp');
 		mockedFindPackageRoot.mockResolvedValue(__dirname);
-		mockedFS.stat.mockResolvedValueOnce({ isFile: () => true } as unknown as Stats);
+		mockedFS.stat.mockResolvedValueOnce({
+			isFile: () => true,
+		} as unknown as Stats);
 		mockedModule.createRequire.mockImplementation(
 			() =>
 				Object.assign(() => ({ lint: () => 'from pnp' }), {
@@ -370,7 +384,9 @@ describe('StylelintResolver', () => {
 
 		mockCWD = mockedPath.join('/fake', 'pnp');
 		mockedFindPackageRoot.mockResolvedValue(__dirname);
-		mockedFS.stat.mockResolvedValueOnce({ isFile: () => true } as unknown as Stats);
+		mockedFS.stat.mockResolvedValueOnce({
+			isFile: () => true,
+		} as unknown as Stats);
 		mockedPnP.setup.mockImplementationOnce(() => {
 			throw error;
 		});
@@ -387,14 +403,19 @@ describe('StylelintResolver', () => {
 		const result = await stylelintResolver.resolve({}, createMockTextDocument());
 
 		expect(mockedPnP.setup).toHaveBeenCalledTimes(1);
-		expect(logger.warn).toHaveBeenCalledWith('Could not setup PnP', { path: pnpPath, error });
+		expect(logger.warn).toHaveBeenCalledWith('Could not setup PnP', {
+			path: pnpPath,
+			error,
+		});
 		expect(result).toBeUndefined();
 	});
 
 	test("should resolve to undefined if PnP loader isn't a file and Stylelint can't be resolved from node_modules", async () => {
 		mockCWD = mockedPath.join('/fake', 'pnp');
 		mockedFindPackageRoot.mockResolvedValue(__dirname);
-		mockedFS.stat.mockResolvedValueOnce({ isFile: () => false } as unknown as Stats);
+		mockedFS.stat.mockResolvedValueOnce({
+			isFile: () => false,
+		} as unknown as Stats);
 		mockedModule.createRequire.mockImplementation(
 			() =>
 				Object.assign(() => ({ lint: () => 'from pnp' }), {
@@ -408,7 +429,9 @@ describe('StylelintResolver', () => {
 		const result = await stylelintResolver.resolve({}, createMockTextDocument());
 
 		expect(mockedPnP.setup).not.toHaveBeenCalled();
-		expect(logger.debug).toHaveBeenCalledWith('Could not find a PnP loader', { path: __dirname });
+		expect(logger.debug).toHaveBeenCalledWith('Could not find a PnP loader', {
+			path: __dirname,
+		});
 		expect(result).toBeUndefined();
 	});
 
@@ -442,7 +465,9 @@ describe('StylelintResolver', () => {
 
 		mockCWD = mockedPath.join('/fake', 'pnp');
 		mockedFindPackageRoot.mockResolvedValue(__dirname);
-		mockedFS.stat.mockResolvedValueOnce({ isFile: () => true } as unknown as Stats);
+		mockedFS.stat.mockResolvedValueOnce({
+			isFile: () => true,
+		} as unknown as Stats);
 		mockedPnP.setup.mockImplementationOnce(() => {
 			mockedModule.createRequire.mockImplementationOnce(
 				() =>
@@ -477,7 +502,9 @@ describe('StylelintResolver', () => {
 		mockedFindPackageRoot.mockImplementation((startPath) =>
 			Promise.resolve(startPath === mockedPath.join('/fake', 'cwd') ? __dirname : undefined),
 		);
-		mockedFS.stat.mockResolvedValueOnce({ isFile: () => true } as unknown as Stats);
+		mockedFS.stat.mockResolvedValueOnce({
+			isFile: () => true,
+		} as unknown as Stats);
 		mockedModule.createRequire.mockImplementation(
 			() =>
 				Object.assign(() => ({ lint: () => 'from pnp' }), {

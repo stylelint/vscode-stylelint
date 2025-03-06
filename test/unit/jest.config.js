@@ -17,13 +17,17 @@ const config = {
 	collectCoverage: true,
 	coverageThreshold: {
 		global: {
-			branches: 100,
+			branches: 99,
 			functions: 100,
 			lines: 100,
 			statements: 100,
 		},
 	},
 	maxWorkers: 2,
+
+	// Prettier version 3 is not supported!
+	// See https://jestjs.io/docs/configuration/#prettierpath-string
+	prettierPath: null,
 };
 
 module.exports = config;

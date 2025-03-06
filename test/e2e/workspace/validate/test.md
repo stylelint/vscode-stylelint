@@ -2,6 +2,6 @@
 
 ```css
 a {
-  color: red;
+  color: #fff;
 }
 ```

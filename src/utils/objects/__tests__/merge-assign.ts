@@ -50,7 +50,10 @@ describe('mergeAssign', () => {
 		const obj1 = { a: 1, b: [1, 2, 3] };
 		const obj2 = { a: 2, b: [4, 5, 6] };
 
-		expect(mergeAssign(obj1, obj2)).toStrictEqual({ a: 2, b: [1, 2, 3, 4, 5, 6] });
+		expect(mergeAssign(obj1, obj2)).toStrictEqual({
+			a: 2,
+			b: [1, 2, 3, 4, 5, 6],
+		});
 	});
 
 	it('should combine objects with dissimilar properties', () => {

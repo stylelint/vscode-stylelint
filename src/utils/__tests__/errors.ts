@@ -31,7 +31,9 @@ describe('serializeErrors', () => {
 	});
 
 	it('should serialize errors with nested errors', () => {
-		const error = Object.assign(new Error('error'), { nested: new Error('nested error') });
+		const error = Object.assign(new Error('error'), {
+			nested: new Error('nested error'),
+		});
 
 		const result = serializeErrors(error);
 

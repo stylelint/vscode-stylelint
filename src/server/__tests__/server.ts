@@ -259,7 +259,9 @@ describe('StylelintLanguageServer', () => {
 
 		await onInitializedHandler?.({});
 
-		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
+		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', {
+			params: {},
+		});
 		expect(mockLogger.debug).not.toHaveBeenCalledWith(
 			'Registering DidChangeConfigurationNotification',
 		);
@@ -294,7 +296,9 @@ describe('StylelintLanguageServer', () => {
 
 		await onInitializedHandler?.({});
 
-		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', { params: {} });
+		expect(mockLogger.debug).toHaveBeenCalledWith('received onInitialized', {
+			params: {},
+		});
 		expect(mockLogger.debug).toHaveBeenCalledWith('Registering DidChangeConfigurationNotification');
 		expect(mockConnection.client.register).toHaveBeenCalledWith(
 			LSP.DidChangeConfigurationNotification.type,
@@ -710,7 +714,9 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const withOptions = await getContext()?.lintDocument(document, { maxWarnings: 1 });
+		const withOptions = await getContext()?.lintDocument(document, {
+			maxWarnings: 1,
+		});
 		const withoutOptions = await getContext()?.lintDocument(document);
 
 		expect(withOptions).toStrictEqual(['test']);
@@ -786,7 +792,9 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const results = await getContext()?.lintDocument(document, { maxWarnings: 1 });
+		const results = await getContext()?.lintDocument(document, {
+			maxWarnings: 1,
+		});
 
 		expect(results).toBeUndefined();
 		expect(mockDisplayError).toHaveBeenCalledWith(mockConnection, error);
@@ -817,7 +825,9 @@ describe('StylelintLanguageServer', () => {
 			{} as WorkDoneProgressReporter,
 		);
 
-		const withOptions = await getContext()?.getFixes(document, { maxWarnings: 1 });
+		const withOptions = await getContext()?.getFixes(document, {
+			maxWarnings: 1,
+		});
 		const withoutOptions = await getContext()?.getFixes(document);
 
 		expect(withOptions).toStrictEqual(['test']);

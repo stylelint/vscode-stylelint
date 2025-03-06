@@ -66,7 +66,10 @@ describe('CodeActionModule', () => {
 			LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text'),
 		]);
 
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -95,7 +98,10 @@ describe('CodeActionModule', () => {
 			LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text'),
 		]);
 
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -103,7 +109,10 @@ describe('CodeActionModule', () => {
 
 		const result = await handler(
 			{
-				context: { only: [StylelintCodeActionKind.StylelintSourceFixAll], diagnostics: [] },
+				context: {
+					only: [StylelintCodeActionKind.StylelintSourceFixAll],
+					diagnostics: [],
+				},
 				textDocument: { uri: 'foo' },
 				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
 			},
@@ -124,7 +133,10 @@ describe('CodeActionModule', () => {
 			LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text'),
 		]);
 
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -151,7 +163,10 @@ describe('CodeActionModule', () => {
 		mockContext.__options.validate = ['bar'];
 		mockContext.getFixes.mockResolvedValue([]);
 
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -176,7 +191,10 @@ describe('CodeActionModule', () => {
 			TextDocument.create('foo', 'bar', 1, 'line 1\nline 2'),
 		);
 		mockContext.__options.validate = ['bar'];
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -253,7 +271,10 @@ describe('CodeActionModule', () => {
 			TextDocument.create('foo', 'bar', 1, 'line 1\nline 2'),
 		);
 		mockContext.__options.validate = ['bar'];
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -283,7 +304,10 @@ describe('CodeActionModule', () => {
 	test('if no matching document exists, should not attempt to create actions', async () => {
 		mockContext.documents.get.mockReturnValue(undefined);
 
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -310,7 +334,10 @@ describe('CodeActionModule', () => {
 		);
 		mockContext.__options.validate = ['baz'];
 
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 
@@ -339,9 +366,14 @@ describe('CodeActionModule', () => {
 
 	describe('OpenRuleDoc command', () => {
 		it('should open the rule documentation URL', async () => {
-			mockContext.connection.window.showDocument.mockResolvedValue({ success: true });
+			mockContext.connection.window.showDocument.mockResolvedValue({
+				success: true,
+			});
 
-			const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+			const module = new CodeActionModule({
+				context: mockContext.__typed(),
+				logger: mockLogger,
+			});
 
 			module.onDidRegisterHandlers();
 
@@ -374,7 +406,10 @@ describe('CodeActionModule', () => {
 		});
 
 		it('if no URL is provided, should do nothing', async () => {
-			const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+			const module = new CodeActionModule({
+				context: mockContext.__typed(),
+				logger: mockLogger,
+			});
 
 			module.onDidRegisterHandlers();
 
@@ -397,9 +432,14 @@ describe('CodeActionModule', () => {
 		});
 
 		it('if opening the URL fails, should log a warning and respond with an error', async () => {
-			mockContext.connection.window.showDocument.mockResolvedValue({ success: false });
+			mockContext.connection.window.showDocument.mockResolvedValue({
+				success: false,
+			});
 
-			const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+			const module = new CodeActionModule({
+				context: mockContext.__typed(),
+				logger: mockLogger,
+			});
 
 			module.onDidRegisterHandlers();
 
@@ -437,14 +477,20 @@ describe('CodeActionModule', () => {
 	});
 
 	it('should be disposable', () => {
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		expect(module).toHaveProperty('dispose');
 		expect(module.dispose).toBeInstanceOf(Function);
 	});
 
 	it('should set a no-op code action handler when disposed', async () => {
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 		module.dispose();
@@ -458,7 +504,10 @@ describe('CodeActionModule', () => {
 					only: [LSP.CodeActionKind.QuickFix],
 				},
 				textDocument: { uri: 'foo' },
-				range: { start: { line: 0, character: 0 }, end: { line: 0, character: 0 } },
+				range: {
+					start: { line: 0, character: 0 },
+					end: { line: 0, character: 0 },
+				},
 			},
 			{} as LSP.CancellationToken,
 			{} as WorkDoneProgressReporter,
@@ -469,7 +518,10 @@ describe('CodeActionModule', () => {
 	});
 
 	it('should dispose all handler registrations when disposed', () => {
-		const module = new CodeActionModule({ context: mockContext.__typed(), logger: mockLogger });
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
 
 		module.onDidRegisterHandlers();
 		module.dispose();

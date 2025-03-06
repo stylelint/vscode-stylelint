@@ -11,7 +11,13 @@ describe('Document formatting', () => {
 		await closeAllEditors();
 	});
 
-	it('should format document using formatting options', async () => {
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	const isStylelint16 = require('stylelint/package.json').version.startsWith('16.');
+
+	// Only Stylelint before 16 had formatting related rules
+	const pre16It = isStylelint16 ? it.skip : it;
+
+	pre16It('should format document using formatting options', async () => {
 		const editor = await openDocument('defaults/format.css');
 
 		editor.options.tabSize = 4;
@@ -23,7 +29,7 @@ describe('Document formatting', () => {
 		assert.equal(
 			editor.document.getText(),
 			`a {
-	color: red;
+	color: #fff;
 }
 `,
 		);

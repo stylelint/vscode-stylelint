@@ -20,7 +20,12 @@ export const createError = (
 	fsPath: string,
 	errno: number,
 	syscall: string,
-): Error & { code: keyof typeof errorMessages; errno: number; path: string; syscall: string } =>
+): Error & {
+	code: keyof typeof errorMessages;
+	errno: number;
+	path: string;
+	syscall: string;
+} =>
 	Object.assign(new Error(util.format(errorMessages[code], fsPath)), {
 		code,
 		errno,

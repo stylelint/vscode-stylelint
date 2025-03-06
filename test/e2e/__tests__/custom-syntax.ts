@@ -16,7 +16,7 @@ describe('"stylelint.customSyntax" setting', () => {
 			document.getText(),
 			`/* prettier-ignore */
 .foo .bar
-    color: red`,
+  color: #ffffff`,
 		);
 	});
 });

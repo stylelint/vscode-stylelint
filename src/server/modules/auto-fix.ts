@@ -82,7 +82,9 @@ export class AutoFixModule implements LanguageServerModule {
 				}
 
 				if (identifier.version !== document.version) {
-					this.#logger?.debug('Document has been modified, ignoring', { uri });
+					this.#logger?.debug('Document has been modified, ignoring', {
+						uri,
+					});
 
 					return {};
 				}

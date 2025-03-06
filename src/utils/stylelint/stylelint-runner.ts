@@ -89,7 +89,9 @@ export class StylelintRunner {
 		}
 
 		if (this.#logger?.isDebugEnabled()) {
-			this.#logger?.debug('Running Stylelint', { options: { ...options, code: '...' } });
+			this.#logger?.debug('Running Stylelint', {
+				options: { ...options, code: '...' },
+			});
 		}
 
 		try {

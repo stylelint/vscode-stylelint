@@ -73,7 +73,9 @@ export class GlobalPathResolver {
 
 				const globalPath = path.join(log.data, 'node_modules');
 
-				this.#logger?.debug('Yarn returned global node_modules path.', { path: globalPath });
+				this.#logger?.debug('Yarn returned global node_modules path.', {
+					path: globalPath,
+				});
 
 				return globalPath;
 			},
@@ -107,7 +109,9 @@ export class GlobalPathResolver {
 					? path.join(trimmed, 'node_modules')
 					: path.join(trimmed, 'lib/node_modules');
 
-				this.#logger?.debug('npm returned global node_modules path.', { path: globalPath });
+				this.#logger?.debug('npm returned global node_modules path.', {
+					path: globalPath,
+				});
 
 				return globalPath;
 			},
@@ -137,7 +141,9 @@ export class GlobalPathResolver {
 					return undefined;
 				}
 
-				this.#logger?.debug('pnpm returned global node_modules path.', { path: trimmed });
+				this.#logger?.debug('pnpm returned global node_modules path.', {
+					path: trimmed,
+				});
 
 				return trimmed;
 			},
@@ -196,7 +202,10 @@ export class GlobalPathResolver {
 
 			return globalPath;
 		} catch (error) {
-			this.#logger?.warn('Failed to resolve global node_modules path.', { packageManager, error });
+			this.#logger?.warn('Failed to resolve global node_modules path.', {
+				packageManager,
+				error,
+			});
 
 			return undefined;
 		}

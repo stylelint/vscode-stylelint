@@ -18,11 +18,11 @@ describe('StylelintRunner', () => {
 	test('should be resolved with diagnostics when it lints CSS successfully', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(createDocument(null, 'css', '  a[id="id"]{}'), {
+		const result = await runner.lintDocument(createDocument(null, 'css', '  foo { color: #y3 }'), {
 			config: {
 				rules: {
-					'string-quotes': ['single', { severity: 'warning' }],
-					indentation: ['tab'],
+					'color-no-invalid-hex': [true],
+					'selector-type-no-unknown': [true],
 				},
 			},
 		});
@@ -36,7 +36,7 @@ describe('StylelintRunner', () => {
 		const result = await runner.lintDocument(createDocument(null, 'scss', ''), {
 			config: {
 				customSyntax: 'postcss-scss',
-				rules: { indentation: [2] },
+				rules: { 'color-no-invalid-hex': [true] },
 			},
 		});
 
@@ -70,12 +70,12 @@ describe('StylelintRunner', () => {
 		// 			},
 		// 		);
 		const result = await runner.lintDocument(
-			createDocument('scss.scss', 'scss', '          a{\n'),
+			createDocument('scss.scss', 'scss', '          a{color: #y3\n'),
 			{
 				config: {
 					customSyntax: 'postcss-scss',
 					rules: {
-						indentation: ['tab'],
+						'color-no-invalid-hex': [true],
 					},
 				},
 			},
@@ -235,13 +235,13 @@ a { color: #000 }
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const promise = runner.lintDocument(
-			createDocument('invalid-options.css', 'css', '  a[id="id"]{}'),
+			createDocument('invalid-options.css', 'css', '  foo { color: #y3 }'),
 			{
 				config: {
 					rules: {
-						'string-quotes': 'single',
-						'color-hex-case': 'foo',
-						'at-rule-empty-line-before': ['always', { bar: true }],
+						'color-no-invalid-hex': true,
+						'color-hex-alpha': 'foo',
+						'selector-type-no-unknown': [true, { bar: true }],
 					},
 				},
 			},
@@ -333,10 +333,13 @@ describe('StylelintRunner with auto-fix', () => {
 	test('auto-fix should work properly if configs are defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(createDocument(null, 'css', 'a\n{\ncolor:red;\n}'), {
-			config: { rules: { indentation: [2] } },
-			fix: true,
-		});
+		const result = await runner.lintDocument(
+			createDocument(null, 'css', 'a\n{\ncolor:#ffffff;\n}'),
+			{
+				config: { rules: { 'color-hex-length': 'short' } },
+				fix: true,
+			},
+		);
 
 		expect(result.output).toMatchSnapshot();
 	});
@@ -391,8 +394,8 @@ describe('StylelintRunner with auto-fix', () => {
 				'css',
 				`
 .a {
-	width: 100%
-	height: 100%;
+    color: #ffffff
+    background-color: #ffffffaa;
 }
 `,
 			),
@@ -414,8 +417,8 @@ describe('StylelintRunner with auto-fix', () => {
 				'scss',
 				`
 .a {
-	width: 100%
-	height: 100%;
+    color: #ffffff
+    background-color: #ffffffaa;
 }
 `,
 			),
@@ -437,15 +440,15 @@ describe('StylelintRunner with auto-fix', () => {
 				'css',
 				`
 unknown {
-    width: 100%;
-    height: 100%;
+    color: #ffffff;
+    background-color: #ffffffaa;
 }
 `,
 			),
 			{
 				config: {
 					rules: {
-						indentation: 2,
+						'color-hex-length': 'short',
 						'selector-type-no-unknown': true,
 					},
 				},
@@ -461,10 +464,13 @@ describe('StylelintRunner with customSyntax', () => {
 	test('should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(createDocument('test.css', 'css', 'a\n   color:red'), {
-			config: { rules: { indentation: [2] } },
-			customSyntax: 'postcss-sass',
-		});
+		const result = await runner.lintDocument(
+			createDocument('test.css', 'css', 'a\n  color:#ffffff'),
+			{
+				config: { rules: { 'color-hex-length': 'short' } },
+				customSyntax: 'postcss-sass',
+			},
+		);
 
 		expect(result).toMatchSnapshot();
 	});
@@ -472,13 +478,21 @@ describe('StylelintRunner with customSyntax', () => {
 	test('auto-fix should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
-		const result = await runner.lintDocument(createDocument('test.css', 'css', 'a\n   color:red'), {
-			config: { rules: { indentation: [2] } },
-			customSyntax: 'postcss-sass',
-			fix: true,
-		});
 
-		expect(result).toMatchSnapshot();
+		try {
+			const result = await runner.lintDocument(
+				createDocument('test.css', 'css', 'a\n  color:#ffffff'),
+				{
+					config: { rules: { 'color-hex-length': 'short' } },
+					customSyntax: 'postcss-sass',
+					fix: true,
+				},
+			);
+
+			expect(result).toMatchSnapshot();
+		} catch (e) {
+			console.error(e);
+		}
 	});
 });
 
@@ -492,34 +506,34 @@ describe('StylelintRunner with reportDescriptionlessDisables', () => {
 				'css',
 				`
 .baz {
-    /* stylelint-disable-next-line indentation */
-  color: red;
+    /* stylelint-disable-next-line color-no-invalid-hex */
+  color: #y3;
 }
-/* stylelint-disable indentation */
+/* stylelint-disable color-no-invalid-hex */
 .baz {
-  color: red;
+  color: #y3;
 }
-/* stylelint-enable indentation */
+/* stylelint-enable color-no-invalid-hex */
 .baz {
-  color: red; /* stylelint-disable-line indentation */
+  color: #y3; /* stylelint-disable-line color-no-invalid-hex */
 }
 
 .baz {
-    /* stylelint-disable-next-line indentation -- with a description */
-  color: red;
+    /* stylelint-disable-next-line color-no-invalid-hex -- with a description */
+  color: #y3;
 }
-/* stylelint-disable indentation -- with a description */
+/* stylelint-disable color-no-invalid-hex -- with a description */
 .baz {
-  color: red;
+  color: #y3;
 }
-/* stylelint-enable indentation */
+/* stylelint-enable color-no-invalid-hex */
 .baz {
-  color: red; /* stylelint-disable-line indentation -- with a description */
+  color: #y3; /* stylelint-disable-line color-no-invalid-hex -- with a description */
 }
 `,
 			),
 			{
-				config: { rules: { indentation: [4] } },
+				config: { rules: { 'color-no-invalid-hex': [true] } },
 				reportDescriptionlessDisables: true,
 			},
 		);
@@ -538,28 +552,28 @@ describe('StylelintRunner with reportNeedlessDisables', () => {
 				'css',
 				`
 .foo {
-  /* stylelint-disable-next-line indentation */
+    background-color: #y3; /* stylelint-disable-next-line color-no-invalid-hex */
     color: red;
 }
 
-/* stylelint-disable indentation */
+/* stylelint-disable color-no-invalid-hex */
 .bar {
     color: red;
 }
-/* stylelint-enable indentation */
+/* stylelint-enable color-no-invalid-hex */
 
 .baz {
-    color: red; /* stylelint-disable-line indentation */
+    color: red; /* stylelint-disable-line color-no-invalid-hex */
 }
 
-/* stylelint-disable indentation */
+/* stylelint-disable color-no-invalid-hex */
 .bar {
     color: red;
 }
 `,
 			),
 			{
-				config: { rules: { indentation: [4] } },
+				config: { rules: { 'color-no-invalid-hex': [true] } },
 				reportNeedlessDisables: true,
 			},
 		);
@@ -584,16 +598,16 @@ describe('StylelintRunner with reportInvalidScopeDisables', () => {
 /* stylelint-disable foo */
 /* stylelint-enable foo */
 
-/* stylelint-disable-next-line indentation */
+/* stylelint-disable-next-line color-no-invalid-hex */
 
-/* stylelint-disable-line indentation */
+/* stylelint-disable-line color-no-invalid-hex */
 
-/* stylelint-disable indentation */
-/* stylelint-enable indentation */
+/* stylelint-disable color-no-invalid-hex */
+/* stylelint-enable color-no-invalid-hex */
 `,
 			),
 			{
-				config: { rules: { indentation: [4] } },
+				config: { rules: { 'color-no-invalid-hex': [true] } },
 				reportInvalidScopeDisables: true,
 			},
 		);
@@ -607,9 +621,9 @@ describe('StylelintRunner with stylelintPath', () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(
-			createDocument('test.css', 'css', 'a{\n   color:red}'),
+			createDocument('test.css', 'css', 'a{\n  color:#y3}'),
 			{
-				config: { rules: { indentation: [2] } },
+				config: { rules: { 'color-no-invalid-hex': [true] } },
 			},
 			{
 				stylelintPath: resolve(__dirname, '../../../node_modules/stylelint'),
@@ -623,9 +637,9 @@ describe('StylelintRunner with stylelintPath', () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(
-			createDocument('test.css', 'css', 'a{\n   color:red}'),
+			createDocument('test.css', 'css', 'a{\n  color:#y3}'),
 			{
-				config: { rules: { indentation: [2] } },
+				config: { rules: { 'color-no-invalid-hex': [true] } },
 			},
 			{
 				stylelintPath: require.resolve('./fake-stylelint'),

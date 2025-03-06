@@ -11,10 +11,10 @@ describe('Linting', () => {
 
 		assertDiagnostics(diagnostics, [
 			{
-				code: 'indentation',
-				codeDescription: 'https://stylelint.io/user-guide/rules/indentation',
-				message: 'Expected indentation of 4 spaces (indentation)',
-				range: [2, 2, 2, 13],
+				code: 'color-hex-length',
+				codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-length',
+				message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+				range: [2, 9, 2, 13],
 				severity: 'error',
 			},
 		]);
@@ -32,17 +32,17 @@ describe('Linting', () => {
 				severity: 'error',
 			},
 			{
+				code: 'color-hex-length',
+				codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-length',
+				message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+				range: [2, 9, 2, 13],
+				severity: 'error',
+			},
+			{
 				code: 'color-no-invalid-hex',
 				codeDescription: 'https://stylelint.io/user-guide/rules/color-no-invalid-hex',
 				message: 'Unexpected invalid hex color "#y3" (color-no-invalid-hex)',
 				range: [6, 11, 6, 14],
-				severity: 'error',
-			},
-			{
-				code: 'indentation',
-				codeDescription: 'https://stylelint.io/user-guide/rules/indentation',
-				message: 'Expected indentation of 4 spaces (indentation)',
-				range: [2, 2, 2, 13],
 				severity: 'error',
 			},
 		]);

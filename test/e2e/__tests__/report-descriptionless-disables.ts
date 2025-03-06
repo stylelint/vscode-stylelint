@@ -12,8 +12,8 @@ describe('"stylelint.reportDescriptionlessDisables" setting', () => {
 		assertDiagnostics(diagnostics, [
 			{
 				code: '--report-descriptionless-disables',
-				message: 'Disable for "indentation" is missing a description',
-				range: [2, 4, 2, 48],
+				message: 'Disable for "color-hex-length" is missing a description',
+				range: [2, 4, 2, 53],
 				severity: 'error',
 			},
 		]);

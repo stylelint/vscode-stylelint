@@ -2,14 +2,14 @@
 
 exports[`warningToDiagnostic should add a rule documentation URL if a matching rule exists 1`] = `
 {
-  "code": "color-hex-case",
+  "code": "color-no-invalid-hex",
   "codeDescription": {
-    "href": "https://stylelint.io/rules/color-hex-case",
+    "href": "https://stylelint.io/rules/color-no-invalid-hex",
   },
-  "message": "Expected "#AAA" to be "#aaa" (color-hex-case)",
+  "message": "Unexpected invalid hex color "#AA" (color-no-invalid-hex)",
   "range": {
     "end": {
-      "character": 12,
+      "character": 14,
       "line": 1,
     },
     "start": {
@@ -24,25 +24,6 @@ exports[`warningToDiagnostic should add a rule documentation URL if a matching r
 
 exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 1`] = `
 {
-  "code": "color-hex-case",
-  "message": "Expected "#AAA" to be "#aaa" (color-hex-case)",
-  "range": {
-    "end": {
-      "character": 12,
-      "line": 1,
-    },
-    "start": {
-      "character": 11,
-      "line": 1,
-    },
-  },
-  "severity": 1,
-  "source": "Stylelint",
-}
-`;
-
-exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 2`] = `
-{
   "code": "color-hex-length",
   "message": "Expected "#bbbbbb" to be "#bbb" (color-hex-length)",
   "range": {
@@ -56,6 +37,25 @@ exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagno
     },
   },
   "severity": 2,
+  "source": "Stylelint",
+}
+`;
+
+exports[`warningToDiagnostic should convert a Stylelint warning to an LSP diagnostic 2`] = `
+{
+  "code": "color-no-invalid-hex",
+  "message": "Unexpected invalid hex color "#AA" (color-no-invalid-hex)",
+  "range": {
+    "end": {
+      "character": 14,
+      "line": 1,
+    },
+    "start": {
+      "character": 11,
+      "line": 1,
+    },
+  },
+  "severity": 1,
   "source": "Stylelint",
 }
 `;

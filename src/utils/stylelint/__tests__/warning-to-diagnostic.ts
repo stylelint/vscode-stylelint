@@ -9,12 +9,12 @@ describe('warningToDiagnostic', () => {
 			results: [{ warnings }],
 		} = await lint({
 			code: `a {
-				color: #AAA;
+				color: #AA;
 				border-color: #bbbbbb;
 			}`,
 			config: {
 				rules: {
-					'color-hex-case': ['lower'],
+					'color-no-invalid-hex': true,
 					'color-hex-length': ['short', { severity: 'warning' }],
 				},
 			},
@@ -30,18 +30,20 @@ describe('warningToDiagnostic', () => {
 			results: [{ warnings }],
 		} = await lint({
 			code: `a {
-				color: #AAA;
+				color: #AA;
 				border-color: #bbbbbb;
 			}`,
 			config: {
 				rules: {
-					'color-hex-case': ['lower'],
+					'color-no-invalid-hex': true,
 				},
 			},
 		});
 
 		const rules = {
-			'color-hex-case': { url: 'https://stylelint.io/rules/color-hex-case' },
+			'color-no-invalid-hex': {
+				url: 'https://stylelint.io/rules/color-no-invalid-hex',
+			},
 		} as {
 			[name: string]: Partial<stylelint.RuleMeta>;
 		};

@@ -11,17 +11,10 @@ describe('"stylelint.ignoreDisables" setting', () => {
 
 		assertDiagnostics(diagnostics, [
 			{
-				code: 'color-hex-case',
-				codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-case',
-				message: 'Expected "#fff" to be "#FFF" (color-hex-case)',
-				range: [3, 9, 3, 10],
-				severity: 'error',
-			},
-			{
-				code: 'indentation',
-				codeDescription: 'https://stylelint.io/user-guide/rules/indentation',
-				message: 'Expected indentation of 4 spaces (indentation)',
-				range: [3, 2, 3, 14],
+				code: 'color-hex-length',
+				codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-length',
+				message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+				range: [3, 14, 3, 18],
 				severity: 'error',
 			},
 		]);

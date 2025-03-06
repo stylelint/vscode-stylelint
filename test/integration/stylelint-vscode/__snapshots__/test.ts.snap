@@ -3,33 +3,33 @@
 exports[`StylelintRunner should be resolved with diagnostics when it lints CSS successfully 1`] = `
 [
   {
-    "code": "string-quotes",
+    "code": "color-no-invalid-hex",
     "codeDescription": {
-      "href": "https://stylelint.io/user-guide/rules/string-quotes",
+      "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
     },
-    "message": "Expected single quotes (string-quotes)",
+    "message": "Unexpected invalid hex color "#y3" (color-no-invalid-hex)",
     "range": {
       "end": {
-        "character": 8,
+        "character": 18,
         "line": 0,
       },
       "start": {
-        "character": 7,
+        "character": 15,
         "line": 0,
       },
     },
-    "severity": 2,
+    "severity": 1,
     "source": "Stylelint",
   },
   {
-    "code": "indentation",
+    "code": "selector-type-no-unknown",
     "codeDescription": {
-      "href": "https://stylelint.io/user-guide/rules/indentation",
+      "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
     },
-    "message": "Expected indentation of 0 tabs (indentation)",
+    "message": "Unexpected unknown type selector "foo" (selector-type-no-unknown)",
     "range": {
       "end": {
-        "character": 14,
+        "character": 5,
         "line": 0,
       },
       "start": {
@@ -144,8 +144,8 @@ exports[`StylelintRunner should check CSS syntax even if no rule is provided 1`]
 `;
 
 exports[`StylelintRunner should reject with a reason when it takes incorrect options 1`] = `
-"Invalid option name "bar" for rule "at-rule-empty-line-before"
-Invalid option value "foo" for rule "color-hex-case""
+"Invalid option value "foo" for rule "color-hex-alpha"
+Invalid option name "bar" for rule "selector-type-no-unknown""
 `;
 
 exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
@@ -240,8 +240,8 @@ exports[`StylelintRunner with auto-fix auto-fix should work if there are errors 
   ],
   "output": "
 unknown {
-  width: 100%;
-  height: 100%;
+    color: #fff;
+    background-color: #fffa;
 }
 ",
 }
@@ -250,8 +250,8 @@ unknown {
 exports[`StylelintRunner with auto-fix auto-fix should work if there is syntax errors in css 1`] = `
 "
 .a {
-	width: 100%;
-	height: 100%
+    color: #ffffff;
+    background-color: #ffffffaa
 }
 "
 `;
@@ -259,7 +259,7 @@ exports[`StylelintRunner with auto-fix auto-fix should work if there is syntax e
 exports[`StylelintRunner with auto-fix auto-fix should work properly if configs are defined 1`] = `
 "a
 {
-  color:red;
+color:#fff;
 }"
 `;
 
@@ -267,7 +267,7 @@ exports[`StylelintRunner with customSyntax auto-fix should work properly if cust
 {
   "diagnostics": [],
   "output": "a
-  color:red",
+  color:#fff",
 }
 `;
 
@@ -275,18 +275,18 @@ exports[`StylelintRunner with customSyntax should work properly if customSyntax 
 {
   "diagnostics": [
     {
-      "code": "indentation",
+      "code": "color-hex-length",
       "codeDescription": {
-        "href": "https://stylelint.io/user-guide/rules/indentation",
+        "href": "https://stylelint.io/user-guide/rules/color-hex-length",
       },
-      "message": "Expected indentation of 2 spaces (indentation)",
+      "message": "Expected "#ffffff" to be "#fff" (color-hex-length)",
       "range": {
         "end": {
-          "character": 12,
+          "character": 15,
           "line": 1,
         },
         "start": {
-          "character": 3,
+          "character": 8,
           "line": 1,
         },
       },
@@ -302,10 +302,10 @@ exports[`StylelintRunner with reportDescriptionlessDisables should work properly
   "diagnostics": [
     {
       "code": "--report-descriptionless-disables",
-      "message": "Disable for "indentation" is missing a description",
+      "message": "Disable for "color-no-invalid-hex" is missing a description",
       "range": {
         "end": {
-          "character": 48,
+          "character": 57,
           "line": 2,
         },
         "start": {
@@ -318,10 +318,10 @@ exports[`StylelintRunner with reportDescriptionlessDisables should work properly
     },
     {
       "code": "--report-descriptionless-disables",
-      "message": "Disable for "indentation" is missing a description",
+      "message": "Disable for "color-no-invalid-hex" is missing a description",
       "range": {
         "end": {
-          "character": 34,
+          "character": 43,
           "line": 5,
         },
         "start": {
@@ -334,10 +334,10 @@ exports[`StylelintRunner with reportDescriptionlessDisables should work properly
     },
     {
       "code": "--report-descriptionless-disables",
-      "message": "Disable for "indentation" is missing a description",
+      "message": "Disable for "color-no-invalid-hex" is missing a description",
       "range": {
         "end": {
-          "character": 53,
+          "character": 62,
           "line": 11,
         },
         "start": {
@@ -411,18 +411,18 @@ exports[`StylelintRunner with reportNeedlessDisables should work properly if rep
 {
   "diagnostics": [
     {
-      "code": "indentation",
+      "code": "color-no-invalid-hex",
       "codeDescription": {
-        "href": "https://stylelint.io/user-guide/rules/indentation",
+        "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
       },
-      "message": "Expected indentation of 4 spaces (indentation)",
+      "message": "Unexpected invalid hex color "#y3" (color-no-invalid-hex)",
       "range": {
         "end": {
-          "character": 47,
+          "character": 25,
           "line": 2,
         },
         "start": {
-          "character": 2,
+          "character": 22,
           "line": 2,
         },
       },
@@ -431,14 +431,14 @@ exports[`StylelintRunner with reportNeedlessDisables should work properly if rep
     },
     {
       "code": "--report-needless-disables",
-      "message": "Needless disable for "indentation"",
+      "message": "Needless disable for "color-no-invalid-hex"",
       "range": {
         "end": {
-          "character": 46,
+          "character": 80,
           "line": 2,
         },
         "start": {
-          "character": 2,
+          "character": 27,
           "line": 2,
         },
       },
@@ -447,10 +447,10 @@ exports[`StylelintRunner with reportNeedlessDisables should work properly if rep
     },
     {
       "code": "--report-needless-disables",
-      "message": "Needless disable for "indentation"",
+      "message": "Needless disable for "color-no-invalid-hex"",
       "range": {
         "end": {
-          "character": 34,
+          "character": 43,
           "line": 6,
         },
         "start": {
@@ -463,10 +463,10 @@ exports[`StylelintRunner with reportNeedlessDisables should work properly if rep
     },
     {
       "code": "--report-needless-disables",
-      "message": "Needless disable for "indentation"",
+      "message": "Needless disable for "color-no-invalid-hex"",
       "range": {
         "end": {
-          "character": 55,
+          "character": 64,
           "line": 13,
         },
         "start": {
@@ -479,10 +479,10 @@ exports[`StylelintRunner with reportNeedlessDisables should work properly if rep
     },
     {
       "code": "--report-needless-disables",
-      "message": "Needless disable for "indentation"",
+      "message": "Needless disable for "color-no-invalid-hex"",
       "range": {
         "end": {
-          "character": 34,
+          "character": 43,
           "line": 16,
         },
         "start": {
@@ -524,18 +524,18 @@ exports[`StylelintRunner with stylelintPath should work properly if stylelintPat
 {
   "diagnostics": [
     {
-      "code": "indentation",
+      "code": "color-no-invalid-hex",
       "codeDescription": {
-        "href": "https://stylelint.io/user-guide/rules/indentation",
+        "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
       },
-      "message": "Expected indentation of 2 spaces (indentation)",
+      "message": "Unexpected invalid hex color "#y3" (color-no-invalid-hex)",
       "range": {
         "end": {
-          "character": 12,
+          "character": 11,
           "line": 1,
         },
         "start": {
-          "character": 3,
+          "character": 8,
           "line": 1,
         },
       },

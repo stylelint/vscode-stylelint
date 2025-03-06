@@ -1,4 +1,6 @@
-jest.doMock('vscode', () => ({ workspace: {}, window: {}, commands: {} }), { virtual: true });
+jest.doMock('vscode', () => ({ workspace: {}, window: {}, commands: {} }), {
+	virtual: true,
+});
 jest.mock('vscode-languageclient/node', () => ({
 	LanguageClient: jest.fn(),
 	SettingMonitor: jest.fn(),

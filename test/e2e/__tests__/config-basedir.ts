@@ -11,17 +11,17 @@ describe('"stylelint.configBasedir" setting', () => {
 
 		assertDiagnostics(diagnostics, [
 			{
-				code: 'color-hex-case',
-				codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-case',
-				message: 'Expected "#fff" to be "#FFF" (color-hex-case)',
-				range: [1, 9, 1, 10],
+				code: 'color-hex-alpha',
+				codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-alpha',
+				message: 'Expected alpha channel in "#fff" (color-hex-alpha)',
+				range: [1, 9, 1, 13],
 				severity: 'error',
 			},
 			{
-				code: 'indentation',
-				codeDescription: 'https://stylelint.io/user-guide/rules/indentation',
-				message: 'Expected indentation of 8 spaces (indentation)',
-				range: [1, 2, 1, 14],
+				code: 'color-hex-length',
+				codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-length',
+				message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+				range: [1, 9, 1, 13],
 				severity: 'error',
 			},
 		]);

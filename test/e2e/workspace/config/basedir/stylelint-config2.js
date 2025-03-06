@@ -2,6 +2,6 @@
 
 module.exports = {
 	rules: {
-		'color-hex-case': ['upper'],
+		'color-hex-alpha': ['always'],
 	},
 };

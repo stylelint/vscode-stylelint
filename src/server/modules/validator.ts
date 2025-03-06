@@ -86,7 +86,10 @@ export class ValidatorModule implements LanguageServerModule {
 		} catch (error) {
 			this.#context.displayError(error);
 
-			this.#logger?.error('Failed to send diagnostics', { uri: document.uri, error });
+			this.#logger?.error('Failed to send diagnostics', {
+				uri: document.uri,
+				error,
+			});
 		}
 	}
 

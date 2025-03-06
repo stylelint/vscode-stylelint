@@ -26,7 +26,7 @@ describe('"stylelint.validate" setting', () => {
 				document.getText(),
 				`/* prettier-ignore */
 a {
-  color: red;
+  color: #fff;
 }
 `,
 			);
@@ -38,10 +38,10 @@ a {
 
 			assertDiagnostics(diagnostics, [
 				{
-					code: 'indentation',
-					codeDescription: 'https://stylelint.io/user-guide/rules/indentation',
-					message: 'Expected indentation of 4 spaces (indentation)',
-					range: [2, 2, 2, 13],
+					code: 'color-hex-length',
+					codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-length',
+					message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+					range: [2, 9, 2, 13],
 					severity: 'error',
 				},
 			]);
@@ -52,7 +52,7 @@ a {
 				document.getText(),
 				`/* prettier-ignore */
 a {
-    color: red;
+  color: #ffffff;
 }
 `,
 			);
@@ -71,7 +71,7 @@ a {
 
 \`\`\`css
 a {
-  color: red;
+  color: #fff;
 }
 \`\`\`
 `,

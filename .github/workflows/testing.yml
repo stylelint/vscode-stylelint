@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        stylelint: [14, 15]
+        stylelint: ['14', '15', '16']
     timeout-minutes: 30
     permissions:
       contents: read
@@ -33,21 +33,16 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
-      - name: Install latest npm
-        # TODO: npm 10 requires Node.js 18.17 or later.
-        # run: npm install --global npm@latest
-        run: npm install --global npm@9
-
       - name: Install dependencies
         run: npm ci
 
-      - name: Install stylelint v15
-        run: npm i -D stylelint@^15
-        if: matrix.stylelint == 15
+      - name: Install Stylelint 15
+        run: npm i -D stylelint@15 stylelint-scss@5
+        if: ${{ matrix.stylelint == '15' }}
 
-      - name: Install stylelint v14
-        run: npm i -D stylelint@^14 stylelint-scss@^4.3.0
-        if: matrix.stylelint == 14
+      - name: Install Stylelint 14
+        run: npm i -D stylelint@14 stylelint-scss@4.3
+        if: ${{ matrix.stylelint == '14' }}
 
       - name: Run unit tests
         run: npm run test:unit -- --coverage
@@ -63,9 +58,9 @@ jobs:
           key: ${{ runner.os }}-vscode-${{ hashFiles('package.json') }}
 
       - name: Run end-to-end tests (Linux)
-        if: runner.os == 'Linux'
+        if: ${{ runner.os == 'Linux' }}
         run: xvfb-run -a npm run test:e2e -- --silent
 
       - name: Run end-to-end tests (non-Linux)
-        if: runner.os != 'Linux'
+        if: ${{ runner.os != 'Linux' }}
         run: npm run test:e2e -- --silent
