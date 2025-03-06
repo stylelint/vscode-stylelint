@@ -478,6 +478,7 @@ describe('StylelintRunner with customSyntax', () => {
 	test('auto-fix should work properly if customSyntax is defined', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
+
 		try {
 			const result = await runner.lintDocument(
 				createDocument('test.css', 'css', 'a\n  color:#ffffff'),
@@ -487,6 +488,7 @@ describe('StylelintRunner with customSyntax', () => {
 					fix: true,
 				},
 			);
+
 			expect(result).toMatchSnapshot();
 		} catch (e) {
 			console.error(e);

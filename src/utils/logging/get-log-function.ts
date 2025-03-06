@@ -11,7 +11,6 @@ type RemoteConsoleLogFunctions = RemoteConsole[RemoteConsoleLogLevels];
 export const getLogFunction = (
 	remoteConsole: RemoteConsole,
 	level: string,
-	// eslint-disable-next-line @typescript-eslint/ban-types
 ): RemoteConsoleLogFunctions | undefined => {
 	const logFunction = remoteConsole[level as RemoteConsoleLogLevels];
 

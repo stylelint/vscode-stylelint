@@ -2,7 +2,7 @@
 
 exports[`Document formatting should format document using formatting options 1`] = `
 "a {
-	color: red;
+	color: #fff;
 }
 "
 `;
