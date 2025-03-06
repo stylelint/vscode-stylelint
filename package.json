@@ -261,6 +261,7 @@
     "lint:spelling": "cspell lint --no-progress",
     "lint:types": "tsc -b",
     "lint:unit-tests": "ts-node --transpile-only -P tsconfig.scripts.json scripts/enforce-unit-tests-per-file.ts",
+    "lint:node-versions": "node scripts/ensure-node-versions.js",
     "test": "npm run build-bundle && npm run jest -- ",
     "test:e2e": "npm run build-bundle && vscode-test",
     "test:integration": "npm run jest -- --projects test/integration",
