@@ -18,7 +18,7 @@
   },
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.83.0",
+    "vscode": ">=1.82.3",
     "node": ">=18.15.0"
   },
   "galleryBanner": {
