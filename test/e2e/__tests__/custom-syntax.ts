@@ -22,5 +22,5 @@ describe('"stylelint.customSyntax" setting', () => {
 		await commands.executeCommand('stylelint.executeAutofix');
 
 		expect(document.getText()).toMatchSnapshot();
-	}, 10000);
+	});
 });

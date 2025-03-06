@@ -126,4 +126,4 @@ global.afterEach(async () => {
 	openEditors.length = 0;
 
 	await commands.executeCommand('workbench.action.closeAllEditors');
-});
+}, 10000);
