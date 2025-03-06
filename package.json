@@ -18,8 +18,7 @@
   },
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.82.3",
-    "node": ">=18.15.0"
+    "vscode": ">=1.82.3"
   },
   "galleryBanner": {
     "color": "#000000",
@@ -266,6 +265,7 @@
     "test:e2e": "npm run build-bundle && vscode-test",
     "test:integration": "npm run jest -- --projects test/integration",
     "test:unit": "npm run jest -- --projects test/unit",
+    "test:node-versions": "node scripts/test-node-versions.js",
     "jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "vscode:prepublish": "npm run build && npm run bundle-base -- --minify"
   },
