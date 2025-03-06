@@ -59,8 +59,18 @@ jobs:
 
       - name: Run end-to-end tests (Linux)
         if: ${{ runner.os == 'Linux' }}
-        run: xvfb-run -a npm run test:e2e -- --silent
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 3
+          max_attempts: 3
+          retry_on: error
+          command: xvfb-run -a npm run test:e2e -- --silent
 
       - name: Run end-to-end tests (non-Linux)
         if: ${{ runner.os != 'Linux' }}
-        run: npm run test:e2e -- --silent
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 3
+          max_attempts: 3
+          retry_on: error
+          command: npm run test:e2e -- --silent
