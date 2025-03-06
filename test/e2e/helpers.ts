@@ -34,7 +34,11 @@ async function getWorkspaceFile(filePath: string): Promise<Uri> {
 
 	const files = await workspace.findFiles(new RelativePattern(workspaceFolder, fileName));
 
-	assert.equal(files.length, 1);
+	assert.equal(
+		files.length,
+		1,
+		`The number of the "${fileName}" files in the "${workspaceName}" workspace must be 1`,
+	);
 
 	return files[0];
 }
