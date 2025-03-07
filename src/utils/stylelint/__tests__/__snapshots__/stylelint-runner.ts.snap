@@ -1,25 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StylelintRunner should be possible to get the original warning via getWarning 1`] = `
-{
-  "column": 10,
-  "endColumn": 14,
-  "endLine": 1,
-  "fix": {
-    "range": [
-      12,
-      13,
-    ],
-    "text": "ffff",
-  },
-  "line": 1,
-  "rule": "color-hex-length",
-  "severity": "error",
-  "text": "Expected "#fff" to be "#ffffff" (color-hex-length)",
-  "url": undefined,
-}
-`;
-
 exports[`StylelintRunner should call stylelint.lint with the document path and given options 1`] = `
 {
   "code": "a {}",

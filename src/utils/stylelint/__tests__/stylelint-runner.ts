@@ -18,6 +18,8 @@ import * as LSP from 'vscode-languageserver-protocol';
 import { StylelintResolver, ResolverOptions } from '../../packages/index';
 import { getWorkspaceFolder } from '../../documents/index';
 import { StylelintRunner } from '../stylelint-runner';
+import { version as stylelintVersion } from 'stylelint/package.json';
+import semver from 'semver';
 
 const mockedOS = os as tests.mocks.OSModule;
 const mockedPath = path as tests.mocks.PathModule;
@@ -280,20 +282,35 @@ describe('StylelintRunner', () => {
 		);
 	});
 
-	it('should be possible to get the original warning via getWarning', async () => {
-		expect.assertions(1);
+	if (semver.satisfies(stylelintVersion, '>=16.15')) {
+		it('should be possible to get the original warning via getWarning', async () => {
+			expect.assertions(1);
 
-		mockedPath.__mockPlatform();
+			mockedPath.__mockPlatform();
 
-		mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
+			mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
 
-		const results = await new StylelintRunner(mockConnection).lintDocument(
-			createMockDocument('a {color:#fff}', '/path/to/file.css'),
-			{ config: { rules: { 'color-hex-length': 'long' } } },
-		);
+			const results = await new StylelintRunner(mockConnection).lintDocument(
+				createMockDocument('a {color:#fff}', '/path/to/file.css'),
+				{ config: { rules: { 'color-hex-length': 'long' } } },
+			);
 
-		expect(results.getWarning?.(results.diagnostics[0])).toMatchSnapshot();
-	});
+			expect(results.getWarning?.(results.diagnostics[0])).toEqual({
+				column: 10,
+				endColumn: 14,
+				endLine: 1,
+				fix: {
+					range: [12, 13],
+					text: 'ffff',
+				},
+				line: 1,
+				rule: 'color-hex-length',
+				severity: 'error',
+				text: `Expected "#fff" to be "#ffffff" (color-hex-length)`,
+				url: undefined,
+			});
+		});
+	}
 
 	it('should not get the warning with getWarning and a non-existent diagnostic', async () => {
 		expect.assertions(1);
