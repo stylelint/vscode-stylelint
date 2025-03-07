@@ -57,6 +57,7 @@ jobs:
           path: .vscode-test
           key: ${{ runner.os }}-vscode-${{ hashFiles('package.json') }}
 
+      # TODO: If E2E flakiness is resolved, we should stop retrying and avoid potentially long CI runs.
       - name: Run end-to-end tests (Linux)
         if: ${{ runner.os == 'Linux' }}
         uses: nick-fields/retry@v3
