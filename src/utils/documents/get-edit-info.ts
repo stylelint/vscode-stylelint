@@ -26,6 +26,8 @@ export function getEditInfo(
 		return undefined;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore -- (TS2353) `fix` property is available since v16.15.
 	const edit = warning.fix;
 
 	if (!edit) {

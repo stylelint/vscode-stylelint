@@ -1,7 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`StylelintRunner it should not get the warning with getWarning and a non-existent diagnostic 1`] = `null`;
-
 exports[`StylelintRunner should be possible to get the original warning via getWarning 1`] = `
 {
   "column": 10,
@@ -42,6 +40,8 @@ exports[`StylelintRunner should call stylelint.lint with the document path and g
   "reportNeedlessDisables": undefined,
 }
 `;
+
+exports[`StylelintRunner should not get the warning with getWarning and a non-existent diagnostic 1`] = `null`;
 
 exports[`StylelintRunner should return processed lint results from Stylelint with configured rules 1`] = `
 {
