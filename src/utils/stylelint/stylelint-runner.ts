@@ -80,6 +80,8 @@ export class StylelintRunner {
 			...(await buildStylelintOptions(document.uri, workspaceFolder, linterOptions, runnerOptions)),
 			code: document.getText(),
 			formatter: () => '',
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore -- (TS2353) `computeEditInfo` option is available since v16.15.
 			computeEditInfo: true,
 		};
 
