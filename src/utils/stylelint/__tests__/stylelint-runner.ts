@@ -295,7 +295,7 @@ describe('StylelintRunner', () => {
 		expect(results.getWarning?.(results.diagnostics[0])).toMatchSnapshot();
 	});
 
-	it('it should not get the warning with getWarning and a non-existent diagnostic', async () => {
+	it('should not get the warning with getWarning and a non-existent diagnostic', async () => {
 		expect.assertions(1);
 
 		mockedPath.__mockPlatform();
