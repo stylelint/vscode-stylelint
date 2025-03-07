@@ -6,6 +6,24 @@ import { type LintDiagnostics, type Stylelint, InvalidOptionError } from './type
 import type LSP from 'vscode-languageserver-protocol';
 
 /**
+ * Returns a unique key for a diagnostic.
+ * @param diagnostic The diagnostic to get a key for.
+ */
+function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
+	const range = diagnostic.range;
+	let message: string | undefined;
+
+	if (diagnostic.message) {
+		const hash = crypto.createHash('sha256');
+
+		hash.update(diagnostic.message);
+		message = hash.digest('base64');
+	}
+
+	return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}-${message ?? ''}`;
+}
+
+/**
  * Processes the results of a Stylelint lint run.
  *
  * If Stylelint reported any warnings, they are converted to Diagnostics and
@@ -61,27 +79,17 @@ export function processLinterResult(
 
 	for (const warning of warnings) {
 		const diagnostic = warningToDiagnostic(warning, ruleMetadata);
+
 		diagnostics.push(diagnostic);
 		warningsMap.set(getDiagnosticKey(diagnostic), warning);
 	}
-	const getWarning = (diagnostic: LSP.Diagnostic) => {
+
+	const getWarning = (diagnostic: LSP.Diagnostic): Warning | null => {
 		const key = getDiagnosticKey(diagnostic);
+
 		return warningsMap.get(key) ?? null;
 	};
 	const output = ('report' in linterResult && linterResult.report) || linterResult.output;
 
-	return output
-		? { output: output as string, diagnostics, getWarning }
-		: { diagnostics, getWarning };
-}
-
-function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
-	const range = diagnostic.range;
-	let message: string | undefined;
-	if (diagnostic.message) {
-		const hash = crypto.createHash('sha256');
-		hash.update(diagnostic.message);
-		message = hash.digest('base64');
-	}
-	return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}-${message ?? ''}`;
+	return output ? { output, diagnostics, getWarning } : { diagnostics, getWarning };
 }

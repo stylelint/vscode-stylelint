@@ -394,6 +394,7 @@ export class StylelintLanguageServer implements Disposable {
 		}
 
 		const warning = result.getWarning?.(diagnostic);
+
 		if (!warning) {
 			return undefined;
 		}

@@ -154,17 +154,21 @@ export class CodeActionModule implements LanguageServerModule {
 	#getQuickFixActions(document: TextDocument, context: LSP.CodeActionContext): LSP.CodeAction[] {
 		const identifier = { uri: document.uri, version: document.version };
 		const actions: LSP.CodeAction[] = [];
+
 		for (const diagnostic of context.diagnostics) {
 			const edit = this.#context.getEditInfo(document, diagnostic);
+
 			if (edit) {
 				const action = LSP.CodeAction.create(
 					edit.label,
 					{ documentChanges: [LSP.TextDocumentEdit.create(identifier, [edit.edit])] },
 					LSP.CodeActionKind.QuickFix,
 				);
+
 				actions.push(action);
 			}
 		}
+
 		return actions;
 	}
 

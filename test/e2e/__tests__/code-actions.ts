@@ -69,6 +69,7 @@ describe('Code actions', () => {
 
 		assert.equal(actions.length, 4);
 		const editAction = actions[0];
+
 		assert.equal(editAction.title, 'Fix this color-hex-length problem');
 		assertTextEdits(editAction.edit?.get(editor.document.uri), [
 			{
