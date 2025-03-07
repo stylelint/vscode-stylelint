@@ -188,6 +188,7 @@ exports[`StylelintLanguageServer should accept server modules 1`] = `
       "onWillSave": [MockFunction],
       "onWillSaveWaitUntil": [MockFunction],
     },
+    "getEditInfo": [Function],
     "getFixes": [Function],
     "getModule": [Function],
     "getOptions": [Function],

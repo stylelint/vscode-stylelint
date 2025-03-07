@@ -4,6 +4,7 @@ exports[`StylelintRunner should call stylelint.lint with the document path and g
 {
   "code": "a {}",
   "codeFilename": "/path/to/file.scss",
+  "computeEditInfo": true,
   "config": {
     "customSyntax": "postcss-scss",
   },
@@ -43,6 +44,7 @@ exports[`StylelintRunner should return processed lint results from Stylelint wit
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 
@@ -66,6 +68,7 @@ exports[`StylelintRunner should return processed lint results from Stylelint wit
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 

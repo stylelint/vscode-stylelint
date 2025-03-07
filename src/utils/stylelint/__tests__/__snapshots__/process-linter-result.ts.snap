@@ -52,6 +52,7 @@ exports[`processLinterResult should return diagnostics for each warning 1`] = `
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 
@@ -75,6 +76,7 @@ exports[`processLinterResult should return output if given 1`] = `
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
   "output": "Output",
 }
 `;
