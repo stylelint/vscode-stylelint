@@ -12,7 +12,7 @@ import {
 import type stylelint from 'stylelint';
 import type winston from 'winston';
 
-import { getFixes } from '../utils/documents/index';
+import { getFixes, getEditInfo } from '../utils/documents/index';
 import { displayError, CommandManager, NotificationManager } from '../utils/lsp/index';
 import { mergeAssign, mergeOptionsWithDefaults } from '../utils/objects/index';
 import { StylelintRunner, LintDiagnostics } from '../utils/stylelint/index';
@@ -387,34 +387,7 @@ export class StylelintLanguageServer implements Disposable {
 		document: TextDocument,
 		diagnostic: LSP.Diagnostic,
 	): { label: string; edit: TextEdit } | undefined {
-		const result = this.#lintResults.get(document.uri);
-
-		if (!result || document.version !== result.version) {
-			return undefined;
-		}
-
-		const warning = result.getWarning?.(diagnostic);
-
-		if (!warning) {
-			return undefined;
-		}
-
-		const edit = warning.fix;
-
-		if (!edit) {
-			return undefined;
-		}
-
-		return {
-			label: `Fix this ${warning.rule} problem`,
-			edit: {
-				newText: edit.text,
-				range: {
-					start: document.positionAt(edit.range[0]),
-					end: document.positionAt(edit.range[1]),
-				},
-			},
-		};
+		return getEditInfo(document, diagnostic, this.#lintResults.get(document.uri));
 	}
 
 	/**
