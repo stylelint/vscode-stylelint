@@ -11,7 +11,7 @@ import type LSP from 'vscode-languageserver-protocol';
  */
 function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
 	const range = diagnostic.range;
-	let message: string | undefined;
+	let message = '';
 
 	if (diagnostic.message) {
 		const hash = crypto.createHash('sha256');
@@ -20,7 +20,7 @@ function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
 		message = hash.digest('base64');
 	}
 
-	return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}-${message ?? ''}`;
+	return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}-${message}`;
 }
 
 /**

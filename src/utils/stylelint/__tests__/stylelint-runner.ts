@@ -14,6 +14,7 @@ import stylelint from 'stylelint';
 import type winston from 'winston';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
+import * as LSP from 'vscode-languageserver-protocol';
 import { StylelintResolver, ResolverOptions } from '../../packages/index';
 import { getWorkspaceFolder } from '../../documents/index';
 import { StylelintRunner } from '../stylelint-runner';
@@ -278,4 +279,43 @@ describe('StylelintRunner', () => {
 			expect.any(Object),
 		);
 	});
+
+	it('should be possible to get the original warning via getWarning', async () => {
+		expect.assertions(1);
+
+		mockedPath.__mockPlatform();
+
+		mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
+
+		const results = await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {color:#fff}', '/path/to/file.css'),
+			{ config: { rules: { 'color-hex-length': 'long' } } },
+		);
+
+		expect(results.getWarning?.(results.diagnostics[0])).toMatchSnapshot();
+	})
+
+	it('it should not get the warning with getWarning and a non-existent diagnostic', async () => {
+		expect.assertions(1);
+
+		mockedPath.__mockPlatform();
+
+		mockedResolver.mockImplementation(createMockResolver(undefined, async () => ({ stylelint })));
+
+		const results = await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {color:#fff}', '/path/to/file.css'),
+			{ config: { rules: { 'color-hex-length': 'long' } } },
+		);
+
+		expect(results.getWarning?.({
+			message: 'Message for rule 1',
+			source: 'Stylelint',
+			range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			code: 'rule 1',
+			severity: LSP.DiagnosticSeverity.Error,
+			codeDescription: {
+				href: 'https://stylelint.io/user-guide/rules/rule',
+			},
+		})).toMatchSnapshot();
+	})
 });
