@@ -238,24 +238,27 @@ const css = css\`
 		});
 	});
 
-	it('should be fixed to correct position with a quick fix provided by EditInfo', async () => {
-		const editor = await openDocument(cssFoeEditInfoPath);
+	ifItHaveProblemEditsIt(
+		'should be fixed to correct position with a quick fix provided by EditInfo',
+		async () => {
+			const editor = await openDocument(cssFoeEditInfoPath);
 
-		await waitForDiagnostics(editor);
+			await waitForDiagnostics(editor);
 
-		const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
-		const quickFixAction = actions.find((action) => action.title.match(/^Fix this .+ problem$/));
+			const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
+			const quickFixAction = actions.find((action) => action.title.match(/^Fix this .+ problem$/));
 
-		assert.ok(quickFixAction?.edit);
+			assert.ok(quickFixAction?.edit);
 
-		await workspace.applyEdit(quickFixAction.edit);
+			await workspace.applyEdit(quickFixAction.edit);
 
-		assert.equal(
-			editor.document.getText(),
-			`a {
+			assert.equal(
+				editor.document.getText(),
+				`a {
   color: #000000;
 }
 `,
-		);
-	});
+			);
+		},
+	);
 });
