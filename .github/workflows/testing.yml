@@ -64,3 +64,19 @@ jobs:
       - name: Run end-to-end tests (non-Linux)
         if: ${{ runner.os != 'Linux' }}
         run: npm run test:e2e -- --silent
+
+  test-node-versions:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Test Node.js versions
+        run: npm run test:node-versions
