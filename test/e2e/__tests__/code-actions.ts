@@ -16,7 +16,7 @@ import {
 } from '../helpers';
 
 const cssPath = 'code-actions/test.css';
-const cssFoeEditInfoPath = 'code-actions/edit-info.css';
+const cssForEditInfoPath = 'code-actions/edit-info.css';
 const jsPath = 'code-actions/test.js';
 
 describe('Code actions', () => {
@@ -61,7 +61,7 @@ describe('Code actions', () => {
 	const ifItHaveProblemEditsIt = hasEditInfo ? it : it.skip;
 
 	ifItHaveProblemEditsIt('should provide code actions for problem edit info', async () => {
-		const editor = await openDocument(cssFoeEditInfoPath);
+		const editor = await openDocument(cssForEditInfoPath);
 
 		await waitForDiagnostics(editor);
 
@@ -241,7 +241,7 @@ const css = css\`
 	ifItHaveProblemEditsIt(
 		'should be fixed to correct position with a quick fix provided by EditInfo',
 		async () => {
-			const editor = await openDocument(cssFoeEditInfoPath);
+			const editor = await openDocument(cssForEditInfoPath);
 
 			await waitForDiagnostics(editor);
 
