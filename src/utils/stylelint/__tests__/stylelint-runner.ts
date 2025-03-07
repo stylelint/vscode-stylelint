@@ -293,7 +293,7 @@ describe('StylelintRunner', () => {
 		);
 
 		expect(results.getWarning?.(results.diagnostics[0])).toMatchSnapshot();
-	})
+	});
 
 	it('it should not get the warning with getWarning and a non-existent diagnostic', async () => {
 		expect.assertions(1);
@@ -307,15 +307,17 @@ describe('StylelintRunner', () => {
 			{ config: { rules: { 'color-hex-length': 'long' } } },
 		);
 
-		expect(results.getWarning?.({
-			message: 'Message for rule 1',
-			source: 'Stylelint',
-			range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
-			code: 'rule 1',
-			severity: LSP.DiagnosticSeverity.Error,
-			codeDescription: {
-				href: 'https://stylelint.io/user-guide/rules/rule',
-			},
-		})).toMatchSnapshot();
-	})
+		expect(
+			results.getWarning?.({
+				message: 'Message for rule 1',
+				source: 'Stylelint',
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+				code: 'rule 1',
+				severity: LSP.DiagnosticSeverity.Error,
+				codeDescription: {
+					href: 'https://stylelint.io/user-guide/rules/rule',
+				},
+			}),
+		).toMatchSnapshot();
+	});
 });
