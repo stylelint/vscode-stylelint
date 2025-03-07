@@ -8,15 +8,17 @@ describe('"stylelint.customSyntax" setting', () => {
 	});
 
 	it('should auto-fix using the specified custom syntax', async () => {
-		const { document } = await openDocument('custom-syntax/test.css');
+		const { document } = await openDocument('custom-syntax/test.scss');
 
 		await executeAutofix();
 
 		assert.equal(
 			document.getText(),
 			`/* prettier-ignore */
-.foo .bar
-  color: #ffffff`,
+.foo .bar {
+  color: #fff;
+}
+`,
 		);
 	});
 });
