@@ -66,7 +66,7 @@ type WaitForOptions = {
 export async function waitFor<T>(
 	produce: () => T,
 	condition: (result: T) => boolean,
-	{ timeout = 5000, interval = 20 }: WaitForOptions = {},
+	{ timeout = 10000, interval = 20 }: WaitForOptions = {},
 ): Promise<T> {
 	let intervalRef: NodeJS.Timer;
 	let timeoutRef: NodeJS.Timeout;

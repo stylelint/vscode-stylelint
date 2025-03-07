@@ -18,7 +18,7 @@
   },
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.82.3"
+    "vscode": ">=1.83.0"
   },
   "galleryBanner": {
     "color": "#000000",
@@ -220,7 +220,7 @@
     "@types/path-is-inside": "^1.0.3",
     "@types/semver": "^7.5.8",
     "@types/triple-beam": "^1.3.5",
-    "@types/vscode": "1.82.0",
+    "@types/vscode": "1.83.0",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
     "@vscode/test-cli": "^0.0.10",
@@ -262,7 +262,7 @@
     "lint:types": "tsc -b",
     "lint:unit-tests": "ts-node --transpile-only -P tsconfig.scripts.json scripts/enforce-unit-tests-per-file.ts",
     "test": "npm run build-bundle && npm run jest -- ",
-    "test:e2e": "npm run build-bundle && vscode-test",
+    "test:e2e": "npm run build-bundle && vscode-test && prettier -w --parser jsonc test/e2e/workspace/workspace.code-workspace",
     "test:integration": "npm run jest -- --projects test/integration",
     "test:unit": "npm run jest -- --projects test/unit",
     "test:node-versions": "node scripts/test-node-versions.js",
