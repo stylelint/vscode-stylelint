@@ -80,7 +80,7 @@ const config = {
 			},
 		},
 		{
-			files: ['test/e2e/__tests__/**/*'],
+			files: ['test/e2e/__tests__/**/*', 'test/e2e/pnp/__tests__/**/*'],
 			rules: {
 				'jest/expect-expect': 'off',
 			},

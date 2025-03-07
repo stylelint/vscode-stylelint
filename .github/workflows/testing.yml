@@ -60,21 +60,11 @@ jobs:
       # TODO: If E2E flakiness is resolved, we should stop retrying and avoid potentially long CI runs.
       - name: Run end-to-end tests (Linux)
         if: ${{ runner.os == 'Linux' }}
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          retry_on: error
-          command: xvfb-run -a npm run test:e2e -- --silent
+        run: xvfb-run -a npm run test:e2e -- --silent
 
       - name: Run end-to-end tests (non-Linux)
         if: ${{ runner.os != 'Linux' }}
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 5
-          max_attempts: 5
-          retry_on: error
-          command: npm run test:e2e -- --silent
+        run: npm run test:e2e -- --silent
 
   test-node-versions:
     runs-on: ubuntu-latest
