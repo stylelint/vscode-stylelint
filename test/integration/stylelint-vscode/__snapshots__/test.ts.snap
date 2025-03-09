@@ -238,6 +238,7 @@ exports[`StylelintRunner with auto-fix auto-fix should work if there are errors 
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
   "output": "
 unknown {
     color: #fff;
@@ -266,6 +267,7 @@ color:#fff;
 exports[`StylelintRunner with customSyntax auto-fix should work properly if customSyntax is defined 1`] = `
 {
   "diagnostics": [],
+  "getWarning": [Function],
   "output": "a
   color:#fff",
 }
@@ -294,6 +296,7 @@ exports[`StylelintRunner with customSyntax should work properly if customSyntax 
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 
@@ -349,6 +352,7 @@ exports[`StylelintRunner with reportDescriptionlessDisables should work properly
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 
@@ -404,6 +408,7 @@ exports[`StylelintRunner with reportInvalidScopeDisables should work properly if
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 
@@ -494,6 +499,7 @@ exports[`StylelintRunner with reportNeedlessDisables should work properly if rep
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 
@@ -517,6 +523,7 @@ exports[`StylelintRunner with stylelintPath should work properly if custom path 
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;
 
@@ -543,5 +550,6 @@ exports[`StylelintRunner with stylelintPath should work properly if stylelintPat
       "source": "Stylelint",
     },
   ],
+  "getWarning": [Function],
 }
 `;

@@ -12,7 +12,7 @@ import {
 import type stylelint from 'stylelint';
 import type winston from 'winston';
 
-import { getFixes } from '../utils/documents/index';
+import { getFixes, getEditInfo } from '../utils/documents/index';
 import { displayError, CommandManager, NotificationManager } from '../utils/lsp/index';
 import { mergeAssign, mergeOptionsWithDefaults } from '../utils/objects/index';
 import { StylelintRunner, LintDiagnostics } from '../utils/stylelint/index';
@@ -131,6 +131,11 @@ export class StylelintLanguageServer implements Disposable {
 	#disposables: LSP.Disposable[] = [];
 
 	/**
+	 * Lint results.
+	 */
+	#lintResults = new Map<string, LintDiagnostics & { version: number }>();
+
+	/**
 	 * Creates a new Stylelint language server.
 	 */
 	constructor({ connection, logger, modules }: LanguageServerConstructorParameters) {
@@ -155,6 +160,7 @@ export class StylelintLanguageServer implements Disposable {
 			getFixes: this.#getFixes.bind(this),
 			displayError: this.#displayError.bind(this),
 			lintDocument: this.#lintDocument.bind(this),
+			getEditInfo: this.#getEditInfo.bind(this),
 			resolveStylelint: this.#resolveStylelint.bind(this),
 		};
 
@@ -361,6 +367,8 @@ export class StylelintLanguageServer implements Disposable {
 
 			const results = await this.#runner.lintDocument(document, linterOptions, options);
 
+			this.#lintResults.set(document.uri, { version: document.version, ...results });
+
 			this.#logger.debug('Lint run complete', { uri: document.uri, results });
 
 			return results;
@@ -373,6 +381,13 @@ export class StylelintLanguageServer implements Disposable {
 
 			return undefined;
 		}
+	}
+
+	#getEditInfo(
+		document: TextDocument,
+		diagnostic: LSP.Diagnostic,
+	): { label: string; edit: TextEdit } | undefined {
+		return getEditInfo(document, diagnostic, this.#lintResults.get(document.uri));
 	}
 
 	/**
@@ -529,6 +544,7 @@ export class StylelintLanguageServer implements Disposable {
 		});
 
 		this.#scopedOptions.delete(document.uri);
+		this.#lintResults.delete(document.uri);
 	}
 
 	async #onDidChangeConfiguration(params: LSP.DidChangeConfigurationParams): Promise<void> {

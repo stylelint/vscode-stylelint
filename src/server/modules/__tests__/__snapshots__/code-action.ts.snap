@@ -18,6 +18,115 @@ exports[`CodeActionModule onInitialize should return results 1`] = `
 }
 `;
 
+exports[`CodeActionModule with action kind QuickFix, should create quick fix code action 1`] = `
+[
+  {
+    "edit": {
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "0000",
+              "range": {
+                "end": {
+                  "character": 11,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 10,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Fix",
+  },
+  {
+    "edit": {
+      "changeAnnotations": undefined,
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "/* stylelint-disable-next-line rule 1 */
+",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule 1 for this line",
+  },
+  {
+    "edit": {
+      "changeAnnotations": undefined,
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "/* stylelint-disable rule 1 */
+",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule 1 for the entire file",
+  },
+  {
+    "command": {
+      "arguments": [
+        {
+          "uri": "https://stylelint.io/user-guide/rules/rule",
+        },
+      ],
+      "command": "stylelint.openRuleDoc",
+      "title": "Open documentation for rule 1",
+    },
+    "kind": "quickfix",
+    "title": "Show documentation for rule 1",
+  },
+]
+`;
+
 exports[`CodeActionModule with action kind Source, should create fix-all code actions 1`] = `
 [
   {

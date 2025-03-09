@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getEditInfo should construct and return an EditInfo 1`] = `
+{
+  "edit": {
+    "newText": "0000",
+    "range": {
+      "end": {
+        "character": 13,
+        "line": 0,
+      },
+      "start": {
+        "character": 12,
+        "line": 0,
+      },
+    },
+  },
+  "label": "Fix this color-hex-length problem",
+}
+`;

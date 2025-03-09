@@ -5,6 +5,7 @@ const config = {
 	rules: {
 		'color-no-invalid-hex': true,
 		'value-keyword-case': 'lower',
+		'color-hex-length': 'long',
 	},
 	overrides: [
 		{
