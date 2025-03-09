@@ -226,7 +226,7 @@
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "cspell": "^8.14.2",
-    "esbuild": "^0.23.1",
+    "esbuild": "^0.25.0",
     "eslint": "^8.57.0",
     "eslint-config-stylelint": "^22.0.0",
     "eslint-plugin-jest": "^28.8.1",
@@ -241,7 +241,7 @@
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "stylelint-scss": "^6.11.1",
-    "ts-jest": "^29.2.5",
+    "ts-jest": "^29.2.6",
     "ts-node": "^10.9.2",
     "typed-emitter": "^2.1.0",
     "typescript": "^5.5.4"
