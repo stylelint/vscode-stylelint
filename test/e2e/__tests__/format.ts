@@ -1,4 +1,5 @@
 import * as assert from 'node:assert/strict';
+import * as semver from 'semver';
 
 import { commands } from 'vscode';
 
@@ -12,7 +13,7 @@ describe('Document formatting', () => {
 	});
 
 	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	const isStylelint16 = require('stylelint/package.json').version.startsWith('16.');
+	const isStylelint16 = semver.satisfies(require('stylelint/package.json').version, '>=16');
 
 	// Only Stylelint before 16 had formatting related rules
 	const pre16It = isStylelint16 ? it.skip : it;

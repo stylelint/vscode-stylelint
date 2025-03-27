@@ -1,5 +1,6 @@
 import * as assert from 'node:assert/strict';
 import { EOL } from 'node:os';
+import * as semver from 'semver';
 
 import { workspace, Selection, Position } from 'vscode';
 
@@ -15,6 +16,7 @@ import {
 } from '../helpers';
 
 const cssPath = 'code-actions/test.css';
+const cssForEditInfoPath = 'code-actions/edit-info.css';
 const jsPath = 'code-actions/test.js';
 
 describe('Code actions', () => {
@@ -30,25 +32,67 @@ describe('Code actions', () => {
 
 		await waitForDiagnostics(editor);
 
-		const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
+		const actions = await getCodeActions(editor, new Selection(3, 11, 3, 11));
 
 		assert.equal(actions.length, 3);
 		assertTextEdits(actions[0].edit?.get(editor.document.uri), [
 			{
-				newText: `  /* stylelint-disable-next-line value-keyword-case */${EOL}`,
-				range: [1, 0, 1, 0],
+				newText: `  /* stylelint-disable-next-line color-no-invalid-hex */${EOL}`,
+				range: [3, 0, 3, 0],
 			},
 		]);
 		assertTextEdits(actions[1].edit?.get(editor.document.uri), [
 			{
-				newText: `/* stylelint-disable value-keyword-case */${EOL}`,
+				newText: `/* stylelint-disable color-no-invalid-hex */${EOL}`,
 				range: [0, 0, 0, 0],
 			},
 		]);
 		assertCommand(actions[2].command, {
-			title: 'Open documentation for value-keyword-case',
+			title: 'Open documentation for color-no-invalid-hex',
 			command: 'stylelint.openRuleDoc',
-			arguments: [{ uri: 'https://stylelint.io/user-guide/rules/value-keyword-case' }],
+			arguments: [{ uri: 'https://stylelint.io/user-guide/rules/color-no-invalid-hex' }],
+		});
+	});
+
+	// eslint-disable-next-line @typescript-eslint/no-require-imports
+	const hasEditInfo = semver.satisfies(require('stylelint/package.json').version, '>=16.15');
+
+	// Rules with EditInfo are only available in Stylelint 16.15 and later.
+	const ifItHaveProblemEditsIt = hasEditInfo ? it : it.skip;
+
+	ifItHaveProblemEditsIt('should provide code actions for problem edit info', async () => {
+		const editor = await openDocument(cssForEditInfoPath);
+
+		await waitForDiagnostics(editor);
+
+		const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
+
+		assert.equal(actions.length, 4);
+		const editAction = actions[0];
+
+		assert.equal(editAction.title, 'Fix this color-hex-length problem');
+		assertTextEdits(editAction.edit?.get(editor.document.uri), [
+			{
+				newText: '0000',
+				range: [1, 12, 1, 13],
+			},
+		]);
+		assertTextEdits(actions[1].edit?.get(editor.document.uri), [
+			{
+				newText: `  /* stylelint-disable-next-line color-hex-length */${EOL}`,
+				range: [1, 0, 1, 0],
+			},
+		]);
+		assertTextEdits(actions[2].edit?.get(editor.document.uri), [
+			{
+				newText: `/* stylelint-disable color-hex-length */${EOL}`,
+				range: [0, 0, 0, 0],
+			},
+		]);
+		assertCommand(actions[3].command, {
+			title: 'Open documentation for color-hex-length',
+			command: 'stylelint.openRuleDoc',
+			arguments: [{ uri: 'https://stylelint.io/user-guide/rules/color-hex-length' }],
 		});
 	});
 
@@ -193,4 +237,28 @@ const css = css\`
 			);
 		});
 	});
+
+	ifItHaveProblemEditsIt(
+		'should be fixed to correct position with a quick fix provided by EditInfo',
+		async () => {
+			const editor = await openDocument(cssForEditInfoPath);
+
+			await waitForDiagnostics(editor);
+
+			const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
+			const quickFixAction = actions.find((action) => action.title.match(/^Fix this .+ problem$/));
+
+			assert.ok(quickFixAction?.edit);
+
+			await workspace.applyEdit(quickFixAction.edit);
+
+			assert.equal(
+				editor.document.getText(),
+				`a {
+  color: #000000;
+}
+`,
+			);
+		},
+	);
 });

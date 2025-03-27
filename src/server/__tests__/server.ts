@@ -15,7 +15,7 @@ import { TextDocuments } from 'vscode-languageserver/node';
 import * as LSP from 'vscode-languageserver-protocol';
 import { displayError, NotificationManager, CommandManager } from '../../utils/lsp/index';
 import { LintDiagnostics, StylelintRunner } from '../../utils/stylelint/index';
-import { getFixes } from '../../utils/documents/index';
+import { getEditInfo, getFixes } from '../../utils/documents/index';
 import { StylelintResolver } from '../../utils/packages/index';
 import { StylelintLanguageServer } from '../server';
 import {
@@ -31,6 +31,7 @@ const mockNotificationManager = NotificationManager as jest.MockedClass<typeof N
 const mockCommandManager = CommandManager as jest.MockedClass<typeof CommandManager>;
 const mockRunner = StylelintRunner as jest.Mock<StylelintRunner>;
 const mockGetFixes = getFixes as jest.MockedFunction<typeof getFixes>;
+const mockGetEditInfo = getEditInfo as jest.MockedFunction<typeof getEditInfo>;
 const mockResolver = StylelintResolver as jest.Mock<StylelintResolver>;
 const mockTextDocuments = TextDocuments as jest.Mock<TextDocuments<TextDocument>>;
 
@@ -1238,5 +1239,43 @@ describe('StylelintLanguageServer', () => {
 		expect(() => server.start()).toThrowErrorMatchingInlineSnapshot(
 			`"Cannot transition from Disposed"`,
 		);
+	});
+
+	test('should allow modules to get edit info for documents using context.getEditInfo', async () => {
+		mockRunner.mockImplementation(() => ({}) as unknown as StylelintRunner);
+		mockGetEditInfo.mockImplementation(
+			() => ({ label: 'test' }) as unknown as ReturnType<typeof getEditInfo>,
+		);
+
+		const document = { uri: 'file:///test.css' } as TextDocument;
+		const [TestModule, getContext] = getContextModule();
+		const server = new StylelintLanguageServer({
+			connection: mockConnection,
+			modules: [TestModule],
+		});
+
+		server.start();
+
+		const onInitializeHandler = mockConnection.onInitialize.mock.calls[0][0];
+
+		await onInitializeHandler(
+			{ capabilities: {} } as LSP.InitializeParams,
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		const editInfo = getContext()?.getEditInfo(document, {
+			range: {
+				start: { line: 1, character: 1 },
+				end: { line: 1, character: 2 },
+			},
+			message: `Expected "#000" to be "#000000" (color-hex-length)`,
+			source: 'stylelint',
+			severity: LSP.DiagnosticSeverity.Error,
+			code: 'color-hex-length',
+		});
+
+		expect(editInfo).toStrictEqual({ label: 'test' });
+		expect(mockGetEditInfo.mock.calls).toMatchSnapshot();
 	});
 });

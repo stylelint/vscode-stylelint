@@ -118,6 +118,16 @@ export interface LanguageServerContext {
 	): Promise<LintDiagnostics | undefined>;
 
 	/**
+	 * Gets the edit info from the given diagnostic.
+	 * @param document The document to lint.
+	 * @param diagnostics The diagnostic to get the edit info for.
+	 */
+	getEditInfo(
+		document: TextDocument,
+		diagnostics: LSP.Diagnostic,
+	): { label: string; edit: TextEdit } | undefined;
+
+	/**
 	 * Resolves the Stylelint package to be used for the given document.
 	 * @param document The document to resolve the package for.
 	 */

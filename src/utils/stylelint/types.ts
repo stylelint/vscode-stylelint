@@ -19,6 +19,11 @@ export type LintDiagnostics = {
 	 * Raw output from Stylelint, if any.
 	 */
 	output?: string;
+
+	/**
+	 * Gets the original warning from the given diagnostic.
+	 */
+	getWarning?: (diagnostic: LSP.Diagnostic) => stylelint.Warning | null;
 };
 
 /**

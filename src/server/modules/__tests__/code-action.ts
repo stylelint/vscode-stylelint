@@ -535,4 +535,56 @@ describe('CodeActionModule', () => {
 		expect(disposables[0].value.dispose).toHaveBeenCalledTimes(1);
 		expect(disposables[1].value.dispose).toHaveBeenCalledTimes(1);
 	});
+
+	test('with action kind QuickFix, should create quick fix code action', async () => {
+		const document = TextDocument.create('foo', 'bar', 1, 'a{color:#000;}');
+		const diagnostic = {
+			message: 'Message for rule 1',
+			source: 'Stylelint',
+			range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			code: 'rule 1',
+			severity: LSP.DiagnosticSeverity.Error,
+			codeDescription: {
+				href: 'https://stylelint.io/user-guide/rules/rule',
+			},
+		};
+
+		mockContext.documents.get.mockReturnValue(document);
+		mockContext.__options.validate = ['bar'];
+		mockContext.getEditInfo.mockReturnValue({
+			label: 'Fix',
+			edit: {
+				newText: '0000',
+				range: {
+					start: { line: 0, character: 10 },
+					end: { line: 0, character: 11 },
+				},
+			},
+		});
+
+		const module = new CodeActionModule({
+			context: mockContext.__typed(),
+			logger: mockLogger,
+		});
+
+		module.onDidRegisterHandlers();
+
+		const handler = mockContext.connection.onCodeAction.mock.calls[0][0];
+
+		const result = await handler(
+			{
+				context: {
+					only: [LSP.CodeActionKind.QuickFix],
+					diagnostics: [diagnostic],
+				},
+				textDocument: { uri: 'foo' },
+				range: LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.create(0, 0)),
+			},
+			{} as LSP.CancellationToken,
+			{} as WorkDoneProgressReporter,
+		);
+
+		expect(result).toMatchSnapshot();
+		expect(mockContext.getEditInfo).toHaveBeenCalledWith(document, diagnostic);
+	});
 });
