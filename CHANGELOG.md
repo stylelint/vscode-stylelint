@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) 
 
 ### Changed
 
-- Bump oldest supported vscode to 1.83.0 ([#645](https://github.com/stylelint/vscode-stylelint/pull/645))
+- Bump oldest supported vscode to 1.83.0 ([#645](https://github.com/stylelint/vscode-stylelint/pull/645)).
 
 ## [1.4.0](https://github.com/stylelint/vscode-stylelint/compare/v1.3.0...v1.4.0) (2024-03-28)
 
