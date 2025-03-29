@@ -211,9 +211,8 @@ export class CodeActionModule implements LanguageServerModule {
 		const only = context.only && new Set(context.only);
 
 		this.#logger?.debug('Creating code actions', { only: context.only });
+		const fixAllActions = [];
 
-		// If asked to provide source or source-fix-all actions, only provide
-		// actions for the whole document.
 		if (
 			only?.has(LSP.CodeActionKind.SourceFixAll) ||
 			only?.has(StylelintCodeActionKind.StylelintSourceFixAll)
@@ -222,23 +221,37 @@ export class CodeActionModule implements LanguageServerModule {
 
 			const action = await this.#getAutoFixAllAction(document);
 
-			return action ? [action] : [];
+			if (action) {
+				fixAllActions.push(action);
+			}
+		} else {
+			this.#logger?.debug(
+				'No source-fix-all actions requested, skipping source-fix-all action creation',
+			);
 		}
 
 		if (only?.has(LSP.CodeActionKind.Source)) {
 			this.#logger?.debug('Creating "source" code action');
 
-			return [this.#getAutoFixAllCommandAction(document)];
+			fixAllActions.push(this.#getAutoFixAllCommandAction(document));
+		} else {
+			this.#logger?.debug('No source actions requested, skipping source action creation');
 		}
 
-		if (only && !only.has(LSP.CodeActionKind.QuickFix)) {
-			this.#logger?.debug('No quick fix actions requested, skipping action creation');
+		if (
+			only &&
+			!only.has(LSP.CodeActionKind.QuickFix) &&
+			!only.has(LSP.CodeActionKind.SourceFixAll) &&
+			!only.has(StylelintCodeActionKind.StylelintSourceFixAll) &&
+			!only.has(LSP.CodeActionKind.Source)
+		) {
+			this.#logger?.debug('No quick fix actions requested, skipping quick fix action creation');
 
-			return [];
+			return fixAllActions;
 		}
 
 		// Otherwise, provide specific actions for each problem.
-		const actions = new RuleCodeActionsCollection();
+		const ruleCodeActions = new RuleCodeActionsCollection();
 
 		for (const diagnostic of context.diagnostics) {
 			const { source, code } = diagnostic;
@@ -260,30 +273,33 @@ export class CodeActionModule implements LanguageServerModule {
 					location,
 				});
 
-				actions.get(code).disableLine = createDisableRuleLineCodeAction(
+				ruleCodeActions.get(code).disableLine = createDisableRuleLineCodeAction(
 					document,
 					diagnostic,
 					location,
 				);
 
-				if (!actions.get(code).disableFile) {
+				if (!ruleCodeActions.get(code).disableFile) {
 					this.#logger?.debug('Creating disable rule for file code action', {
 						rule: code,
 					});
 
-					actions.get(code).disableFile = createDisableRuleFileCodeAction(document, diagnostic);
+					ruleCodeActions.get(code).disableFile = createDisableRuleFileCodeAction(
+						document,
+						diagnostic,
+					);
 				}
 			}
 
-			if (!actions.get(code).documentation) {
+			if (!ruleCodeActions.get(code).documentation) {
 				this.#logger?.debug('Creating documentation code action', {
 					rule: code,
 				});
 
-				actions.get(code).documentation = this.#getOpenRuleDocAction(diagnostic);
+				ruleCodeActions.get(code).documentation = this.#getOpenRuleDocAction(diagnostic);
 			}
 		}
 
-		return [...this.#getQuickFixActions(document, context), ...actions];
+		return [...this.#getQuickFixActions(document, context), ...ruleCodeActions, ...fixAllActions];
 	}
 }
