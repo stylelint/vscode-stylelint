@@ -221,7 +221,7 @@
     "@types/semver": "^7.7.0",
     "@types/triple-beam": "^1.3.5",
     "@types/vscode": "1.83.3",
-    "@typescript-eslint/eslint-plugin": "^8.29.0",
+    "typescript-eslint": "^8.29.0",
     "@vscode/test-cli": "^0.0.10",
     "@vscode/test-electron": "^2.4.1",
     "cspell": "^8.18.1",
