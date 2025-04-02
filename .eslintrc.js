@@ -85,6 +85,14 @@ const config = {
 				'jest/expect-expect': 'off',
 			},
 		},
+		{
+			files: ['scripts/**/*'],
+			rules: {
+				'no-console': 'off',
+				'no-process-exit': 'off',
+				'n/no-unpublished-import': 'off',
+			},
+		},
 	],
 };
 
