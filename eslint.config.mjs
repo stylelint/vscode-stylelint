@@ -16,7 +16,7 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
-	globalIgnores(['**/build', '**/coverage', '**/dist', 'test/e2e/workspace']),
+	globalIgnores(['.vscode-test', 'build', 'coverage', 'dist', 'test/e2e/workspace']),
 	{
 		extends: compat.extends('stylelint'),
 
