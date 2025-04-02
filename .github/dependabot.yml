@@ -12,8 +12,7 @@ updates:
       jest:
         patterns: ['jest', 'ts-jest', '@types/jest']
       eslint:
-        # TODO: Re-add 'eslint' when it's possible to bump ESLint to v9.
-        patterns: ['eslint-config-*', '@typescript-eslint/*']
+        patterns: ['eslint', 'eslint-*', '@typescript-eslint/*']
       vscode:
         patterns: ['vscode-*', '@vscode/*']
     ignore:
