@@ -94,7 +94,7 @@ const config = {
 			},
 		},
 	],
-	ignorePatterns: ["build", "coverage", "dist", "test/e2e/workspace"],
+	ignorePatterns: ['build', 'coverage', 'dist', 'test/e2e/workspace'],
 };
 
 module.exports = config;
