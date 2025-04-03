@@ -296,8 +296,16 @@ describe('CodeActionModule', () => {
 		expect(result).toStrictEqual([]);
 		expect(mockContext.getFixes).not.toHaveBeenCalled();
 		expect(mockLogger.debug).toHaveBeenCalledWith(
-			'No quick fix actions requested, skipping action creation',
+			'No source-fix-all actions requested, skipping source-fix-all action creation',
 		);
+		expect(mockLogger.debug).toHaveBeenCalledWith(
+			'No source actions requested, skipping source action creation',
+		);
+		expect(mockLogger.debug).toHaveBeenCalledWith(
+			'No quick fix actions requested, skipping quick fix action creation',
+		);
+		expect(mockLogger.debug).toHaveBeenLastCalledWith('Returning code actions', { actions: [] });
+		expect(mockLogger.debug).toHaveBeenLastCalledWith('Returning code actions', { actions: [] });
 		expect(mockLogger.debug).toHaveBeenLastCalledWith('Returning code actions', { actions: [] });
 	});
 
