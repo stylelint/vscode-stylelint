@@ -4,8 +4,8 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import jsdoc from 'eslint-plugin-jsdoc';
 import stylelint from 'eslint-config-stylelint';
 import stylelintJest from 'eslint-config-stylelint/jest';
-import typescript from 'typescript-eslint';
-import typescriptParser from '@typescript-eslint/parser'; // eslint-disable-line n/no-extraneous-import
+import tsEslint from 'typescript-eslint';
+import tsEslintParser from '@typescript-eslint/parser'; // eslint-disable-line n/no-extraneous-import
 
 const nodeVersion = fs.readFileSync(new URL('.nvmrc', import.meta.url), 'utf8');
 
@@ -69,7 +69,7 @@ export default defineConfig([
 
 	{
 		files: ['**/*.ts'],
-		extends: [typescript.configs.recommendedTypeChecked],
+		extends: [tsEslint.configs.recommendedTypeChecked],
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
@@ -103,7 +103,7 @@ export default defineConfig([
 		files: ['**/__tests__/**/*', '**/__mocks__/**/*', 'test/**/*'],
 		extends: [stylelintJest],
 		languageOptions: {
-			parser: typescriptParser,
+			parser: tsEslintParser,
 			parserOptions: {
 				projectService: true,
 				tsconfigRootDir: import.meta.dirname,
