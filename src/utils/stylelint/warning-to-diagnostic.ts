@@ -1,5 +1,4 @@
 import { Diagnostic, DiagnosticSeverity, Position, Range } from 'vscode-languageserver-types';
-// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 
 /**

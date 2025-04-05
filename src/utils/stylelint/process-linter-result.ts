@@ -1,6 +1,5 @@
 import * as crypto from 'crypto';
 import { warningToDiagnostic } from './warning-to-diagnostic';
-// eslint-disable-next-line n/no-unpublished-import
 import type { LinterResult, Warning } from 'stylelint';
 import { type LintDiagnostics, type Stylelint, InvalidOptionError } from './types';
 import type LSP from 'vscode-languageserver-protocol';

@@ -10,7 +10,6 @@ import type { OptionalExcept } from '../src/utils/types';
 import type { TracerFn } from '../src/utils/packages/index';
 import type * as ServerMocks from './unit/server-mocks';
 import type { ConnectionManager as ConnectionManagerConstructor } from './integration/connection-manager';
-import type { ExtensionEvents } from '../src/extension/index';
 
 declare global {
 	/**
@@ -43,7 +42,7 @@ declare global {
 		};
 
 		namespace mocks {
-			type FileSystemTree = { [path: string]: FileSystemEntry };
+			type FileSystemTree = { [path: string]: FileSystemEntry }; // eslint-disable-line no-use-before-define
 			type FileSystemEntry = string | FileSystemTree | Error | undefined;
 			type FSPromisesModule = jest.Mocked<typeof fs> & {
 				__mockFileSystem(tree: FileSystemTree): void;

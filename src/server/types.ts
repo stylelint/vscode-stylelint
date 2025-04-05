@@ -3,7 +3,6 @@ import type { TextDocuments } from 'vscode-languageserver/node';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import { CodeActionKind as VSCodeActionKind } from 'vscode-languageserver-types';
 import type LSP from 'vscode-languageserver-protocol';
-// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type winston from 'winston';
 import type { StylelintRunner, LintDiagnostics } from '../utils/stylelint/index';
@@ -90,13 +89,13 @@ export interface LanguageServerContext {
 	 * Gets the effective extension options for a resource, given its URI.
 	 * @param uri The resource URI.
 	 */
-	getOptions(uri: string): Promise<LanguageServerOptions>;
+	getOptions(uri: string): Promise<LanguageServerOptions>; // eslint-disable-line no-use-before-define
 
 	/**
 	 * Returns the module with the given ID if it exists.
 	 * @param id The ID of the module to return.
 	 */
-	getModule(id: string): LanguageServerModule | undefined;
+	getModule(id: string): LanguageServerModule | undefined; // eslint-disable-line no-use-before-define
 
 	/**
 	 * Lints a document using Stylelint and returns fix text edits.
@@ -169,7 +168,7 @@ export interface LanguageServerModuleConstructor {
 	 * string.
 	 */
 	id: string;
-	new (params: LanguageServerModuleConstructorParameters): LanguageServerModule;
+	new (params: LanguageServerModuleConstructorParameters): LanguageServerModule; // eslint-disable-line no-use-before-define
 }
 
 /**

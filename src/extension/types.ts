@@ -1,4 +1,3 @@
-// eslint-disable-next-line n/no-unpublished-import
 import type TypedEventEmitter from 'typed-emitter';
 import type { DidRegisterDocumentFormattingEditProviderNotificationParams } from '../server/index';
 
