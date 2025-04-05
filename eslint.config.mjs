@@ -1,5 +1,4 @@
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
+import fs from 'node:fs';
 
 import { defineConfig, globalIgnores } from 'eslint/config';
 import jsdoc from 'eslint-plugin-jsdoc';
@@ -8,8 +7,7 @@ import stylelintJest from 'eslint-config-stylelint/jest';
 import typescript from 'typescript-eslint';
 import typescriptParser from '@typescript-eslint/parser'; // eslint-disable-line n/no-extraneous-import
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const nodeVersion = fs.readFileSync(new URL('.nvmrc', import.meta.url), 'utf8');
 
 export default defineConfig([
 	globalIgnores([
@@ -25,6 +23,12 @@ export default defineConfig([
 
 	{
 		plugins: { jsdoc },
+
+		settings: {
+			node: {
+				version: nodeVersion,
+			},
+		},
 
 		rules: {
 			'no-warning-comments': [
@@ -76,7 +80,7 @@ export default defineConfig([
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: __dirname,
+				tsconfigRootDir: import.meta.dirname,
 			},
 		},
 		rules: {
@@ -109,7 +113,7 @@ export default defineConfig([
 			parser: typescriptParser,
 			parserOptions: {
 				projectService: true,
-				tsconfigRootDir: __dirname,
+				tsconfigRootDir: import.meta.dirname,
 			},
 		},
 		rules: {
