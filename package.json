@@ -257,7 +257,7 @@
     "format": "prettier . --write",
     "lint": "run-s \"lint:*\"",
     "lint:formatting": "prettier . --check",
-    "lint:js": "eslint . --cache",
+    "lint:js": "eslint --cache",
     "lint:spelling": "cspell lint --no-progress",
     "lint:types": "tsc -b",
     "lint:unit-tests": "ts-node --transpile-only -P tsconfig.scripts.json scripts/enforce-unit-tests-per-file.ts",

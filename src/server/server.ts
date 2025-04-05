@@ -8,7 +8,6 @@ import {
 	InitializedNotification,
 	TextDocumentSyncKind,
 } from 'vscode-languageserver-protocol';
-// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type winston from 'winston';
 

@@ -1,49 +1,41 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import globals from 'globals';
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
+import path from 'node:path';
+
+import { defineConfig, globalIgnores } from 'eslint/config';
+import jsdoc from 'eslint-plugin-jsdoc';
+import stylelint from 'eslint-config-stylelint';
+import stylelintJest from 'eslint-config-stylelint/jest';
+import typescript from 'typescript-eslint';
+import typescriptParser from '@typescript-eslint/parser'; // eslint-disable-line n/no-extraneous-import
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-	baseDirectory: __dirname,
-	recommendedConfig: js.configs.recommended,
-	allConfig: js.configs.all,
-});
 
 export default defineConfig([
-	globalIgnores(['.vscode-test', 'build', 'coverage', 'dist', 'test/e2e/workspace']),
+	globalIgnores([
+		'.vscode-test',
+		'build',
+		'coverage',
+		'dist',
+		'test/e2e/workspace',
+		'eslint.config.old.mjs',
+	]),
+
+	...stylelint,
+
 	{
-		extends: compat.extends('stylelint'),
-
-		plugins: {
-			'@typescript-eslint': typescriptEslint,
-		},
-
-		linterOptions: {
-			reportUnusedDisableDirectives: true,
-		},
-
-		languageOptions: {
-			globals: {
-				...globals.node,
-			},
-
-			parser: tsParser,
-			ecmaVersion: 2020,
-			sourceType: 'commonjs',
-
-			parserOptions: {
-				project: ['./tsconfig.src.json', './tsconfig.test.json', './tsconfig.scripts.json'],
-			},
-		},
+		plugins: { jsdoc },
 
 		rules: {
-			strict: ['error', 'safe'],
+			'no-warning-comments': [
+				'warn',
+				{
+					terms: ['todo'],
+					location: 'start',
+				},
+			],
+
+			'sort-imports': 'off',
 
 			'n/no-missing-require': [
 				'error',
@@ -61,33 +53,33 @@ export default defineConfig([
 				},
 			],
 
-			'require-jsdoc': 'error',
+			'n/no-unpublished-require': 'off',
+			'n/no-unpublished-import': 'off',
 
-			'no-warning-comments': [
-				'warn',
-				{
-					terms: ['todo'],
-					location: 'start',
-				},
-			],
-
-			'sort-imports': 'off',
+			'jsdoc/require-jsdoc': 'error',
 		},
 	},
+
+	{
+		files: ['**/*.js'],
+		languageOptions: {
+			sourceType: 'commonjs',
+		},
+		rules: {
+			strict: ['error', 'safe'],
+		},
+	},
+
 	{
 		files: ['**/*.ts'],
-
-		extends: compat.extends(
-			'plugin:@typescript-eslint/recommended',
-			'plugin:@typescript-eslint/recommended-requiring-type-checking',
-		),
-
+		extends: [typescript.configs.recommendedTypeChecked],
+		languageOptions: {
+			parserOptions: {
+				projectService: true,
+				tsconfigRootDir: __dirname,
+			},
+		},
 		rules: {
-			'no-shadow': 'off',
-			'no-use-before-define': 'off',
-			strict: ['error', 'never'],
-			'n/no-unsupported-features/es-syntax': 'off',
-
 			'@typescript-eslint/explicit-function-return-type': [
 				'error',
 				{
@@ -109,21 +101,18 @@ export default defineConfig([
 			],
 		},
 	},
-	{
-		files: ['**/*.d.ts'],
 
-		rules: {
-			'@typescript-eslint/no-unused-vars': 'off',
-			'n/no-unpublished-import': 'off',
-		},
-	},
 	{
 		files: ['**/__tests__/**/*', '**/__mocks__/**/*', 'test/**/*'],
-		extends: compat.extends('stylelint/jest'),
-
+		extends: [stylelintJest],
+		languageOptions: {
+			parser: typescriptParser,
+			parserOptions: {
+				projectService: true,
+				tsconfigRootDir: __dirname,
+			},
+		},
 		rules: {
-			'n/no-unpublished-require': 'off',
-			'n/no-unpublished-import': 'off',
 			'@typescript-eslint/explicit-function-return-type': 'off',
 			'@typescript-eslint/explicit-module-boundary-types': 'off',
 			'@typescript-eslint/require-await': 'off',
@@ -136,20 +125,19 @@ export default defineConfig([
 			'jest/unbound-method': 'error',
 		},
 	},
+
 	{
 		files: ['test/e2e/**/__tests__/**/*'],
-
 		rules: {
 			'jest/expect-expect': 'off',
 		},
 	},
+
 	{
 		files: ['scripts/**/*'],
-
 		rules: {
 			'no-console': 'off',
 			'no-process-exit': 'off',
-			'n/no-unpublished-import': 'off',
 		},
 	},
 ]);

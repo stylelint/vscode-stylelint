@@ -2,7 +2,6 @@ import os from 'os';
 import { URI } from 'vscode-uri';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type winston from 'winston';
 
@@ -63,8 +62,6 @@ export class StylelintRunner {
 			return { diagnostics: [] };
 		}
 
-		const { stylelint } = result;
-
 		const { fsPath } = URI.parse(document.uri);
 
 		// Workaround for Stylelint treating paths as case-sensitive on Windows
@@ -98,7 +95,7 @@ export class StylelintRunner {
 		}
 
 		try {
-			return processLinterResult(stylelint, await stylelint.lint(options));
+			return processLinterResult(result.stylelint, await result.stylelint.lint(options));
 		} catch (err) {
 			if (
 				err instanceof Error &&
@@ -107,8 +104,8 @@ export class StylelintRunner {
 			) {
 				// Check only CSS syntax errors without applying any Stylelint rules
 				return processLinterResult(
-					stylelint,
-					await stylelint.lint({ ...options, config: { rules: {} } }),
+					result.stylelint,
+					await result.stylelint.lint({ ...options, config: { rules: {} } }),
 				);
 			}
 

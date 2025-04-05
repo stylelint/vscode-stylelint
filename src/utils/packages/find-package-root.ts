@@ -15,7 +15,6 @@ export async function findPackageRoot(
 ): Promise<string | undefined> {
 	let currentDirectory = startPath;
 
-	// eslint-disable-next-line no-constant-condition
 	while (true) {
 		const manifestPath = path.join(currentDirectory, rootFile);
 
