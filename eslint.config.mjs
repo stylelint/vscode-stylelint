@@ -16,13 +16,11 @@ export default defineConfig([
 
 	{
 		plugins: { jsdoc },
-
 		settings: {
 			node: {
 				version: nodeVersion,
 			},
 		},
-
 		rules: {
 			'no-warning-comments': [
 				'warn',
