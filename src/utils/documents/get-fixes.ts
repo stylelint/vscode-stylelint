@@ -1,5 +1,4 @@
 import { createTextEdits } from './create-text-edits';
-// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type { TextDocument, TextEdit } from 'vscode-languageserver-textdocument';
 import type { StylelintRunner, RunnerOptions } from '../stylelint/index';

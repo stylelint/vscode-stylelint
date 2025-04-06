@@ -1,5 +1,4 @@
 import type LSP from 'vscode-languageserver-protocol';
-// eslint-disable-next-line n/no-unpublished-import
 import type stylelint from 'stylelint';
 import type { PackageManager } from '../packages/index';
 export type Stylelint = typeof stylelint;
