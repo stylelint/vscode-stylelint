@@ -12,6 +12,8 @@ on:
 jobs:
   lint:
     uses: stylelint/.github/.github/workflows/lint.yml@main
+    permissions:
+      contents: read
 
   test:
     name: Test for Stylelint ${{ matrix.stylelint }} on ${{ matrix.os }}
