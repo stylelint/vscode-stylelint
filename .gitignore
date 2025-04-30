@@ -86,6 +86,7 @@ parts
 lib64
 .sass-cache
 *.tsbuildinfo
+.eslintcache
 
 # -------------------------------------------------
 # Your own project's ignores
