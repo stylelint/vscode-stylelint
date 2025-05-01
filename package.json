@@ -240,7 +240,7 @@
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "stylelint-scss": "^6.11.1",
-    "ts-jest": "^29.3.1",
+    "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typed-emitter": "^2.1.0",
     "typescript": "^5.8.3",
