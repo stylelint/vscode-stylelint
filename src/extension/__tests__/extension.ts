@@ -123,9 +123,7 @@ describe('Extension entry point', () => {
 		expect(mockWorkspace.createFileSystemWatcher.mock.calls[1]).toEqual([
 			'**/stylelint.config.{js,cjs,mjs}',
 		]);
-		expect(mockWorkspace.createFileSystemWatcher.mock.calls[2]).toEqual([
-			'**/.stylelintignore',
-		]);
+		expect(mockWorkspace.createFileSystemWatcher.mock.calls[2]).toEqual(['**/.stylelintignore']);
 	});
 
 	it('should register an auto-fix command', async () => {
