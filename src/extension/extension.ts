@@ -40,8 +40,9 @@ export async function activate({ subscriptions }: ExtensionContext): Promise<Pub
 			diagnosticCollectionName: 'Stylelint',
 			synchronize: {
 				fileEvents: [
-					workspace.createFileSystemWatcher('**/.stylelintrc{,.js,.json,.yaml,.yml}'),
-					workspace.createFileSystemWatcher('**/{stylelint.config.js,.stylelintignore}'),
+					workspace.createFileSystemWatcher('**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}'),
+					workspace.createFileSystemWatcher('**/stylelint.config.{js,cjs,mjs}'),
+					workspace.createFileSystemWatcher('**/.stylelintignore'),
 				],
 			},
 		},

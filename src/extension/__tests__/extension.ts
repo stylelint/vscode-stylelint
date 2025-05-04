@@ -116,13 +116,14 @@ describe('Extension entry point', () => {
 	it('should watch for changes to Stylelint configuration files', async () => {
 		await activate(mockExtensionContext);
 
-		expect(mockWorkspace.createFileSystemWatcher).toHaveBeenCalledTimes(2);
+		expect(mockWorkspace.createFileSystemWatcher).toHaveBeenCalledTimes(3);
 		expect(mockWorkspace.createFileSystemWatcher.mock.calls[0]).toEqual([
-			'**/.stylelintrc{,.js,.json,.yaml,.yml}',
+			'**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}',
 		]);
 		expect(mockWorkspace.createFileSystemWatcher.mock.calls[1]).toEqual([
-			'**/{stylelint.config.js,.stylelintignore}',
+			'**/stylelint.config.{js,cjs,mjs}',
 		]);
+		expect(mockWorkspace.createFileSystemWatcher.mock.calls[2]).toEqual(['**/.stylelintignore']);
 	});
 
 	it('should register an auto-fix command', async () => {
