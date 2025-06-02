@@ -42,7 +42,7 @@ declare global {
 		};
 
 		namespace mocks {
-			type FileSystemTree = { [path: string]: FileSystemEntry }; // eslint-disable-line no-use-before-define
+			type FileSystemTree = { [path: string]: FileSystemEntry };
 			type FileSystemEntry = string | FileSystemTree | Error | undefined;
 			type FSPromisesModule = jest.Mocked<typeof fs> & {
 				__mockFileSystem(tree: FileSystemTree): void;

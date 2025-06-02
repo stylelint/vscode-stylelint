@@ -89,13 +89,13 @@ export interface LanguageServerContext {
 	 * Gets the effective extension options for a resource, given its URI.
 	 * @param uri The resource URI.
 	 */
-	getOptions(uri: string): Promise<LanguageServerOptions>; // eslint-disable-line no-use-before-define
+	getOptions(uri: string): Promise<LanguageServerOptions>;
 
 	/**
 	 * Returns the module with the given ID if it exists.
 	 * @param id The ID of the module to return.
 	 */
-	getModule(id: string): LanguageServerModule | undefined; // eslint-disable-line no-use-before-define
+	getModule(id: string): LanguageServerModule | undefined;
 
 	/**
 	 * Lints a document using Stylelint and returns fix text edits.
@@ -168,7 +168,7 @@ export interface LanguageServerModuleConstructor {
 	 * string.
 	 */
 	id: string;
-	new (params: LanguageServerModuleConstructorParameters): LanguageServerModule; // eslint-disable-line no-use-before-define
+	new (params: LanguageServerModuleConstructorParameters): LanguageServerModule;
 }
 
 /**
