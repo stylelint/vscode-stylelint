@@ -14,6 +14,20 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Check actor permission
+        run: |
+          actor_permission=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${GITHUB_REPOSITORY}/collaborators/${GITHUB_ACTOR}/permission" \
+            --jq .permission)
+          if [[ "${actor_permission}" != "admin" ]]; then
+            echo "Only admin users can release a new version."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Check out
         uses: actions/checkout@v4
 
