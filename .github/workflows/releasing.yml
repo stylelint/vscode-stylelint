@@ -1,0 +1,73 @@
+name: Releasing
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release, e.g., "1.0.0"'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Check actor permission
+        run: |
+          actor_permission=$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "/repos/${GITHUB_REPOSITORY}/collaborators/${GITHUB_ACTOR}/permission" \
+            --jq .permission)
+          if [[ "${actor_permission}" != "admin" ]]; then
+            echo "Only admin users can release a new version."
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run integration tests
+        run: npm run test:integration
+
+      - name: Run E2E tests
+        run: xvfb-run -a npm run test:e2e
+
+      - name: Publish
+        run: npm run release -- "${NEW_VERSION}"
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          NEW_VERSION: ${{ github.event.inputs.version }}
+
+      - name: Push commits and tags
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+          git push origin --follow-tags
+
+      - name: Create GitHub release
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0)
+          gh release create "${latest_tag}" --generate-notes
+          release_url=$(gh release view "${latest_tag}" --json url --jq '.url')
+          echo "::notice::Release created: ${release_url}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

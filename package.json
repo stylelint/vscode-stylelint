@@ -223,6 +223,7 @@
     "@types/vscode": "1.83.3",
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.4.2",
     "cspell": "^9.0.2",
     "esbuild": "^0.25.5",
     "eslint": "^9.28.0",
@@ -267,7 +268,8 @@
     "test:unit": "npm run jest -- --projects test/unit",
     "test:node-versions": "node scripts/test-node-versions.js",
     "jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "vscode:prepublish": "npm run build && npm run bundle-base -- --minify"
+    "vscode:prepublish": "npm run build && npm run bundle-base -- --minify",
+    "release": "vsce publish"
   },
   "prettier": "@stylelint/prettier-config",
   "volta": {
