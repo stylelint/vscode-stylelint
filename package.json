@@ -269,7 +269,8 @@
     "test:node-versions": "node scripts/test-node-versions.js",
     "jest": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "vscode:prepublish": "npm run build && npm run bundle-base -- --minify",
-    "release": "vsce publish"
+    "prepare-release": "npm version --no-git-tag-version \"${NEW_VERSION}\" && git commit --all --message \"Release ${NEW_VERSION}\"",
+    "release": "vsce publish --no-git-tag-version --no-update-package-json"
   },
   "prettier": "@stylelint/prettier-config",
   "volta": {
