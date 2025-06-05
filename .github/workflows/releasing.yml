@@ -52,16 +52,17 @@ jobs:
         run: xvfb-run -a npm run test:e2e
 
       - name: Publish
-        run: npm run release -- "${NEW_VERSION}"
+        run: |
+          # Prepare for a new commit via the release script.
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
+
+          npm run release -- "${NEW_VERSION}"
+
+          git push origin --follow-tags
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
           NEW_VERSION: ${{ github.event.inputs.version }}
-
-      - name: Push commits and tags
-        run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
-          git push origin --follow-tags
 
       - name: Create GitHub release
         run: |
