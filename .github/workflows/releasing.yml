@@ -2,11 +2,6 @@ name: Releasing
 
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to release, e.g., "1.0.0"'
-        required: true
-        type: string
 
 jobs:
   release:
@@ -52,23 +47,26 @@ jobs:
         run: xvfb-run -a npm run test:e2e
 
       - name: Publish
+        run: npm run release
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+      - name: Create GitHub release
+        shell: bash
         run: |
-          # Prepare for a new commit via the release script.
+          # Prepare for a new tag.
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR_ID}+${GITHUB_ACTOR}@users.noreply.github.com"
 
-          npm run release -- "${NEW_VERSION}"
+          # Create and push a Git tag.
+          new_version=$(npm pkg get version | tr -d '"')
+          new_tag="v${new_version}"
+          git tag --annotate "${new_version}" -m "${new_version}" "${new_tag}"
+          git push origin "${new_tag}"
 
-          git push origin --follow-tags
-        env:
-          VSCE_PAT: ${{ secrets.VSCE_PAT }}
-          NEW_VERSION: ${{ github.event.inputs.version }}
-
-      - name: Create GitHub release
-        run: |
-          latest_tag=$(git describe --tags --abbrev=0)
-          gh release create "${latest_tag}" --generate-notes
+          # Create a GitHub release.
+          gh release create "${new_tag}" --generate-notes
           release_url=$(gh release view "${latest_tag}" --json url --jq '.url')
-          echo "::notice::Release created: ${release_url}"
+          echo "::notice::${release_url} was created successfully. Adjust the release notes from the changelog to keep the consistency with other releases."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
