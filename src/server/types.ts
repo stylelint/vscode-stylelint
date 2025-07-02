@@ -26,6 +26,34 @@ export const CodeActionKind = {
 };
 
 /**
+ * Severity override types.
+ */
+export type SeverityOverride =
+	| 'downgrade'
+	| 'upgrade'
+	| 'error'
+	| 'warn'
+	| 'info'
+	| 'off'
+	| 'default';
+
+/**
+ * Rule customization for severity overrides.
+ */
+export type RuleCustomization = {
+	/**
+	 * Rule name pattern to match. Use `*` to match all rules.
+	 */
+	rule: string;
+
+	/**
+	 * Severity override. `downgrade` converts errors to warnings, `upgrade` converts warnings to errors,
+	 * or specify exact severity.
+	 */
+	severity: SeverityOverride;
+};
+
+/**
  * Language server notification names.
  */
 export enum Notification {
@@ -236,6 +264,9 @@ export type LanguageServerOptions = {
 	reportDescriptionlessDisables?: boolean;
 	reportInvalidScopeDisables?: boolean;
 	reportNeedlessDisables?: boolean;
+	rules?: {
+		customizations?: RuleCustomization[];
+	};
 	snippet: string[];
 	stylelintPath?: string;
 	validate: string[];

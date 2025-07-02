@@ -167,6 +167,39 @@
             "postcss"
           ],
           "description": "An array of language ids which snippets are provided by Stylelint."
+        },
+        "stylelint.rules.customizations": {
+          "scope": "resource",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "rule": {
+                "type": "string",
+                "description": "Rule name pattern to match. `*` is treated as a wildcard. Prefix with `!` to match all rules that do NOT match the pattern."
+              },
+              "severity": {
+                "type": "string",
+                "enum": [
+                  "downgrade",
+                  "upgrade",
+                  "error",
+                  "warn",
+                  "info",
+                  "off",
+                  "default"
+                ],
+                "description": "Severity override: `downgrade` converts errors to warnings and warnings to info messages, `upgrade` converts warnings to errors, `default` uses the original severity from Stylelint, or specify exact severity."
+              }
+            },
+            "required": [
+              "rule",
+              "severity"
+            ],
+            "additionalProperties": false
+          },
+          "default": [],
+          "description": "Override severity levels for specific rules."
         }
       }
     },

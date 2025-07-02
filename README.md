@@ -216,6 +216,59 @@ Used to supply a custom path to the Stylelint module.
 
 Controls the package manager to be used to resolve the Stylelint library. This setting only has an effect if the Stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
 
+### `stylelint.rules.customizations`
+
+> Type: `object[]`  
+> Default: `[]`
+
+An array of rule customizations that let you override the severity level of Stylelint rules. This is useful for downgrading errors to warnings, upgrading warnings to errors, or completely suppressing specific rules in the editor.
+
+Each customization object has the following properties:
+
+- `rule`: A string pattern matching the rule name. Supports wildcards and negation patterns:
+  - Exact match: `"color-named"` matches only the `color-named` rule.
+  - Wildcard: `"color-*"` matches all rules starting with `color-`.
+  - Negation: `"!color-*"` matches all rules except those starting with `color-`.
+- `severity`: The severity level to apply.
+  - `"error"`: Show as error (red underline).
+  - `"warn"`: Show as warning (yellow underline).
+  - `"info"`: Show as information (blue underline).
+  - `"off"`: Don't show the diagnostic.
+  - `"default"`: Use the original severity from Stylelint.
+  - `"downgrade"`: Convert errors to warnings, warnings to info messages.
+  - `"upgrade"`: Convert info to warnings, warnings to errors.
+
+Customizations are applied in order, with later rules taking priority over earlier ones. This means that more general patterns should come before more specific ones for the specific rules to override the general ones.
+
+Example:
+
+```json
+{
+  "stylelint.rules.customizations": [
+    {
+      "rule": "font-*",
+      "severity": "info"
+    },
+    {
+      "rule": "!color-*",
+      "severity": "info"
+    },
+    {
+      "rule": "declaration-block-*",
+      "severity": "default"
+    },
+    {
+      "rule": "comment-word-disallowed-list",
+      "severity": "off"
+    },
+    {
+      "rule": "color-named",
+      "severity": "warn"
+    }
+  ]
+}
+```
+
 ### `stylelint.snippet`
 
 > Type: `string[]`  

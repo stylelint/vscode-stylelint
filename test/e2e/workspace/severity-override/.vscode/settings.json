@@ -1,0 +1,33 @@
+{
+	"css.validate": false,
+	"stylelint.rules.customizations": [
+		{
+			"rule": "!font-*",
+			"severity": "info"
+		},
+		{
+			"rule": "length-zero-no-unit",
+			"severity": "default"
+		},
+		{
+			"rule": "declaration-block-*",
+			"severity": "upgrade"
+		},
+		{
+			"rule": "custom-property-no-missing-var-function",
+			"severity": "downgrade"
+		},
+		{
+			"rule": "block-no-empty",
+			"severity": "off"
+		},
+		{
+			"rule": "color-*",
+			"severity": "info"
+		},
+		{
+			"rule": "color-named",
+			"severity": "warn"
+		}
+	]
+}

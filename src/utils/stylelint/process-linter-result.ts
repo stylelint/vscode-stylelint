@@ -3,6 +3,7 @@ import { warningToDiagnostic } from './warning-to-diagnostic';
 import type { LinterResult, Warning } from 'stylelint';
 import { type LintDiagnostics, type Stylelint, InvalidOptionError } from './types';
 import type LSP from 'vscode-languageserver-protocol';
+import type { RuleCustomization } from '../../server/types';
 
 /**
  * Returns a unique key for a diagnostic.
@@ -33,10 +34,12 @@ function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
  * Stylelint.
  * @param stylelint The Stylelint instance that was used.
  * @param result The results returned by Stylelint.
+ * @param ruleCustomizations Optional rule customizations for severity overrides.
  */
 export function processLinterResult(
 	stylelint: Stylelint,
 	linterResult: LinterResult,
+	ruleCustomizations?: RuleCustomization[],
 ): LintDiagnostics {
 	const { results } = linterResult;
 
@@ -77,10 +80,13 @@ export function processLinterResult(
 	const warningsMap = new Map<string, Warning>();
 
 	for (const warning of warnings) {
-		const diagnostic = warningToDiagnostic(warning, ruleMetadata);
+		const diagnostic = warningToDiagnostic(warning, ruleMetadata, ruleCustomizations);
 
-		diagnostics.push(diagnostic);
-		warningsMap.set(getDiagnosticKey(diagnostic), warning);
+		// Only add diagnostic if it wasn't suppressed.
+		if (diagnostic !== null) {
+			diagnostics.push(diagnostic);
+			warningsMap.set(getDiagnosticKey(diagnostic), warning);
+		}
 	}
 
 	const getWarning = (diagnostic: LSP.Diagnostic): Warning | null => {

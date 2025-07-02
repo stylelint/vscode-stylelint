@@ -259,6 +259,9 @@ exports[`StylelintLanguageServer should allow modules to get fixes for documents
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
       "snippet": [
         "css",
         "postcss",
@@ -291,6 +294,9 @@ exports[`StylelintLanguageServer should allow modules to get fixes for documents
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
       "snippet": [
         "css",
         "postcss",
@@ -329,6 +335,9 @@ exports[`StylelintLanguageServer should allow modules to lint documents using co
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
       "snippet": [
         "css",
         "postcss",
@@ -360,6 +369,9 @@ exports[`StylelintLanguageServer should allow modules to lint documents using co
       "reportDescriptionlessDisables": false,
       "reportInvalidScopeDisables": false,
       "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
       "snippet": [
         "css",
         "postcss",
@@ -416,6 +428,9 @@ exports[`StylelintLanguageServer when workspace/configuration is available, cont
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
   "snippet": [
     "css",
     "postcss",
@@ -444,6 +459,9 @@ exports[`StylelintLanguageServer when workspace/configuration is available, cont
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
   "snippet": [
     "scss",
   ],
@@ -471,6 +489,9 @@ exports[`StylelintLanguageServer when workspace/configuration is not available, 
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
   "snippet": [
     "css",
     "postcss",
@@ -499,6 +520,9 @@ exports[`StylelintLanguageServer when workspace/configuration is not available, 
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
   "snippet": [
     "css",
     "postcss",
@@ -526,6 +550,9 @@ exports[`StylelintLanguageServer when workspace/configuration is not available, 
   "reportDescriptionlessDisables": false,
   "reportInvalidScopeDisables": false,
   "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
   "snippet": [
     "css",
     "postcss",
