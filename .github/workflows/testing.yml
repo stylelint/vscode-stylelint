@@ -52,12 +52,23 @@ jobs:
       - name: Run integration tests
         run: npm run test:integration -- --coverage
 
+      - name: Get VS Code binary cache key
+        id: vscode-cache-key
+        shell: bash
+        run: |
+          if command -v shasum >/dev/null 2>&1; then
+            sum=$(cat package.json | grep 'vscode["\\/]' | shasum -a 256 | cut -d' ' -f1)
+          else
+            sum=$(cat package.json | grep 'vscode["\\/]' | sha256sum | cut -d' ' -f1)
+          fi
+          echo "cachekey=${{ runner.os }}-vscode-${sum}" >> $GITHUB_OUTPUT
+
       - name: Cache VS Code binaries
         uses: actions/cache@v4
         id: vscode-cache
         with:
           path: .vscode-test
-          key: ${{ runner.os }}-vscode-${{ hashFiles('package.json') }}
+          key: ${{ steps.vscode-cache-key.outputs.cachekey }}
 
       - name: Run end-to-end tests (Linux)
         if: ${{ runner.os == 'Linux' }}
