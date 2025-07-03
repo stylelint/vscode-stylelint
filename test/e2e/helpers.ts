@@ -1,5 +1,7 @@
 /* eslint-disable jsdoc/require-jsdoc */
 import * as assert from 'node:assert/strict';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 import {
 	commands,
@@ -106,69 +108,17 @@ export function waitForDiagnostics(
 type ExpectedRange = [number, number, number, number];
 
 type ExpectedDiagnostic = {
-	code: string;
+	code: number | string;
 	codeDescription?: string;
 	message: string;
 	range: ExpectedRange;
-	severity: 'error' | 'warning';
+	severity: 'error' | 'warning' | 'info' | 'hint';
 };
-
-function assertRange(actual: Range, expected: ExpectedRange) {
-	const { start, end } = actual;
-
-	assert.deepEqual([start.line, start.character, end.line, end.character], expected);
-}
-
-export function assertDiagnostic(
-	diagnostic: Diagnostic | undefined,
-	expected: ExpectedDiagnostic | undefined,
-) {
-	assert.ok(diagnostic);
-	assert.ok(expected);
-
-	const { code, codeDescription = '', message, range, severity } = expected;
-
-	assert.equal(diagnostic.source, 'Stylelint');
-
-	if (typeof diagnostic.code === 'string') {
-		assert.equal(diagnostic.code, code);
-	} else if (typeof diagnostic.code === 'object') {
-		assert.equal(diagnostic.code.value, code);
-		assert.equal(diagnostic.code.target.toString(), codeDescription);
-	} else {
-		assert.fail(`"code" is not a string or object: ${diagnostic.code}`);
-	}
-
-	assert.equal(diagnostic.message, message);
-	assertRange(diagnostic.range, range);
-	assert.equal(
-		diagnostic.severity,
-		severity === 'error' ? DiagnosticSeverity.Error : DiagnosticSeverity.Warning,
-	);
-}
-
-export function assertDiagnostics(diagnostics: Diagnostic[], expected: ExpectedDiagnostic[]) {
-	assert.equal(diagnostics.length, expected.length);
-
-	for (let i = 0; i < expected.length; i++) {
-		assertDiagnostic(diagnostics[i], expected[i]);
-	}
-}
 
 type ExpectedTextEdit = {
 	newText: string;
 	range: ExpectedRange;
 };
-
-export function assertTextEdits(actual: TextEdit[] | undefined, expected: ExpectedTextEdit[]) {
-	assert.ok(actual);
-	assert.equal(actual.length, expected.length);
-
-	for (let i = 0; i < expected.length; i++) {
-		assert.equal(actual[i].newText, expected[i].newText);
-		assertRange(actual[i].range, expected[i].range);
-	}
-}
 
 type ExpectedCommand = {
 	title: string;
@@ -177,12 +127,114 @@ type ExpectedCommand = {
 	arguments?: unknown[];
 };
 
+function normalizeRange(range: Range): ExpectedRange {
+	return [range.start.line, range.start.character, range.end.line, range.end.character];
+}
+
+function normalizeSeverity(
+	severity: DiagnosticSeverity | undefined,
+): 'error' | 'warning' | 'info' | 'hint' {
+	switch (severity) {
+		case DiagnosticSeverity.Error:
+			return 'error';
+		case DiagnosticSeverity.Warning:
+			return 'warning';
+		case DiagnosticSeverity.Information:
+			return 'info';
+		case DiagnosticSeverity.Hint:
+			return 'hint';
+		case undefined:
+		default:
+			return 'error'; // Default fallback.
+	}
+}
+
+function normalizeDiagnostic(
+	diagnostic: Diagnostic,
+	expected?: ExpectedDiagnostic,
+): ExpectedDiagnostic {
+	let code: number | string;
+	let codeDescription: string | undefined;
+
+	if (typeof diagnostic.code === 'string') {
+		code = diagnostic.code;
+	} else if (typeof diagnostic.code === 'object' && diagnostic.code !== null) {
+		code = diagnostic.code.value;
+		codeDescription = diagnostic.code.target.toString();
+	} else {
+		code = '';
+	}
+
+	const normalized = {
+		code,
+		message: diagnostic.message,
+		range: normalizeRange(diagnostic.range),
+		severity: normalizeSeverity(diagnostic.severity),
+	};
+
+	// Only include codeDescription if it's defined in the original diagnostic
+	// and if we wish to check it against expected.
+	if (codeDescription !== undefined && (!expected || 'codeDescription' in expected)) {
+		return { ...normalized, codeDescription };
+	}
+
+	return normalized;
+}
+
+function normalizeTextEdit(edit: TextEdit): ExpectedTextEdit {
+	return {
+		newText: edit.newText,
+		range: normalizeRange(edit.range),
+	};
+}
+
+function normalizeCommand(command: Command): ExpectedCommand {
+	const normalized: ExpectedCommand = {
+		title: command.title,
+		command: command.command,
+	};
+
+	if (command.tooltip !== undefined) {
+		normalized.tooltip = command.tooltip;
+	}
+
+	if (command.arguments !== undefined) {
+		normalized.arguments = command.arguments;
+	}
+
+	return normalized;
+}
+
+export function assertDiagnostic(
+	diagnostic: Diagnostic | undefined,
+	expected: ExpectedDiagnostic | undefined,
+) {
+	assert.ok(diagnostic, 'The diagnostic is undefined');
+	assert.ok(expected, 'The expected diagnostic is undefined');
+	assert.equal(diagnostic.source, 'Stylelint', 'The diagnostic source is not "Stylelint"');
+
+	// Normalize the diagnostic with expected data and compare directly.
+	assert.deepEqual(normalizeDiagnostic(diagnostic, expected), expected);
+}
+
+export function assertDiagnostics(diagnostics: Diagnostic[], expected: ExpectedDiagnostic[]) {
+	// First normalize all diagnostics with expected data.
+	const normalizedDiagnostics = diagnostics
+		.filter((d) => d.source === 'Stylelint')
+		.map((d, index) => normalizeDiagnostic(d, expected[index]));
+
+	// Single deepEqual gives easy-to-read, rich diff output.
+	assert.deepEqual(normalizedDiagnostics, expected);
+}
+
+export function assertTextEdits(actual: TextEdit[] | undefined, expected: ExpectedTextEdit[]) {
+	assert.ok(actual, 'The text edits are undefined');
+	assert.deepEqual(actual.map(normalizeTextEdit), expected);
+}
+
 export function assertCommand(actual: Command | undefined, expected: ExpectedCommand) {
-	assert.ok(actual);
-	assert.equal(actual.title, expected.title);
-	assert.equal(actual.command, expected.command);
-	assert.equal(actual.tooltip, expected.tooltip);
-	assert.deepEqual(actual.arguments, expected.arguments);
+	assert.ok(actual, 'The command is undefined');
+	assert.deepEqual(normalizeCommand(actual), expected);
 }
 
 export async function executeAutofix() {
@@ -238,4 +290,21 @@ export async function getCodeActions(
 			selection,
 		)) ?? []
 	);
+}
+
+let stylelintMajorVersion: number | undefined;
+
+export async function getStylelintMajorVersion(): Promise<number> {
+	if (stylelintMajorVersion !== undefined) {
+		return stylelintMajorVersion;
+	}
+
+	const packageJsonPath = path.join(__dirname, '../../package.json');
+	const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
+	const packageJson = JSON.parse(packageJsonContent);
+	const stylelintVersion = packageJson.devDependencies.stylelint;
+
+	stylelintMajorVersion = Number.parseInt(stylelintVersion.split('.')[0].replace('^', ''), 10);
+
+	return stylelintMajorVersion;
 }

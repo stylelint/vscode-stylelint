@@ -42,6 +42,9 @@ const defaultOptions: LanguageServerOptions = {
 	reportDescriptionlessDisables: false,
 	reportInvalidScopeDisables: false,
 	reportNeedlessDisables: false,
+	rules: {
+		customizations: [],
+	},
 	snippet: ['css', 'postcss'],
 	stylelintPath: '',
 	validate: ['css', 'postcss'],

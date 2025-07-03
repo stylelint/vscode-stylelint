@@ -9,7 +9,6 @@ const config = {
 	transform: {
 		['^.+.[jt]s$']: ['ts-jest', { tsconfig: '<rootDir>/../../tsconfig.test.json' }],
 	},
-	verbose: true,
 	setupFilesAfterEnv: ['<rootDir>/setup.ts'],
 	modulePathIgnorePatterns: [
 		'<rootDir>/../../.vscode-test',

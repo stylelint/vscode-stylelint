@@ -1,0 +1,31 @@
+:root { --my-var: #f1f1f1; }
+
+/* Test file for severity override functionality */
+a {
+  color: red; /* color-named violation - should be warning instead of error */
+}
+
+b {
+  color: #fff; /* color-hex-length violation - should be info instead of error */
+}
+
+c {
+} /* block-no-empty violation - should be suppressed (off) */
+
+d {
+  color: --my-var; /* custom-property-no-missing-var-function violation - should be downgraded to warning */
+}
+
+e {
+  color: #f7f7f7; /* declaration-block-no-duplicate-properties - should be upgraded to error */
+  color: #f7f7f7;
+}
+
+f {
+  font-family: Arial; /* font-family-no-missing-generic-family-keyword violation - should keep error, not affected by !font-* */
+}
+/* comment-empty-line-before violation affected by !font-* negation */
+
+g {
+  width: 0px; /* length-zero-no-unit violation - should use default severity of error */
+}

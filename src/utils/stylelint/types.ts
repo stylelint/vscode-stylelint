@@ -1,6 +1,7 @@
 import type LSP from 'vscode-languageserver-protocol';
 import type stylelint from 'stylelint';
 import type { PackageManager } from '../packages/index';
+import type { RuleCustomization } from '../../server/types';
 export type Stylelint = typeof stylelint;
 export type ConfigurationError = Error & { code: 78 };
 
@@ -51,6 +52,9 @@ export type RunnerOptions = {
 	snippet?: string[];
 	stylelintPath?: string;
 	validate?: string[];
+	rules?: {
+		customizations?: RuleCustomization[];
+	};
 };
 
 /**

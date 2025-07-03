@@ -95,7 +95,11 @@ export class StylelintRunner {
 		}
 
 		try {
-			return processLinterResult(result.stylelint, await result.stylelint.lint(options));
+			return processLinterResult(
+				result.stylelint,
+				await result.stylelint.lint(options),
+				runnerOptions.rules?.customizations,
+			);
 		} catch (err) {
 			if (
 				err instanceof Error &&
@@ -106,6 +110,7 @@ export class StylelintRunner {
 				return processLinterResult(
 					result.stylelint,
 					await result.stylelint.lint({ ...options, config: { rules: {} } }),
+					runnerOptions.rules?.customizations,
 				);
 			}
 
