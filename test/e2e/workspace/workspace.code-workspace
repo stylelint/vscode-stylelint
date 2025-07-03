@@ -6,6 +6,7 @@
 		{ "path": "defaults" },
 		{ "path": "descriptionless-disables" },
 		{ "path": "ignore-disables" },
+		{ "path": "no-rules-configured" },
 		{ "path": "report-disables" },
 		{ "path": "severity-override" },
 		{ "path": "stylelint-path" },

@@ -1,5 +1,6 @@
 import os from 'os';
 import { URI } from 'vscode-uri';
+import { DiagnosticSeverity, Position, Range } from 'vscode-languageserver-types';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type stylelint from 'stylelint';
@@ -101,17 +102,36 @@ export class StylelintRunner {
 				runnerOptions.rules?.customizations,
 			);
 		} catch (err) {
-			if (
-				err instanceof Error &&
-				(err.message.startsWith('No configuration provided for') ||
-					err.message.includes('No rules found within configuration'))
-			) {
-				// Check only CSS syntax errors without applying any Stylelint rules
-				return processLinterResult(
+			if (!(err instanceof Error)) {
+				throw err;
+			}
+
+			const lintSyntax = async (): Promise<LintDiagnostics> =>
+				processLinterResult(
 					result.stylelint,
 					await result.stylelint.lint({ ...options, config: { rules: {} } }),
 					runnerOptions.rules?.customizations,
 				);
+
+			if (err.message.startsWith('No configuration provided for')) {
+				// Check only CSS syntax errors without applying any Stylelint rules.
+				return await lintSyntax();
+			}
+
+			if (err.message.includes('No rules found within configuration')) {
+				// Always run syntax-only linting to catch CSS syntax errors.
+				const combinedResult = await lintSyntax();
+
+				// Add the configuration error diagnostic to the syntax results.
+				combinedResult.diagnostics.push({
+					range: Range.create(Position.create(0, 0), Position.create(0, 0)),
+					message: err.message,
+					severity: DiagnosticSeverity.Error,
+					source: 'Stylelint',
+					code: 'no-rules-configured',
+				});
+
+				return combinedResult;
 			}
 
 			throw err;
