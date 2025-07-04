@@ -221,14 +221,119 @@ a { color: #000 }
 		expect(result.diagnostics).toMatchSnapshot();
 	});
 
-	test('should be resolved even if no rules are defined', async () => {
+	test('should surface configuration error when no rules are defined and fix is not enabled', async () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a{}'), {
 			config: {},
 		});
 
-		expect(result.diagnostics).toEqual([]);
+		// Should get the configuration error diagnostic.
+		expect(result.diagnostics).toEqual([
+			{
+				range: {
+					start: { line: 0, character: 0 },
+					end: { line: 0, character: 0 },
+				},
+				message: 'No rules found within configuration. Have you provided a "rules" property?',
+				severity: 1,
+				source: 'Stylelint',
+				code: 'no-rules-configured',
+			},
+		]);
+	});
+
+	test('should surface both syntax errors and configuration error when no rules are defined', async () => {
+		expect.assertions(3);
+		const runner = new StylelintRunner();
+		// Invalid CSS syntax, missing closing brace.
+		const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a{color:red'), {
+			config: {},
+		});
+
+		// Should get both syntax errors and the configuration error.
+		expect(result.diagnostics.length).toBeGreaterThan(1);
+
+		// Should have the configuration error.
+		const configError = result.diagnostics.find((d) => d.code === 'no-rules-configured');
+
+		expect(configError).toEqual({
+			range: {
+				start: { line: 0, character: 0 },
+				end: { line: 0, character: 0 },
+			},
+			message: 'No rules found within configuration. Have you provided a "rules" property?',
+			severity: 1,
+			source: 'Stylelint',
+			code: 'no-rules-configured',
+		});
+
+		// Should also have syntax errors.
+		const syntaxErrors = result.diagnostics.filter((d) => d.code !== 'no-rules-configured');
+
+		expect(syntaxErrors.length).toBeGreaterThan(0);
+	});
+
+	test('should surface configuration error when no rules are defined when auto-fixing', async () => {
+		expect.assertions(2);
+		const runner = new StylelintRunner();
+		// Invalid CSS syntax, missing closing brace.
+		const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a{color:red'), {
+			config: {},
+			fix: true,
+		});
+
+		// Should have the configuration error.
+		const configError = result.diagnostics.find((d) => d.code === 'no-rules-configured');
+
+		expect(configError).toEqual({
+			range: {
+				start: { line: 0, character: 0 },
+				end: { line: 0, character: 0 },
+			},
+			message: 'No rules found within configuration. Have you provided a "rules" property?',
+			severity: 1,
+			source: 'Stylelint',
+			code: 'no-rules-configured',
+		});
+
+		// When auto-fixing is enabled, syntax errors should be fixed and not reported as diagnostics,
+		// so we should only have the configuration error left.
+		expect(result.diagnostics).toHaveLength(1);
+	});
+
+	test('should work normally when rules are defined', async () => {
+		expect.assertions(1);
+		const runner = new StylelintRunner();
+		const result = await runner.lintDocument(createDocument('with-rules.css', 'css', 'a{}'), {
+			config: {
+				rules: {
+					'block-no-empty': true,
+				},
+			},
+		});
+
+		expect(result.diagnostics).toEqual([
+			{
+				code: 'block-no-empty',
+				codeDescription: {
+					href: 'https://stylelint.io/user-guide/rules/block-no-empty',
+				},
+				message: 'Unexpected empty block (block-no-empty)',
+				range: {
+					end: {
+						character: 3,
+						line: 0,
+					},
+					start: {
+						character: 1,
+						line: 0,
+					},
+				},
+				severity: 1,
+				source: 'Stylelint',
+			},
+		]);
 	});
 
 	test('should reject with a reason when it takes incorrect options', async () => {

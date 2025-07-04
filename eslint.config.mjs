@@ -10,7 +10,14 @@ import tsEslintParser from '@typescript-eslint/parser'; // eslint-disable-line n
 const nodeVersion = fs.readFileSync(new URL('.nvmrc', import.meta.url), 'utf8');
 
 export default defineConfig([
-	globalIgnores(['.vscode-test', 'build', 'coverage', 'dist', 'test/e2e/workspace']),
+	globalIgnores([
+		'.vscode-test',
+		'build',
+		'coverage',
+		'dist',
+		'test/integration/coverage',
+		'test/e2e/workspace',
+	]),
 
 	...stylelint,
 

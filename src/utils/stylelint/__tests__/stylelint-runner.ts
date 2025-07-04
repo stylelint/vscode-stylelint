@@ -337,4 +337,116 @@ describe('StylelintRunner', () => {
 			}),
 		).toMatchSnapshot();
 	});
+
+	test('should throw non-Error objects as-is', async () => {
+		expect.assertions(1);
+
+		mockedResolver.mockImplementation(
+			createMockResolver(async () => {
+				// Throw a non-error object to test error handling.
+				// eslint-disable-next-line @typescript-eslint/only-throw-error
+				throw 'This is not an Error object';
+			}),
+		);
+
+		await expect(
+			new StylelintRunner(mockConnection).lintDocument(createMockDocument('a {}')),
+		).rejects.toBe('This is not an Error object');
+	});
+
+	test('should handle "No rules found within configuration" error by adding configuration diagnostic', async () => {
+		expect.assertions(1);
+
+		mockedResolver.mockImplementation(
+			createMockResolver(async (options) => {
+				if (options.config?.rules && Object.keys(options.config.rules).length === 0) {
+					// Return empty results for syntax-only linting.
+					return { results: [] };
+				}
+
+				// Throw the "no rules found" error for normal linting.
+				throw new Error(
+					'No rules found within configuration. Have you provided a "rules" property?',
+				);
+			}),
+		);
+
+		const results = await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {}'),
+			{ config: {} },
+		);
+
+		expect(results).toEqual({
+			diagnostics: [
+				{
+					range: {
+						start: { line: 0, character: 0 },
+						end: { line: 0, character: 0 },
+					},
+					message: 'No rules found within configuration. Have you provided a "rules" property?',
+					severity: 1,
+					source: 'Stylelint',
+					code: 'no-rules-configured',
+				},
+			],
+		});
+	});
+
+	test('should combine syntax errors with configuration error when no rules are defined', async () => {
+		expect.assertions(2);
+
+		mockedResolver.mockImplementation(
+			createMockResolver(async (options) => {
+				if (options.config?.rules && Object.keys(options.config.rules).length === 0) {
+					// Return syntax error for syntax-only linting.
+					return {
+						results: [
+							{
+								source: 'a {',
+								warnings: [
+									{
+										line: 1,
+										column: 3,
+										endLine: 1,
+										endColumn: 3,
+										rule: 'CssSyntaxError',
+										severity: 'error',
+										text: 'Unclosed block (CssSyntaxError)',
+									},
+								],
+								deprecations: [],
+								invalidOptionWarnings: [],
+								parseErrors: [],
+							},
+						],
+					};
+				}
+
+				// Throw the "no rules found" error for normal linting.
+				throw new Error(
+					'No rules found within configuration. Have you provided a "rules" property?',
+				);
+			}),
+		);
+
+		const results = await new StylelintRunner(mockConnection).lintDocument(
+			createMockDocument('a {'),
+			{ config: {} },
+		);
+
+		// Should have both syntax error and configuration error.
+		expect(results.diagnostics).toHaveLength(2);
+		expect(results.diagnostics).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					code: 'no-rules-configured',
+					message: 'No rules found within configuration. Have you provided a "rules" property?',
+				}),
+				expect.objectContaining({
+					code: 'CssSyntaxError',
+					message: 'Unclosed block (CssSyntaxError)',
+				}),
+			]),
+		);
+	});
 });

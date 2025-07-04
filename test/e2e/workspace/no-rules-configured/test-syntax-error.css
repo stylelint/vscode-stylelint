@@ -1,0 +1,3 @@
+/* CSS with syntax error to test both syntax errors and configuration error. */
+a {
+  color: red
