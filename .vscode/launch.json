@@ -20,11 +20,10 @@
 			"type": "node",
 			"request": "attach",
 			"name": "Attach to Server",
-			"address": "localhost",
-			"protocol": "inspector",
 			"port": 6004,
-			"sourceMaps": false,
-			"outFiles": ["${workspaceRoot}/server.js"]
+			"restart": true,
+			"sourceMaps": true,
+			"outFiles": ["${workspaceRoot}/dist/start-server.js"]
 		},
 		{
 			"name": "Launch Tests",
