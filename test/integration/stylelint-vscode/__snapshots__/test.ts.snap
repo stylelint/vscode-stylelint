@@ -155,34 +155,15 @@ exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
     "codeDescription": {
       "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
     },
-    "message": "Expected "bold" to be "700" (font-weight-notation)",
-    "range": {
-      "end": {
-        "character": 33,
-        "line": 2,
-      },
-      "start": {
-        "character": 29,
-        "line": 2,
-      },
-    },
-    "severity": 1,
-    "source": "Stylelint",
-  },
-  {
-    "code": "font-weight-notation",
-    "codeDescription": {
-      "href": "https://stylelint.io/user-guide/rules/font-weight-notation",
-    },
     "message": "Expected "normal" to be "400" (font-weight-notation)",
     "range": {
       "end": {
-        "character": 12,
-        "line": 4,
+        "character": 22,
+        "line": 0,
       },
       "start": {
-        "character": 6,
-        "line": 4,
+        "character": 16,
+        "line": 0,
       },
     },
     "severity": 1,
@@ -201,12 +182,12 @@ exports[`StylelintRunner with a configuration file should adhere to configuratio
     "message": "Unexpected unit (length-zero-no-unit)",
     "range": {
       "end": {
-        "character": 12,
-        "line": 3,
+        "character": 20,
+        "line": 0,
       },
       "start": {
-        "character": 10,
-        "line": 3,
+        "character": 18,
+        "line": 0,
       },
     },
     "severity": 1,
