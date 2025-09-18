@@ -18,9 +18,14 @@ updates:
     ignore:
       - dependency-name: '@types/vscode'
         update-types: [version-update:semver-minor]
+    cooldown:
+      default-days: 7
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: monthly
     labels:
       - 'pr: dependencies'
+    cooldown:
+      default-days: 7
