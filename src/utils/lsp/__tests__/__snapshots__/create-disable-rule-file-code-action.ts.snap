@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`createDisableRuleFileCodeAction should create a code action to disable a rule for an entire file 1`] = `
 {

@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`runProcessFindLine should throw an error if the command is not found 1`] = `"ENOENT: no such file or directory, open 'foo'"`;
 
