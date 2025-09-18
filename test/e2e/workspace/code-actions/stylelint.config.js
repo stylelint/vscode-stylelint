@@ -10,7 +10,7 @@ const config = {
 	overrides: [
 		{
 			files: ['**/*.js'],
-			customSyntax: '@stylelint/postcss-css-in-js',
+			customSyntax: 'postcss-styled-syntax',
 		},
 	],
 };

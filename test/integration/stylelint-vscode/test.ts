@@ -115,19 +115,10 @@ describe('StylelintRunner', () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(
-			createDocument(
-				null,
-				'javascript',
-				`import glamorous from 'glamorous';
-const styled = require("styled-components");
-const A = glamorous.a({font: 'bold'});
-const B = styled.b\`
-font: normal
-\`;`,
-			),
+			createDocument(null, 'javascript', 'styled.a` font: normal `;'),
 			{
 				config: {
-					customSyntax: '@stylelint/postcss-css-in-js',
+					customSyntax: 'postcss-styled-syntax',
 					rules: { 'font-weight-notation': ['numeric'] },
 				},
 			},
@@ -419,13 +410,7 @@ describe('StylelintRunner with a configuration file', () => {
 			createDocument(
 				join(__dirname, 'has-config-file.tsx'),
 				'typescriptreact',
-				`
-const what: string = "is this";
-<a css={{
-  width: "0px",
-  what
-}} />;
-`,
+				'styled.a` width: 0px `;',
 			),
 			{ configFile: join(__dirname, 'no-unknown.config.js') },
 		);
@@ -464,7 +449,7 @@ describe('StylelintRunner with auto-fix', () => {
 		expect.assertions(1);
 		const runner = new StylelintRunner();
 		const result = await runner.lintDocument(createDocument('no-rules.js', 'javascript', '"a"'), {
-			customSyntax: '@stylelint/postcss-css-in-js',
+			customSyntax: 'postcss-styled-syntax',
 			config: {},
 			fix: true,
 		});
@@ -478,7 +463,7 @@ describe('StylelintRunner with auto-fix', () => {
 		const result = await runner.lintDocument(
 			createDocument('should-be-ignored.js', 'javascript', '"a"'),
 			{
-				customSyntax: '@stylelint/postcss-css-in-js',
+				customSyntax: 'postcss-styled-syntax',
 				config: {
 					rules: {},
 					ignoreFiles: '**/*-ignored.js',

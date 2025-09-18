@@ -247,7 +247,6 @@
     "winston-transport": "^4.7.1"
   },
   "devDependencies": {
-    "@stylelint/postcss-css-in-js": "^0.38.0",
     "@stylelint/prettier-config": "^3.0.0",
     "@types/jest": "^30.0.0",
     "@types/path-is-inside": "^1.0.3",
@@ -269,6 +268,7 @@
     "postcss": "^8.5.6",
     "postcss-sass": "^0.5.0",
     "postcss-scss": "^4.0.9",
+    "postcss-styled-syntax": "^0.7.1",
     "prettier": "^3.6.2",
     "stylelint": "^16.21.0",
     "stylelint-processor-glamorous": "^0.3.0",
