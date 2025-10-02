@@ -11,7 +11,7 @@ on:
 
 jobs:
   lint:
-    uses: stylelint/.github/.github/workflows/lint.yml@ba1d7222b8b3c30030607fd70c0f1b37bf712acb # main
+    uses: stylelint/.github/.github/workflows/call-lint.yml@ba1d7222b8b3c30030607fd70c0f1b37bf712acb # 0.3.0
     permissions:
       contents: read
 
