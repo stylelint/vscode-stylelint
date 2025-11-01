@@ -247,7 +247,7 @@
     "winston-transport": "^4.7.1"
   },
   "devDependencies": {
-    "@stylelint/prettier-config": "^3.0.0",
+    "@stylelint/prettier-config": "^4.0.0",
     "@types/jest": "^30.0.0",
     "@types/path-is-inside": "^1.0.3",
     "@types/semver": "^7.7.1",
