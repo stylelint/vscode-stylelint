@@ -1,6 +1,6 @@
 {
   "name": "vscode-stylelint",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "license": "MIT",
   "description": "Official Stylelint extension for Visual Studio Code",
   "main": "dist/index.js",
