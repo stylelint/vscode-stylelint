@@ -7,7 +7,8 @@ on:
 
 jobs:
   release:
-    uses: stylelint/.github/.github/workflows/call-release.yml@f34faf02df201c8c204df4ae2543523ad54ceb07 # 0.3.1
+    # TODO: Update to a specific sha once the PR is merged: https://github.com/stylelint/.github/pull/74
+    uses: stylelint/.github/.github/workflows/call-release.yml@support-vscode-pat
     permissions:
       contents: write
       id-token: write
