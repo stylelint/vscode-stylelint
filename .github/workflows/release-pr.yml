@@ -11,7 +11,7 @@ on:
 
 jobs:
   release-pr:
-    uses: stylelint/.github/.github/workflows/call-release-pr.yml@f34faf02df201c8c204df4ae2543523ad54ceb07 # 0.3.1
+    uses: stylelint/.github/.github/workflows/call-release-pr.yml@19e58e8a32d5cee3f2b13420f9645b6c4685fed3 # 0.4.0
     with:
       new-version: ${{ github.event.inputs.new-version }}
     permissions:

@@ -7,8 +7,7 @@ on:
 
 jobs:
   release:
-    # TODO: Update to a specific sha once the PR is merged: https://github.com/stylelint/.github/pull/74
-    uses: stylelint/.github/.github/workflows/call-release.yml@support-vscode-pat
+    uses: stylelint/.github/.github/workflows/call-release.yml@19e58e8a32d5cee3f2b13420f9645b6c4685fed3 # 0.4.0
     with:
       publish: true
       publish-npm: false
