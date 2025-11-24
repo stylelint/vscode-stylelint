@@ -1,0 +1,19 @@
+name: Release PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      new-version:
+        description: New version to release
+        required: true
+        type: choice
+        options: [patch, minor, major]
+
+jobs:
+  release-pr:
+    uses: stylelint/.github/.github/workflows/call-release-pr.yml@19e58e8a32d5cee3f2b13420f9645b6c4685fed3 # 0.4.0
+    with:
+      new-version: ${{ github.event.inputs.new-version }}
+    permissions:
+      contents: write
+      pull-requests: write

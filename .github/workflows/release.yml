@@ -1,0 +1,18 @@
+name: Release
+
+on:
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+jobs:
+  release:
+    uses: stylelint/.github/.github/workflows/call-release.yml@19e58e8a32d5cee3f2b13420f9645b6c4685fed3 # 0.4.0
+    with:
+      publish: true
+      publish-npm: false
+    secrets:
+      VSCE_PAT: ${{ secrets.VSCE_PAT }}
+    permissions:
+      contents: write
+      id-token: write
