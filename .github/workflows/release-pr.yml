@@ -11,9 +11,11 @@ on:
 
 jobs:
   release-pr:
-    uses: stylelint/.github/.github/workflows/call-release-pr.yml@19e58e8a32d5cee3f2b13420f9645b6c4685fed3 # 0.4.0
+    # TODO: Update to sha after the PR is merged: https://github.com/stylelint/.github/pull/78
+    uses: stylelint/.github/.github/workflows/call-release-pr.yml@add-published-url-input
     with:
       new-version: ${{ github.event.inputs.new-version }}
+      published-url: 'https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint'
     permissions:
       contents: write
       pull-requests: write
