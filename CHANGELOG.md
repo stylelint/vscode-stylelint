@@ -1,8 +1,12 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+## 1.6.0 - 2025-11-27
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Since this version, the extension has followed [Stylelint's changelog format](https://stylelint.io/changelog/), which means no more category headings like "Added" or "Fixed" have been used.
+Instead, each change is prefixed with such categories like "Added: feature X" or "Fixed: bug Y" etc.
+
+- Added: `stylelint.rules.customizations` setting to override rule severity levels ([#696](https://github.com/stylelint/vscode-stylelint/pull/696)).
+- Added: error diagnostics for rule-less configurations ([#699](https://github.com/stylelint/vscode-stylelint/pull/699)).
 
 ## [1.5.3](https://github.com/stylelint/vscode-stylelint/compare/v1.5.2...v1.5.3) (2025-06-05)
 
