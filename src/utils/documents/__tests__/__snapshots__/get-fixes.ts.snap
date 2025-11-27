@@ -1,33 +1,25 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`getFixes should return edits if Stylelint made changes 1`] = `
+exports[`getFixes should fall back to legacy output when code is unavailable 1`] = `
 [
   {
     "newText": "",
     "range": {
       "end": {
-        "character": 4,
-        "line": 2,
+        "character": 15,
+        "line": 0,
       },
       "start": {
-        "character": 3,
-        "line": 2,
+        "character": 14,
+        "line": 0,
       },
     },
   },
-  {
-    "newText": "  ",
-    "range": {
-      "end": {
-        "character": 4,
-        "line": 2,
-      },
-      "start": {
-        "character": 4,
-        "line": 2,
-      },
-    },
-  },
+]
+`;
+
+exports[`getFixes should return edits if Stylelint made changes 1`] = `
+[
   {
     "newText": "",
     "range": {
@@ -38,58 +30,6 @@ exports[`getFixes should return edits if Stylelint made changes 1`] = `
       "start": {
         "character": 3,
         "line": 5,
-      },
-    },
-  },
-  {
-    "newText": "",
-    "range": {
-      "end": {
-        "character": 4,
-        "line": 9,
-      },
-      "start": {
-        "character": 3,
-        "line": 9,
-      },
-    },
-  },
-  {
-    "newText": "  ",
-    "range": {
-      "end": {
-        "character": 4,
-        "line": 9,
-      },
-      "start": {
-        "character": 4,
-        "line": 9,
-      },
-    },
-  },
-  {
-    "newText": "",
-    "range": {
-      "end": {
-        "character": 4,
-        "line": 10,
-      },
-      "start": {
-        "character": 3,
-        "line": 10,
-      },
-    },
-  },
-  {
-    "newText": "  ",
-    "range": {
-      "end": {
-        "character": 4,
-        "line": 10,
-      },
-      "start": {
-        "character": 4,
-        "line": 10,
       },
     },
   },

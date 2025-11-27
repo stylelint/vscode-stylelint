@@ -27,8 +27,9 @@ function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
  * Processes the results of a Stylelint lint run.
  *
  * If Stylelint reported any warnings, they are converted to Diagnostics and
- * returned. If the lint results contain raw output in the `output` property, it
- * is also returned.
+ * returned. If the lint results contain raw output in the `code` property, it
+ * is also returned, along with any formatted report (`report`) or any legacy
+ * autofixed code (`output`).
  *
  * Throws an `InvalidOptionError` for any invalid option warnings reported by
  * Stylelint.
@@ -94,7 +95,19 @@ export function processLinterResult(
 
 		return warningsMap.get(key) ?? null;
 	};
-	const output = ('report' in linterResult && linterResult.report) || linterResult.output;
+	const lintDiagnostics: LintDiagnostics = { diagnostics, getWarning };
 
-	return output ? { output, diagnostics, getWarning } : { diagnostics, getWarning };
+	if ('report' in linterResult && typeof linterResult.report === 'string') {
+		lintDiagnostics.report = linterResult.report;
+	}
+
+	if ('code' in linterResult && typeof linterResult.code === 'string') {
+		lintDiagnostics.code = linterResult.code;
+	}
+
+	if (typeof linterResult.output === 'string') {
+		lintDiagnostics.output = linterResult.output;
+	}
+
+	return lintDiagnostics;
 }

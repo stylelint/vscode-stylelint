@@ -220,13 +220,16 @@ exports[`StylelintRunner with auto-fix auto-fix should work if there are errors 
     },
   ],
   "getWarning": [Function],
-  "output": "
+}
+`;
+
+exports[`StylelintRunner with auto-fix auto-fix should work if there are errors that cannot be auto-fixed 2`] = `
+"
 unknown {
     color: #fff;
     background-color: #fffa;
 }
-",
-}
+"
 `;
 
 exports[`StylelintRunner with auto-fix auto-fix should work if there is syntax errors in css 1`] = `
@@ -249,9 +252,12 @@ exports[`StylelintRunner with customSyntax auto-fix should work properly if cust
 {
   "diagnostics": [],
   "getWarning": [Function],
-  "output": "a
-  color:#fff",
 }
+`;
+
+exports[`StylelintRunner with customSyntax auto-fix should work properly if customSyntax is defined 2`] = `
+"a
+  color:#fff"
 `;
 
 exports[`StylelintRunner with customSyntax should work properly if customSyntax is defined 1`] = `

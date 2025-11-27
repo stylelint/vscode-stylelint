@@ -4,9 +4,9 @@ import type { StylelintRunner, RunnerOptions } from '../../stylelint/index';
 
 import { getFixes } from '../get-fixes';
 
-const createMockRunner = (output?: string) =>
+const createMockRunner = (result: { code?: string; output?: string } = {}) =>
 	({
-		lintDocument: jest.fn(async () => ({ diagnostics: [], output })),
+		lintDocument: jest.fn(async () => ({ diagnostics: [], ...result })),
 	}) as unknown as StylelintRunner;
 
 const createDocument = (code: string) =>
@@ -15,7 +15,7 @@ const createDocument = (code: string) =>
 describe('getFixes', () => {
 	test('should call lintDocument with given options and fix set to true', async () => {
 		const document = createDocument('a { color: red; }');
-		const runner = createMockRunner('a { color: red; }');
+		const runner = createMockRunner({ code: 'a { color: red; }' });
 		const linterOptions: stylelint.LinterOptions = {
 			config: {
 				customSyntax: 'postcss-scss',
@@ -57,7 +57,7 @@ describe('getFixes', () => {
 				background: #ccc url(foo.png) no-repeat;
 			}
 		`);
-		const runner = createMockRunner();
+		const runner = createMockRunner({ code: document.getText() });
 		const fixes = await getFixes(runner, document);
 
 		expect(fixes).toEqual([]);
@@ -69,7 +69,7 @@ describe('getFixes', () => {
 				color: red;
 			}
 
-			div#foo {
+			div#bar {
 			}
 
 			.foo {
@@ -77,19 +77,9 @@ describe('getFixes', () => {
 				background: #ccc url(foo.png) no-repeat;
 			}
 		`);
-		const runner = createMockRunner(`
-			a {
-				color: red;
-			}
-
-			div#foo {
-			}
-
-			.foo {
-				overflow: hidden;
-				background: #ccc url(foo.png) no-repeat;
-			}
-		`);
+		const runner = createMockRunner({
+			code: document.getText(),
+		});
 		const fixes = await getFixes(runner, document);
 
 		expect(fixes).toEqual([]);
@@ -109,18 +99,27 @@ describe('getFixes', () => {
 				background: #ccc url(foo.png) no-repeat;
 			}
 		`);
-		const runner = createMockRunner(`
-			a {
-			  color: red;
-			}
-
-			.foo {
-			  overflow: hidden;
-			  background: #ccc url(foo.png) no-repeat;
-			}
-		`);
+		const runner = createMockRunner({
+			code: document.getText().replace(/\t\t\tdiv#bar \{\n\t\t\t\}\n\n/, ''),
+		});
 		const fixes = await getFixes(runner, document);
 
 		expect(fixes).toMatchSnapshot();
+	});
+
+	test('should fall back to legacy output when code is unavailable', async () => {
+		const document = createDocument('a { color: red; }');
+		const runner = createMockRunner({ output: 'a { color: red }' });
+		const fixes = await getFixes(runner, document);
+
+		expect(fixes).toMatchSnapshot();
+	});
+
+	test('should ignore empty legacy output', async () => {
+		const document = createDocument('a { color: red; }');
+		const runner = createMockRunner({ output: '' });
+		const fixes = await getFixes(runner, document);
+
+		expect(fixes).toEqual([]);
 	});
 });

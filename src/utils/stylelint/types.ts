@@ -16,7 +16,19 @@ export type LintDiagnostics = {
 	diagnostics: LSP.Diagnostic[];
 
 	/**
-	 * Raw output from Stylelint, if any.
+	 * Formatted report returned by Stylelint, if any.
+	 */
+	report?: string;
+
+	/**
+	 * Autofixed code returned by Stylelint when linting source text with `fix`
+	 * enabled.
+	 */
+	code?: string;
+
+	/**
+	 * Raw output from Stylelint, if any. Deprecated in Stylelint 16 in favour of
+	 * `report` and `code`.
 	 */
 	output?: string;
 
