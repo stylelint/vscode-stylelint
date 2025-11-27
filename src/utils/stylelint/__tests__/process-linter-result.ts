@@ -11,7 +11,7 @@ const mockStylelint = {
 
 const createMockResult = (
 	mockResults: Partial<stylelint.LintResult>[],
-	output?: string,
+	extra: Partial<stylelint.LinterResult> = {},
 ): stylelint.LinterResult => {
 	const results = mockResults.map((result) => ({
 		invalidOptionWarnings: result.invalidOptionWarnings ?? [],
@@ -19,7 +19,7 @@ const createMockResult = (
 		ignored: result.ignored ?? false,
 	}));
 
-	return (output ? { results, output } : { results }) as stylelint.LinterResult;
+	return { results, ...extra } as stylelint.LinterResult;
 };
 
 const createMockWarning = (
@@ -54,7 +54,7 @@ describe('processLinterResult', () => {
 		expect(result).toMatchSnapshot();
 	});
 
-	test('should return output if given', () => {
+	test('should include legacy output when provided', () => {
 		const result = processLinterResult(
 			mockStylelint,
 			createMockResult(
@@ -63,7 +63,39 @@ describe('processLinterResult', () => {
 						warnings: [createMockWarning('unit-no-unknown')],
 					},
 				],
-				'Output',
+				{ output: 'Output' },
+			),
+		);
+
+		expect(result).toMatchSnapshot();
+	});
+
+	test('should include report when provided', () => {
+		const result = processLinterResult(
+			mockStylelint,
+			createMockResult(
+				[
+					{
+						warnings: [createMockWarning('unit-no-unknown')],
+					},
+				],
+				{ report: 'Report' },
+			),
+		);
+
+		expect(result).toMatchSnapshot();
+	});
+
+	test('should include code when provided', () => {
+		const result = processLinterResult(
+			mockStylelint,
+			createMockResult(
+				[
+					{
+						warnings: [createMockWarning('unit-no-unknown')],
+					},
+				],
+				{ code: 'body {}' },
 			),
 		);
 

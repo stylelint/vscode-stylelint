@@ -1,7 +1,8 @@
 import { join, resolve } from 'path';
 import { pathToFileURL } from 'url';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import { StylelintRunner } from '../../../src/utils/stylelint/index';
+import { StylelintRunner, type LintDiagnostics } from '../../../src/utils/stylelint/index';
+import { snapshotLintDiagnostics } from '../../helpers/snapshots';
 import { version as stylelintVersion } from 'stylelint/package.json';
 import { version as stylelintScssVersion } from 'stylelint-scss/package.json';
 import semver from 'semver';
@@ -13,6 +14,9 @@ const createDocument = (uri: string | null, languageId: string, contents: string
 		1,
 		contents,
 	);
+
+const getFixedText = (result: LintDiagnostics): string | undefined =>
+	result.code ?? (result.output && result.output.length > 0 ? result.output : undefined);
 
 describe('StylelintRunner', () => {
 	test('should be resolved with diagnostics when it lints CSS successfully', async () => {
@@ -431,7 +435,7 @@ describe('StylelintRunner with auto-fix', () => {
 			},
 		);
 
-		expect(result.output).toMatchSnapshot();
+		expect(getFixedText(result)).toMatchSnapshot();
 	});
 
 	test('auto-fix should only work properly for syntax errors if no rules are defined', async () => {
@@ -442,7 +446,7 @@ describe('StylelintRunner with auto-fix', () => {
 			fix: true,
 		});
 
-		expect(result.output).toBe('a {}');
+		expect(getFixedText(result)).toBe('a {}');
 	});
 
 	test('JS file auto-fix should not change the content if no rules are defined', async () => {
@@ -454,7 +458,7 @@ describe('StylelintRunner with auto-fix', () => {
 			fix: true,
 		});
 
-		expect(result.output).toBe('"a"');
+		expect(getFixedText(result)).toBe('"a"');
 	});
 
 	test('auto-fix should ignore if the file matches the ignoreFiles', async () => {
@@ -472,7 +476,7 @@ describe('StylelintRunner with auto-fix', () => {
 			},
 		);
 
-		expect(result.output).toBeUndefined();
+		expect(getFixedText(result)).toBeUndefined();
 	});
 
 	test('auto-fix should work if there is syntax errors in css', async () => {
@@ -495,7 +499,7 @@ describe('StylelintRunner with auto-fix', () => {
 			},
 		);
 
-		expect(result.output).toMatchSnapshot();
+		expect(getFixedText(result)).toMatchSnapshot();
 	});
 
 	test('auto-fix should ignore if there is syntax errors in scss', async () => {
@@ -519,7 +523,7 @@ describe('StylelintRunner with auto-fix', () => {
 			},
 		);
 
-		expect(result.output).toBeUndefined();
+		expect(getFixedText(result)).toBeUndefined();
 	});
 
 	test('auto-fix should work if there are errors that cannot be auto-fixed', async () => {
@@ -546,7 +550,8 @@ unknown {
 			},
 		);
 
-		expect(result).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
+		expect(getFixedText(result)).toMatchSnapshot();
 	});
 });
 
@@ -562,11 +567,11 @@ describe('StylelintRunner with customSyntax', () => {
 			},
 		);
 
-		expect(result).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	});
 
 	test('auto-fix should work properly if customSyntax is defined', async () => {
-		expect.assertions(1);
+		expect.assertions(2);
 		const runner = new StylelintRunner();
 
 		try {
@@ -579,7 +584,8 @@ describe('StylelintRunner with customSyntax', () => {
 				},
 			);
 
-			expect(result).toMatchSnapshot();
+			expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
+			expect(getFixedText(result)).toMatchSnapshot();
 		} catch (e) {
 			console.error(e);
 		}
@@ -628,7 +634,7 @@ describe('StylelintRunner with reportDescriptionlessDisables', () => {
 			},
 		);
 
-		expect(result).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	});
 });
 
@@ -668,7 +674,7 @@ describe('StylelintRunner with reportNeedlessDisables', () => {
 			},
 		);
 
-		expect(result).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	});
 });
 
@@ -702,7 +708,7 @@ describe('StylelintRunner with reportInvalidScopeDisables', () => {
 			},
 		);
 
-		expect(result).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	});
 });
 
@@ -720,7 +726,7 @@ describe('StylelintRunner with stylelintPath', () => {
 			},
 		);
 
-		expect(result).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	});
 
 	test('should work properly if custom path is defined in stylelintPath', async () => {
@@ -736,6 +742,6 @@ describe('StylelintRunner with stylelintPath', () => {
 			},
 		);
 
-		expect(result).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	});
 });

@@ -22,5 +22,12 @@ export async function getFixes(
 		runnerOptions,
 	);
 
-	return typeof result.output === 'string' ? createTextEdits(document, result.output) : [];
+	const fixedCode =
+		typeof result.code === 'string'
+			? result.code
+			: typeof result.output === 'string' && result.output.length > 0
+				? result.output
+				: undefined;
+
+	return typeof fixedCode === 'string' ? createTextEdits(document, fixedCode) : [];
 }

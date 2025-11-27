@@ -56,7 +56,7 @@ exports[`processLinterResult should return diagnostics for each warning 1`] = `
 }
 `;
 
-exports[`processLinterResult should return output if given 1`] = `
+exports[`processLinterResult should include legacy output when provided 1`] = `
 {
   "diagnostics": [
     {
@@ -78,6 +78,56 @@ exports[`processLinterResult should return output if given 1`] = `
   ],
   "getWarning": [Function],
   "output": "Output",
+}
+`;
+
+exports[`processLinterResult should include report when provided 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "unit-no-unknown",
+      "message": "unit-no-unknown",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+  "report": "Report",
+}
+`;
+
+exports[`processLinterResult should include code when provided 1`] = `
+{
+  "code": "body {}",
+  "diagnostics": [
+    {
+      "code": "unit-no-unknown",
+      "message": "unit-no-unknown",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
 }
 `;
 

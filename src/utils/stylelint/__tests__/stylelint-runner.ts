@@ -18,6 +18,7 @@ import * as LSP from 'vscode-languageserver-protocol';
 import { StylelintResolver, ResolverOptions } from '../../packages/index';
 import { getWorkspaceFolder } from '../../documents/index';
 import { StylelintRunner } from '../stylelint-runner';
+import { snapshotLintDiagnostics } from '../../../../test/helpers/snapshots';
 import { version as stylelintVersion } from 'stylelint/package.json';
 import semver from 'semver';
 
@@ -219,7 +220,7 @@ describe('StylelintRunner', () => {
 			createMockDocument('table {', '/path/to/file.css'),
 		);
 
-		expect(results).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(results)).toMatchSnapshot();
 	});
 
 	test('should return processed lint results from Stylelint with configured rules', async () => {
@@ -234,7 +235,7 @@ describe('StylelintRunner', () => {
 			{ config: { rules: { 'block-no-empty': true } } },
 		);
 
-		expect(results).toMatchSnapshot();
+		expect(snapshotLintDiagnostics(results)).toMatchSnapshot();
 	});
 
 	test('should throw errors thrown by Stylelint', async () => {
