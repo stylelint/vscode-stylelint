@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.0 - 2025-11-25
+## 1.6.0 - 2025-11-27
 
 Since this version, the extension has followed [Stylelint's changelog format](https://stylelint.io/changelog/), which means no more category headings like "Added" or "Fixed" have been used.
 Instead, each change is prefixed with such categories like "Added: feature X" or "Fixed: bug Y" etc.
