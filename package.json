@@ -256,7 +256,7 @@
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.6.2",
-    "cspell": "^9.3.0",
+    "cspell": "^9.3.2",
     "esbuild": "^0.27.0",
     "eslint": "^9.39.1",
     "eslint-config-stylelint": "^25.0.1",
