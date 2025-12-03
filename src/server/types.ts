@@ -168,7 +168,7 @@ export interface LanguageServerModule extends Disposable {
 	/**
 	 * Handler called when the server is initializing.
 	 */
-	onInitialize?: (params: LSP.InitializeParams) => Partial<LSP.InitializeResult> | undefined | void;
+	onInitialize?: (params: LSP.InitializeParams) => Partial<LSP.InitializeResult> | void;
 
 	/**
 	 * Handler called after the language server finishes registering handlers

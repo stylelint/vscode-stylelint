@@ -77,7 +77,7 @@ export class DisableMetadataLookupTable {
 		rule,
 		range,
 	}: {
-		type?: DisableReportRuleNames | string;
+		type?: DisableReportRuleNames;
 		rule?: string;
 		range?: LSP.Range;
 	}): Set<LSP.Diagnostic> {
