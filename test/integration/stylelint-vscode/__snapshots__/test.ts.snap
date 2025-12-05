@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`StylelintRunner should be resolved with diagnostics when it lints CSS successfully 1`] = `
+exports[`StylelintRunner > should be resolved with diagnostics when it lints CSS successfully 1`] = `
 [
   {
     "code": "color-no-invalid-hex",
@@ -43,7 +43,7 @@ exports[`StylelintRunner should be resolved with diagnostics when it lints CSS s
 ]
 `;
 
-exports[`StylelintRunner should be resolved with diagnostics when the rules include unknown rules 1`] = `
+exports[`StylelintRunner > should be resolved with diagnostics when the rules include unknown rules 1`] = `
 [
   {
     "code": "this-rule-does-not-exist",
@@ -80,7 +80,7 @@ exports[`StylelintRunner should be resolved with diagnostics when the rules incl
 ]
 `;
 
-exports[`StylelintRunner should be resolved with one diagnostic when the CSS is broken 1`] = `
+exports[`StylelintRunner > should be resolved with one diagnostic when the CSS is broken 1`] = `
 [
   {
     "code": "CssSyntaxError",
@@ -101,7 +101,7 @@ exports[`StylelintRunner should be resolved with one diagnostic when the CSS is 
 ]
 `;
 
-exports[`StylelintRunner should check CSS syntax even if no configuration is provided 1`] = `
+exports[`StylelintRunner > should check CSS syntax even if no configuration is provided 1`] = `
 [
   {
     "code": "CssSyntaxError",
@@ -122,18 +122,18 @@ exports[`StylelintRunner should check CSS syntax even if no configuration is pro
 ]
 `;
 
-exports[`StylelintRunner should check CSS syntax even if no rule is provided 1`] = `
+exports[`StylelintRunner > should check CSS syntax even if no rule is provided 1`] = `
 [
   {
     "code": "CssSyntaxError",
     "message": "At-rule without name (CssSyntaxError)",
     "range": {
       "end": {
-        "character": 1,
+        "character": 8,
         "line": 0,
       },
       "start": {
-        "character": 0,
+        "character": 7,
         "line": 0,
       },
     },
@@ -143,12 +143,12 @@ exports[`StylelintRunner should check CSS syntax even if no rule is provided 1`]
 ]
 `;
 
-exports[`StylelintRunner should reject with a reason when it takes incorrect options 1`] = `
-"Invalid option value "foo" for rule "color-hex-alpha"
-Invalid option name "bar" for rule "selector-type-no-unknown""
+exports[`StylelintRunner > should reject with a reason when it takes incorrect options 1`] = `
+[Error: Invalid option value "foo" for rule "color-hex-alpha"
+Invalid option name "bar" for rule "selector-type-no-unknown"]
 `;
 
-exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
+exports[`StylelintRunner > should support CSS-in-JS with customSyntax 1`] = `
 [
   {
     "code": "font-weight-notation",
@@ -172,7 +172,7 @@ exports[`StylelintRunner should support CSS-in-JS with customSyntax 1`] = `
 ]
 `;
 
-exports[`StylelintRunner with a configuration file should adhere to configuration file settings 1`] = `
+exports[`StylelintRunner with a configuration file > should adhere to configuration file settings 1`] = `
 [
   {
     "code": "length-zero-no-unit",
@@ -196,7 +196,7 @@ exports[`StylelintRunner with a configuration file should adhere to configuratio
 ]
 `;
 
-exports[`StylelintRunner with auto-fix auto-fix should work if there are errors that cannot be auto-fixed 1`] = `
+exports[`StylelintRunner with auto-fix > auto-fix should work if there are errors that cannot be auto-fixed 1`] = `
 {
   "diagnostics": [
     {
@@ -223,7 +223,7 @@ exports[`StylelintRunner with auto-fix auto-fix should work if there are errors 
 }
 `;
 
-exports[`StylelintRunner with auto-fix auto-fix should work if there are errors that cannot be auto-fixed 2`] = `
+exports[`StylelintRunner with auto-fix > auto-fix should work if there are errors that cannot be auto-fixed 2`] = `
 "
 unknown {
     color: #fff;
@@ -232,7 +232,7 @@ unknown {
 "
 `;
 
-exports[`StylelintRunner with auto-fix auto-fix should work if there is syntax errors in css 1`] = `
+exports[`StylelintRunner with auto-fix > auto-fix should work if there is syntax errors in css 1`] = `
 "
 .a {
     color: #ffffff;
@@ -241,26 +241,26 @@ exports[`StylelintRunner with auto-fix auto-fix should work if there is syntax e
 "
 `;
 
-exports[`StylelintRunner with auto-fix auto-fix should work properly if configs are defined 1`] = `
+exports[`StylelintRunner with auto-fix > auto-fix should work properly if configs are defined 1`] = `
 "a
 {
 color:#fff;
 }"
 `;
 
-exports[`StylelintRunner with customSyntax auto-fix should work properly if customSyntax is defined 1`] = `
+exports[`StylelintRunner with customSyntax > auto-fix should work properly if customSyntax is defined 1`] = `
 {
   "diagnostics": [],
   "getWarning": [Function],
 }
 `;
 
-exports[`StylelintRunner with customSyntax auto-fix should work properly if customSyntax is defined 2`] = `
+exports[`StylelintRunner with customSyntax > auto-fix should work properly if customSyntax is defined 2`] = `
 "a
   color:#fff"
 `;
 
-exports[`StylelintRunner with customSyntax should work properly if customSyntax is defined 1`] = `
+exports[`StylelintRunner with customSyntax > should work properly if customSyntax is defined 1`] = `
 {
   "diagnostics": [
     {
@@ -287,7 +287,7 @@ exports[`StylelintRunner with customSyntax should work properly if customSyntax 
 }
 `;
 
-exports[`StylelintRunner with reportDescriptionlessDisables should work properly if reportDescriptionlessDisables is true 1`] = `
+exports[`StylelintRunner with reportDescriptionlessDisables > should work properly if reportDescriptionlessDisables is true 1`] = `
 {
   "diagnostics": [
     {
@@ -343,7 +343,7 @@ exports[`StylelintRunner with reportDescriptionlessDisables should work properly
 }
 `;
 
-exports[`StylelintRunner with reportInvalidScopeDisables should work properly if reportInvalidScopeDisables is true 1`] = `
+exports[`StylelintRunner with reportInvalidScopeDisables > should work properly if reportInvalidScopeDisables is true 1`] = `
 {
   "diagnostics": [
     {
@@ -399,7 +399,7 @@ exports[`StylelintRunner with reportInvalidScopeDisables should work properly if
 }
 `;
 
-exports[`StylelintRunner with reportNeedlessDisables should work properly if reportNeedlessDisables is true 1`] = `
+exports[`StylelintRunner with reportNeedlessDisables > should work properly if reportNeedlessDisables is true 1`] = `
 {
   "diagnostics": [
     {
@@ -490,7 +490,7 @@ exports[`StylelintRunner with reportNeedlessDisables should work properly if rep
 }
 `;
 
-exports[`StylelintRunner with stylelintPath should work properly if custom path is defined in stylelintPath 1`] = `
+exports[`StylelintRunner with stylelintPath > should work properly if custom path is defined in stylelintPath 1`] = `
 {
   "diagnostics": [
     {
@@ -514,7 +514,7 @@ exports[`StylelintRunner with stylelintPath should work properly if custom path 
 }
 `;
 
-exports[`StylelintRunner with stylelintPath should work properly if stylelintPath is defined 1`] = `
+exports[`StylelintRunner with stylelintPath > should work properly if stylelintPath is defined 1`] = `
 {
   "diagnostics": [
     {

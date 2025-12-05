@@ -1,0 +1,137 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`processLinterResult > should include code when provided 1`] = `
+{
+  "code": "body {}",
+  "diagnostics": [
+    {
+      "code": "unit-no-unknown",
+      "message": "unit-no-unknown",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;
+
+exports[`processLinterResult > should include legacy output when provided 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "unit-no-unknown",
+      "message": "unit-no-unknown",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+  "output": "Output",
+}
+`;
+
+exports[`processLinterResult > should include report when provided 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "unit-no-unknown",
+      "message": "unit-no-unknown",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+  "report": "Report",
+}
+`;
+
+exports[`processLinterResult > should return diagnostics for each warning 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "unit-no-unknown",
+      "message": "unit-no-unknown",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    {
+      "code": "at-rule-no-unknown",
+      "message": "at-rule-no-unknown",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    {
+      "code": "alpha-value-notation",
+      "message": "alpha-value-notation",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;
+
+exports[`processLinterResult > should throw if invalid option results are given 1`] = `
+[Error: Warning 1
+Warning 2]
+`;

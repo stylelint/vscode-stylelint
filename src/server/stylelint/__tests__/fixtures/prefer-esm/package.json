@@ -1,0 +1,15 @@
+{
+  "name": "stylelint-prefer-esm",
+  "exports": {
+    ".": {
+      "import": {
+        "default": "./index.mjs"
+      },
+      "require": {
+        "default": "./index.cjs"
+      }
+    }
+  },
+  "main": "./index.cjs",
+  "module": "./index.mjs"
+}

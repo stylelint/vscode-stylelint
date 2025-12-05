@@ -9,8 +9,8 @@ updates:
     labels:
       - 'pr: dependencies'
     groups:
-      jest:
-        patterns: ['jest', 'ts-jest', '@types/jest']
+      vitest:
+        patterns: ['vitest', '@vitest/*']
       eslint:
         patterns: ['eslint', 'eslint-*', 'typescript-eslint']
       vscode:

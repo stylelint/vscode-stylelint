@@ -24,6 +24,7 @@ The official [Visual Studio Code] extension for [Stylelint]
 - [Extension Settings](#extension-settings)
 - [Commands](#commands)
 - [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
 - [Licence](#licence)
 
 ## Installation
@@ -356,6 +357,10 @@ Thank you to all our sponsors! [Become a sponsor](https://opencollective.com/sty
 </object>
 
 Thank you to all our backers! [Become a backer](https://opencollective.com/stylelint).
+
+## Contributing
+
+Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.
 
 ## Licence
 
