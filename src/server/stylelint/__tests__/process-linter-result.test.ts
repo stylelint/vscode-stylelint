@@ -3,6 +3,10 @@ import { describe, expect, test } from 'vitest';
 import { processLinterResult } from '../process-linter-result.js';
 import { Stylelint, createRuleMetadataSourceFromStylelint } from '../types.js';
 import { createTestLogger } from '../../../../test/helpers/test-logger.js';
+import { LinterResult } from 'stylelint';
+
+/** For compatibility with Stylelint versions prior to 17.x */
+type OldLinterResult = LinterResult & { output: string };
 
 const mockStylelint = {
 	rules: {
@@ -69,7 +73,7 @@ describe('processLinterResult', () => {
 						warnings: [createMockWarning('unit-no-unknown')],
 					},
 				],
-				{ output: 'Output' },
+				{ output: 'Output' } as OldLinterResult,
 			),
 			logger,
 		);
@@ -86,7 +90,7 @@ describe('processLinterResult', () => {
 						warnings: [createMockWarning('unit-no-unknown')],
 					},
 				],
-				{ output: 'legacy body {}', code: 'modern body {}' },
+				{ output: 'legacy body {}', code: 'modern body {}' } as OldLinterResult,
 			),
 			logger,
 		);
@@ -104,7 +108,7 @@ describe('processLinterResult', () => {
 						warnings: [createMockWarning('unit-no-unknown')],
 					},
 				],
-				{ output: 'legacy body {}', report: 'Report' },
+				{ output: 'legacy body {}', report: 'Report' } as OldLinterResult,
 			),
 			logger,
 		);

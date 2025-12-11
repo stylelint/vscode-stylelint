@@ -3,7 +3,7 @@
 		"composite": true,
 		"incremental": true,
 		"target": "ES2022",
-		"module": "commonjs",
+		"module": "nodenext",
 		"lib": ["es2023"],
 		"allowJs": true,
 		"checkJs": true,

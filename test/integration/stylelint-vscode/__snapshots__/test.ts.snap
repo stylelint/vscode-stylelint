@@ -196,6 +196,24 @@ exports[`StylelintRunner with a configuration file > should adhere to configurat
 ]
 `;
 
+exports[`StylelintRunner with auto-fix > (Stylelint <17) auto-fix should work if there are syntax errors in css 1`] = `
+"
+.a {
+    color: #ffffff;
+    background-color: #ffffffaa
+}
+"
+`;
+
+exports[`StylelintRunner with auto-fix > (Stylelint >=17) auto-fix should fix syntax errors if there are syntax errors in css and fix mode is "lax" 1`] = `
+"
+.a {
+    color: #ffffff;
+    background-color: #ffffffaa
+}
+"
+`;
+
 exports[`StylelintRunner with auto-fix > auto-fix should work if there are errors that cannot be auto-fixed 1`] = `
 {
   "diagnostics": [

@@ -6,6 +6,7 @@ import {
 	assertDiagnostics,
 	executeAutofix,
 	closeAllEditors,
+	itOnVersion,
 } from '../helpers.js';
 
 describe('No rules configured', () => {
@@ -47,7 +48,7 @@ describe('No rules configured', () => {
 		]);
 	});
 
-	it('should auto-fix syntax errors when no rules are defined', async () => {
+	itOnVersion('<17', 'should auto-fix syntax errors when no rules are defined', async () => {
 		const { document } = await openDocument('no-rules-configured/test-syntax-error.css');
 		const diagnostics = await waitForDiagnostics(document);
 
@@ -76,5 +77,34 @@ describe('No rules configured', () => {
 		const hasConfigError = postFixDiagnostics.some((d) => d.code === 'no-rules-configured');
 
 		assert.ok(hasConfigError, 'Configuration error should still be present after autofix');
+	});
+
+	itOnVersion('>=17', 'should not auto-fix syntax errors when no rules are defined', async () => {
+		const { document } = await openDocument('no-rules-configured/test-syntax-error.css');
+		const diagnostics = await waitForDiagnostics(document);
+
+		assertDiagnostics(diagnostics, [
+			{
+				code: 'CssSyntaxError',
+				message: 'Unclosed block (CssSyntaxError)',
+				range: [1, 0, 1, 1],
+				severity: 'error',
+			},
+			{
+				code: 'no-rules-configured',
+				message: 'No rules found within configuration. Have you provided a "rules" property?',
+				range: [0, 0, 0, 0],
+				severity: 'error',
+			},
+		]);
+
+		await executeAutofix();
+
+		const fixedContent = document.getText();
+
+		assert.ok(
+			!fixedContent.includes('}'),
+			'Auto-fix should not add the missing closing brace in Stylelint v17+',
+		);
 	});
 });

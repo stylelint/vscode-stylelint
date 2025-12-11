@@ -263,6 +263,7 @@
     "eslint": "^9.39.1",
     "eslint-config-stylelint": "^25.0.1",
     "eslint-plugin-jsdoc": "^61.4.1",
+    "execa": "^9.6.1",
     "fast-glob": "^3.2.7",
     "npm-run-all": "^4.1.5",
     "postcss": "^8.5.6",
@@ -272,7 +273,7 @@
     "postcss-scss": "^4.0.9",
     "postcss-styled-syntax": "^0.7.1",
     "prettier": "^3.7.4",
-    "stylelint": "^16.26.1",
+    "stylelint": "github:stylelint/stylelint#v17",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "stylelint-scss": "^6.13.0",
@@ -305,11 +306,17 @@
     "vitest": "vitest run",
     "vscode:prepublish": "npm run build && npm run bundle-base -- --minify",
     "vscode:launch": "node scripts/launch-vscode.js",
-    "publish": "vsce publish --no-git-tag-version --no-update-package-json"
+    "publish": "vsce publish --no-git-tag-version --no-update-package-json",
+    "switch-stylelint": "node scripts/switch-stylelint.mjs"
   },
   "prettier": "@stylelint/prettier-config",
   "volta": {
     "node": "22.17.0",
     "npm": "11.0.0"
+  },
+  "overrides": {
+    "stylelint-scss": {
+      "stylelint": "^17.0.0"
+    }
   }
 }
