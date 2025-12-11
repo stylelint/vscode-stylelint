@@ -1,9 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import semver from 'semver';
 import type stylelint from 'stylelint';
-import { version as stylelintScssVersion } from 'stylelint-scss/package.json';
-import { version as stylelintVersion } from 'stylelint/package.json';
 import { pathToFileURL } from 'url';
 import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest';
 import type { Connection } from 'vscode-languageserver';
@@ -24,8 +21,11 @@ import {
 	StylelintWorkerCrashedError,
 	StylelintWorkerUnavailableError,
 } from '../../../src/server/worker/worker-process.js';
-import { snapshotLintDiagnostics } from '../../helpers/snapshots.js';
-import { createLoggingServiceStub } from '../../helpers/index.js';
+import {
+	createLoggingServiceStub,
+	snapshotLintDiagnostics,
+	testOnVersion,
+} from '../../helpers/index.js';
 
 const createDocument = (uri: string | null, languageId: string, contents: string): TextDocument =>
 	TextDocument.create(
@@ -177,42 +177,40 @@ a { color: #000 }
 		expect(result.diagnostics).toEqual([]);
 	});
 
-	if (semver.satisfies(stylelintVersion, '^14')) {
-		test('should support `processors` option', async () => {
-			expect.assertions(1);
-			const runner = resolveStylelintRunner();
-			const result = await runner.lintDocument(
-				createDocument('processors.tsx', 'typescriptreact', 'styled.p`"`'),
-				{
-					config: {
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- for stylelint v14
-						// @ts-ignore for stylelint v14
-						processors: ['stylelint-processor-styled-components'],
-						rules: {},
-					},
+	testOnVersion('^14', 'should support `processors` option', async () => {
+		expect.assertions(1);
+		const runner = resolveStylelintRunner();
+		const result = await runner.lintDocument(
+			createDocument('processors.tsx', 'typescriptreact', 'styled.p`"`'),
+			{
+				config: {
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- for stylelint v14
+					// @ts-ignore for stylelint v14
+					processors: ['stylelint-processor-styled-components'],
+					rules: {},
 				},
-			);
+			},
+		);
 
-			expect(result.diagnostics).toEqual([
-				{
-					code: 'CssSyntaxError',
-					message: 'Unclosed string (CssSyntaxError)',
-					range: {
-						end: {
-							character: 10,
-							line: 0,
-						},
-						start: {
-							character: 9,
-							line: 0,
-						},
+		expect(result.diagnostics).toEqual([
+			{
+				code: 'CssSyntaxError',
+				message: 'Unclosed string (CssSyntaxError)',
+				range: {
+					end: {
+						character: 10,
+						line: 0,
 					},
-					severity: 1,
-					source: 'Stylelint',
+					start: {
+						character: 9,
+						line: 0,
+					},
 				},
-			]);
-		});
-	}
+				severity: 1,
+				source: 'Stylelint',
+			},
+		]);
+	});
 
 	test('should check CSS syntax even if no configuration is provided', async () => {
 		expect.assertions(1);
@@ -291,35 +289,80 @@ a { color: #000 }
 		expect(syntaxErrors.length).toBeGreaterThan(0);
 	});
 
-	test('should surface configuration error when no rules are defined when auto-fixing', async () => {
-		expect.assertions(2);
-		const runner = resolveStylelintRunner();
-		// Invalid CSS syntax, missing closing brace.
-		const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a{color:red'), {
-			config: {},
-			fix: true,
-		});
+	testOnVersion(
+		'<17',
+		'should surface configuration error when no rules are defined when auto-fixing',
+		async () => {
+			expect.assertions(2);
+			const runner = resolveStylelintRunner();
+			// Invalid CSS syntax, missing closing brace.
+			const result = await runner.lintDocument(
+				createDocument('no-rules.css', 'css', 'a{color:red'),
+				{
+					config: {},
+					fix: true,
+				},
+			);
 
-		// Should have the configuration error.
-		const configError = result.diagnostics.find(
-			(diagnostic: StylelintDiagnostic) => diagnostic.code === 'no-rules-configured',
-		);
+			// Should have the configuration error.
+			const configError = result.diagnostics.find(
+				(diagnostic: StylelintDiagnostic) => diagnostic.code === 'no-rules-configured',
+			);
 
-		expect(configError).toEqual({
-			range: {
-				start: { line: 0, character: 0 },
-				end: { line: 0, character: 0 },
-			},
-			message: 'No rules found within configuration. Have you provided a "rules" property?',
-			severity: 1,
-			source: 'Stylelint',
-			code: 'no-rules-configured',
-		});
+			expect(configError).toEqual({
+				range: {
+					start: { line: 0, character: 0 },
+					end: { line: 0, character: 0 },
+				},
+				message: 'No rules found within configuration. Have you provided a "rules" property?',
+				severity: 1,
+				source: 'Stylelint',
+				code: 'no-rules-configured',
+			});
 
-		// When auto-fixing is enabled, syntax errors should be fixed and not reported as diagnostics,
-		// so we should only have the configuration error left.
-		expect(result.diagnostics).toHaveLength(1);
-	});
+			// When auto-fixing is enabled, syntax errors should be fixed and not reported as diagnostics,
+			// so we should only have the configuration error left.
+			expect(result.diagnostics).toHaveLength(1);
+		},
+	);
+
+	testOnVersion(
+		'>=17',
+		'(>= Stylelint 17) should surface configuration error when no rules are defined when auto-fixing',
+		async () => {
+			expect.assertions(2);
+			const runner = resolveStylelintRunner();
+			// Invalid CSS syntax, missing closing brace.
+			const result = await runner.lintDocument(
+				createDocument('no-rules.css', 'css', 'a{color:red'),
+				{
+					config: {},
+					fix: true,
+				},
+			);
+
+			// Should have the configuration error.
+			const configError = result.diagnostics.find(
+				(diagnostic: StylelintDiagnostic) => diagnostic.code === 'no-rules-configured',
+			);
+
+			expect(configError).toEqual({
+				range: {
+					start: { line: 0, character: 0 },
+					end: { line: 0, character: 0 },
+				},
+				message: 'No rules found within configuration. Have you provided a "rules" property?',
+				severity: 1,
+				source: 'Stylelint',
+				code: 'no-rules-configured',
+			});
+
+			// When auto-fixing is enabled on Stylelint 17+, syntax errors
+			// should still be reported as diagnostics, so we should have both
+			// the syntax error and the configuration error.
+			expect(result.diagnostics).toHaveLength(2);
+		},
+	);
 
 	test('should work normally when rules are defined', async () => {
 		expect.assertions(1);
@@ -389,45 +432,43 @@ a { color: #000 }
 		expect(result.diagnostics).toMatchSnapshot();
 	});
 
-	if (semver.satisfies(stylelintScssVersion, '^15')) {
-		test('should be resolved with diagnostic plugin rule URL', async () => {
-			expect.assertions(1);
-			const runner = resolveStylelintRunner();
-			const result = await runner.lintDocument(
-				createDocument('unknown-rule.scss', 'scss', '@unknown (max-width: 960px) {}'),
-				{
-					config: {
-						plugins: ['stylelint-scss'],
-						rules: {
-							'scss/at-rule-no-unknown': true,
-						},
+	testOnVersion('^15', 'should be resolved with diagnostic plugin rule URL', async () => {
+		expect.assertions(1);
+		const runner = resolveStylelintRunner();
+		const result = await runner.lintDocument(
+			createDocument('unknown-rule.scss', 'scss', '@unknown (max-width: 960px) {}'),
+			{
+				config: {
+					plugins: ['stylelint-scss'],
+					rules: {
+						'scss/at-rule-no-unknown': true,
 					},
 				},
-			);
+			},
+		);
 
-			expect(result.diagnostics).toEqual([
-				{
-					code: 'scss/at-rule-no-unknown',
-					codeDescription: {
-						href: 'https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown',
-					},
-					message: 'Unexpected unknown at-rule "@unknown" (scss/at-rule-no-unknown)',
-					range: {
-						end: {
-							character: 8,
-							line: 0,
-						},
-						start: {
-							character: 0,
-							line: 0,
-						},
-					},
-					severity: 1,
-					source: 'Stylelint',
+		expect(result.diagnostics).toEqual([
+			{
+				code: 'scss/at-rule-no-unknown',
+				codeDescription: {
+					href: 'https://github.com/stylelint-scss/stylelint-scss/blob/master/src/rules/at-rule-no-unknown',
 				},
-			]);
-		});
-	}
+				message: 'Unexpected unknown at-rule "@unknown" (scss/at-rule-no-unknown)',
+				range: {
+					end: {
+						character: 8,
+						line: 0,
+					},
+					start: {
+						character: 0,
+						line: 0,
+					},
+				},
+				severity: 1,
+				source: 'Stylelint',
+			},
+		]);
+	});
 });
 
 describe('StylelintRunner with a configuration file', () => {
@@ -533,16 +574,50 @@ describe('StylelintRunner with auto-fix', () => {
 		expect(getFixedText(result)).toMatchSnapshot();
 	});
 
-	test('auto-fix should only work properly for syntax errors if no rules are defined', async () => {
-		expect.assertions(1);
-		const runner = resolveStylelintRunner();
-		const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a {'), {
-			config: {},
-			fix: true,
-		});
+	testOnVersion(
+		'<17',
+		'auto-fix should only work properly for syntax errors if no rules are defined',
+		async () => {
+			expect.assertions(1);
+			const runner = resolveStylelintRunner();
+			const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a {'), {
+				config: {},
+				fix: true,
+			});
 
-		expect(getFixedText(result)).toBe('a {}');
-	});
+			expect(getFixedText(result)).toBe('a {}');
+		},
+	);
+
+	testOnVersion(
+		'>=17',
+		'auto-fix should only work properly for syntax errors if no rules are defined and fix mode is "lax"',
+		async () => {
+			expect.assertions(1);
+			const runner = resolveStylelintRunner();
+			const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a {'), {
+				config: {},
+				fix: 'lax' as unknown as boolean, // fix: 'lax' is valid in stylelint >=17
+			});
+
+			expect(getFixedText(result)).toBe('a {}');
+		},
+	);
+
+	testOnVersion(
+		'>=17',
+		'auto-fix should not fix anything if no rules are defined and fix mode is "strict"',
+		async () => {
+			expect.assertions(1);
+			const runner = resolveStylelintRunner();
+			const result = await runner.lintDocument(createDocument('no-rules.css', 'css', 'a {'), {
+				config: {},
+				fix: 'strict' as unknown as boolean, // fix: 'strict' is valid in stylelint >=17
+			});
+
+			expect(getFixedText(result)).toBeUndefined();
+		},
+	);
 
 	test('JS file auto-fix should not change the content if no rules are defined', async () => {
 		expect.assertions(1);
@@ -574,7 +649,7 @@ describe('StylelintRunner with auto-fix', () => {
 		expect(getFixedText(result)).toBeUndefined();
 	});
 
-	test('auto-fix should work if there is syntax errors in css', async () => {
+	testOnVersion('<17', 'auto-fix should work if there are syntax errors in css', async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(
@@ -596,6 +671,60 @@ describe('StylelintRunner with auto-fix', () => {
 
 		expect(getFixedText(result)).toMatchSnapshot();
 	});
+
+	testOnVersion(
+		'>=17',
+		'auto-fix should by default not fix anything if there are syntax errors in css',
+		async () => {
+			expect.assertions(1);
+			const runner = resolveStylelintRunner();
+			const result = await runner.lintDocument(
+				createDocument(
+					'test.css',
+					'css',
+					`
+.a {
+    color: #ffffff
+    background-color: #ffffffaa;
+}
+`,
+				),
+				{
+					config: { rules: {} },
+					fix: true,
+				},
+			);
+
+			expect(getFixedText(result)).toBeUndefined();
+		},
+	);
+
+	testOnVersion(
+		'>=17',
+		'auto-fix should fix syntax errors if there are syntax errors in css and fix mode is "lax"',
+		async () => {
+			expect.assertions(1);
+			const runner = resolveStylelintRunner();
+			const result = await runner.lintDocument(
+				createDocument(
+					'test.css',
+					'css',
+					`
+.a {
+    color: #ffffff
+    background-color: #ffffffaa;
+}
+`,
+				),
+				{
+					config: { rules: {} },
+					fix: 'lax' as unknown as boolean, // fix: 'lax' is valid in stylelint >=17
+				},
+			);
+
+			expect(getFixedText(result)).toMatchSnapshot();
+		},
+	);
 
 	test('auto-fix should ignore if there is syntax errors in scss', async () => {
 		expect.assertions(1);

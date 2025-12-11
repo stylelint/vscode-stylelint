@@ -25,6 +25,7 @@ export default defineConfig([
 		'**/__tests__/**/*.js',
 		'**/__tests__/**/*.cjs',
 		'**/__tests__/**/*.mjs',
+		'scripts/switch-stylelint.mjs', // Contains syntax unsupported by ESLint
 	]),
 
 	...stylelint,
@@ -123,7 +124,6 @@ export default defineConfig([
 
 	{
 		files: ['**/__tests__/**/*', 'test/**/*'],
-		plugins: { vitest },
 		languageOptions: {
 			parser: tsEslintParser,
 			parserOptions: {
@@ -132,7 +132,6 @@ export default defineConfig([
 			},
 		},
 		rules: {
-			...vitest.configs.recommended.rules,
 			'@typescript-eslint/explicit-function-return-type': 'off',
 			'@typescript-eslint/explicit-module-boundary-types': 'off',
 			'@typescript-eslint/require-await': 'off',
@@ -147,9 +146,17 @@ export default defineConfig([
 	},
 
 	{
-		files: ['test/e2e/**/__tests__/**/*'],
+		files: ['**/__tests__/**/*', 'test/**/*'],
+		ignores: ['test/e2e/**'],
+		plugins: { vitest },
 		rules: {
-			'vitest/expect-expect': 'off',
+			...vitest.configs.recommended.rules,
+			'vitest/no-standalone-expect': [
+				'error',
+				{
+					additionalTestBlockFunctions: ['test', 'testOnVersion'],
+				},
+			],
 		},
 	},
 

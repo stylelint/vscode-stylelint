@@ -4,7 +4,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const { cwd: getCwd, exit } = require('node:process');
-const stylelint = require('stylelint');
+const stylelint = require('stylelint').default ?? require('stylelint');
 
 const ruleName = 'stylelint-crash/force-worker-crash';
 const defaultStateFilename = '.stylelint-worker-crash-state.json';

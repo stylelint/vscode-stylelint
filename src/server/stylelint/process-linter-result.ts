@@ -106,9 +106,15 @@ export function processLinterResult(
 		hasModernFixes = true;
 	}
 
-	if (!hasModernFixes && !hasReport) {
+	if (!hasModernFixes && !hasReport && 'output' in linterResult) {
 		// eslint-disable-next-line @typescript-eslint/no-deprecated
-		const legacyOutput = linterResult.output;
+		const { output: legacyOutput } = linterResult as {
+			/**
+			 * For compatibility with Stylelint versions prior to 17.x
+			 * @deprecated Use `code` property instead.
+			 */
+			output: unknown;
+		};
 
 		if (typeof legacyOutput === 'string' && legacyOutput.length > 0) {
 			lintDiagnostics.output = legacyOutput;

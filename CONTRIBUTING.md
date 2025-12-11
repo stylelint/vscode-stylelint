@@ -79,6 +79,13 @@ To answer the question "does this extension behave correctly when VS Code loads 
 
 - `npm run test:e2e` starts a controlled instance of VS Code, installs the built extension, and runs the tests under `test/e2e/`. This is the safety net for the full extension lifecycle: activation events, contributed commands, configuration, client/server startup, and anything else that might behave differently once VS Code is in the loop.
 
+Since the extension supports older versions of Stylelint, you should also test that the extension and server behave correctly with those older versions.
+
+- `npm run switch-stylelint [version]` changes the Stylelint version used by both the extension and the tests.  
+  For example, `npm run switch-stylelint 16` makes the extension use Stylelint 16.x. You can then run any of the test commands above to verify behaviour with that version.  
+  `npm run switch-stylelint` without arguments switches back to the default version defined in `package.json`.  
+  Run `npm run switch-stylelint -- --help` for details.
+
 > [!NOTE]
 > For more information on testing, see [section 5](#5-working-with-tests).
 
