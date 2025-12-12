@@ -1,0 +1,591 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`StylelintLanguageServer > should accept server modules 1`] = `
+{
+  "context": {
+    "commands": {
+      "__typed": [Function],
+      "dispose": [MockFunction],
+      "on": [MockFunction],
+      "register": [MockFunction],
+    },
+    "connection": {
+      "__typed": [Function],
+      "client": {
+        "connection": [Circular],
+        "fillServerCapabilities": [MockFunction],
+        "initialize": [MockFunction],
+        "register": [MockFunction],
+      },
+      "console": {
+        "connection": [Circular],
+        "debug": [MockFunction],
+        "error": [MockFunction],
+        "fillServerCapabilities": [MockFunction],
+        "info": [MockFunction],
+        "initialize": [MockFunction],
+        "log": [MockFunction],
+        "warn": [MockFunction],
+      },
+      "dispose": [MockFunction],
+      "languages": {
+        "attachPartialResultProgress": [MockFunction],
+        "attachWorkDoneProgress": [MockFunction],
+        "callHierarchy": {
+          "onIncomingCalls": [MockFunction],
+          "onOutgoingCalls": [MockFunction],
+          "onPrepare": [MockFunction],
+        },
+        "connection": [Circular],
+        "diagnostics": {
+          "on": [MockFunction],
+          "onWorkspace": [MockFunction],
+          "refresh": [MockFunction],
+        },
+        "fillServerCapabilities": [MockFunction],
+        "foldingRange": {
+          "on": [MockFunction],
+          "refresh": [MockFunction],
+        },
+        "initialize": [MockFunction],
+        "inlayHint": {
+          "on": [MockFunction],
+          "refresh": [MockFunction],
+          "resolve": [MockFunction],
+        },
+        "inlineValue": {
+          "on": [MockFunction],
+          "refresh": [MockFunction],
+        },
+        "moniker": {
+          "on": [MockFunction],
+        },
+        "onLinkedEditingRange": [MockFunction],
+        "semanticTokens": {
+          "on": [MockFunction],
+          "onDelta": [MockFunction],
+          "onRange": [MockFunction],
+          "refresh": [MockFunction],
+        },
+        "typeHierarchy": {
+          "onPrepare": [MockFunction],
+          "onSubtypes": [MockFunction],
+          "onSupertypes": [MockFunction],
+        },
+      },
+      "listen": [MockFunction],
+      "notebooks": {
+        "attachPartialResultProgress": [MockFunction],
+        "attachWorkDoneProgress": [MockFunction],
+        "connection": {},
+        "fillServerCapabilities": [MockFunction],
+        "initialize": [MockFunction],
+        "synchronization": {
+          "onDidChangeNotebookDocument": [MockFunction],
+          "onDidCloseNotebookDocument": [MockFunction],
+          "onDidOpenNotebookDocument": [MockFunction],
+          "onDidSaveNotebookDocument": [MockFunction],
+        },
+      },
+      "onCodeAction": [MockFunction],
+      "onCodeActionResolve": [MockFunction],
+      "onCodeLens": [MockFunction],
+      "onCodeLensResolve": [MockFunction],
+      "onColorPresentation": [MockFunction],
+      "onCompletion": [MockFunction],
+      "onCompletionResolve": [MockFunction],
+      "onDeclaration": [MockFunction],
+      "onDefinition": [MockFunction],
+      "onDidChangeConfiguration": [MockFunction],
+      "onDidChangeTextDocument": [MockFunction],
+      "onDidChangeWatchedFiles": [MockFunction],
+      "onDidCloseTextDocument": [MockFunction],
+      "onDidOpenTextDocument": [MockFunction],
+      "onDidSaveTextDocument": [MockFunction],
+      "onDocumentColor": [MockFunction],
+      "onDocumentFormatting": [MockFunction],
+      "onDocumentHighlight": [MockFunction],
+      "onDocumentLinkResolve": [MockFunction],
+      "onDocumentLinks": [MockFunction],
+      "onDocumentOnTypeFormatting": [MockFunction],
+      "onDocumentRangeFormatting": [MockFunction],
+      "onDocumentSymbol": [MockFunction],
+      "onExecuteCommand": [MockFunction],
+      "onExit": [MockFunction],
+      "onFoldingRanges": [MockFunction],
+      "onHover": [MockFunction],
+      "onImplementation": [MockFunction],
+      "onInitialize": [MockFunction],
+      "onInitialized": [MockFunction],
+      "onNotification": [MockFunction],
+      "onPrepareRename": [MockFunction],
+      "onProgress": [MockFunction],
+      "onReferences": [MockFunction],
+      "onRenameRequest": [MockFunction],
+      "onRequest": [MockFunction],
+      "onSelectionRanges": [MockFunction],
+      "onShutdown": [MockFunction],
+      "onSignatureHelp": [MockFunction],
+      "onTypeDefinition": [MockFunction],
+      "onWillSaveTextDocument": [MockFunction],
+      "onWillSaveTextDocumentWaitUntil": [MockFunction],
+      "onWorkspaceSymbol": [MockFunction],
+      "onWorkspaceSymbolResolve": [MockFunction],
+      "sendDiagnostics": [MockFunction],
+      "sendNotification": [MockFunction],
+      "sendProgress": [MockFunction],
+      "sendRequest": [MockFunction],
+      "telemetry": {
+        "connection": [Circular],
+        "fillServerCapabilities": [MockFunction],
+        "initialize": [MockFunction],
+        "logEvent": [MockFunction],
+      },
+      "tracer": {
+        "connection": [Circular],
+        "fillServerCapabilities": [MockFunction],
+        "initialize": [MockFunction],
+        "log": [MockFunction],
+      },
+      "window": {
+        "attachWorkDoneProgress": [MockFunction],
+        "connection": [Circular],
+        "createWorkDoneProgress": [MockFunction],
+        "fillServerCapabilities": [MockFunction],
+        "initialize": [MockFunction],
+        "showDocument": [MockFunction],
+        "showErrorMessage": [MockFunction],
+        "showInformationMessage": [MockFunction],
+        "showWarningMessage": [MockFunction],
+      },
+      "workspace": {
+        "applyEdit": [MockFunction],
+        "connection": [Circular],
+        "fillServerCapabilities": [MockFunction],
+        "getConfiguration": [MockFunction],
+        "getWorkspaceFolders": [MockFunction],
+        "initialize": [MockFunction],
+        "onDidChangeWorkspaceFolders": [MockFunction],
+        "onDidCreateFiles": [MockFunction],
+        "onDidDeleteFiles": [MockFunction],
+        "onDidRenameFiles": [MockFunction],
+        "onWillCreateFiles": [MockFunction],
+        "onWillDeleteFiles": [MockFunction],
+        "onWillRenameFiles": [MockFunction],
+      },
+    },
+    "displayError": [Function],
+    "documents": {
+      "__typed": [Function],
+      "all": [MockFunction],
+      "get": [MockFunction],
+      "keys": [MockFunction],
+      "listen": [MockFunction],
+      "onDidChangeContent": [MockFunction],
+      "onDidClose": [MockFunction],
+      "onDidOpen": [MockFunction],
+      "onDidSave": [MockFunction],
+      "onWillSave": [MockFunction],
+      "onWillSaveWaitUntil": [MockFunction],
+    },
+    "getEditInfo": [Function],
+    "getFixes": [Function],
+    "getModule": [Function],
+    "getOptions": [Function],
+    "lintDocument": [Function],
+    "notifications": {
+      "__typed": [Function],
+      "dispose": [MockFunction],
+      "on": [MockFunction],
+    },
+    "resolveStylelint": [Function],
+    "runner": {
+      "__typed": [Function],
+      "dispose": [MockFunction],
+      "disposeWorkspace": [MockFunction],
+      "handleDocumentOpened": [MockFunction],
+      "handleWatchedFilesChanged": [MockFunction],
+      "lintDocument": [MockFunction],
+      "notifyWorkspaceActivity": [MockFunction],
+      "resolve": [MockFunction],
+    },
+  },
+  "logger": [MockFunction],
+}
+`;
+
+exports[`StylelintLanguageServer > should allow modules to get edit info for documents using context.getEditInfo 1`] = `
+[
+  [
+    {
+      "uri": "file:///test.css",
+    },
+    {
+      "code": "color-hex-length",
+      "message": "Expected "#000" to be "#000000" (color-hex-length)",
+      "range": {
+        "end": {
+          "character": 2,
+          "line": 1,
+        },
+        "start": {
+          "character": 1,
+          "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "stylelint",
+    },
+    undefined,
+  ],
+]
+`;
+
+exports[`StylelintLanguageServer > should allow modules to get fixes for documents using context.getFixes 1`] = `
+[
+  [
+    {
+      "__typed": [Function],
+      "dispose": [MockFunction],
+      "disposeWorkspace": [MockFunction],
+      "handleDocumentOpened": [MockFunction],
+      "handleWatchedFilesChanged": [MockFunction],
+      "lintDocument": [MockFunction],
+      "notifyWorkspaceActivity": [MockFunction],
+      "resolve": [MockFunction],
+    },
+    {
+      "uri": "file:///test.css",
+    },
+    {
+      "maxWarnings": 1,
+    },
+    {
+      "codeAction": {
+        "disableRuleComment": {
+          "location": "separateLine",
+        },
+      },
+      "config": null,
+      "configBasedir": "",
+      "configFile": "",
+      "customSyntax": "",
+      "ignoreDisables": false,
+      "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
+      "reportInvalidScopeDisables": false,
+      "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
+      "snippet": [
+        "css",
+        "postcss",
+      ],
+      "stylelintPath": "",
+      "validate": [
+        "css",
+        "postcss",
+      ],
+    },
+  ],
+  [
+    {
+      "__typed": [Function],
+      "dispose": [MockFunction],
+      "disposeWorkspace": [MockFunction],
+      "handleDocumentOpened": [MockFunction],
+      "handleWatchedFilesChanged": [MockFunction],
+      "lintDocument": [MockFunction],
+      "notifyWorkspaceActivity": [MockFunction],
+      "resolve": [MockFunction],
+    },
+    {
+      "uri": "file:///test.css",
+    },
+    {},
+    {
+      "codeAction": {
+        "disableRuleComment": {
+          "location": "separateLine",
+        },
+      },
+      "config": null,
+      "configBasedir": "",
+      "configFile": "",
+      "customSyntax": "",
+      "ignoreDisables": false,
+      "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
+      "reportInvalidScopeDisables": false,
+      "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
+      "snippet": [
+        "css",
+        "postcss",
+      ],
+      "stylelintPath": "",
+      "validate": [
+        "css",
+        "postcss",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`StylelintLanguageServer > should allow modules to lint documents using context.lintDocument 1`] = `
+[
+  [
+    {
+      "uri": "file:///test.css",
+    },
+    {
+      "maxWarnings": 1,
+    },
+    {
+      "codeAction": {
+        "disableRuleComment": {
+          "location": "separateLine",
+        },
+      },
+      "config": null,
+      "configBasedir": "",
+      "configFile": "",
+      "customSyntax": "",
+      "ignoreDisables": false,
+      "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
+      "reportInvalidScopeDisables": false,
+      "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
+      "snippet": [
+        "css",
+        "postcss",
+      ],
+      "stylelintPath": "",
+      "validate": [
+        "css",
+        "postcss",
+      ],
+    },
+  ],
+  [
+    {
+      "uri": "file:///test.css",
+    },
+    {},
+    {
+      "codeAction": {
+        "disableRuleComment": {
+          "location": "separateLine",
+        },
+      },
+      "config": null,
+      "configBasedir": "",
+      "configFile": "",
+      "customSyntax": "",
+      "ignoreDisables": false,
+      "packageManager": "npm",
+      "reportDescriptionlessDisables": false,
+      "reportInvalidScopeDisables": false,
+      "reportNeedlessDisables": false,
+      "rules": {
+        "customizations": [],
+      },
+      "snippet": [
+        "css",
+        "postcss",
+      ],
+      "stylelintPath": "",
+      "validate": [
+        "css",
+        "postcss",
+      ],
+    },
+  ],
+]
+`;
+
+exports[`StylelintLanguageServer > should combine initialization results from modules 1`] = `
+{
+  "capabilities": {
+    "callHierarchyProvider": true,
+    "textDocumentSync": {
+      "change": 1,
+      "openClose": true,
+    },
+    "typeDefinitionProvider": true,
+    "workspace": {
+      "workspaceFolders": {
+        "supported": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`StylelintLanguageServer > should not accept modules with a non-string ID 1`] = `[Error: Module IDs must be strings]`;
+
+exports[`StylelintLanguageServer > should not accept modules with duplicate IDs 1`] = `[Error: Module with ID "test-module" already registered]`;
+
+exports[`StylelintLanguageServer > should not accept modules without an ID 1`] = `[Error: Modules must have an ID]`;
+
+exports[`StylelintLanguageServer > should prevent modules from modifying context properties 1`] = `[Error: Cannot set read-only property]`;
+
+exports[`StylelintLanguageServer > when workspace/configuration is available, context.getOptions should return resource-scoped options 1`] = `
+{
+  "codeAction": {
+    "disableRuleComment": {
+      "location": "separateLine",
+    },
+  },
+  "config": null,
+  "configBasedir": "",
+  "configFile": "",
+  "customSyntax": "",
+  "ignoreDisables": false,
+  "packageManager": "yarn",
+  "reportDescriptionlessDisables": false,
+  "reportInvalidScopeDisables": false,
+  "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
+  "snippet": [
+    "css",
+    "postcss",
+  ],
+  "stylelintPath": "",
+  "validate": [
+    "css",
+    "postcss",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer > when workspace/configuration is available, context.getOptions should return resource-scoped options 2`] = `
+{
+  "codeAction": {
+    "disableRuleComment": {
+      "location": "separateLine",
+    },
+  },
+  "config": null,
+  "configBasedir": "",
+  "configFile": "",
+  "customSyntax": "",
+  "ignoreDisables": false,
+  "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
+  "reportInvalidScopeDisables": false,
+  "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
+  "snippet": [
+    "scss",
+  ],
+  "stylelintPath": "",
+  "validate": [
+    "css",
+    "postcss",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer > when workspace/configuration is not available, context.getOptions should gracefully handle missing section 1`] = `
+{
+  "codeAction": {
+    "disableRuleComment": {
+      "location": "separateLine",
+    },
+  },
+  "config": null,
+  "configBasedir": "",
+  "configFile": "",
+  "customSyntax": "",
+  "ignoreDisables": false,
+  "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
+  "reportInvalidScopeDisables": false,
+  "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
+  "snippet": [
+    "css",
+    "postcss",
+  ],
+  "stylelintPath": "",
+  "validate": [
+    "css",
+    "postcss",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer > when workspace/configuration is not available, context.getOptions should gracefully handle missing section 2`] = `
+{
+  "codeAction": {
+    "disableRuleComment": {
+      "location": "separateLine",
+    },
+  },
+  "config": null,
+  "configBasedir": "",
+  "configFile": "",
+  "customSyntax": "",
+  "ignoreDisables": false,
+  "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
+  "reportInvalidScopeDisables": false,
+  "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
+  "snippet": [
+    "css",
+    "postcss",
+  ],
+  "stylelintPath": "",
+  "validate": [
+    "css",
+  ],
+}
+`;
+
+exports[`StylelintLanguageServer > when workspace/configuration is not available, context.getOptions should return global options 1`] = `
+{
+  "codeAction": {
+    "disableRuleComment": {
+      "location": "separateLine",
+    },
+  },
+  "config": null,
+  "configBasedir": "",
+  "configFile": "",
+  "customSyntax": "",
+  "ignoreDisables": false,
+  "packageManager": "npm",
+  "reportDescriptionlessDisables": false,
+  "reportInvalidScopeDisables": false,
+  "reportNeedlessDisables": false,
+  "rules": {
+    "customizations": [],
+  },
+  "snippet": [
+    "css",
+    "postcss",
+  ],
+  "stylelintPath": "",
+  "validate": [
+    "css",
+    "postcss",
+  ],
+}
+`;

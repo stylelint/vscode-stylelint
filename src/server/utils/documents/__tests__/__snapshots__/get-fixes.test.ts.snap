@@ -1,0 +1,37 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`getFixes > should fall back to legacy output when code is unavailable 1`] = `
+[
+  {
+    "newText": "",
+    "range": {
+      "end": {
+        "character": 15,
+        "line": 0,
+      },
+      "start": {
+        "character": 14,
+        "line": 0,
+      },
+    },
+  },
+]
+`;
+
+exports[`getFixes > should return edits if Stylelint made changes 1`] = `
+[
+  {
+    "newText": "",
+    "range": {
+      "end": {
+        "character": 3,
+        "line": 8,
+      },
+      "start": {
+        "character": 3,
+        "line": 5,
+      },
+    },
+  },
+]
+`;

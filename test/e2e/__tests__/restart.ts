@@ -2,7 +2,7 @@ import * as assert from 'node:assert/strict';
 
 import { commands, languages } from 'vscode';
 
-import { openDocument, waitForDiagnostics, closeAllEditors } from '../helpers';
+import { openDocument, waitForDiagnostics, closeAllEditors } from '../helpers.js';
 
 describe('Restart command', () => {
 	afterEach(async () => {

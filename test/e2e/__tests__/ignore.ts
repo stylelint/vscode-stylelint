@@ -1,6 +1,6 @@
 import * as assert from 'node:assert/strict';
 
-import { openDocument, closeAllEditors, getStylelintDiagnostics } from '../helpers';
+import { openDocument, closeAllEditors, getStylelintDiagnostics } from '../helpers.js';
 
 describe('.stylelintignore', () => {
 	afterEach(async () => {

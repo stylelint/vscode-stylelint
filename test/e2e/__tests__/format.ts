@@ -3,7 +3,7 @@ import * as semver from 'semver';
 
 import { commands } from 'vscode';
 
-import { openDocument, closeAllEditors, setupSettings, sleep } from '../helpers';
+import { openDocument, closeAllEditors, setupSettings, sleep } from '../helpers.js';
 
 describe('Document formatting', () => {
 	setupSettings({ '[css]': { 'editor.defaultFormatter': 'stylelint.vscode-stylelint' } });

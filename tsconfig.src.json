@@ -8,5 +8,5 @@
 		"sourceMap": true
 	},
 	"include": ["src/**/*", "types/*.d.ts"],
-	"exclude": ["**/coverage", "**/__tests__", "**/__mocks__", "test/types.d.ts"]
+	"exclude": ["**/coverage", "**/__tests__", "test/types.d.ts"]
 }

@@ -1,0 +1,248 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CodeActionService > onInitialize should return capabilities 1`] = `
+{
+  "capabilities": {
+    "codeActionProvider": {
+      "codeActionKinds": [
+        "quickfix",
+        "source.fixAll.stylelint",
+      ],
+    },
+    "executeCommandProvider": {
+      "commands": [
+        "stylelint.openRuleDoc",
+      ],
+    },
+  },
+}
+`;
+
+exports[`CodeActionService > with action kind Source, should create fix-all command actions 1`] = `
+[
+  {
+    "command": {
+      "arguments": [
+        {
+          "uri": "foo",
+          "version": 1,
+        },
+      ],
+      "command": "stylelint.applyAutoFix",
+      "title": "Fix all Stylelint auto-fixable problems",
+    },
+    "kind": "source",
+    "title": "Fix all Stylelint auto-fixable problems",
+  },
+]
+`;
+
+exports[`CodeActionService > with action kind SourceFixAll, should create fix-all workspace edits 1`] = `
+[
+  {
+    "edit": {
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "text",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "source.fixAll.stylelint",
+    "title": "Fix all Stylelint auto-fixable problems",
+  },
+]
+`;
+
+exports[`CodeActionService > with action kind StylelintSourceFixAll, should create fix-all workspace edits 1`] = `
+[
+  {
+    "edit": {
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "text",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "source.fixAll.stylelint",
+    "title": "Fix all Stylelint auto-fixable problems",
+  },
+]
+`;
+
+exports[`CodeActionService > with no action kind, should create actions for Stylelint diagnostics 1`] = `
+[
+  {
+    "edit": {
+      "changeAnnotations": undefined,
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "/* stylelint-disable-next-line rule-1 */
+",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule-1 for this line",
+  },
+  {
+    "edit": {
+      "changeAnnotations": undefined,
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "/* stylelint-disable rule-1 */
+",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule-1 for the entire file",
+  },
+  {
+    "command": {
+      "arguments": [
+        {
+          "uri": "https://stylelint.io/user-guide/rules/rule",
+        },
+      ],
+      "command": "stylelint.openRuleDoc",
+      "title": "Open documentation for rule-1",
+    },
+    "kind": "quickfix",
+    "title": "Show documentation for rule-1",
+  },
+  {
+    "edit": {
+      "changeAnnotations": undefined,
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "/* stylelint-disable-next-line rule-3 */
+",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule-3 for this line",
+  },
+  {
+    "edit": {
+      "changeAnnotations": undefined,
+      "documentChanges": [
+        {
+          "edits": [
+            {
+              "newText": "/* stylelint-disable rule-3 */
+",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 0,
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0,
+                },
+              },
+            },
+          ],
+          "textDocument": {
+            "uri": "foo",
+            "version": 1,
+          },
+        },
+      ],
+    },
+    "kind": "quickfix",
+    "title": "Disable rule-3 for the entire file",
+  },
+]
+`;

@@ -2,6 +2,7 @@
 
 /** @type {import('stylelint').Config} */
 const config = {
+	rules: {},
 	overrides: [
 		{
 			files: ['lint.css', 'ignored.css'],

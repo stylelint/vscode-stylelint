@@ -1,0 +1,6 @@
+{
+  "name": "stylelint",
+  "private": true,
+  "main": "index.js",
+  "type": "module"
+}

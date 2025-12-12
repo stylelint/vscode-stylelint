@@ -1,4 +1,9 @@
-import { assertDiagnostics, waitForDiagnostics, openDocument, closeAllEditors } from '../helpers';
+import {
+	assertDiagnostics,
+	waitForDiagnostics,
+	openDocument,
+	closeAllEditors,
+} from '../helpers.js';
 
 describe('"stylelint.configBasedir" setting', () => {
 	afterEach(async () => {

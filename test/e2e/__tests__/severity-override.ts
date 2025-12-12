@@ -3,8 +3,8 @@ import {
 	waitForDiagnostics,
 	assertDiagnostics,
 	closeAllEditors,
-	getStylelintMajorVersion,
-} from '../helpers';
+	matchVersion,
+} from '../helpers.js';
 
 describe('Severity Override', () => {
 	afterEach(async () => {
@@ -54,7 +54,10 @@ describe('Severity Override', () => {
 			{
 				code: 'declaration-block-no-duplicate-properties',
 				message: 'Unexpected duplicate "color" (declaration-block-no-duplicate-properties)',
-				range: (await getStylelintMajorVersion()) < 16 ? [20, 2, 20, 7] : [19, 2, 19, 7],
+				range: matchVersion({
+					'<16': [20, 2, 20, 7],
+					default: [19, 2, 19, 7],
+				}),
 				severity: 'error', // Upgraded from warning.
 			},
 			{

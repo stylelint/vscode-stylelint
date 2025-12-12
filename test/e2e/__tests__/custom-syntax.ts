@@ -1,6 +1,6 @@
 import * as assert from 'node:assert/strict';
 
-import { openDocument, executeAutofix, closeAllEditors } from '../helpers';
+import { openDocument, executeAutofix, closeAllEditors } from '../helpers.js';
 
 describe('"stylelint.customSyntax" setting', () => {
 	afterEach(async () => {

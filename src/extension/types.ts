@@ -1,5 +1,5 @@
 import type TypedEventEmitter from 'typed-emitter';
-import type { DidRegisterDocumentFormattingEditProviderNotificationParams } from '../server/index';
+import type { DidRegisterDocumentFormattingEditProviderNotificationParams } from '../server/index.js';
 
 /**
  * VS Code extension event names.

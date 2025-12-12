@@ -1,0 +1,95 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FormatterLspModule > should format documents 1`] = `
+[
+  {
+    "newText": "text",
+    "range": {
+      "end": {
+        "character": 0,
+        "line": 0,
+      },
+      "start": {
+        "character": 0,
+        "line": 0,
+      },
+    },
+  },
+]
+`;
+
+exports[`FormatterLspModule > should format documents 2`] = `
+{
+  "config": {
+    "rules": {
+      "indentation": [
+        2,
+      ],
+      "no-missing-end-of-source-newline": true,
+    },
+  },
+}
+`;
+
+exports[`FormatterLspModule > with client dynamic registration, onInitialize disables static capability 1`] = `
+{
+  "capabilities": {
+    "documentFormattingProvider": false,
+  },
+}
+`;
+
+exports[`FormatterLspModule > with dynamic registration enabled, handleDocumentRegistration registers per document 1`] = `
+[
+  {
+    "disposable": {
+      "dispose": [Function],
+      "disposed": false,
+    },
+    "options": {
+      "documentSelector": [
+        {
+          "pattern": "/dir/test.css",
+          "scheme": "file",
+        },
+      ],
+    },
+    "type": ProtocolRequestType {
+      "_parameterStructures": ParameterStructures {
+        "kind": "byName",
+      },
+      "method": "textDocument/formatting",
+      "numberOfParams": 1,
+    },
+  },
+  {
+    "disposable": {
+      "dispose": [Function],
+      "disposed": false,
+    },
+    "options": {
+      "documentSelector": [
+        {
+          "pattern": "/dir/test.css",
+          "scheme": "custom",
+        },
+      ],
+    },
+    "type": ProtocolRequestType {
+      "_parameterStructures": ParameterStructures {
+        "kind": "byName",
+      },
+      "method": "textDocument/formatting",
+      "numberOfParams": 1,
+    },
+  },
+]
+`;
+
+exports[`FormatterLspModule > without client dynamic registration, onInitialize requests static capability 1`] = `
+{
+  "capabilities": {
+    "documentFormattingProvider": true,
+  },
+}
+`;

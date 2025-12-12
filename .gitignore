@@ -97,3 +97,4 @@ lib64
 .nyc_output
 benchmark/symlink
 tmp
+**/.stylelint-worker-crash-state.json

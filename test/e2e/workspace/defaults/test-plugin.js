@@ -24,6 +24,7 @@ module.exports = stylelint.createPlugin(ruleName, (/** @type {any} */ primaryOpt
 			message: messages.expected,
 			node: postcssRoot,
 			index: 5,
+			endIndex: 6,
 		});
 	};
 });

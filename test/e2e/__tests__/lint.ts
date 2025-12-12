@@ -1,4 +1,9 @@
-import { openDocument, waitForDiagnostics, assertDiagnostics, closeAllEditors } from '../helpers';
+import {
+	openDocument,
+	waitForDiagnostics,
+	assertDiagnostics,
+	closeAllEditors,
+} from '../helpers.js';
 
 describe('Linting', () => {
 	afterEach(async () => {

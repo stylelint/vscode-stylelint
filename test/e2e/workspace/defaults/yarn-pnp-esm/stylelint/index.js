@@ -1,0 +1,20 @@
+'use strict';
+
+export function lint() {
+	return {
+		results: [
+			{
+				warnings: [
+					{
+						line: 1,
+						column: 1,
+						rule: 'fake',
+						text: 'Fake result from yarn-pnp-esm',
+						severity: 'error',
+					},
+				],
+				invalidOptionWarnings: [],
+			},
+		],
+	};
+}

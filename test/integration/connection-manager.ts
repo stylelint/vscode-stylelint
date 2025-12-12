@@ -3,12 +3,8 @@
 
 import { Duplex } from 'stream';
 import * as LSP from 'vscode-languageserver-protocol';
-import {
-	Connection,
-	StreamMessageReader,
-	StreamMessageWriter,
-	WatchDog,
-} from 'vscode-languageserver/node';
+import { StreamMessageReader, StreamMessageWriter } from 'vscode-languageserver/node';
+import type { Connection, WatchDog } from 'vscode-languageserver/node';
 import { createConnection } from 'vscode-languageserver/lib/common/server';
 
 class TestStream extends Duplex {
@@ -109,17 +105,7 @@ export class ConnectionManager {
 		});
 		const shutdown = (async () => {
 			await this.clientProtocolConnection.sendRequest(LSP.ShutdownRequest.type);
-			// Currently, sendNotification doesn't return a promise, so if we
-			// send an exit notification, we are unable to wait for the server
-			// to exit. As a result, the connection gets closed further down
-			// before the exit notification is sent, and once it makes its way
-			// through the message queue, it results in a write after end error.
-			//
-			// The upcoming vscode-jsonrpc version will return promises for
-			// sendNotification, so we can wait for the notification to be sent.
-			// For now, we'll just skip the exit notification and kill the
-			// connection anyway.
-			// this.clientProtocolConnection.sendNotification(LSP.ExitNotification.type);
+			await this.clientProtocolConnection.sendNotification(LSP.ExitNotification.type);
 
 			return this.clientProtocolConnection;
 		})();

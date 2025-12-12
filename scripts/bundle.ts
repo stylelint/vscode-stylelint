@@ -12,7 +12,11 @@ const args = new Set(process.argv.slice(2));
  * Bundles the extension into a single file per entry point.
  */
 async function bundle(): Promise<void> {
-	const entryPoints = ['build/extension/index.js', 'build/extension/start-server.js'];
+	const entryPoints = [
+		'build/extension/index.js',
+		'build/extension/start-server.js',
+		'build/server/worker/worker-entry.js',
+	];
 
 	for (const item of await glob('dist/*', { cwd: rootDir })) {
 		await rm(item);

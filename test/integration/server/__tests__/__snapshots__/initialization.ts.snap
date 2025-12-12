@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Initialization > should respond to InitializeRequest with an InitializeResult 1`] = `
+{
+  "capabilities": {
+    "codeActionProvider": {
+      "codeActionKinds": [
+        "quickfix",
+        "source.fixAll.stylelint",
+      ],
+    },
+    "completionProvider": {},
+    "documentFormattingProvider": true,
+    "executeCommandProvider": {
+      "commands": [
+        "stylelint.applyAutoFix",
+        "stylelint.openRuleDoc",
+      ],
+    },
+    "textDocumentSync": 1,
+  },
+}
+`;
