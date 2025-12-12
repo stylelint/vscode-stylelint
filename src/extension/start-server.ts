@@ -1,21 +1,18 @@
-import path from 'path';
-import process from 'process';
+// @no-unit-test -- This is an entry point that cannot feasibly be unit tested.
+
+import path from 'node:path';
+import process from 'node:process';
 import { createConnection, ProposedFeatures } from 'vscode-languageserver/node';
-import { StylelintLanguageServer, modules, createLogger } from '../server/index';
+import { StylelintLanguageServer } from '../server/index.js';
 
 const connection = createConnection(ProposedFeatures.all);
 
-const { NODE_ENV } = process.env;
-
-const logger =
-	NODE_ENV === 'development'
-		? createLogger(connection, 'debug', path.join(__dirname, '../stylelint-language-server.log'))
-		: createLogger(connection, 'info');
+const isDevelopment = process.env.NODE_ENV === 'development';
 
 const server = new StylelintLanguageServer({
 	connection,
-	logger,
-	modules: Object.values(modules),
+	logLevel: isDevelopment ? 'debug' : 'info',
+	logPath: isDevelopment ? path.join(__dirname, '../stylelint-language-server.log') : undefined,
 });
 
-server.start();
+void server.start();
