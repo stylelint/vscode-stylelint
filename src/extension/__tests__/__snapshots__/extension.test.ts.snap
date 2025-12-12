@@ -1,0 +1,60 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Extension entry point > should create a language client 1`] = `
+[
+  "Stylelint",
+  {
+    "debug": {
+      "module": "mock-path",
+      "options": {
+        "execArgv": [
+          "--nolazy",
+          "--inspect=6004",
+        ],
+      },
+    },
+    "run": {
+      "module": "mock-path",
+    },
+  },
+  {
+    "diagnosticCollectionName": "Stylelint",
+    "documentSelector": [
+      {
+        "scheme": "file",
+      },
+      {
+        "scheme": "untitled",
+      },
+    ],
+    "synchronize": {
+      "fileEvents": [
+        {
+          "pattern": "**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}",
+        },
+        {
+          "pattern": "**/stylelint.config.{js,cjs,mjs}",
+        },
+        {
+          "pattern": "**/.stylelintignore",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`Extension entry point > with an active text editor, should send auto-fix commands to the language server 1`] = `
+[
+  "workspace/executeCommand",
+  {
+    "arguments": [
+      {
+        "uri": "file:///path/to/file.ts",
+        "version": 1,
+      },
+    ],
+    "command": "stylelint.applyAutoFix",
+  },
+]
+`;

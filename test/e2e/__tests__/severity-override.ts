@@ -4,7 +4,7 @@ import {
 	assertDiagnostics,
 	closeAllEditors,
 	getStylelintMajorVersion,
-} from '../helpers';
+} from '../helpers.js';
 
 describe('Severity Override', () => {
 	afterEach(async () => {

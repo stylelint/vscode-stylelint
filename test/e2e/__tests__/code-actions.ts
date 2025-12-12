@@ -13,7 +13,7 @@ import {
 	restoreFile,
 	setupSettings,
 	getCodeActions,
-} from '../helpers';
+} from '../helpers.js';
 
 const cssPath = 'code-actions/test.css';
 const cssForEditInfoPath = 'code-actions/edit-info.css';

@@ -1,17 +1,20 @@
 import * as LSP from 'vscode-languageserver-protocol';
-import { StylelintLanguageServer } from '../../../../src/server/index';
+import { StylelintLanguageServer } from '../../../../src/server/index.js';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { ConnectionManager } from '../../connection-manager.js';
 
 describe('Initialization', () => {
 	const connectionManager = new ConnectionManager();
 	let server: StylelintLanguageServer;
 	let connection: LSP.ProtocolConnection;
 
-	beforeAll(() => {
+	beforeAll(async () => {
 		connectionManager.initialize();
 		server = new StylelintLanguageServer({
 			connection: connectionManager.serverConnection,
 		});
-		server.start();
+
+		await server.start();
 		connectionManager.clientProtocolConnection.listen();
 		connection = connectionManager.clientProtocolConnection;
 	});
@@ -30,13 +33,6 @@ describe('Initialization', () => {
 
 		const result = await connection.sendRequest(LSP.InitializeRequest.type, init);
 
-		expect(result).toEqual({
-			capabilities: {
-				textDocumentSync: {
-					change: 1,
-					openClose: true,
-				},
-			},
-		});
+		expect(result).toMatchSnapshot();
 	});
 });

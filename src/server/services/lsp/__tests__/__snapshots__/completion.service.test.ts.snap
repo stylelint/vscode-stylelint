@@ -1,0 +1,259 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CompletionService > onInitialize should return capabilities 1`] = `
+{
+  "capabilities": {
+    "completionProvider": {},
+  },
+}
+`;
+
+exports[`CompletionService > with diagnostics at the next line and cursor in a next-line disable comment, should return rule completions 1`] = `
+[
+  {
+    "detail": "disable indentation rule. (Stylelint)",
+    "kind": 15,
+    "label": "indentation",
+  },
+]
+`;
+
+exports[`CompletionService > with diagnostics at the next line, should return disable comment completions for rule 1`] = `
+[
+  {
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-line",
+  },
+  {
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-next-line indentation */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-next-line \${0:indentation} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-next-line",
+  },
+  {
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable rule */
+/* stylelint-enable rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable \${0:rule} */
+/* stylelint-enable \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable",
+  },
+]
+`;
+
+exports[`CompletionService > with diagnostics at the same line and cursor in a line disable comment, should return rule completions 1`] = `
+[
+  {
+    "detail": "disable indentation rule. (Stylelint)",
+    "kind": 15,
+    "label": "indentation",
+  },
+]
+`;
+
+exports[`CompletionService > with diagnostics at the same line, should return disable comment completions for rule 1`] = `
+[
+  {
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-line indentation */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-line \${0:indentation} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-line",
+  },
+  {
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-next-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-next-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-next-line",
+  },
+  {
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable rule */
+/* stylelint-enable rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable \${0:rule} */
+/* stylelint-enable \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable",
+  },
+]
+`;
+
+exports[`CompletionService > with needless disables reported for a diagnostic, should return generic completions 1`] = `
+[
+  {
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-line",
+  },
+  {
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-next-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-next-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-next-line",
+  },
+  {
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable rule */
+/* stylelint-enable rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable \${0:rule} */
+/* stylelint-enable \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable",
+  },
+]
+`;
+
+exports[`CompletionService > with no diagnostics at the same or next line, should return generic completions 1`] = `
+[
+  {
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-line",
+  },
+  {
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-next-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-next-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-next-line",
+  },
+  {
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable rule */
+/* stylelint-enable rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable \${0:rule} */
+/* stylelint-enable \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable",
+  },
+]
+`;
+
+exports[`CompletionService > without diagnostics, should return generic completions 1`] = `
+[
+  {
+    "detail": "Turn off Stylelint rules for individual lines only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-line",
+  },
+  {
+    "detail": "Turn off Stylelint rules for the next line only, after which you do not need to explicitly re-enable them. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable-next-line rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable-next-line \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable-next-line",
+  },
+  {
+    "detail": "Turn off all Stylelint or individual rules, after which you do not need to re-enable Stylelint. (Stylelint)",
+    "documentation": {
+      "kind": "markdown",
+      "value": "\`\`\`css
+/* stylelint-disable rule */
+/* stylelint-enable rule */
+\`\`\`",
+    },
+    "insertText": "/* stylelint-disable \${0:rule} */
+/* stylelint-enable \${0:rule} */",
+    "insertTextFormat": 2,
+    "kind": 15,
+    "label": "stylelint-disable",
+  },
+]
+`;

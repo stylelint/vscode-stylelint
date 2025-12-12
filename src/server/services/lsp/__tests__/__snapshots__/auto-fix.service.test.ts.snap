@@ -1,0 +1,30 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`AutoFixService > should auto-fix documents 1`] = `
+{
+  "changeAnnotations": undefined,
+  "documentChanges": [
+    {
+      "edits": [
+        {
+          "newText": "text",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 0,
+            },
+            "start": {
+              "character": 0,
+              "line": 0,
+            },
+          },
+        },
+      ],
+      "textDocument": {
+        "uri": "foo",
+        "version": 1,
+      },
+    },
+  ],
+}
+`;

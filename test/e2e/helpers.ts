@@ -1,4 +1,3 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import * as assert from 'node:assert/strict';
 import * as fs from 'fs/promises';
 import * as path from 'path';
@@ -70,8 +69,8 @@ export async function waitFor<T>(
 	condition: (result: T) => boolean,
 	{ timeout = 10000, interval = 20 }: WaitForOptions = {},
 ): Promise<T> {
-	let intervalRef: NodeJS.Timer;
-	let timeoutRef: NodeJS.Timeout;
+	let intervalRef: ReturnType<typeof setInterval>;
+	let timeoutRef: ReturnType<typeof setTimeout>;
 
 	return new Promise((resolve, reject) => {
 		intervalRef = setInterval(() => {
@@ -101,6 +100,18 @@ export function waitForDiagnostics(
 	return waitFor(
 		() => getStylelintDiagnostics(uri),
 		(diagnostics) => diagnostics.length > 0,
+		options,
+	);
+}
+
+export function waitForDiagnosticsLength(
+	uri: Uri,
+	expectedLength: number,
+	options?: WaitForOptions,
+): Promise<Diagnostic[]> {
+	return waitFor(
+		() => getStylelintDiagnostics(uri),
+		(diagnostics) => diagnostics.length === expectedLength,
 		options,
 	);
 }

@@ -6,7 +6,7 @@ import {
 	assertDiagnostics,
 	executeAutofix,
 	closeAllEditors,
-} from '../helpers';
+} from '../helpers.js';
 
 describe('No rules configured', () => {
 	afterEach(async () => {
