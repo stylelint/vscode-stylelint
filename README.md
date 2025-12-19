@@ -2,122 +2,120 @@
 
 [![Testing](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml/badge.svg)](https://github.com/stylelint/vscode-stylelint/actions/workflows/testing.yml)
 
-The official [Visual Studio Code] extension for [Stylelint]
+The official [Visual Studio Code](https://code.visualstudio.com/) extension for [Stylelint](https://stylelint.io/).
 
-![Screenshot of Stylelint errors displayed in VS Code](media/screenshot.png)
+<img width="449" alt="Screenshot of Stylelint errors displayed in VS Code" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/main/media/screenshot.png">
 
 <!-- cspell:disable-next-line -->
-
-> **Notice:** 1.x of this extension has breaking changes from 0.x versions, including, but not limited to, changes to which documents are linted by default. See the [migration section](#migrating-from-vscode-stylelint-0xstylelint-13x) for more information.
 
 **Table of Contents**
 
 - [Installation](#installation)
-  - [Disable VS Code's Built-In Linters (optional)](#disable-vs-codes-built-in-linters-optional)
 - [Usage](#usage)
-   <!-- prettier-ignore -->
-   <!-- cspell:disable-next-line -->
-- [Migrating from vscode-stylelint 0.x/Stylelint 13.x](#migrating-from-vscode-stylelint-0xstylelint-13x)
-  - [⚠️ Stylelint 13.x and Prior is No Longer Supported](#%EF%B8%8F-stylelint-13x-and-prior-is-no-longer-supported)
-  - [⚠️ Stylelint is No Longer Bundled](#%EF%B8%8F-stylelint-is-no-longer-bundled)
-  - [⚠️ Only CSS and PostCSS are Validated by Default](#%EF%B8%8F-only-css-and-postcss-are-validated-by-default)
-- [Extension Settings](#extension-settings)
 - [Commands](#commands)
+- [Actions](#actions)
+- [Extension Settings](#extension-settings)
+- [Migrating from vscode-stylelint 1.x](#migrating-from-vscode-stylelint-1x)
+- [Migrating from vscode-stylelint 0.x/Stylelint 13.x](#migrating-from-vscode-stylelint-0xstylelint-13x)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Licence](#licence)
 
 ## Installation
 
-1. Execute the `Extensions: Install Extensions` command from the [Command Palette].
-2. Type `@id:stylelint.vscode-stylelint` into the search form and install the topmost one.
+You can install the extension from the [Command Palette](https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette):
 
-The extension first looks for a copy of Stylelint installed in the open workspace folder, then for a globally installed version if it can't find one. If neither can be found, it will not lint any documents.
+1. Execute the `Extensions: Install Extensions` command
+2. Type `@id:stylelint.vscode-stylelint` into the search form
+3. Install the topmost one with the verified publisher mark.
 
-Read the [extension installation guide] for more details.
+For more details, you can read the [VS Code's extension installation guide](https://code.visualstudio.com/docs/editor/extension-gallery).
 
 ### Disable VS Code's Built-In Linters (optional)
 
-To prevent both [VS Code's built-in linters] and Stylelint from reporting the same errors, you can disable the built-in linters in either the [user or workspace settings][vscode settings] for the languages you intend to use in your workspace.
+You can disable VS Code's [built-in linters](https://code.visualstudio.com/docs/languages/css#_syntax-verification-linting) either in the [user or workspace settings](https://code.visualstudio.com/docs/getstarted/settings).
+
+For example, to disable the built-in CSS, Less, and SCSS linters:
+
+```json
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false
+```
 
 <img width="430" alt="Screenshot of duplicate error messages" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/main/media/duplicate.png">
 
 _An example of duplicate error messages emitted by both the built-in linter and vscode-stylelint._
 
-For example, the following entries in `.vscode/settings.json` would disable the built-in CSS, Less, and SCSS linters:
-
-```json
-"css.validate": false,
-"less.validate": false,
-"scss.validate": false
-```
-
 ## Usage
 
-> See the [Stylelint getting started guide] for more information.
+> See the [Stylelint getting started guide](https://stylelint.io/user-guide/get-started) for more information.
 
-Once you create a [Stylelint configuration file] or configure [the Stylelint extension's settings](#extension-settings), Stylelint will automatically validate CSS and [PostCSS][postcss extension] documents (those with [language identifiers] `css` and `postcss`, respectively).
+Once you create a [Stylelint configuration file](https://stylelint.io/user-guide/configure) (or configure [the Stylelint extension's settings](#extension-settings)) and install Stylelint, the extension will automatically lint CSS and [PostCSS](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language) documents (those with [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-identifier) `css` and `postcss`, respectively).
 
 <img width="430" alt="Screenshot of UI to select a language identifier" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/main/media/language.png">
 
 _You can see or change the current document's language in the bottom-right corner of the editor window._
 
-## Migrating from vscode-stylelint 0.x/Stylelint 13.x
+You can use the [`stylelint.validate`](#stylelintvalidate) extension setting to lint additional languages, such as SCSS and CSS-in-JS. For example:
 
-### ⚠️ Stylelint 13.x and Prior is No Longer Supported
+```json
+  "stylelint.validate": ["css", "postcss", "scss", "javascript"],
+```
 
-> See also: [Stylelint 14 migration guide]
+The extension first looks for a copy of Stylelint installed in the open workspace folder, then for a globally installed version if it can't find one. If neither can be found, it will not lint any documents.
 
-vscode-stylelint 1.x expects to use Stylelint 14 at minimum. Usage with prior versions of Stylelint is no longer supported. While older versions may continue to work for a while, you may encounter unexpected behaviour. You should upgrade your copy of Stylelint to version 14 or later for the best experience.
+## Commands
 
-The `syntax` and `configOverrides` options have been removed from Stylelint 14 and this extension. See the [following section](#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for information on how to use different syntaxes.
+The extension adds two commands to the command palette:
 
-### ⚠️ Stylelint is No Longer Bundled
+- `Fix all auto-fixable problems` - apply fixes to all automatically fixable problems
+- `Restart Stylelint Server` - restart the Stylelint LSP and runtime server
 
-Unlike 0.x, 1.x no longer provides a copy of Stylelint bundled with the extension. Bundling Stylelint brought up many unwanted side effects and significantly increased the extension's size.
+## Actions
 
-Starting with 1.x, vscode-stylelint will depend on having a copy of Stylelint installed in the open workspace (recommended) or globally (not recommended). If the extension doesn't seem to be linting any documents, make sure you have Stylelint installed.
+The extension provides an action that you can use with VS Code's [`editor.codeActionsOnSave`](https://code.visualstudio.com/docs/getstarted/settings) setting.
 
-### ⚠️ Only CSS and PostCSS are Validated by Default
+## `editor.codeActionsOnSave`
 
-The 0.x versions of this extension, which used Stylelint 13.x and prior, supported validating many different languages out of the box without any additional configuration. However, this added a lot of complexity and resulted in many cases of unwanted or unexpected behaviour.
+You can automatically fix all auto-fixable problems on save by setting the `source.fixAll.stylelint` property to `explicit`:
 
-In current versions of the extension, the extension only supports validating CSS and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
+```json
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  }
+```
 
-1. Install the PostCSS syntax for the language you want to validate into your workspace, e.g. [postcss-scss].
-   <!-- prettier-ignore -->
-   <!-- cspell:disable-next-line -->
-1. Configure Stylelint to use the syntax by providing the module name in the [`customSyntax`] option using overrides (or use the [corresponding option](#stylelintcustomsyntax) in this extension's settings).
+Or turn on auto fix for all providers, not just Stylelint:
 
-   Example Stylelint config:
+```json
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  }
+```
 
-   ```js
-   module.exports = {
-     overrides: [
-       {
-         files: ["**/*.scss"],
-         customSyntax: "postcss-scss"
-       }
-     ]
-   };
-   ```
+You can also selectively disable Stylelint:
 
-    <!-- prettier-ignore -->
-    <!-- cspell:disable-next-line -->
+```json
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.stylelint": "never"
+  }
+```
 
-1. Add the [language identifiers] for the documents you want to validate to the extension's workspace or user settings using the [`stylelint.validate`](#stylelintvalidate) option.
+You can also selectively enable and disable specific languages using VS Code's language-scoped settings. For example, to disable `codeActionsOnSave` for HTML files, use the following:
 
-   Example VS Code config:
-
-   ```json
-   {
-     "stylelint.validate": ["css", "scss"]
-   }
-   ```
+```json
+  "[html]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.stylelint": "never"
+    }
+  }
+```
 
 ## Extension Settings
 
-Though relying on a [Stylelint configuration file] in your project is highly recommended, you can instead use the following [extension settings][vscode settings]:
+Though relying on a [Stylelint configuration file](https://stylelint.io/user-guide/configure) in your project is highly recommended, you can instead use the following [extension settings](https://code.visualstudio.com/docs/getstarted/settings):
 
 ### `stylelint.enable`
 
@@ -131,28 +129,28 @@ Controls whether this extension is enabled or not.
 > Type: `Object`  
 > Default: `null`
 
-Sets the Stylelint [`config`] option. Note that when this option is enabled, Stylelint doesn't load configuration files.
+Sets the Stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, Stylelint doesn't load configuration files.
 
 ### `stylelint.configFile`
 
 > Type: `string`  
 > Default: `""`
 
-Sets the Stylelint [`configFile`] option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want Stylelint to search for a configuration file.
+Sets the Stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want Stylelint to search for a configuration file.
 
 ### `stylelint.configBasedir`
 
 > Type: `string`  
 > Default: `""`
 
-Sets the Stylelint [`configBasedir`] option. The path to the directory to which relative paths defining "extends" and "plugins" are relative. Only necessary if these values are relative paths.
+Sets the Stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory to which relative paths defining "extends" and "plugins" are relative. Only necessary if these values are relative paths.
 
 ### `stylelint.customSyntax`
 
 > Type: `string`  
 > Default: `""`
 
-Sets the Stylelint [`customSyntax`] option, which points to a [PostCSS syntax] module. Must be either the package name or an absolute path to the module.
+Sets the Stylelint [`customSyntax`](https://stylelint.io/user-guide/usage/options/#customsyntax) option, which points to a [PostCSS syntax](https://github.com/postcss/postcss#syntaxes) module. Must be either the package name or an absolute path to the module.
 
 e.g.
 
@@ -277,48 +275,64 @@ Example:
 
 An array of language identifiers specifying which files to enable snippets for.
 
-### `editor.codeActionsOnSave`
+## Migrating from vscode-stylelint 1.x
 
-This extension provides an action that you can use with VS Code's [`editor.codeActionsOnSave`][vscode settings] setting. If provided a `source.fixAll.stylelint` property set to `explicit`, all auto-fixable Stylelint errors will be fixed on save.
+vscode-stylelint 2.x is the first version of the extension to support Stylelint 17.x. It's also backwards compatible with older version of Stylelint, down to 14.x.
 
-```json
-  "editor.codeActionsOnSave": {
-    "source.fixAll.stylelint": "explicit"
-  }
-```
+It requires VS Code version 1.103.0 or later.
 
-The following turns on auto fix for all providers, not just Stylelint:
+## Migrating from vscode-stylelint 0.x/Stylelint 13.x
 
-```json
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  }
-```
+### Stylelint 13.x and Prior is No Longer Supported
 
-You can also selectively disable Stylelint:
+> See also: [Stylelint 14 migration guide](https://github.com/stylelint/stylelint/blob/main/docs/migration-guide/to-14.md)
 
-```json
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit",
-    "source.fixAll.stylelint": "never"
-  }
-```
+vscode-stylelint 1.x expects to use Stylelint 14 at minimum. Usage with prior versions of Stylelint is no longer supported. While older versions may continue to work for a while, you may encounter unexpected behaviour. You should upgrade your copy of Stylelint to version 14 or later for the best experience.
 
-You can also selectively enable and disable specific languages using VS Code's language-scoped settings. For example, to disable `codeActionsOnSave` for HTML files, use the following:
+The `syntax` and `configOverrides` options have been removed from Stylelint 14 and this extension. See the [following section](#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for information on how to use different syntaxes.
 
-```json
-  "[html]": {
-    "editor.codeActionsOnSave": {
-      "source.fixAll.stylelint": "never"
-    }
-  }
-```
+### Stylelint is No Longer Bundled
 
-## Commands
+Unlike 0.x, 1.x no longer provides a copy of Stylelint bundled with the extension. Bundling Stylelint brought up many unwanted side effects and significantly increased the extension's size.
 
-This extension contributes the following commands to the command palette:
+Starting with 1.x, vscode-stylelint will depend on having a copy of Stylelint installed in the open workspace (recommended) or globally (not recommended). If the extension doesn't seem to be linting any documents, make sure you have Stylelint installed.
 
-- `Fix all auto-fixable problems`: applies Stylelint resolutions to all automatically fixable problems.
+### Only CSS and PostCSS are Validated by Default
+
+The 0.x versions of this extension, which used Stylelint 13.x and prior, supported validating many different languages out of the box without any additional configuration. However, this added a lot of complexity and resulted in many cases of unwanted or unexpected behaviour.
+
+In current versions of the extension, the extension only supports validating CSS and PostCSS out of the box and requires additional configuration to validate other languages. You will need to:
+
+1. Install the PostCSS syntax for the language you want to validate into your workspace, e.g. [postcss-scss](https://www.npmjs.com/package/postcss-scss).
+   <!-- prettier-ignore -->
+   <!-- cspell:disable-next-line -->
+1. Configure Stylelint to use the syntax by providing the module name in the [`customSyntax`](https://stylelint.io/user-guide/usage/options/#customsyntax) option using overrides (or use the [corresponding option](#stylelintcustomsyntax) in this extension's settings).
+
+   Example Stylelint config:
+
+   ```js
+   module.exports = {
+     overrides: [
+       {
+         files: ["**/*.scss"],
+         customSyntax: "postcss-scss"
+       }
+     ]
+   };
+   ```
+
+    <!-- prettier-ignore -->
+    <!-- cspell:disable-next-line -->
+
+1. Add the [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-identifier) for the documents you want to validate to the extension's workspace or user settings using the [`stylelint.validate`](#stylelintvalidate) option.
+
+   Example VS Code config:
+
+   ```json
+   {
+     "stylelint.validate": ["css", "scss"]
+   }
+   ```
 
 ## Troubleshooting
 
@@ -338,26 +352,6 @@ And on Windows by running:
 cmd /C "set NODE_ENV=development&&code"
 ```
 
-## Contributors
-
-Stylelint is maintained by volunteers. Without the code contributions from [all these fantastic people](https://github.com/stylelint/vscode-stylelint/graphs/contributors), Stylelint would not exist. [Become a contributor](https://github.com/stylelint/vscode-stylelint/contribute).
-
-### Sponsors
-
-<object data="https://opencollective.com/stylelint/sponsors.svg?width=420&button=false" type="image/svg+xml">
-  <img src="https://opencollective.com/stylelint/sponsors.svg?width=840&button=false" />
-</object>
-
-Thank you to all our sponsors! [Become a sponsor](https://opencollective.com/stylelint).
-
-### Backers
-
-<object data="https://opencollective.com/stylelint/backers.svg?width=420&avatarHeight=48&button=false" type="image/svg+xml">
-  <img src="https://opencollective.com/stylelint/backers.svg?width=840&avatarHeight=48&button=false" />
-</object>
-
-Thank you to all our backers! [Become a backer](https://opencollective.com/stylelint).
-
 ## Contributing
 
 Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.
@@ -365,40 +359,3 @@ Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) fil
 ## Licence
 
 [MIT](LICENSE)
-
-<!-- Link URLs -->
-
-<!-- Languages -->
-
-[css]: https://www.w3.org/Style/CSS/
-[scss]: https://sass-lang.com/documentation/syntax
-
-<!-- PostCSS -->
-
-[postcss extension]: https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language
-[postcss syntax]: https://github.com/postcss/postcss#syntaxes
-[postcss-scss]: https://www.npmjs.com/package/postcss-scss
-
-<!-- Stylelint -->
-
-[stylelint]: https://stylelint.io/
-[stylelint getting started guide]: https://stylelint.io/user-guide/get-started
-[stylelint configuration file]: https://stylelint.io/user-guide/configure
-[stylelint 14 migration guide]: https://github.com/stylelint/stylelint/blob/main/docs/migration-guide/to-14.md
-[`customsyntax`]: https://stylelint.io/user-guide/usage/options/#customsyntax
-[`config`]: https://stylelint.io/user-guide/usage/node-api#config
-[`configfile`]: https://stylelint.io/user-guide/usage/options#configfile
-[`configbasedir`]: https://stylelint.io/user-guide/usage/options#configbasedir
-[`reportdescriptionlessdisables`]: https://stylelint.io/user-guide/usage/options#reportdescriptionlessdisables
-[`ignoredisables`]: https://stylelint.io/user-guide/usage/options#ignoredisables
-[`reportneedlessdisables`]: https://stylelint.io/user-guide/usage/options#reportneedlessdisables
-[`reportinvalidscopedisables`]: https://stylelint.io/user-guide/usage/options#reportInvalidScopeDisables
-
-<!-- Visual Studio Code -->
-
-[visual studio code]: https://code.visualstudio.com/
-[command palette]: https://code.visualstudio.com/docs/getstarted/userinterface#_command-palette
-[extension installation guide]: https://code.visualstudio.com/docs/editor/extension-gallery
-[language identifiers]: https://code.visualstudio.com/docs/languages/overview#_language-identifier
-[vs code's built-in linters]: https://code.visualstudio.com/docs/languages/css#_syntax-verification-linting
-[vscode settings]: https://code.visualstudio.com/docs/getstarted/settings
