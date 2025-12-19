@@ -11,12 +11,14 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension for 
 **Table of Contents**
 
 - [Installation](#installation)
+  - [Disable VS Code's Built-In Linter](#disable-vs-codes-built-in-linters-optional)
 - [Usage](#usage)
-- [Commands](#commands)
-- [Actions](#actions)
-- [Extension Settings](#extension-settings)
-- [Migrating from vscode-stylelint 1.x](#migrating-from-vscode-stylelint-1x)
-- [Migrating from vscode-stylelint 0.x/Stylelint 13.x](#migrating-from-vscode-stylelint-0xstylelint-13x)
+  - [Commands](#commands)
+  - [Actions](#actions)
+  - [Extension Settings](#extension-settings)
+- [Migrating](#migrating)
+  - [From vscode-stylelint 1.x](#from-vscode-stylelint-1x)
+  - [From vscode-stylelint 0.x/Stylelint 13.x](#from-vscode-stylelint-0xstylelint-13x)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Licence](#licence)
@@ -65,18 +67,18 @@ You can use the [`stylelint.validate`](#stylelintvalidate) extension setting to 
 
 The extension first looks for a copy of Stylelint installed in the open workspace folder, then for a globally installed version if it can't find one. If neither can be found, it will not lint any documents.
 
-## Commands
+### Commands
 
 The extension adds two commands to the command palette:
 
 - `Fix all auto-fixable problems` - apply fixes to all automatically fixable problems
 - `Restart Stylelint Server` - restart the Stylelint LSP and runtime server
 
-## Actions
+### Actions
 
 The extension provides an action that you can use with VS Code's [`editor.codeActionsOnSave`](https://code.visualstudio.com/docs/getstarted/settings) setting.
 
-## `editor.codeActionsOnSave`
+#### `editor.codeActionsOnSave`
 
 You can automatically fix all auto-fixable problems on save by setting the `source.fixAll.stylelint` property to `explicit`:
 
@@ -113,39 +115,39 @@ You can also selectively enable and disable specific languages using VS Code's l
   }
 ```
 
-## Extension Settings
+### Extension Settings
 
 Though relying on a [Stylelint configuration file](https://stylelint.io/user-guide/configure) in your project is highly recommended, you can instead use the following [extension settings](https://code.visualstudio.com/docs/getstarted/settings):
 
-### `stylelint.enable`
+#### `stylelint.enable`
 
 > Type: `boolean`  
 > Default: `true`
 
 Controls whether this extension is enabled or not.
 
-### `stylelint.config`
+#### `stylelint.config`
 
 > Type: `Object`  
 > Default: `null`
 
 Sets the Stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, Stylelint doesn't load configuration files.
 
-### `stylelint.configFile`
+#### `stylelint.configFile`
 
 > Type: `string`  
 > Default: `""`
 
 Sets the Stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want Stylelint to search for a configuration file.
 
-### `stylelint.configBasedir`
+#### `stylelint.configBasedir`
 
 > Type: `string`  
 > Default: `""`
 
 Sets the Stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory to which relative paths defining "extends" and "plugins" are relative. Only necessary if these values are relative paths.
 
-### `stylelint.customSyntax`
+#### `stylelint.customSyntax`
 
 > Type: `string`  
 > Default: `""`
@@ -166,56 +168,56 @@ e.g.
   "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
 ```
 
-### `stylelint.reportDescriptionlessDisables`
+#### `stylelint.reportDescriptionlessDisables`
 
 > Type: `boolean`  
 > Default: `false`
 
 Sets the Stylelint [`reportDescriptionlessDisables`] option. If `true`, Stylelint reports `stylelint-disable` comments without a description.
 
-### `stylelint.ignoreDisables`
+#### `stylelint.ignoreDisables`
 
 > Type: `boolean`  
 > Default: `false`
 
 Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
 
-### `stylelint.reportNeedlessDisables`
+#### `stylelint.reportNeedlessDisables`
 
 > Type: `boolean`  
 > Default: `false`
 
 Sets the Stylelint [`reportNeedlessDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments that are not blocking a lint warning.
 
-### `stylelint.reportInvalidScopeDisables`
+#### `stylelint.reportInvalidScopeDisables`
 
 > Type: `boolean`  
 > Default: `false`
 
 Sets the Stylelint [`reportInvalidScopeDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments referring to rules that don't exist within the configuration object.
 
-### `stylelint.validate`
+#### `stylelint.validate`
 
 > Type: `string[]`  
 > Default: `["css", "postcss"]`
 
 An array of language identifiers specifying which files to validate.
 
-### `stylelint.stylelintPath`
+#### `stylelint.stylelintPath`
 
 > Type: `string`  
 > Default: `""`
 
 Used to supply a custom path to the Stylelint module.
 
-### `stylelint.packageManager`
+#### `stylelint.packageManager`
 
 > Type: `"npm" | "yarn" | "pnpm"`  
 > Default: `"npm"`
 
 Controls the package manager to be used to resolve the Stylelint library. This setting only has an effect if the Stylelint library is resolved globally. Valid values are `"npm"` or `"yarn"` or `"pnpm"`.
 
-### `stylelint.rules.customizations`
+#### `stylelint.rules.customizations`
 
 > Type: `object[]`  
 > Default: `[]`
@@ -268,22 +270,26 @@ Example:
 }
 ```
 
-### `stylelint.snippet`
+#### `stylelint.snippet`
 
 > Type: `string[]`  
 > Default: `["css", "postcss"]`
 
 An array of language identifiers specifying which files to enable snippets for.
 
-## Migrating from vscode-stylelint 1.x
+## Migrating
+
+Migrating from previous major versions of the extension.
+
+### From vscode-stylelint 1.x
 
 vscode-stylelint 2.x is the first version of the extension to support Stylelint 17.x. It's also backwards compatible with older version of Stylelint, down to 14.x.
 
 It requires VS Code version 1.103.0 or later.
 
-## Migrating from vscode-stylelint 0.x/Stylelint 13.x
+### From vscode-stylelint 0.x/Stylelint 13.x
 
-### Stylelint 13.x and Prior is No Longer Supported
+#### Stylelint 13.x and Prior is No Longer Supported
 
 > See also: [Stylelint 14 migration guide](https://github.com/stylelint/stylelint/blob/main/docs/migration-guide/to-14.md)
 
@@ -291,13 +297,13 @@ vscode-stylelint 1.x expects to use Stylelint 14 at minimum. Usage with prior ve
 
 The `syntax` and `configOverrides` options have been removed from Stylelint 14 and this extension. See the [following section](#%EF%B8%8F-only-css-and-postcss-are-validated-by-default) for information on how to use different syntaxes.
 
-### Stylelint is No Longer Bundled
+#### Stylelint is No Longer Bundled
 
 Unlike 0.x, 1.x no longer provides a copy of Stylelint bundled with the extension. Bundling Stylelint brought up many unwanted side effects and significantly increased the extension's size.
 
 Starting with 1.x, vscode-stylelint will depend on having a copy of Stylelint installed in the open workspace (recommended) or globally (not recommended). If the extension doesn't seem to be linting any documents, make sure you have Stylelint installed.
 
-### Only CSS and PostCSS are Validated by Default
+#### Only CSS and PostCSS are Validated by Default
 
 The 0.x versions of this extension, which used Stylelint 13.x and prior, supported validating many different languages out of the box without any additional configuration. However, this added a lot of complexity and resulted in many cases of unwanted or unexpected behaviour.
 
