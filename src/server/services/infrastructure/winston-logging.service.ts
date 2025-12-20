@@ -8,6 +8,7 @@ import {
 } from '../../utils/index.js';
 import { lspConnectionToken } from '../../tokens.js';
 import { type LoggingService, loggingServiceToken } from './logging.service.js';
+import type { LogLevel } from '../../../shared/log-level.js';
 
 export const winstonToken = createToken<typeof winston>('Winston');
 
@@ -15,7 +16,7 @@ export const winstonToken = createToken<typeof winston>('Winston');
  * Creates a Winston-based logging service.
  */
 export function createWinstonLoggingService(
-	level: 'error' | 'warn' | 'info' | 'debug' = 'info',
+	level: LogLevel = 'info',
 	logPath?: string,
 ): FactoryRegistration<LoggingService, [Connection, typeof winston]> {
 	return {
