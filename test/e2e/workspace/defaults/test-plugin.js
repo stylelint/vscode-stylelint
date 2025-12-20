@@ -1,7 +1,7 @@
 'use strict';
 
 // Abbreviated example
-const stylelint = require('stylelint');
+const stylelint = require('stylelint').default ?? require('stylelint');
 
 const ruleName = 'plugin/foo-bar';
 const messages = stylelint.utils.ruleMessages(ruleName, {
