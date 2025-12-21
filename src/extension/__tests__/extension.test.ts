@@ -59,6 +59,18 @@ const stripPaths = <T extends unknown[]>(params: T): T => {
 		if (isModuleOptions(serverOptions)) {
 			serverOptions.run.module = 'mock-path';
 			serverOptions.debug.module = 'mock-path';
+
+			if (serverOptions.run.options?.env) {
+				serverOptions.run.options.env = {
+					STYLELINT_LOG_LEVEL: serverOptions.run.options.env.STYLELINT_LOG_LEVEL,
+				};
+			}
+
+			if (serverOptions.debug.options?.env) {
+				serverOptions.debug.options.env = {
+					STYLELINT_LOG_LEVEL: serverOptions.debug.options.env.STYLELINT_LOG_LEVEL,
+				};
+			}
 		}
 	}
 
@@ -71,6 +83,9 @@ describe('Extension entry point', () => {
 
 		fileWatcherMock = vi.fn((pattern: string) => ({ pattern }));
 		mockWorkspace = {
+			getConfiguration: vi.fn(() => ({
+				get: vi.fn(() => 'info'),
+			})),
 			createFileSystemWatcher: fileWatcherMock,
 			workspaceFolders: [],
 		} as unknown as VSCodeWorkspace;

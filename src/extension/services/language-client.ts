@@ -1,3 +1,4 @@
+import process from 'node:process';
 import type {
 	LanguageClient,
 	LanguageClientOptions,
@@ -6,6 +7,7 @@ import type {
 } from 'vscode-languageclient/node';
 
 import type { LanguageClientModule, VSCodeWorkspace } from './environment.js';
+import { parseLogLevel } from '../../shared/log-level.js';
 
 export type SettingMonitorFactory = (client: LanguageClient) => SettingMonitor;
 
@@ -29,15 +31,23 @@ export function createClientOptions(workspace: VSCodeWorkspace): LanguageClientO
 /**
  * Creates the run/debug configuration for the language server process.
  */
-export function createServerOptions(modulePath: string): ServerOptions {
+export function createServerOptions(modulePath: string, workspace: VSCodeWorkspace): ServerOptions {
+	const configuredLogLevel = workspace.getConfiguration('stylelint').get<string>('logLevel');
+	const logLevel = parseLogLevel(configuredLogLevel) ?? 'info';
+	const env = { ...process.env, STYLELINT_LOG_LEVEL: logLevel };
+
 	return {
 		run: {
 			module: modulePath,
+			options: {
+				env,
+			},
 		},
 		debug: {
 			module: modulePath,
 			options: {
 				execArgv: ['--nolazy', '--inspect=6004'],
+				env,
 			},
 		},
 	};

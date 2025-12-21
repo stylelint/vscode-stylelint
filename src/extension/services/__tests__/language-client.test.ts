@@ -36,17 +36,22 @@ describe('language client services', () => {
 	});
 
 	test('createServerOptions provides run and debug entries', () => {
-		const options = createServerOptions('/tmp/server.js');
+		const workspace = {
+			getConfiguration: () => ({
+				get: (key: string) => (key === 'logLevel' ? 'debug' : undefined),
+			}),
+		} as unknown as VSCodeWorkspace;
+		const options = createServerOptions('/tmp/server.js', workspace);
+		const serverOptions = options as {
+			run: { module: string; options?: { env?: Record<string, string> } };
+			debug: { module: string; options?: { env?: Record<string, string>; execArgv?: string[] } };
+		};
 
-		expect(options).toEqual({
-			run: { module: '/tmp/server.js' },
-			debug: {
-				module: '/tmp/server.js',
-				options: {
-					execArgv: ['--nolazy', '--inspect=6004'],
-				},
-			},
-		});
+		expect(serverOptions.run.module).toBe('/tmp/server.js');
+		expect(serverOptions.debug.module).toBe('/tmp/server.js');
+		expect(serverOptions.debug.options?.execArgv).toEqual(['--nolazy', '--inspect=6004']);
+		expect(serverOptions.run.options?.env?.STYLELINT_LOG_LEVEL).toBe('debug');
+		expect(serverOptions.debug.options?.env?.STYLELINT_LOG_LEVEL).toBe('debug');
 	});
 
 	test('createSettingMonitorFactory wires monitor to client', () => {

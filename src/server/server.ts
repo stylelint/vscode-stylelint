@@ -8,10 +8,11 @@ import { platformModule } from './modules/index.js';
 import { createLanguageServerApplication } from './runtime/application.js';
 import { languageServerModule } from './server.module.js';
 import { createWinstonLoggingService, winstonToken } from './services/index.js';
+import type { LogLevel } from '../shared/log-level.js';
 
 export interface StylelintLanguageServerOptions {
 	connection: Connection;
-	logLevel?: 'error' | 'warn' | 'info' | 'debug';
+	logLevel?: LogLevel;
 	logPath?: string;
 }
 
