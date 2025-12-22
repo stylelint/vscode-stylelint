@@ -8,6 +8,7 @@ import { StylelintNotFoundError } from '../../worker/worker-process.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
 import { PackageRootCacheService } from './package-root-cache.service.js';
 import { PnPConfigurationCacheService } from './pnp-configuration-cache.service.js';
+import { WorkerEnvironmentService } from './worker-environment.service.js';
 import { WorkerRegistryService } from './worker-registry.service.js';
 
 export type WorkspaceLintRequest = {
@@ -29,6 +30,7 @@ export type WorkspaceResolveRequest = {
 		loggingServiceToken,
 		PackageRootCacheService,
 		PnPConfigurationCacheService,
+		WorkerEnvironmentService,
 		WorkerRegistryService,
 	],
 })
@@ -36,17 +38,20 @@ export class WorkspaceStylelintService {
 	#logger?: winston.Logger;
 	readonly #packageRootCache: PackageRootCacheService;
 	readonly #pnpConfigurationCache: PnPConfigurationCacheService;
+	readonly #workerEnvironment: WorkerEnvironmentService;
 	readonly #workerRegistry: WorkerRegistryService;
 
 	constructor(
 		loggingService: LoggingService,
 		packageRootCache: PackageRootCacheService,
 		pnpConfigurationCache: PnPConfigurationCacheService,
+		workerEnvironment: WorkerEnvironmentService,
 		workerRegistry: WorkerRegistryService,
 	) {
 		this.#logger = loggingService.createLogger(WorkspaceStylelintService);
 		this.#packageRootCache = packageRootCache;
 		this.#pnpConfigurationCache = pnpConfigurationCache;
+		this.#workerEnvironment = workerEnvironment;
 		this.#workerRegistry = workerRegistry;
 	}
 
@@ -59,6 +64,11 @@ export class WorkspaceStylelintService {
 			request.options.codeFilename,
 			request.stylelintPath,
 		);
+		const environmentKey = await this.#workerEnvironment.createKey({
+			workerRoot,
+			stylelintPath: request.stylelintPath,
+			pnpConfig,
+		});
 
 		try {
 			return await this.#workerRegistry.runWithWorker(
@@ -66,6 +76,7 @@ export class WorkspaceStylelintService {
 					workspaceFolder: request.workspaceFolder,
 					workerRoot,
 					pnpConfig,
+					environmentKey,
 				},
 				async (worker) =>
 					await worker.lint({
@@ -92,6 +103,11 @@ export class WorkspaceStylelintService {
 			request.codeFilename,
 			request.stylelintPath,
 		);
+		const environmentKey = await this.#workerEnvironment.createKey({
+			workerRoot,
+			stylelintPath: request.stylelintPath,
+			pnpConfig,
+		});
 
 		try {
 			return await this.#workerRegistry.runWithWorker(
@@ -99,6 +115,7 @@ export class WorkspaceStylelintService {
 					workspaceFolder: request.workspaceFolder,
 					workerRoot,
 					pnpConfig,
+					environmentKey,
 				},
 				async (worker) =>
 					await worker.resolve({

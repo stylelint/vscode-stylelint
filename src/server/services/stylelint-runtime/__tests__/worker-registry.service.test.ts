@@ -118,6 +118,29 @@ describe('WorkerRegistryService', () => {
 		expect(factory).toHaveBeenNthCalledWith(2, '/workspace/packages/lib', undefined, undefined);
 	});
 
+	test('restarts a worker when the environment key changes', async () => {
+		const firstWorker = createMockWorker();
+		const secondWorker = createMockWorker();
+		const { registry, factory } = createRegistry([firstWorker, secondWorker]);
+		const baseContext: WorkerContext = {
+			workspaceFolder: '/workspace',
+			workerRoot: '/workspace',
+			environmentKey: 'one',
+		};
+
+		firstWorker.lint.mockResolvedValue('first');
+		secondWorker.lint.mockResolvedValue('second');
+
+		await registry.runWithWorker(baseContext, executeLint);
+
+		await expect(
+			registry.runWithWorker({ ...baseContext, environmentKey: 'two' }, executeLint),
+		).resolves.toBe('second');
+
+		expect(firstWorker.dispose).toHaveBeenCalledTimes(1);
+		expect(factory).toHaveBeenCalledTimes(2);
+	});
+
 	test('creates a new worker after disposing a workspace', async () => {
 		const firstWorker = createMockWorker();
 		const secondWorker = createMockWorker();
