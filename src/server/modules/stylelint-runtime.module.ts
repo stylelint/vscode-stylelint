@@ -12,6 +12,7 @@ import {
 	WorkerProcessService,
 	WorkerRegistryService,
 	WorkspaceStylelintService,
+	WorkerEnvironmentService,
 } from '../services/stylelint-runtime/index.js';
 
 export const stylelintRuntimeModule = module({
@@ -26,5 +27,6 @@ export const stylelintRuntimeModule = module({
 		WorkspaceStylelintService,
 		StylelintOptionsService,
 		StylelintRunnerService,
+		WorkerEnvironmentService,
 	],
 });

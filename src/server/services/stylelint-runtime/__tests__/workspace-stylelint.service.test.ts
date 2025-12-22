@@ -10,6 +10,7 @@ import { StylelintNotFoundError } from '../../../worker/worker-process.js';
 import { loggingServiceToken } from '../../infrastructure/logging.service.js';
 import { PackageRootCacheService } from '../package-root-cache.service.js';
 import { PnPConfigurationCacheService } from '../pnp-configuration-cache.service.js';
+import { WorkerEnvironmentService } from '../worker-environment.service.js';
 import { WorkerRegistryService } from '../worker-registry.service.js';
 import {
 	WorkspaceStylelintService,
@@ -30,6 +31,9 @@ type WorkspaceServiceMocks = {
 		disposeAll: ReturnType<typeof vi.fn>;
 		notifyWorkspaceActivity: ReturnType<typeof vi.fn>;
 		notifyFileActivity: ReturnType<typeof vi.fn>;
+	};
+	workerEnvironment: {
+		createKey: ReturnType<typeof vi.fn>;
 	};
 	packageRootCache: {
 		determineWorkerRoot: ReturnType<typeof vi.fn>;
@@ -71,6 +75,9 @@ const createService = (): WorkspaceServiceMocks => {
 		clearForWorkspace: vi.fn(),
 		clear: vi.fn(),
 	} as unknown as PnPConfigurationCacheService;
+	const workerEnvironment = {
+		createKey: vi.fn().mockResolvedValue('env-key'),
+	} as unknown as WorkerEnvironmentService;
 
 	const logger = createTestLogger();
 	const loggingService = createLoggingServiceStub(logger);
@@ -80,6 +87,7 @@ const createService = (): WorkspaceServiceMocks => {
 				provideTestValue(loggingServiceToken, () => loggingService),
 				provideTestValue(PackageRootCacheService, () => packageRootCache),
 				provideTestValue(PnPConfigurationCacheService, () => pnpCache),
+				provideTestValue(WorkerEnvironmentService, () => workerEnvironment),
 				provideTestValue(WorkerRegistryService, () => workerRegistry),
 				WorkspaceStylelintService,
 			],
@@ -91,6 +99,7 @@ const createService = (): WorkspaceServiceMocks => {
 		service,
 		worker,
 		workerRegistry: workerRegistry as unknown as WorkspaceServiceMocks['workerRegistry'],
+		workerEnvironment: workerEnvironment as unknown as WorkspaceServiceMocks['workerEnvironment'],
 		packageRootCache: packageRootCache as unknown as WorkspaceServiceMocks['packageRootCache'],
 		pnpCache: pnpCache as unknown as WorkspaceServiceMocks['pnpCache'],
 		logger,
@@ -126,6 +135,7 @@ describe('WorkspaceStylelintService', () => {
 				workspaceFolder: '/workspace',
 				workerRoot: '/workspace',
 				pnpConfig: undefined,
+				environmentKey: 'env-key',
 			},
 			expect.any(Function),
 		);

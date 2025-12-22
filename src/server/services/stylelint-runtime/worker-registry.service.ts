@@ -26,6 +26,7 @@ export type WorkerContext = {
 	workspaceFolder: string;
 	workerRoot: string;
 	pnpConfig?: PnPConfiguration;
+	environmentKey?: string;
 };
 
 type WorkerHealthState = {
@@ -37,6 +38,7 @@ type WorkerHealthState = {
 
 type WorkerRecord = {
 	process: StylelintWorkerProcess;
+	environmentKey?: string;
 	state: WorkerHealthState;
 };
 
@@ -169,24 +171,47 @@ export class WorkerRegistryService {
 		const existing = packageWorkers.get(pnpKey);
 
 		if (existing) {
+			if (
+				context.environmentKey &&
+				existing.environmentKey &&
+				existing.environmentKey !== context.environmentKey
+			) {
+				existing.process.dispose();
+				const replacement = this.#createWorkerRecord(context);
+
+				packageWorkers.set(pnpKey, replacement);
+
+				return replacement;
+			}
+
+			if (context.environmentKey && !existing.environmentKey) {
+				existing.environmentKey = context.environmentKey;
+			}
+
 			return existing;
 		}
 
+		const record = this.#createWorkerRecord(context);
+
+		packageWorkers.set(pnpKey, record);
+
+		return record;
+	}
+
+	#createWorkerRecord(context: WorkerContext): WorkerRecord {
 		const worker = this.#workerProcessFactory.createWorkerProcess(
 			context.workerRoot,
 			this.#idleTimeoutMs,
 			context.pnpConfig,
 		);
-		const record: WorkerRecord = {
+
+		return {
 			process: worker,
+			environmentKey: context.environmentKey,
 			state: {
 				consecutiveCrashes: 0,
 			},
 		};
-
-		packageWorkers.set(pnpKey, record);
-
-		return record;
 	}
 
 	#markWorkerHealthy(state: WorkerHealthState): void {

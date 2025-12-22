@@ -15,15 +15,20 @@ export type SettingMonitorFactory = (client: LanguageClient) => SettingMonitor;
  * Builds the language client options for Stylelint.
  */
 export function createClientOptions(workspace: VSCodeWorkspace): LanguageClientOptions {
+	const watchedFiles = [
+		'**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}',
+		'**/stylelint.config.{js,cjs,mjs}',
+		'**/.stylelintignore',
+		'**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}',
+		'**/.pnp.{cjs,js}',
+		'**/.pnp.loader.mjs',
+	];
+
 	return {
 		documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
 		diagnosticCollectionName: 'Stylelint',
 		synchronize: {
-			fileEvents: [
-				workspace.createFileSystemWatcher('**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}'),
-				workspace.createFileSystemWatcher('**/stylelint.config.{js,cjs,mjs}'),
-				workspace.createFileSystemWatcher('**/.stylelintignore'),
-			],
+			fileEvents: watchedFiles.map((pattern) => workspace.createFileSystemWatcher(pattern)),
 		},
 	};
 }

@@ -5,6 +5,7 @@ export * from './process-runner.service.js';
 export * from './pnp-configuration-cache.service.js';
 export * from './stylelint-options.service.js';
 export * from './stylelint-runner.service.js';
+export * from './worker-environment.service.js';
 export * from './worker-process.service.js';
 export * from './worker-registry.service.js';
 export * from './workspace-stylelint.service.js';
