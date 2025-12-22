@@ -171,6 +171,15 @@ export class WorkerRegistryService {
 		const existing = packageWorkers.get(pnpKey);
 
 		if (existing) {
+			if (existing.process.isDisposed()) {
+				existing.process.dispose();
+				const replacement = this.#createWorkerRecord(context);
+
+				packageWorkers.set(pnpKey, replacement);
+
+				return replacement;
+			}
+
 			if (
 				context.environmentKey &&
 				existing.environmentKey &&
