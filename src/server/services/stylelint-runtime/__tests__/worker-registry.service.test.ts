@@ -18,12 +18,14 @@ type MockWorker = {
 	lint: ReturnType<typeof vi.fn>;
 	resolve: ReturnType<typeof vi.fn>;
 	dispose: ReturnType<typeof vi.fn>;
+	isDisposed: ReturnType<typeof vi.fn>;
 };
 
 const createMockWorker = (): MockWorker => ({
 	lint: vi.fn(),
 	resolve: vi.fn(),
 	dispose: vi.fn(),
+	isDisposed: vi.fn(() => false),
 });
 
 const executeLint = async (process: StylelintWorkerProcess) =>
@@ -138,6 +140,28 @@ describe('WorkerRegistryService', () => {
 		).resolves.toBe('second');
 
 		expect(firstWorker.dispose).toHaveBeenCalledTimes(1);
+		expect(factory).toHaveBeenCalledTimes(2);
+	});
+
+	test('recreates a worker that was disposed due to idling', async () => {
+		const firstWorker = createMockWorker();
+		const secondWorker = createMockWorker();
+		const { registry, factory } = createRegistry([firstWorker, secondWorker]);
+		const context: WorkerContext = {
+			workspaceFolder: '/workspace',
+			workerRoot: '/workspace',
+		};
+
+		firstWorker.lint.mockResolvedValue('first');
+		secondWorker.lint.mockResolvedValue('second');
+
+		await expect(registry.runWithWorker(context, executeLint)).resolves.toBe('first');
+
+		firstWorker.isDisposed.mockReturnValue(true);
+		await expect(registry.runWithWorker(context, executeLint)).resolves.toBe('second');
+
+		expect(firstWorker.dispose).toHaveBeenCalledTimes(1);
+		expect(secondWorker.lint).toHaveBeenCalledTimes(1);
 		expect(factory).toHaveBeenCalledTimes(2);
 	});
 
