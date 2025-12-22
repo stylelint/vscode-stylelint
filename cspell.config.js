@@ -40,6 +40,7 @@ const config = {
 		'vscodeignore',
 		'Xerus',
 		'Supertypes',
+		'Unregistration', // Not a word but is used upstream in the LSP package.
 	],
 };
 
