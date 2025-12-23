@@ -11,7 +11,7 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension for 
 **Table of Contents**
 
 - [Installation](#installation)
-  - [Disable VS Code's Built-In Linter (optional)](#disable-vs-codes-built-in-linters-optional)
+  - [Disable VS Code's Built-In Linters (optional)](#disable-vs-codes-built-in-linters-optional)
 - [Usage](#usage)
   - [Commands](#commands)
   - [Actions](#actions)
