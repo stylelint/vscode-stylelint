@@ -34,6 +34,7 @@ async function bundle(): Promise<void> {
 		logLevel: 'info',
 		sourcemap: args.has('--sourcemap'),
 		minify: args.has('--minify'),
+		keepNames: true,
 	};
 
 	try {
