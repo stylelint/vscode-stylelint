@@ -353,7 +353,7 @@ vscode-stylelint writes logs to the VS Code output panel:
 
 ![Screenshot of the Output window](https://user-images.githubusercontent.com/9868643/139115502-ff3daa37-1793-47da-9ef9-70c5706f018a.png)
 
-You can enable more verbose log output by setting the [`loglevel`](#stylelintloglevel) extension setting or by running VS Code with the `NODE_ENV` environment variable set to `development`. You can do this on macOS and \*nix by running:
+You can enable more verbose log output by setting the [`logLevel`](#stylelintloglevel) extension setting or by running VS Code with the `NODE_ENV` environment variable set to `development`. You can do this on macOS and \*nix by running:
 
 ```sh
 NODE_ENV=development code
