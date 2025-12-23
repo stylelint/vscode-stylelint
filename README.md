@@ -261,28 +261,28 @@ e.g.
 > Type: `boolean`  
 > Default: `false`
 
-Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
+Sets the Stylelint [`ignoreDisables`](https://stylelint.io/user-guide/usage/options/#ignoredDisables) option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
 
 #### `stylelint.reportDescriptionlessDisables`
 
 > Type: `boolean`  
 > Default: `false`
 
-Sets the Stylelint [`reportDescriptionlessDisables`] option. If `true`, Stylelint reports `stylelint-disable` comments without a description.
+Sets the Stylelint [`reportDescriptionlessDisables`](https://stylelint.io/user-guide/options/#reportdescriptionlessdisables) option. If `true`, Stylelint reports `stylelint-disable` comments without a description.
 
 #### `stylelint.reportNeedlessDisables`
 
 > Type: `boolean`  
 > Default: `false`
 
-Sets the Stylelint [`reportNeedlessDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments that are not blocking a lint warning.
+Sets the Stylelint [`reportNeedlessDisables`](https://stylelint.io/user-guide/options/#reportneedlessdisables) option. If `true`, Stylelint reports errors for `stylelint-disable` comments that are not blocking a lint warning.
 
 #### `stylelint.reportInvalidScopeDisables`
 
 > Type: `boolean`  
 > Default: `false`
 
-Sets the Stylelint [`reportInvalidScopeDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments referring to rules that don't exist within the configuration object.
+Sets the Stylelint [`reportInvalidScopeDisables`](https://stylelint.io/user-guide/options/#reportinvalidscopedisables) option. If `true`, Stylelint reports errors for `stylelint-disable` comments referring to rules that don't exist within the configuration object.
 
 ## Migrating
 
