@@ -53,7 +53,7 @@ _An example of duplicate error messages emitted by both the built-in linter and 
 
 > See the [Stylelint getting started guide](https://stylelint.io/user-guide/get-started) for more information.
 
-Once you create a [Stylelint configuration file](https://stylelint.io/user-guide/configure) (or configure [the Stylelint extension's settings](#extension-settings)) and install Stylelint, the extension will automatically lint CSS and [PostCSS](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language) documents (those with [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-identifier) `css` and `postcss`, respectively).
+The extension will automatically lint CSS and [PostCSS](https://marketplace.visualstudio.com/items?itemName=mhmadhamster.postcss-language) documents (those with [language identifiers](https://code.visualstudio.com/docs/languages/overview#_language-identifier) `css` and `postcss`, respectively) once you create a [Stylelint configuration file](https://stylelint.io/user-guide/configure) (or configure [the Stylelint extension's settings](#extension-settings)) and install Stylelint.
 
 <img width="430" alt="Screenshot of UI to select a language identifier" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/main/media/language.png">
 
@@ -133,82 +133,19 @@ Controls whether this extension is enabled or not.
 
 Controls the log level used by the Stylelint extension and language server. Restart the extension host or the window after changing the setting, since it's picked up at initialization.
 
-#### `stylelint.config`
-
-> Type: `Object`  
-> Default: `null`
-
-Sets the Stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, Stylelint doesn't load configuration files.
-
-#### `stylelint.configFile`
-
-> Type: `string`  
-> Default: `""`
-
-Sets the Stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want Stylelint to search for a configuration file.
-
-#### `stylelint.configBasedir`
-
-> Type: `string`  
-> Default: `""`
-
-Sets the Stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory to which relative paths defining "extends" and "plugins" are relative. Only necessary if these values are relative paths.
-
-#### `stylelint.customSyntax`
-
-> Type: `string`  
-> Default: `""`
-
-Sets the Stylelint [`customSyntax`](https://stylelint.io/user-guide/usage/options/#customsyntax) option, which points to a [PostCSS syntax](https://github.com/postcss/postcss#syntaxes) module. Must be either the package name or an absolute path to the module.
-
-e.g.
-
-```json
-  "stylelint.customSyntax": "sugarss"
-```
-
-You can use `${workspaceFolder}` to refer to the folder opened in VS Code.
-
-e.g.
-
-```json
-  "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
-```
-
-#### `stylelint.reportDescriptionlessDisables`
-
-> Type: `boolean`  
-> Default: `false`
-
-Sets the Stylelint [`reportDescriptionlessDisables`] option. If `true`, Stylelint reports `stylelint-disable` comments without a description.
-
-#### `stylelint.ignoreDisables`
-
-> Type: `boolean`  
-> Default: `false`
-
-Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
-
-#### `stylelint.reportNeedlessDisables`
-
-> Type: `boolean`  
-> Default: `false`
-
-Sets the Stylelint [`reportNeedlessDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments that are not blocking a lint warning.
-
-#### `stylelint.reportInvalidScopeDisables`
-
-> Type: `boolean`  
-> Default: `false`
-
-Sets the Stylelint [`reportInvalidScopeDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments referring to rules that don't exist within the configuration object.
-
 #### `stylelint.validate`
 
 > Type: `string[]`  
 > Default: `["css", "postcss"]`
 
 An array of language identifiers specifying which files to validate.
+
+#### `stylelint.snippet`
+
+> Type: `string[]`  
+> Default: `["css", "postcss"]`
+
+An array of language identifiers specifying which files to enable snippets for.
 
 #### `stylelint.stylelintPath`
 
@@ -277,12 +214,75 @@ Example:
 }
 ```
 
-#### `stylelint.snippet`
+#### `stylelint.config`
 
-> Type: `string[]`  
-> Default: `["css", "postcss"]`
+> Type: `Object`  
+> Default: `null`
 
-An array of language identifiers specifying which files to enable snippets for.
+Sets the Stylelint [`config`](https://stylelint.io/user-guide/usage/node-api#config) option. Note that when this option is enabled, Stylelint doesn't load configuration files.
+
+#### `stylelint.configFile`
+
+> Type: `string`  
+> Default: `""`
+
+Sets the Stylelint [`configFile`](https://stylelint.io/user-guide/usage/options#configfile) option. Path to a JSON, YAML, or JS file that contains your configuration object. Use this option if you don't want Stylelint to search for a configuration file.
+
+#### `stylelint.configBasedir`
+
+> Type: `string`  
+> Default: `""`
+
+Sets the Stylelint [`configBasedir`](https://stylelint.io/user-guide/usage/options#configbasedir) option. The path to the directory to which relative paths defining "extends" and "plugins" are relative. Only necessary if these values are relative paths.
+
+#### `stylelint.customSyntax`
+
+> Type: `string`  
+> Default: `""`
+
+Sets the Stylelint [`customSyntax`](https://stylelint.io/user-guide/usage/options/#customsyntax) option, which points to a [PostCSS syntax](https://github.com/postcss/postcss#syntaxes) module. Must be either the package name or an absolute path to the module.
+
+e.g.
+
+```json
+  "stylelint.customSyntax": "sugarss"
+```
+
+You can use `${workspaceFolder}` to refer to the folder opened in VS Code.
+
+e.g.
+
+```json
+  "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js"
+```
+
+#### `stylelint.ignoreDisables`
+
+> Type: `boolean`  
+> Default: `false`
+
+Sets the Stylelint [`ignoreDisables`] option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
+
+#### `stylelint.reportDescriptionlessDisables`
+
+> Type: `boolean`  
+> Default: `false`
+
+Sets the Stylelint [`reportDescriptionlessDisables`] option. If `true`, Stylelint reports `stylelint-disable` comments without a description.
+
+#### `stylelint.reportNeedlessDisables`
+
+> Type: `boolean`  
+> Default: `false`
+
+Sets the Stylelint [`reportNeedlessDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments that are not blocking a lint warning.
+
+#### `stylelint.reportInvalidScopeDisables`
+
+> Type: `boolean`  
+> Default: `false`
+
+Sets the Stylelint [`reportInvalidScopeDisables`] option. If `true`, Stylelint reports errors for `stylelint-disable` comments referring to rules that don't exist within the configuration object.
 
 ## Migrating
 
