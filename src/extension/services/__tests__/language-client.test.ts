@@ -32,7 +32,7 @@ describe('language client services', () => {
 			'**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}',
 			'**/stylelint.config.{js,cjs,mjs}',
 			'**/.stylelintignore',
-			'**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}',
+			'**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml,bun.lock}',
 			'**/.pnp.{cjs,js}',
 			'**/.pnp.loader.mjs',
 		]);

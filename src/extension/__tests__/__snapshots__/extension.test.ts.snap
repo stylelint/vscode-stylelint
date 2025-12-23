@@ -47,7 +47,7 @@ exports[`Extension entry point > should create a language client 1`] = `
           "pattern": "**/.stylelintignore",
         },
         {
-          "pattern": "**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}",
+          "pattern": "**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml,bun.lock}",
         },
         {
           "pattern": "**/.pnp.{cjs,js}",
