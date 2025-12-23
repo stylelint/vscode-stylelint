@@ -177,7 +177,7 @@ describe('Extension entry point', () => {
 		expect(fileWatcherMock.mock.calls[1]).toEqual(['**/stylelint.config.{js,cjs,mjs}']);
 		expect(fileWatcherMock.mock.calls[2]).toEqual(['**/.stylelintignore']);
 		expect(fileWatcherMock.mock.calls[3]).toEqual([
-			'**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}',
+			'**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml,bun.lock}',
 		]);
 		expect(fileWatcherMock.mock.calls[4]).toEqual(['**/.pnp.{cjs,js}']);
 		expect(fileWatcherMock.mock.calls[5]).toEqual(['**/.pnp.loader.mjs']);
