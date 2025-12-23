@@ -30,7 +30,7 @@ export function createWinstonLoggingService(
 						new ErrorFormatter(),
 						new LanguageServerFormatter({
 							connection,
-							preferredKeyOrder: ['module', 'uri', 'command'],
+							preferredKeyOrder: ['service', 'uri', 'command'],
 						}),
 					),
 				}),
@@ -62,9 +62,9 @@ export function createWinstonLoggingService(
 
 			return {
 				createLogger: (component: new () => unknown) => {
-					const moduleName = component.name || 'UnknownModule';
+					const serviceName = component.name || 'UnknownService';
 
-					return logger.child({ module: moduleName });
+					return logger.child({ service: serviceName });
 				},
 			};
 		},
