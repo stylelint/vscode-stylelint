@@ -1,9 +1,8 @@
-import type stylelint from 'stylelint';
 import { describe, expect, test } from 'vitest';
+import { LinterResult, type default as stylelint } from 'stylelint';
 import { processLinterResult } from '../process-linter-result.js';
 import { Stylelint, createRuleMetadataSourceFromStylelint } from '../types.js';
 import { createTestLogger } from '../../../../test/helpers/test-logger.js';
-import { LinterResult } from 'stylelint';
 
 /** For compatibility with Stylelint versions prior to 17.x */
 type OldLinterResult = LinterResult & { output: string };

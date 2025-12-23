@@ -1,6 +1,5 @@
 import type { Connection } from 'vscode-languageserver';
-import type LSP from 'vscode-languageserver-protocol';
-import { WorkspaceChange } from 'vscode-languageserver-protocol';
+import { WorkspaceChange, type default as LSP } from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TextDocuments } from 'vscode-languageserver/node';
 import type winston from 'winston';

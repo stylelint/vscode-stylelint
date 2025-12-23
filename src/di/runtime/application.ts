@@ -1,8 +1,7 @@
 import { createContainer, type Container } from '../container.js';
 import type { InjectionToken } from '../inject.js';
 import type { ModuleMetadata } from '../module.js';
-import type { RuntimeServiceConstructor } from './decorators.js';
-import { isRuntimeServiceConstructor } from './decorators.js';
+import { isRuntimeServiceConstructor, type RuntimeServiceConstructor } from './decorators.js';
 import type { RuntimeContext, RuntimeFeature, RuntimeLifecycleParticipant } from './types.js';
 
 export interface RuntimeApplicationOptions {

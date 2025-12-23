@@ -10,11 +10,11 @@ import type winston from 'winston';
 
 import { inject } from '../../../di/index.js';
 import { processLinterResult } from '../../stylelint/process-linter-result.js';
-import type { StylelintResolutionResult } from '../../stylelint/types.js';
 import {
 	createRuleMetadataSourceFromSnapshot,
 	type LintDiagnostics,
 	type RunnerOptions,
+	type StylelintResolutionResult,
 } from '../../stylelint/types.js';
 import {
 	lspConnectionToken,

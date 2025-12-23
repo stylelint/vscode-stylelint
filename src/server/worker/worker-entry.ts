@@ -18,14 +18,14 @@ import type {
 	RunnerOptions,
 	Stylelint,
 } from '../stylelint/types.js';
-import type {
-	SerializedWorkerError,
-	WorkerLintPayload,
-	WorkerRequest,
-	WorkerResolvePayload,
-	WorkerResponse,
+import {
+	stylelintNotFoundError,
+	type SerializedWorkerError,
+	type WorkerLintPayload,
+	type WorkerRequest,
+	type WorkerResolvePayload,
+	type WorkerResponse,
 } from './types.js';
-import { stylelintNotFoundError } from './types.js';
 import { createWorkerLoggingService } from './worker-logging.service.js';
 
 const toAbsoluteDir = (dir: string): string =>

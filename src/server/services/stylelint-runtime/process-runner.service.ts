@@ -1,5 +1,4 @@
-import type { SpawnOptionsWithoutStdio } from 'node:child_process';
-import cp from 'node:child_process';
+import cp, { type SpawnOptionsWithoutStdio } from 'node:child_process';
 import readline from 'node:readline';
 import { inject } from '../../../di/index.js';
 import { ChildProcessModuleToken, ReadlineModuleToken } from '../../tokens.js';
