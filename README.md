@@ -126,6 +126,13 @@ Though relying on a [Stylelint configuration file](https://stylelint.io/user-gui
 
 Controls whether this extension is enabled or not.
 
+#### `stylelint.logLevel`
+
+> Type: `"error" | "warn" | "info" | "debug"`  
+> Default: `"info"`
+
+Controls the log level used by the Stylelint extension and language server. Restart the extension host or the window after changing the setting, since it's picked up at initialization.
+
 #### `stylelint.config`
 
 > Type: `Object`  

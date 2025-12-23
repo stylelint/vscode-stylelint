@@ -8,6 +8,7 @@ import {
 } from '../../utils/index.js';
 import { lspConnectionToken } from '../../tokens.js';
 import { type LoggingService, loggingServiceToken } from './logging.service.js';
+import type { LogLevel } from '../../../shared/log-level.js';
 
 export const winstonToken = createToken<typeof winston>('Winston');
 
@@ -15,7 +16,7 @@ export const winstonToken = createToken<typeof winston>('Winston');
  * Creates a Winston-based logging service.
  */
 export function createWinstonLoggingService(
-	level: 'error' | 'warn' | 'info' | 'debug' = 'info',
+	level: LogLevel = 'info',
 	logPath?: string,
 ): FactoryRegistration<LoggingService, [Connection, typeof winston]> {
 	return {
@@ -29,7 +30,7 @@ export function createWinstonLoggingService(
 						new ErrorFormatter(),
 						new LanguageServerFormatter({
 							connection,
-							preferredKeyOrder: ['module', 'uri', 'command'],
+							preferredKeyOrder: ['service', 'uri', 'command'],
 						}),
 					),
 				}),
@@ -61,9 +62,9 @@ export function createWinstonLoggingService(
 
 			return {
 				createLogger: (component: new () => unknown) => {
-					const moduleName = component.name || 'UnknownModule';
+					const serviceName = component.name || 'UnknownService';
 
-					return logger.child({ module: moduleName });
+					return logger.child({ service: serviceName });
 				},
 			};
 		},

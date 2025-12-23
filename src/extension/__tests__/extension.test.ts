@@ -59,6 +59,18 @@ const stripPaths = <T extends unknown[]>(params: T): T => {
 		if (isModuleOptions(serverOptions)) {
 			serverOptions.run.module = 'mock-path';
 			serverOptions.debug.module = 'mock-path';
+
+			if (serverOptions.run.options?.env) {
+				serverOptions.run.options.env = {
+					STYLELINT_LOG_LEVEL: serverOptions.run.options.env.STYLELINT_LOG_LEVEL,
+				};
+			}
+
+			if (serverOptions.debug.options?.env) {
+				serverOptions.debug.options.env = {
+					STYLELINT_LOG_LEVEL: serverOptions.debug.options.env.STYLELINT_LOG_LEVEL,
+				};
+			}
 		}
 	}
 
@@ -71,6 +83,9 @@ describe('Extension entry point', () => {
 
 		fileWatcherMock = vi.fn((pattern: string) => ({ pattern }));
 		mockWorkspace = {
+			getConfiguration: vi.fn(() => ({
+				get: vi.fn(() => 'info'),
+			})),
 			createFileSystemWatcher: fileWatcherMock,
 			workspaceFolders: [],
 		} as unknown as VSCodeWorkspace;
@@ -155,12 +170,17 @@ describe('Extension entry point', () => {
 	it('should watch for changes to Stylelint configuration files', async () => {
 		await activate(mockExtensionContext, moduleOverrides);
 
-		expect(fileWatcherMock).toHaveBeenCalledTimes(3);
+		expect(fileWatcherMock).toHaveBeenCalledTimes(6);
 		expect(fileWatcherMock.mock.calls[0]).toEqual([
 			'**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}',
 		]);
 		expect(fileWatcherMock.mock.calls[1]).toEqual(['**/stylelint.config.{js,cjs,mjs}']);
 		expect(fileWatcherMock.mock.calls[2]).toEqual(['**/.stylelintignore']);
+		expect(fileWatcherMock.mock.calls[3]).toEqual([
+			'**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}',
+		]);
+		expect(fileWatcherMock.mock.calls[4]).toEqual(['**/.pnp.{cjs,js}']);
+		expect(fileWatcherMock.mock.calls[5]).toEqual(['**/.pnp.loader.mjs']);
 	});
 
 	it('should register an auto-fix command', async () => {

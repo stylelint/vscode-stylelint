@@ -83,9 +83,9 @@ export function createWorkerLoggingService(
 
 	return {
 		createLogger: (component) => {
-			const moduleName = component.name || 'WorkerComponent';
+			const serviceName = component.name || 'UnknownService';
 
-			return logger.child({ module: moduleName });
+			return logger.child({ service: serviceName });
 		},
 	};
 }

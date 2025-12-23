@@ -7,6 +7,9 @@ exports[`Extension entry point > should create a language client 1`] = `
     "debug": {
       "module": "mock-path",
       "options": {
+        "env": {
+          "STYLELINT_LOG_LEVEL": "info",
+        },
         "execArgv": [
           "--nolazy",
           "--inspect=6004",
@@ -15,6 +18,11 @@ exports[`Extension entry point > should create a language client 1`] = `
     },
     "run": {
       "module": "mock-path",
+      "options": {
+        "env": {
+          "STYLELINT_LOG_LEVEL": "info",
+        },
+      },
     },
   },
   {
@@ -37,6 +45,15 @@ exports[`Extension entry point > should create a language client 1`] = `
         },
         {
           "pattern": "**/.stylelintignore",
+        },
+        {
+          "pattern": "**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}",
+        },
+        {
+          "pattern": "**/.pnp.{cjs,js}",
+        },
+        {
+          "pattern": "**/.pnp.loader.mjs",
         },
       ],
     },

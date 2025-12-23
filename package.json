@@ -56,6 +56,18 @@
           "default": true,
           "description": "Control whether Stylelint is enabled or not."
         },
+        "stylelint.logLevel": {
+          "scope": "machine",
+          "type": "string",
+          "enum": [
+            "error",
+            "warn",
+            "info",
+            "debug"
+          ],
+          "default": "info",
+          "description": "Controls the log level used by the Stylelint extension and language server. Restart the extension host or the window after changing the setting, since it's picked up at initialization."
+        },
         "stylelint.codeAction.disableRuleComment": {
           "scope": "resource",
           "type": "object",

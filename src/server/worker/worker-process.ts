@@ -154,6 +154,13 @@ export class StylelintWorkerProcess {
 		this.#pnpConfig = pnpConfig;
 	}
 
+	/**
+	 * Indicates whether the worker process has been disposed.
+	 */
+	isDisposed(): boolean {
+		return this.#disposed;
+	}
+
 	async lint(payload: WorkerLintPayload): Promise<WorkerLintResult> {
 		const result = (await this.#sendRequest('lint', payload)) as WorkerLintResult;
 

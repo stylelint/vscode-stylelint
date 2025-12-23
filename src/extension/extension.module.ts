@@ -15,7 +15,7 @@ export const extensionModule = module({
 	register: [
 		{
 			token: extensionTokens.serverOptions,
-			inject: [extensionTokens.serverModulePath],
+			inject: [extensionTokens.serverModulePath, extensionTokens.workspace],
 			useFactory: createServerOptions,
 		},
 		{

@@ -74,11 +74,11 @@ describe('createWinstonLoggerFactory', () => {
 			}),
 		);
 
-		const logger = loggingService.createLogger(class ExampleModule {});
+		const logger = loggingService.createLogger(class ExampleService {});
 
-		expect(logger).toEqual({ module: 'ExampleModule' });
+		expect(logger).toEqual({ service: 'ExampleService' });
 		expect(winstonStub.createLogger.mock.results[0]?.value.child).toHaveBeenCalledWith({
-			module: 'ExampleModule',
+			service: 'ExampleService',
 		});
 	});
 

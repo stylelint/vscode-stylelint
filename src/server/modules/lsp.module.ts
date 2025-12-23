@@ -10,6 +10,7 @@ import {
 	FormatterLspService,
 	OldStylelintWarningLspService,
 	ValidatorLspService,
+	WorkspaceActivityLspService,
 } from '../services/lsp/index.js';
 
 export const lspModule = module({
@@ -22,5 +23,6 @@ export const lspModule = module({
 		FormatterLspService,
 		OldStylelintWarningLspService,
 		ValidatorLspService,
+		WorkspaceActivityLspService,
 	],
 });

@@ -1,3 +1,4 @@
+import process from 'node:process';
 import type {
 	LanguageClient,
 	LanguageClientOptions,
@@ -6,6 +7,7 @@ import type {
 } from 'vscode-languageclient/node';
 
 import type { LanguageClientModule, VSCodeWorkspace } from './environment.js';
+import { parseLogLevel } from '../../shared/log-level.js';
 
 export type SettingMonitorFactory = (client: LanguageClient) => SettingMonitor;
 
@@ -13,15 +15,20 @@ export type SettingMonitorFactory = (client: LanguageClient) => SettingMonitor;
  * Builds the language client options for Stylelint.
  */
 export function createClientOptions(workspace: VSCodeWorkspace): LanguageClientOptions {
+	const watchedFiles = [
+		'**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}',
+		'**/stylelint.config.{js,cjs,mjs}',
+		'**/.stylelintignore',
+		'**/{package.json,package-lock.json,yarn.lock,pnpm-lock.yaml}',
+		'**/.pnp.{cjs,js}',
+		'**/.pnp.loader.mjs',
+	];
+
 	return {
 		documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
 		diagnosticCollectionName: 'Stylelint',
 		synchronize: {
-			fileEvents: [
-				workspace.createFileSystemWatcher('**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}'),
-				workspace.createFileSystemWatcher('**/stylelint.config.{js,cjs,mjs}'),
-				workspace.createFileSystemWatcher('**/.stylelintignore'),
-			],
+			fileEvents: watchedFiles.map((pattern) => workspace.createFileSystemWatcher(pattern)),
 		},
 	};
 }
@@ -29,15 +36,23 @@ export function createClientOptions(workspace: VSCodeWorkspace): LanguageClientO
 /**
  * Creates the run/debug configuration for the language server process.
  */
-export function createServerOptions(modulePath: string): ServerOptions {
+export function createServerOptions(modulePath: string, workspace: VSCodeWorkspace): ServerOptions {
+	const configuredLogLevel = workspace.getConfiguration('stylelint').get<string>('logLevel');
+	const logLevel = parseLogLevel(configuredLogLevel) ?? 'info';
+	const env = { ...process.env, STYLELINT_LOG_LEVEL: logLevel };
+
 	return {
 		run: {
 			module: modulePath,
+			options: {
+				env,
+			},
 		},
 		debug: {
 			module: modulePath,
 			options: {
 				execArgv: ['--nolazy', '--inspect=6004'],
+				env,
 			},
 		},
 	};
