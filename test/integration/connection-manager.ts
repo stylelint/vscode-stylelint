@@ -3,8 +3,12 @@
 
 import { Duplex } from 'stream';
 import * as LSP from 'vscode-languageserver-protocol';
-import { StreamMessageReader, StreamMessageWriter } from 'vscode-languageserver/node';
-import type { Connection, WatchDog } from 'vscode-languageserver/node';
+import {
+	StreamMessageReader,
+	StreamMessageWriter,
+	type Connection,
+	type WatchDog,
+} from 'vscode-languageserver/node';
 import { createConnection } from 'vscode-languageserver/lib/common/server';
 
 class TestStream extends Duplex {

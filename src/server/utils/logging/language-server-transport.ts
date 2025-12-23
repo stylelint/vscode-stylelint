@@ -1,8 +1,7 @@
-import TransportStream from 'winston-transport';
+import TransportStream, { type TransportStreamOptions } from 'winston-transport';
 import { LEVEL, MESSAGE } from 'triple-beam';
 import type winston from 'winston';
 import type { Connection, RemoteConsole } from 'vscode-languageserver/node';
-import type { TransportStreamOptions } from 'winston-transport';
 
 import { getLogFunction } from './get-log-function.js';
 

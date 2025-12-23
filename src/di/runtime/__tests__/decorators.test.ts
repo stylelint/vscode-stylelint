@@ -1,8 +1,7 @@
 import { describe, expect, test } from 'vitest';
 
-import { runtimeService } from '../decorators.js';
+import { runtimeService, isRuntimeServiceConstructor } from '../decorators.js';
 import { runtimeServiceSymbol } from '../symbols.js';
-import { isRuntimeServiceConstructor } from '../decorators.js';
 
 describe('runtime decorators', () => {
 	test('runtimeService marks constructors with the runtime symbol', () => {
