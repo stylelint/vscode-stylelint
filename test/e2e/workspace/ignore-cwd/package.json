@@ -1,0 +1,7 @@
+{
+  "name": "ignore-cwd",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
