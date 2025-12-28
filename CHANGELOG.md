@@ -2,7 +2,7 @@
 
 ## 2.0.0 - 2025-12-28
 
-This release rearchitects the extension to support Stylelint 17.
+This release changes the extension's architecture to support Stylelint 17.
 
 - Removed: support for VS Code less than 1.103.0 ([#762](https://github.com/stylelint/vscode-stylelint/pull/762)).
 - Added: support for Stylelint 17 ([#762](https://github.com/stylelint/vscode-stylelint/pull/762)).
