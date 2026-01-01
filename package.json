@@ -243,7 +243,7 @@
     "vscode-languageserver-textdocument": "^1.0.12",
     "vscode-languageserver-types": "^3.17.5",
     "vscode-uri": "^3.0.8",
-    "winston": "^3.18.3",
+    "winston": "^3.19.0",
     "winston-transport": "^4.7.1"
   },
   "devDependencies": {
