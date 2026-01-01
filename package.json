@@ -270,7 +270,7 @@
     "postcss-scss": "^4.0.9",
     "postcss-styled-syntax": "^0.7.1",
     "prettier": "^3.6.2",
-    "stylelint": "^16.26.0",
+    "stylelint": "^16.26.1",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "stylelint-scss": "^6.12.1",
