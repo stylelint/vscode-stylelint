@@ -59,10 +59,18 @@ The extension will automatically lint CSS and [PostCSS](https://marketplace.visu
 
 _You can see or change the current document's language in the bottom-right corner of the editor window._
 
-You can use the [`stylelint.validate`](#stylelintvalidate) extension setting to lint additional languages, such as SCSS and CSS-in-JS. For example:
+You can use the [`stylelint.validate`](#stylelintvalidate) extension setting to lint additional languages.
+
+For example, to additionally lint SCSS:
 
 ```json
-  "stylelint.validate": ["css", "postcss", "scss", "javascript"],
+  "stylelint.validate": ["css", "postcss", "scss"],
+```
+
+Or to additionally lint CSS-in-JS in JSX and TSX:
+
+```json
+  "stylelint.validate": ["css", "postcss", "javascriptreact", "typescriptreact"],
 ```
 
 The extension first looks for a copy of Stylelint installed in the open workspace folder, then for a globally installed version if it can't find one. If neither can be found, it will not lint any documents.
