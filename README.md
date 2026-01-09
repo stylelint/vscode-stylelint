@@ -146,7 +146,7 @@ Controls the log level used by the Stylelint extension and language server. Rest
 > Type: `string[]`  
 > Default: `["css", "postcss"]`
 
-An array of language identifiers specifying which files to validate.
+An array of [language identifiers](https://code.visualstudio.com/docs/languages/identifiers#_known-language-identifiers) specifying which files to validate.
 
 #### `stylelint.snippet`
 
