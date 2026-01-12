@@ -18,7 +18,7 @@ body:
   - type: input
     id: reproduction-url
     attributes:
-      label: Link to Minimal Reproducible Example
+      label: Minimal Reproducible Example link
       description: |
         A [minimal reproduction is required](https://antfu.me/posts/why-reproductions-are-required) so that others can help debug your issue. If a report is vague (e.g. just a generic error message) and has no reproduction, it may be closed.
       placeholder: |
