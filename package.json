@@ -266,7 +266,7 @@
     "@types/triple-beam": "^1.3.5",
     "@types/vscode": "1.103.0",
     "@vitest/coverage-v8": "^4.0.16",
-    "@vitest/eslint-plugin": "^1.6.3",
+    "@vitest/eslint-plugin": "^1.6.5",
     "@vscode/test-cli": "^0.0.12",
     "@vscode/test-electron": "^2.5.2",
     "@vscode/vsce": "^3.7.1",
