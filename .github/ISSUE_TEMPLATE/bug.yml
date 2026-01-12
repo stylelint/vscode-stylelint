@@ -7,7 +7,7 @@ body:
       value: |
         Thank you for taking the time to report a bug!
 
-        >**NOTE:** If the bug can be reproduced using the Stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the [Stylelint issue tracker](https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.yml) instead.
+        >**NOTE:** If you can reproduce the bug using the Stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the [Stylelint issue tracker](https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.yml) instead.
   - type: textarea
     id: reproduction-steps
     attributes:
