@@ -38,7 +38,7 @@ body:
   - type: textarea
     id: stylelint-config
     attributes:
-      label: Stylelint Configuration that reproduces the bug
+      label: Stylelint configuration that reproduces the bug
       placeholder: |
         ```js
         export default {
@@ -76,9 +76,9 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: Stylelint Extension Logs
+      label: Extension logs
       description: |
-        Copy and paste the [relevant Stylelint logs](https://github.com/stylelint/vscode-stylelint?tab=readme-ov-file#troubleshooting).
+        Copy and paste the [relevant logs](https://github.com/stylelint/vscode-stylelint?tab=readme-ov-file#troubleshooting).
 
         ![Screenshot of the Output window](https://user-images.githubusercontent.com/9868643/140396398-c6a87385-e3c6-4de3-9414-33d1aad96187.png)
       placeholder: 'e.g. [Debug - 4:20:34 p.m.] [language-server] Error occurred while…'
@@ -87,7 +87,7 @@ body:
   - type: input
     id: stylelint-version
     attributes:
-      label: Stylelint Version
+      label: Stylelint version
       description: You can use `npx stylelint -v`, `yarn dlx stylelint -v`, etc.
       placeholder: e.g. v14.0.0
     validations:
@@ -95,7 +95,7 @@ body:
   - type: input
     id: extension-version
     attributes:
-      label: vscode-stylelint Version
+      label: vscode-stylelint version
       description: You can find the extension's version in VS Code's extension panel.
       placeholder: e.g. v1.0.0
     validations:
@@ -103,7 +103,7 @@ body:
   - type: input
     id: node-version
     attributes:
-      label: Node.js Version
+      label: Node.js version
       description: You can use `node -v`.
       placeholder: e.g. v16.9.0
     validations:
@@ -111,7 +111,7 @@ body:
   - type: input
     id: operating-system
     attributes:
-      label: Operating System and Version
+      label: Operating System and version
       placeholder: e.g. macOS 10.15.7
     validations:
       required: true
