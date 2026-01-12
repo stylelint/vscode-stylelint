@@ -1,29 +1,26 @@
-name: "\U0001F41B Bug Report"
-description: File a bug report
-title: '[Bug]: '
+name: 🐛 Report a bug
+description: Is something not working as you expect?
 labels: []
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to file a bug report!
+        Thank you for taking the time to report a bug!
 
-        >**NOTE:** If the bug can be reproduced using the Stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the [Stylelint issue tracker](https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.md) instead.
+        >**NOTE:** If you can reproduce the bug using the Stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the [Stylelint issue tracker](https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.yml) instead.
   - type: textarea
     id: reproduction-steps
     attributes:
       label: How did you encounter this bug?
-      description: Describe how this bug can be reproduced.
       placeholder: e.g. Expressions with empty object literals cause an error.
     validations:
       required: true
   - type: input
     id: reproduction-url
     attributes:
-      label: Link to Minimal Reproducible Example
+      label: Minimal Reproducible Example link
       description: |
-        Create a minimal reproduction of the problem. **A minimal reproduction is required** so that others can help debug your issue. If a report is vague (e.g. just a generic error message) and has no reproduction, it may be closed.
-        See also [Why Reproductions are Required](https://antfu.me/posts/why-reproductions-are-required)
+        A [minimal reproduction is required](https://antfu.me/posts/why-reproductions-are-required) so that others can help debug your issue. If a report is vague (e.g. just a generic error message) and has no reproduction, it may be closed.
       placeholder: |
         e.g. https://github.com/[your]/[repo]
     validations:
@@ -31,8 +28,7 @@ body:
   - type: textarea
     id: code-snippet
     attributes:
-      label: Code Snippet
-      description: Provide a code snippet that reproduces the bug.
+      label: Code snippet that reproduces the bug
       placeholder: |
         ```css
         .foo {
@@ -42,69 +38,64 @@ body:
   - type: textarea
     id: stylelint-config
     attributes:
-      label: Stylelint Configuration
-      description: Stylelint configuration is needed to reproduce the bug?
+      label: Stylelint configuration that reproduces the bug
       placeholder: |
         ```js
-        module.exports = {
-          extends: ['stylelint-config-standard'],
-          rules: {
-            'block-opening-brace-newline-after': 'always-multi-line'
-          },
+        export default {
+          extends: ["stylelint-config-standard"]
         };
         ```
   - type: textarea
     id: extension-config
     attributes:
-      label: Extension Configuration
-      description: What vscode-stylelint configuration is needed to reproduce the bug?
+      label: Extension configuration that reproduces the bug
       placeholder: |
+        ```json
         {
           "stylelint.customSyntax": "${workspaceFolder}/custom-syntax.js",
           "editor.codeActionsOnSave": {
             "source.fixAll.stylelint": true
           }
         }
+        ```
       render: json
   - type: textarea
     id: actual-behaviour
     attributes:
-      label: Actual Behaviour
-      description: What happens currently and how is it wrong?
+      label: What happens currently and how is it wrong?
       placeholder: e.g. The editor shows an error message…
     validations:
       required: true
   - type: textarea
     id: expected-behaviour
     attributes:
-      label: Expected Behaviour
-      description: What did you expect to happen?
+      label: What did you expect to happen?
       placeholder: e.g. The editor should lint without errors.
     validations:
       required: true
   - type: textarea
     id: logs
     attributes:
-      label: Logs
+      label: Extension logs
       description: |
-        Start VS Code using `NODE_ENV=development code` on macOS/*nix or `cmd /C "set NODE_ENV=development&&code"` on Windows, then reproduce your issue. Select Stylelint in the Output window drop-down, then copy and paste the relevant logs into the text area below.
+        Copy and paste the [relevant logs](https://github.com/stylelint/vscode-stylelint?tab=readme-ov-file#troubleshooting).
 
         ![Screenshot of the Output window](https://user-images.githubusercontent.com/9868643/140396398-c6a87385-e3c6-4de3-9414-33d1aad96187.png)
-      placeholder: 'Logs should look like: [Debug - 4:20:34 p.m.] [language-server] Error occurred while…'
+      placeholder: 'e.g. [Debug - 4:20:34 p.m.] [language-server] Error occurred while…'
     validations:
       required: false
   - type: input
     id: stylelint-version
     attributes:
-      label: Stylelint Version
-      description: Get the version of Stylelint you're using by running `npx stylelint -v`, `yarn stylelint -v`, etc.
+      label: Stylelint version
+      description: You can use `npx stylelint -v`, `yarn dlx stylelint -v`, etc.
       placeholder: e.g. v14.0.0
     validations:
       required: true
   - type: input
     id: extension-version
     attributes:
-      label: vscode-stylelint Version
+      label: vscode-stylelint version
       description: You can find the extension's version in VS Code's extension panel.
       placeholder: e.g. v1.0.0
     validations:
@@ -112,16 +103,15 @@ body:
   - type: input
     id: node-version
     attributes:
-      label: Node.js Version
-      description: Get the version of Node.js you're using by running `node -v`
+      label: Node.js version
+      description: You can use `node -v`.
       placeholder: e.g. v16.9.0
     validations:
       required: true
   - type: input
     id: operating-system
     attributes:
-      label: Operating System
-      description: What operating system are you using and what is its version?
+      label: Operating System and version
       placeholder: e.g. macOS 10.15.7
     validations:
       required: true
@@ -129,13 +119,5 @@ body:
     id: wsl
     attributes:
       label: Windows Subsystem for Linux
-      description: If you are running VS Code on Windows Subsystem for Linux (WSL), please specify what version of WSL and Windows you are using.
+      description: If you are running VS Code on Windows Subsystem for Linux (WSL), specify what version of WSL and Windows you are using.
       placeholder: e.g. WSL 2, Windows 11 21H2
-  - type: checkboxes
-    id: terms
-    attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/stylelint/vscode-stylelint/blob/main/CODE_OF_CONDUCT.md).
-      options:
-        - label: I agree to follow vscode-stylelint's Code of Conduct
-          required: true
