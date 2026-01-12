@@ -273,7 +273,7 @@
     "cspell": "^9.4.0",
     "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
-    "eslint-config-stylelint": "^26.0.0",
+    "eslint-config-stylelint": "^26.1.0",
     "eslint-plugin-jsdoc": "^61.5.0",
     "execa": "^9.6.1",
     "fast-glob": "^3.2.7",
@@ -292,7 +292,7 @@
     "tsx": "^4.21.0",
     "typed-emitter": "^2.1.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.50.1",
+    "typescript-eslint": "^8.51.0",
     "vitest": "^4.0.16"
   },
   "scripts": {
