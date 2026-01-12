@@ -1,0 +1,99 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`StylelintRunner > should call stylelint.lint with the document path and given options 1`] = `
+{
+  "code": "a {}",
+  "codeFilename": "/path/to/file.scss",
+  "computeEditInfo": true,
+  "config": {
+    "customSyntax": "postcss-scss",
+  },
+  "configBasedir": undefined,
+  "configFile": undefined,
+  "customSyntax": undefined,
+  "cwd": "/",
+  "fix": true,
+  "formatter": [Function],
+  "ignoreDisables": undefined,
+  "reportDescriptionlessDisables": undefined,
+  "reportInvalidScopeDisables": undefined,
+  "reportNeedlessDisables": undefined,
+}
+`;
+
+exports[`StylelintRunner > should return processed lint results from Stylelint with configured rules 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "block-no-empty",
+      "codeDescription": {
+        "href": "https://stylelint.io/user-guide/rules/block-no-empty",
+      },
+      "message": "Unexpected empty block (block-no-empty)",
+      "range": {
+        "end": {
+          "character": 4,
+          "line": 0,
+        },
+        "start": {
+          "character": 2,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;
+
+exports[`StylelintRunner > should return processed lint results from Stylelint without configured rules 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "CssSyntaxError",
+      "message": "Unclosed block (CssSyntaxError)",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;
+
+exports[`StylelintRunner > should throw errors thrown by Stylelint 1`] = `[Error: You must pass stylelint a \`files\` glob or a \`code\` string, though not both]`;
+
+exports[`StylelintRunner > should use workspace worker results when available 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "block-no-empty",
+      "message": "Unexpected empty block (block-no-empty)",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;

@@ -1,0 +1,14 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`mergeOptionsWithDefaults > with circular references, should not infinitely recurse 1`] = `
+{
+  "a": 4,
+  "b": {
+    "c": 1,
+    "d": {
+      "a": 4,
+      "b": [Circular],
+    },
+  },
+}
+`;

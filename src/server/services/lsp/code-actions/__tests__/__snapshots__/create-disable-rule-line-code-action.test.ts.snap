@@ -1,0 +1,68 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`DisableRuleLineCodeActionFactory > should create a code action to disable a rule for a line using the previous line 1`] = `
+{
+  "edit": {
+    "changeAnnotations": undefined,
+    "documentChanges": [
+      {
+        "edits": [
+          {
+            "newText": "/* stylelint-disable-next-line rule */
+",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0,
+              },
+              "start": {
+                "character": 0,
+                "line": 0,
+              },
+            },
+          },
+        ],
+        "textDocument": {
+          "uri": "file:///home/user/src/file.css",
+          "version": 1,
+        },
+      },
+    ],
+  },
+  "kind": "quickfix",
+  "title": "Disable rule for this line",
+}
+`;
+
+exports[`DisableRuleLineCodeActionFactory > should create a code action to disable a rule for a line using the same line 1`] = `
+{
+  "edit": {
+    "changeAnnotations": undefined,
+    "documentChanges": [
+      {
+        "edits": [
+          {
+            "newText": " /* stylelint-disable-line rule */",
+            "range": {
+              "end": {
+                "character": 2147483647,
+                "line": 0,
+              },
+              "start": {
+                "character": 2147483647,
+                "line": 0,
+              },
+            },
+          },
+        ],
+        "textDocument": {
+          "uri": "file:///home/user/src/file.css",
+          "version": 1,
+        },
+      },
+    ],
+  },
+  "kind": "quickfix",
+  "title": "Disable rule for this line",
+}
+`;

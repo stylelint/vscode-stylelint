@@ -1,7 +1,6 @@
-/* eslint-disable jsdoc/require-jsdoc */
 import * as assert from 'node:assert/strict';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import semver from 'semver';
+import stylelintPackage from 'stylelint/package.json';
 
 import {
 	commands,
@@ -21,6 +20,78 @@ import {
 	type TextEditor,
 	type Uri,
 } from 'vscode';
+
+const stylelintVersion = stylelintPackage.version;
+
+/**
+ * A mapping of semver version ranges to values of type T, with an optional
+ * default value.
+ */
+export type MatchBlock<T, HasDefault = never> = {
+	[versionRange: string]: T;
+} & (HasDefault extends never ? object : { default: T });
+
+/**
+ * Returns the first value from `matches` where the key semver-satisfies
+ * the current Stylelint version.
+ *
+ * @param matches An object where keys are semver version ranges and values are
+ * of type T.
+ * @returns The matched value of type T, or undefined if no match is found.
+ */
+export function matchVersion<T>(matches: MatchBlock<T>): T | undefined;
+/**
+ * Returns the first value from `matches` where the key semver-satisfies
+ * the current Stylelint version, or the `default` value if no match is found.
+ *
+ * @param matches An object where keys are semver version ranges and values are
+ * of type T, plus a `default` key.
+ * @returns The matched value of type T, or the `default` value.
+ */
+export function matchVersion<T>(matches: MatchBlock<T, true>): T;
+export function matchVersion<T, TDefault>(matches: MatchBlock<T, TDefault>): T | undefined {
+	const { default: defaultValue, ...rest } = matches;
+
+	for (const [versionRange, value] of Object.entries(rest)) {
+		if (semver.satisfies(stylelintVersion, versionRange, { includePrerelease: true })) {
+			return value;
+		}
+	}
+
+	if ('default' in matches) {
+		return defaultValue;
+	}
+
+	return undefined;
+}
+
+export function itOnVersion(
+	versionRange: string,
+	name: string,
+	fn: Mocha.Func | Mocha.AsyncFunc,
+): Mocha.Test {
+	const testName = `(Stylelint ${versionRange}) ${name}`;
+
+	if (semver.satisfies(stylelintVersion, versionRange)) {
+		return it(testName, fn);
+	}
+
+	return it.skip(testName, fn);
+}
+
+export function describeOnVersion(
+	versionRange: string,
+	name: string,
+	fn: (this: Mocha.Suite) => void,
+): Mocha.Suite | void {
+	const describeName = `(Stylelint ${versionRange}) ${name}`;
+
+	if (semver.satisfies(stylelintVersion, versionRange)) {
+		return describe(describeName, fn);
+	}
+
+	return describe.skip(describeName, fn);
+}
 
 export function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms));
@@ -70,8 +141,8 @@ export async function waitFor<T>(
 	condition: (result: T) => boolean,
 	{ timeout = 10000, interval = 20 }: WaitForOptions = {},
 ): Promise<T> {
-	let intervalRef: NodeJS.Timer;
-	let timeoutRef: NodeJS.Timeout;
+	let intervalRef: ReturnType<typeof setInterval>;
+	let timeoutRef: ReturnType<typeof setTimeout>;
 
 	return new Promise((resolve, reject) => {
 		intervalRef = setInterval(() => {
@@ -101,6 +172,18 @@ export function waitForDiagnostics(
 	return waitFor(
 		() => getStylelintDiagnostics(uri),
 		(diagnostics) => diagnostics.length > 0,
+		options,
+	);
+}
+
+export function waitForDiagnosticsLength(
+	uri: Uri,
+	expectedLength: number,
+	options?: WaitForOptions,
+): Promise<Diagnostic[]> {
+	return waitFor(
+		() => getStylelintDiagnostics(uri),
+		(diagnostics) => diagnostics.length === expectedLength,
 		options,
 	);
 }
@@ -290,21 +373,4 @@ export async function getCodeActions(
 			selection,
 		)) ?? []
 	);
-}
-
-let stylelintMajorVersion: number | undefined;
-
-export async function getStylelintMajorVersion(): Promise<number> {
-	if (stylelintMajorVersion !== undefined) {
-		return stylelintMajorVersion;
-	}
-
-	const packageJsonPath = path.join(__dirname, '../../package.json');
-	const packageJsonContent = await fs.readFile(packageJsonPath, 'utf-8');
-	const packageJson = JSON.parse(packageJsonContent);
-	const stylelintVersion = packageJson.devDependencies.stylelint;
-
-	stylelintMajorVersion = Number.parseInt(stylelintVersion.split('.')[0].replace('^', ''), 10);
-
-	return stylelintMajorVersion;
 }

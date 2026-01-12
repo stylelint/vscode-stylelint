@@ -1,7 +1,7 @@
 'use strict';
 
 // Abbreviated example
-const stylelint = require('stylelint');
+const stylelint = require('stylelint').default ?? require('stylelint');
 
 const ruleName = 'plugin/foo-bar';
 const messages = stylelint.utils.ruleMessages(ruleName, {
@@ -24,6 +24,7 @@ module.exports = stylelint.createPlugin(ruleName, (/** @type {any} */ primaryOpt
 			message: messages.expected,
 			node: postcssRoot,
 			index: 5,
+			endIndex: 6,
 		});
 	};
 });

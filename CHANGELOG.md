@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.0.0 - 2025-12-28
+
+This release changes the extension's architecture to support Stylelint 17.
+
+- Removed: support for VS Code less than 1.103.0 ([#762](https://github.com/stylelint/vscode-stylelint/pull/762)).
+- Added: support for Stylelint 17 ([#762](https://github.com/stylelint/vscode-stylelint/pull/762)).
+- Added: support for Stylelint installed with Yarn PnP in ESM projects ([#762](https://github.com/stylelint/vscode-stylelint/pull/762)).
+- Added: `logLevel` extension setting ([#764](https://github.com/stylelint/vscode-stylelint/pull/764)).
+- Fixed: `.stylelintignore` not being respected ([#775](https://github.com/stylelint/vscode-stylelint/pull/775)).
+
 ## 1.6.0 - 2025-11-27
 
 Since this version, the extension has followed [Stylelint's changelog format](https://stylelint.io/changelog/), which means no more category headings like "Added" or "Fixed" have been used.

@@ -11,6 +11,9 @@
 		{ "path": "severity-override" },
 		{ "path": "stylelint-path" },
 		{ "path": "validate" },
+		{ "path": "prefer-esm" },
+		{ "path": "worker-crash" },
+		{ "path": "ignore-cwd" },
 	],
 	"settings": {},
 }

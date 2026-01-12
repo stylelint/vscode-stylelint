@@ -1,139 +1,66 @@
-import { EventEmitter } from 'node:events';
-import path from 'node:path';
+import type { ExtensionContext } from 'vscode';
 
-import { LanguageClient, SettingMonitor, ExecuteCommandRequest } from 'vscode-languageclient/node';
-import { workspace, commands, window, type ExtensionContext } from 'vscode';
-import { ApiEvent, PublicApi } from './types';
 import {
-	CommandId,
-	DidRegisterDocumentFormattingEditProviderNotificationParams,
-	Notification,
-} from '../server/index';
+	createRuntimeApplication,
+	type RuntimeApplication,
+	type RuntimeApplicationOptions,
+} from '../di/runtime/index.js';
+import { extensionTokens } from './di-tokens.js';
+import { extensionModule } from './extension.module.js';
+import { createExtensionPlatformModule } from './platform.module.js';
+import type { VSCodeWindow } from './services/environment.js';
+import type { PublicApi } from './types.js';
 
-let client: LanguageClient;
+let application: RuntimeApplication | undefined;
+let resolvedWindow: VSCodeWindow | undefined;
 
 /**
  * Activates the extension.
  */
-export async function activate({ subscriptions }: ExtensionContext): Promise<PublicApi> {
-	const serverPath = path.join(__dirname, 'start-server.js');
-
-	const api = Object.assign(new EventEmitter(), {
-		codeActionReady: false,
-	}) as PublicApi;
-
-	client = new LanguageClient(
-		'Stylelint',
-		{
-			run: {
-				module: serverPath,
-			},
-			debug: {
-				module: serverPath,
-				options: {
-					execArgv: ['--nolazy', '--inspect=6004'],
-				},
-			},
-		},
-		{
-			documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
-			diagnosticCollectionName: 'Stylelint',
-			synchronize: {
-				fileEvents: [
-					workspace.createFileSystemWatcher('**/.stylelintrc{,.js,.cjs,.mjs,.json,.yaml,.yml}'),
-					workspace.createFileSystemWatcher('**/stylelint.config.{js,cjs,mjs}'),
-					workspace.createFileSystemWatcher('**/.stylelintignore'),
-				],
-			},
-		},
-	);
-
-	const errorHandler = async (error: unknown): Promise<void> => {
-		await window.showErrorMessage(
-			`Stylelint: ${error instanceof Error ? error.message : String(error)}`,
-		);
-	};
-
-	const notificationHandlers = (): void => {
-		client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
-			api.codeActionReady = true;
-		});
-		client.onNotification(
-			Notification.DidRegisterDocumentFormattingEditProvider,
-			(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
-				api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
-			},
-		);
-		client.onNotification(Notification.DidResetConfiguration, () => {
-			api.emit(ApiEvent.DidResetConfiguration);
-		});
-	};
-
-	try {
-		await client.start();
-		notificationHandlers();
-	} catch (err) {
-		await errorHandler(err);
+export async function activate(
+	context: ExtensionContext,
+	overrides?: RuntimeApplicationOptions['overrides'],
+): Promise<PublicApi> {
+	if (application) {
+		return application.resolve(extensionTokens.publicApi);
 	}
 
-	subscriptions.push(
-		// cspell:disable-next-line
-		commands.registerCommand('stylelint.executeAutofix', async () => {
-			const textEditor = window.activeTextEditor;
+	application = createRuntimeApplication({
+		modules: [createExtensionPlatformModule(context), extensionModule],
+		overrides,
+	});
 
-			if (!textEditor) {
-				return;
-			}
+	try {
+		await application.start();
+	} catch (error) {
+		application = undefined;
+		throw error;
+	}
 
-			const textDocument = {
-				uri: textEditor.document.uri.toString(),
-				version: textEditor.document.version,
-			};
-			const params = {
-				command: CommandId.ApplyAutoFix,
-				arguments: [textDocument],
-			};
+	resolvedWindow = application.resolve(extensionTokens.window);
 
-			try {
-				await client.sendRequest(ExecuteCommandRequest.type, params);
-			} catch {
-				await window.showErrorMessage(
-					'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.',
-				);
-			}
-		}),
-	);
-
-	subscriptions.push(
-		commands.registerCommand('stylelint.restart', async () => {
-			await client.stop();
-
-			try {
-				await client.start();
-				notificationHandlers();
-			} catch (error: unknown) {
-				await errorHandler(error);
-			}
-		}),
-	);
-
-	subscriptions.push(new SettingMonitor(client, 'stylelint.enable').start());
-
-	return Promise.resolve(api);
+	return application.resolve(extensionTokens.publicApi);
 }
 
 /**
  * @returns A promise that resolves when the client has been deactivated.
  */
 export async function deactivate(): Promise<void> {
-	if (client) {
-		try {
-			return client.stop();
-		} catch (err) {
-			const msg = err && (err as Error) ? (err as Error).message : 'unknown';
-
-			await window.showErrorMessage(`error stopping stylelint language server: ${msg}`);
-			throw err;
-		}
+	if (!application) {
+		return;
 	}
+
+	try {
+		await application.dispose();
+	} catch (err) {
+		const msg = err instanceof Error ? err.message : 'unknown';
+		const windowApi = resolvedWindow ?? (await import('vscode')).window;
+
+		await windowApi.showErrorMessage(`error stopping stylelint language server: ${msg}`);
+		application = undefined;
+
+		throw err;
+	}
+
+	application = undefined;
 }

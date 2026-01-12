@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import jsdoc from 'eslint-plugin-jsdoc';
 import stylelint from 'eslint-config-stylelint';
-import stylelintJest from 'eslint-config-stylelint/jest';
+import vitest from '@vitest/eslint-plugin';
 import tsEslint from 'typescript-eslint';
 import tsEslintParser from '@typescript-eslint/parser'; // eslint-disable-line n/no-extraneous-import
 
@@ -17,6 +17,15 @@ export default defineConfig([
 		'dist',
 		'test/integration/coverage',
 		'test/e2e/workspace',
+		'vitest.config.unit.ts',
+		'vitest.config.integration.ts',
+		'vitest.workspace.ts',
+		'**/*.pnp.js',
+		'**/*.pnp.cjs',
+		'**/__tests__/**/*.js',
+		'**/__tests__/**/*.cjs',
+		'**/__tests__/**/*.mjs',
+		'scripts/switch-stylelint.mjs', // Contains syntax unsupported by ESLint
 	]),
 
 	...stylelint,
@@ -50,10 +59,13 @@ export default defineConfig([
 			'n/no-missing-import': [
 				'error',
 				{
+					ignoreTypeImport: true,
 					allowModules: ['vscode'],
 					tryExtensions: ['.js', '.json', '.ts'],
 				},
 			],
+
+			'n/file-extension-in-import': ['error', 'always'],
 
 			'n/no-unpublished-require': 'off',
 			'n/no-unpublished-import': 'off',
@@ -78,7 +90,6 @@ export default defineConfig([
 		languageOptions: {
 			parserOptions: {
 				projectService: true,
-				// eslint-disable-next-line n/no-unsupported-features/node-builtins
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
@@ -94,6 +105,7 @@ export default defineConfig([
 			'@typescript-eslint/no-shadow': ['error'],
 			'@typescript-eslint/no-use-before-define': ['error'],
 			'@typescript-eslint/switch-exhaustiveness-check': ['error'],
+			'@typescript-eslint/no-deprecated': ['error'],
 
 			'@typescript-eslint/restrict-template-expressions': [
 				'error',
@@ -102,17 +114,20 @@ export default defineConfig([
 					allowNullish: true,
 				},
 			],
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{ argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+			],
+			'@typescript-eslint/no-import-type-side-effects': ['error'],
 		},
 	},
 
 	{
-		files: ['**/__tests__/**/*', '**/__mocks__/**/*', 'test/**/*'],
-		extends: [stylelintJest],
+		files: ['**/__tests__/**/*', 'test/**/*'],
 		languageOptions: {
 			parser: tsEslintParser,
 			parserOptions: {
 				projectService: true,
-				// eslint-disable-next-line n/no-unsupported-features/node-builtins
 				tsconfigRootDir: import.meta.dirname,
 			},
 		},
@@ -126,14 +141,22 @@ export default defineConfig([
 			'@typescript-eslint/no-unsafe-call': 'off',
 			'@typescript-eslint/no-unsafe-return': 'off',
 			'@typescript-eslint/unbound-method': 'off',
-			'jest/unbound-method': 'error',
+			'jsdoc/require-jsdoc': 'off',
 		},
 	},
 
 	{
-		files: ['test/e2e/**/__tests__/**/*'],
+		files: ['**/__tests__/**/*', 'test/**/*'],
+		ignores: ['test/e2e/**'],
+		plugins: { vitest },
 		rules: {
-			'jest/expect-expect': 'off',
+			...vitest.configs.recommended.rules,
+			'vitest/no-standalone-expect': [
+				'error',
+				{
+					additionalTestBlockFunctions: ['test', 'testOnVersion'],
+				},
+			],
 		},
 	},
 
