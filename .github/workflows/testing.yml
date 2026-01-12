@@ -12,7 +12,7 @@ on:
 
 jobs:
   lint:
-    uses: stylelint/.github/.github/workflows/call-lint.yml@19e58e8a32d5cee3f2b13420f9645b6c4685fed3 # 0.4.0
+    uses: stylelint/.github/.github/workflows/call-lint.yml@ce9130c0ded2a1f42fdcb64a0f1f64dd20959795 # 0.5.1
     permissions:
       contents: read
 
@@ -28,7 +28,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - name: Setup Dev Drive (Windows)
         if: runner.os == 'Windows'
@@ -127,7 +127,7 @@ jobs:
           npm cache add "$tarball" --cache "$NPM_CACHE_DIR"
 
       - name: Set up Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version-file: ${{ steps.workspace.outputs.linkpath }}/.nvmrc
           package-manager-cache: false
@@ -173,7 +173,7 @@ jobs:
           echo "cachekey=${cachekey}" >> $GITHUB_OUTPUT
 
       - name: Cache VS Code binaries
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
         id: vscode-cache
         with:
           path: ${{ steps.workspace.outputs.path }}/.vscode-test
@@ -196,9 +196,9 @@ jobs:
       contents: read
     steps:
       - name: Check out
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
       - name: Set up Node.js
-        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
         with:
           node-version-file: .nvmrc
           cache: npm
