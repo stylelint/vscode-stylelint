@@ -5,9 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for taking the time to report a bug!
-
-        >**NOTE:** If you can reproduce the bug using the Stylelint CLI, e.g. `npx stylelint "src/**/*.css"`, please create the issue in the [Stylelint issue tracker](https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.yml) instead.
+        Thank you for taking the time to report a bug! If you can reproduce it using the Stylelint CLI, e.g. `npx stylelint "**/*.css"`, please create the issue in the [Stylelint issue tracker](https://github.com/stylelint/stylelint/issues/new?template=REPORT_A_BUG.yml) instead.
   - type: textarea
     id: reproduction-steps
     attributes:
@@ -20,7 +18,7 @@ body:
     attributes:
       label: Minimal Reproducible Example link
       description: |
-        A [minimal reproduction is required](https://antfu.me/posts/why-reproductions-are-required) so that others can help debug your issue. If a report is vague (e.g. just a generic error message) and has no reproduction, it may be closed.
+        A [minimal reproduction is required](https://antfu.me/posts/why-reproductions-are-required) to help us debug your issue. We may close vague issues (e.g. just a generic error message) without an MRE.
       placeholder: |
         e.g. https://github.com/[your]/[repo]
     validations:
@@ -58,7 +56,6 @@ body:
           }
         }
         ```
-      render: json
   - type: textarea
     id: actual-behaviour
     attributes:
@@ -78,26 +75,26 @@ body:
     attributes:
       label: Extension logs
       description: |
-        Copy and paste the [relevant logs](https://github.com/stylelint/vscode-stylelint?tab=readme-ov-file#troubleshooting).
+        Copy and paste the [relevant logs from your "Output > Stylelint" panel](https://github.com/stylelint/vscode-stylelint/blob/main/README.md#troubleshooting).
 
-        ![Screenshot of the Output window](https://user-images.githubusercontent.com/9868643/140396398-c6a87385-e3c6-4de3-9414-33d1aad96187.png)
+        ![Screenshot of the Output panel](https://user-images.githubusercontent.com/9868643/140396398-c6a87385-e3c6-4de3-9414-33d1aad96187.png)
       placeholder: 'e.g. [Debug - 4:20:34 p.m.] [language-server] Error occurred while…'
     validations:
       required: false
+  - type: input
+    id: extension-version
+    attributes:
+      label: Extension version
+      description: You can find the extension's version in VS Code's extension panel.
+      placeholder: e.g. v2.0.0
+    validations:
+      required: true
   - type: input
     id: stylelint-version
     attributes:
       label: Stylelint version
       description: You can use `npx stylelint -v`, `yarn dlx stylelint -v`, etc.
-      placeholder: e.g. v14.0.0
-    validations:
-      required: true
-  - type: input
-    id: extension-version
-    attributes:
-      label: vscode-stylelint version
-      description: You can find the extension's version in VS Code's extension panel.
-      placeholder: e.g. v1.0.0
+      placeholder: e.g. v16.0.0
     validations:
       required: true
   - type: input
@@ -105,14 +102,14 @@ body:
     attributes:
       label: Node.js version
       description: You can use `node -v`.
-      placeholder: e.g. v16.9.0
+      placeholder: e.g. v24.12.0
     validations:
       required: true
   - type: input
     id: operating-system
     attributes:
       label: Operating System and version
-      placeholder: e.g. macOS 10.15.7
+      placeholder: e.g. macOS 26.2
     validations:
       required: true
   - type: input
