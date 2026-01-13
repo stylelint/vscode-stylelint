@@ -1,6 +1,10 @@
 # Changelog
 
-## 2.0.0 - 2025-12-28
+## 2.0.1 - 2026-01-13
+
+- Fixed: "RangeError: Maximum call stack size exceeded" error ([#810](https://github.com/stylelint/vscode-stylelint/pull/810)).
+
+## 2.0.0 - 2026-01-12
 
 This release changes the extension's architecture to support Stylelint 17.
 

@@ -13,6 +13,7 @@ import { PackageRootService } from '../services/stylelint-runtime/package-root.s
 import { ProcessRunnerService } from '../services/stylelint-runtime/process-runner.service.js';
 import { loadStylelint } from '../stylelint/load-stylelint.js';
 import type {
+	LinterResult,
 	PackageManager,
 	RuleMetadataSnapshot,
 	RunnerOptions,
@@ -55,6 +56,44 @@ const state: {
 	ruleMetadata?: RuleMetadataSnapshot;
 	version?: string;
 } = {};
+
+const createLinterResultSubset = (linterResult: stylelint.LinterResult): LinterResult => {
+	const subset: LinterResult = {
+		results: (Array.isArray(linterResult.results) ? linterResult.results : []).map(
+			({ warnings, invalidOptionWarnings, ignored }) => ({
+				warnings: warnings ?? [],
+				invalidOptionWarnings: invalidOptionWarnings ?? [],
+				ignored,
+			}),
+		),
+	};
+
+	const report = (linterResult as { report?: unknown }).report;
+
+	if (typeof report === 'string') {
+		subset.report = report;
+	}
+
+	const code = (linterResult as { code?: unknown }).code;
+
+	if (typeof code === 'string') {
+		subset.code = code;
+	}
+
+	if (!report && !code) {
+		const output = (linterResult as { output?: unknown }).output;
+
+		if (typeof output === 'string') {
+			subset.output = output;
+		}
+	}
+
+	if (linterResult.ruleMetadata) {
+		subset.ruleMetadata = linterResult.ruleMetadata;
+	}
+
+	return subset;
+};
 
 const isPromiseLike = <T>(value: unknown): value is PromiseLike<T> =>
 	typeof value === 'object' && value !== null && 'then' in (value as Record<string, unknown>);
@@ -340,13 +379,14 @@ async function handleLint(
 	}
 
 	const linterResult = await state.stylelint.lint(request.payload.options);
+	const subsetResult = createLinterResultSubset(linterResult);
 
 	sendMessage({
 		id: request.id,
 		success: true,
 		result: {
 			resolvedPath: state.resolvedPath,
-			linterResult,
+			linterResult: subsetResult,
 			ruleMetadata: state.ruleMetadata,
 		},
 	});

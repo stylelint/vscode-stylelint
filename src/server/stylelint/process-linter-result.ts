@@ -1,9 +1,14 @@
 import * as crypto from 'crypto';
-import type { LinterResult, Warning } from 'stylelint';
+import type { Warning } from 'stylelint';
 import type LSP from 'vscode-languageserver-protocol';
 import type { Logger } from 'winston';
 import type { RuleCustomization } from '../types.js';
-import { type LintDiagnostics, type RuleMetadataSource, InvalidOptionError } from './types.js';
+import {
+	InvalidOptionError,
+	type LintDiagnostics,
+	type LinterResult,
+	type RuleMetadataSource,
+} from './types.js';
 import { warningToDiagnostic } from './warning-to-diagnostic.js';
 
 /**

@@ -1,6 +1,6 @@
 import type stylelint from 'stylelint';
 
-import type { RuleMetadataSnapshot, RunnerOptions } from '../stylelint/types.js';
+import type { LinterResult, RuleMetadataSnapshot, RunnerOptions } from '../stylelint/types.js';
 
 export const stylelintNotFoundError = 'STYLELINT_NOT_FOUND';
 
@@ -18,7 +18,7 @@ export type WorkerResolvePayload = {
 
 export type WorkerLintResult = {
 	resolvedPath: string;
-	linterResult: stylelint.LinterResult;
+	linterResult: LinterResult;
 	ruleMetadata?: RuleMetadataSnapshot;
 };
 

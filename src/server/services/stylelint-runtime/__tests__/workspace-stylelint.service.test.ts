@@ -1,10 +1,10 @@
-import type stylelint from 'stylelint';
 import { describe, expect, test, vi } from 'vitest';
 import type winston from 'winston';
+import type * as stylelint from 'stylelint';
 
 import { createLoggingServiceStub, createTestLogger } from '../../../../../test/helpers/index.js';
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
-import type { RunnerOptions } from '../../../stylelint/types.js';
+import type { LinterResult, RunnerOptions } from '../../../stylelint/types.js';
 import type { WorkerLintResult, WorkerResolveResult } from '../../../worker/types.js';
 import { StylelintNotFoundError } from '../../../worker/worker-process.js';
 import { loggingServiceToken } from '../../infrastructure/logging.service.js';
@@ -110,7 +110,7 @@ describe('WorkspaceStylelintService', () => {
 	test('delegates lint requests to the worker registry', async () => {
 		const lintResult: WorkerLintResult = {
 			resolvedPath: '/workspace/node_modules/stylelint',
-			linterResult: { results: [] } as unknown as stylelint.LinterResult,
+			linterResult: { results: [] } satisfies LinterResult,
 		};
 		const { service, worker, workerRegistry, packageRootCache, pnpCache } = createService();
 
