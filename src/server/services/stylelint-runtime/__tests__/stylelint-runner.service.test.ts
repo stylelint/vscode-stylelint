@@ -11,7 +11,7 @@ import { URI } from 'vscode-uri';
 import type winston from 'winston';
 import { snapshotLintDiagnostics } from '../../../../../test/helpers/snapshots.js';
 import { createTestLogger } from '../../../../../test/helpers/test-logger.js';
-import type { StylelintResolutionResult } from '../../../stylelint/types.js';
+import type { LinterResult, StylelintResolutionResult } from '../../../stylelint/types.js';
 import {
 	StylelintNotFoundError,
 	StylelintWorkerUnavailableError,
@@ -119,20 +119,16 @@ const createRunner = (
 const createLintResult = (
 	warnings: stylelint.Warning[] = [],
 	ruleMetadata?: stylelint.LinterResult['ruleMetadata'],
-): stylelint.LinterResult =>
-	({
-		ruleMetadata,
-		results: [
-			{
-				warnings,
-				deprecations: [],
-				invalidOptionWarnings: [],
-				parseErrors: [],
-				ignored: false,
-				source: '/path/to/file.css',
-			},
-		],
-	}) as unknown as stylelint.LinterResult;
+): LinterResult => ({
+	results: [
+		{
+			warnings,
+			invalidOptionWarnings: [],
+			ignored: false,
+		},
+	],
+	ruleMetadata,
+});
 
 const createMockDocument = (code: string, uri = '/path/to/file.css'): TextDocument =>
 	({

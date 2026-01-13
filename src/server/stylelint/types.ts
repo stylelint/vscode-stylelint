@@ -11,6 +11,26 @@ export type RuleMetadataSource = {
 };
 
 /**
+ * Minimal subset of a Stylelint lint result required by the language server.
+ */
+export type LintResult = {
+	warnings: stylelint.Warning[];
+	invalidOptionWarnings: stylelint.LintResult['invalidOptionWarnings'];
+	ignored?: boolean;
+};
+
+/**
+ * Minimal subset of a Stylelint linter result required by the language server.
+ */
+export type LinterResult = {
+	results: LintResult[];
+	report?: string;
+	code?: string;
+	output?: string;
+	ruleMetadata?: stylelint.LinterResult['ruleMetadata'];
+};
+
+/**
  * Diagnostics for a lint run.
  */
 export type LintDiagnostics = {

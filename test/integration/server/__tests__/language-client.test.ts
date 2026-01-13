@@ -406,6 +406,29 @@ describe('Language server', () => {
 		await closeDocument(client, documentUri);
 	});
 
+	it('continues linting when a custom stylelintPath returns recursive data', async () => {
+		stylelintSettings = {
+			stylelintPath: path.join(workspaceRoot, 'fake-stylelint-recursive.js'),
+			validate: ['css'],
+		};
+
+		await client.sendNotification(LSP.DidChangeConfigurationNotification.type, {
+			settings: { stylelint: stylelintSettings },
+		});
+
+		const documentUri = pathToFileURL(path.join(workspaceRoot, 'recursive.css')).toString();
+		const { diagnostics } = await openDocumentAndWaitForDiagnostics(
+			client,
+			documentUri,
+			'css',
+			'a { color: #000; }',
+		);
+
+		expect(diagnostics.diagnostics[0]?.code).toBe('fake-recursive');
+
+		await closeDocument(client, documentUri);
+	});
+
 	testOnVersion('<15', 'formats documents according to formatting options', async () => {
 		stylelintSettings = { validate: ['css'] };
 
