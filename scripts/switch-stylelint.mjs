@@ -1,5 +1,4 @@
 import { execa } from 'execa';
-import { readFile, writeFile } from 'node:fs/promises';
 import { stderr, stdout, exit, argv } from 'node:process';
 import { satisfies, validRange } from 'semver';
 import packageConfig from '../package.json' with { type: 'json' };
@@ -316,21 +315,6 @@ installedPackages
 		stderr.write(`>>> ${pkg}: desired ${spec}, currently ${describeInstalled(meta)}\n`);
 	});
 
-// Hack for now due to stylelint-scss 6.x not having a version range for
-// Stylelint 17.x yet. Need to do this since for 17.x we need the overrides
-// in package.json to avoid installing incompatible versions.
-if (version !== 'default' && version !== '17') {
-	const originalFile = await readFile('./package.json', { encoding: 'utf8' });
-
-	const { overrides: _overrides, ...rest } = packageConfig;
-
-	await writeFile('./package.json', JSON.stringify(rest, null, 2), { encoding: 'utf8' });
-
-	await install().finally(async () => {
-		await writeFile('./package.json', originalFile, { encoding: 'utf8' });
-	});
-} else {
-	await install();
-}
+await install();
 
 stderr.write('>>> Done.\n');
