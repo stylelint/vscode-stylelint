@@ -476,4 +476,47 @@ describe('Language server', () => {
 
 		await closeDocument(client, documentUri);
 	});
+
+	testOnVersion('>=16', 'returns null for formatting with Stylelint 16+', async () => {
+		stylelintSettings = { validate: ['css'] };
+
+		await client.sendNotification(LSP.DidChangeConfigurationNotification.type, {
+			settings: { stylelint: stylelintSettings },
+		});
+
+		const documentUri = pathToFileURL(path.join(workspaceRoot, 'formatting.css')).toString();
+		const documentText = 'a {\n\tcolor: red;  \n}\n';
+		const version = 2;
+
+		await client.sendNotification(LSP.DidOpenTextDocumentNotification.type, {
+			textDocument: {
+				uri: documentUri,
+				languageId: 'css',
+				version: version - 1,
+				text: documentText,
+			},
+		});
+
+		await client.sendNotification(LSP.DidChangeTextDocumentNotification.type, {
+			textDocument: {
+				uri: documentUri,
+				version,
+			},
+			contentChanges: [{ text: documentText }],
+		});
+
+		const edits = await client.sendRequest(LSP.DocumentFormattingRequest.type, {
+			textDocument: { uri: documentUri },
+			options: {
+				insertSpaces: true,
+				tabSize: 2,
+				insertFinalNewline: true,
+				trimTrailingWhitespace: true,
+			},
+		});
+
+		expect(edits).toBeNull();
+
+		await closeDocument(client, documentUri);
+	});
 });

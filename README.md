@@ -15,6 +15,7 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension for 
 - [Usage](#usage)
   - [Commands](#commands)
   - [Actions](#actions)
+  - [Document Formatting](#document-formatting)
   - [Extension Settings](#extension-settings)
 - [Migrating](#migrating)
   - [From vscode-stylelint 1.x](#from-vscode-stylelint-1x)
@@ -122,6 +123,27 @@ You can also selectively enable and disable specific languages using VS Code's l
     }
   }
 ```
+
+### Document Formatting
+
+This extension registers as a document formatter for validated languages. However, **document formatting is only available with Stylelint 14 and 15**. Starting with Stylelint 16, [stylistic rules were removed](https://stylelint.io/migration-guide/to-16#removed-deprecated-stylistic-rules) from Stylelint and moved to the [@stylistic/stylelint-plugin](https://www.npmjs.com/package/@stylistic/stylelint-plugin) package.
+
+When using Stylelint 14 or 15, you can format a document by running the `Format Document` command from the command palette or by using the keyboard shortcut (by default, `Shift`+`Alt`+`F` on Windows/Linux and `Shift`+`Option`+`F` on macOS).
+
+This will **only** apply the formatting configuration from your editor settings by mapping them to the stylistic rules in Stylelint. It will not apply any fixes for other lint warnings or errors.
+
+**If you're using Stylelint 16 or later** and try to format a document, you'll see a message explaining that formatting isn't available. For auto-fixing lint issues, you have two options:
+
+1. Run the `Fix all auto-fixable problems` command from the command palette.
+2. Configure `editor.codeActionsOnSave` in your settings to automatically fix issues on save:
+
+```json
+  "editor.codeActionsOnSave": {
+    "source.fixAll.stylelint": "explicit"
+  }
+```
+
+If you need stylistic formatting with Stylelint 16+, consider using a dedicated code formatter like [Prettier](https://prettier.io/) alongside Stylelint for linting.
 
 ### Extension Settings
 

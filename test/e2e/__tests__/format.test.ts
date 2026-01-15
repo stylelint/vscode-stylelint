@@ -3,7 +3,7 @@ import * as semver from 'semver';
 
 import { commands } from 'vscode';
 
-import { openDocument, closeAllEditors, setupSettings, sleep } from '../helpers.js';
+import { openDocument, closeAllEditors, setupSettings, sleep, itOnVersion } from '../helpers.js';
 
 describe('Document formatting', () => {
 	setupSettings({ '[css]': { 'editor.defaultFormatter': 'stylelint.vscode-stylelint' } });
@@ -34,5 +34,18 @@ describe('Document formatting', () => {
 }
 `,
 		);
+	});
+
+	itOnVersion('>=16', 'should not modify document with Stylelint 16+', async () => {
+		const editor = await openDocument('defaults/format.css');
+		const originalText = editor.document.getText();
+
+		editor.options.tabSize = 4;
+		editor.options.insertSpaces = false;
+
+		await sleep(1000); // HACK: Prevent flaky test.
+		await commands.executeCommand('editor.action.formatDocument');
+
+		assert.equal(editor.document.getText(), originalText);
 	});
 });

@@ -1,3 +1,4 @@
+import semver from 'semver';
 import type { Connection, Disposable } from 'vscode-languageserver';
 import * as LSP from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
@@ -19,7 +20,10 @@ import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../to
 import { Notification } from '../../types.js';
 import { DocumentFixesService } from '../documents/document-fixes.service.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
+import { StylelintRunnerService } from '../stylelint-runtime/stylelint-runner.service.js';
 import { WorkspaceOptionsService } from '../workspace/workspace-options.service.js';
+
+const formattingDocUrl = 'https://github.com/stylelint/vscode-stylelint#document-formatting';
 
 @lspService()
 @inject({
@@ -27,6 +31,7 @@ import { WorkspaceOptionsService } from '../workspace/workspace-options.service.
 		textDocumentsToken,
 		WorkspaceOptionsService,
 		DocumentFixesService,
+		StylelintRunnerService,
 		lspConnectionToken,
 		UriModuleToken,
 		loggingServiceToken,
@@ -36,16 +41,20 @@ export class FormatterLspService {
 	#documents: TextDocuments<TextDocument>;
 	#options: WorkspaceOptionsService;
 	#fixes: DocumentFixesService;
+	#runner: StylelintRunnerService;
 	#connection: Connection;
 	#uri: Pick<typeof URI, 'parse'>;
 	#logger?: winston.Logger;
 	#registerDynamically = false;
+	#openDocumentationLinks = false;
 	#registrations = new Map<string, Promise<Disposable>>();
+	#warnedDocuments = new Set<string>();
 
 	constructor(
 		documents: TextDocuments<TextDocument>,
 		options: WorkspaceOptionsService,
 		fixes: DocumentFixesService,
+		runner: StylelintRunnerService,
 		connection: Connection,
 		uriModule: Pick<typeof URI, 'parse'>,
 		loggingService: LoggingService,
@@ -53,6 +62,7 @@ export class FormatterLspService {
 		this.#documents = documents;
 		this.#options = options;
 		this.#fixes = fixes;
+		this.#runner = runner;
 		this.#connection = connection;
 		this.#uri = uriModule;
 		this.#logger = loggingService.createLogger(FormatterLspService);
@@ -63,6 +73,7 @@ export class FormatterLspService {
 		this.#registerDynamically = Boolean(
 			params?.capabilities.textDocument?.formatting?.dynamicRegistration,
 		);
+		this.#openDocumentationLinks = params?.capabilities.window?.showDocument?.support ?? false;
 
 		return {
 			capabilities: {
@@ -166,6 +177,95 @@ export class FormatterLspService {
 		this.#registrations.clear();
 	}
 
+	/**
+	 * Checks if the resolved Stylelint version is 16 or newer, which removed
+	 * stylistic formatting rules. Returns the version string if 16+, otherwise
+	 * undefined.
+	 */
+	async #checkStylelint16OrNewer(document: TextDocument): Promise<string | undefined> {
+		try {
+			const runnerOptions = await this.#options.getOptions(document.uri);
+			const resolution = await this.#runner.resolve(document, runnerOptions);
+
+			if (!resolution?.version) {
+				this.#logger?.debug('Stylelint version not available', { uri: document.uri });
+
+				return undefined;
+			}
+
+			const coerced = semver.coerce(resolution.version);
+
+			if (!coerced) {
+				this.#logger?.debug('Could not parse Stylelint version', {
+					uri: document.uri,
+					version: resolution.version,
+				});
+
+				return undefined;
+			}
+
+			if (semver.gte(coerced, '16.0.0')) {
+				this.#logger?.debug('Stylelint 16+ detected, formatting not available', {
+					uri: document.uri,
+					version: resolution.version,
+				});
+
+				return resolution.version;
+			}
+
+			return undefined;
+		} catch (error) {
+			this.#logger?.debug('Error checking Stylelint version', {
+				uri: document.uri,
+				error,
+			});
+
+			return undefined;
+		}
+	}
+
+	/**
+	 * Shows an informational message to the user explaining that formatting
+	 * is not available with Stylelint 16+.
+	 */
+	#showStylelint16FormattingMessage(uri: string, version: string): void {
+		// Only warn once per document to avoid spamming the user.
+		if (this.#warnedDocuments.has(uri)) {
+			return;
+		}
+
+		this.#warnedDocuments.add(uri);
+
+		const message = `Stylelint ${version} doesn't include stylistic rules, so document formatting isn't available. Use "Fix all auto-fixable problems" instead.`;
+
+		this.#logger?.info(message, { uri });
+
+		if (!this.#openDocumentationLinks) {
+			this.#connection.window.showInformationMessage(message);
+
+			return;
+		}
+
+		// Void is used to avoid blocking the formatting response on user
+		// interaction with the message.
+		void this.#connection.window
+			.showInformationMessage(message, { title: 'Learn more' })
+			.then(async (response) => {
+				if (response?.title !== 'Learn more') {
+					return;
+				}
+
+				const showDocumentResponse = await this.#connection.window.showDocument({
+					uri: formattingDocUrl,
+					external: true,
+				});
+
+				if (!showDocumentResponse.success) {
+					this.#logger?.warn('Failed to open formatting documentation');
+				}
+			});
+	}
+
 	@documentFormattingRequest()
 	async handleDocumentFormatting(
 		params: LSP.DocumentFormattingParams,
@@ -194,6 +294,15 @@ export class FormatterLspService {
 					});
 				}
 			}
+
+			return null;
+		}
+
+		// Check for Stylelint 16+ which removed stylistic formatting rules
+		const stylelint16Version = await this.#checkStylelint16OrNewer(document);
+
+		if (stylelint16Version) {
+			this.#showStylelint16FormattingMessage(uri, stylelint16Version);
 
 			return null;
 		}
