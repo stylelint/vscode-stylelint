@@ -66,14 +66,6 @@ jobs:
           echo "Determined workspace path: $workspace_path"
           echo "Created workspace link at: $link_path"
 
-      - name: Determine Stylelint v17 ref
-        id: stylelint-ref
-        shell: bash
-        run: |
-          ref=$(git ls-remote https://github.com/stylelint/stylelint.git refs/heads/v17 | cut -f1)
-          echo "Resolved Stylelint v17 ref: ${ref:-unknown}"
-          echo "ref=${ref:-unknown}" >> "$GITHUB_OUTPUT"
-
       - name: Hash package-lock
         id: pkglock-hash
         shell: bash
@@ -81,50 +73,6 @@ jobs:
           hash=$(sha256sum "${{ steps.workspace.outputs.linkpath }}/package-lock.json" | cut -d' ' -f1)
           echo "Computed package-lock hash: $hash"
           echo "hash=${hash}" >> "$GITHUB_OUTPUT"
-
-      - name: Restore npm registry cache
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
-        with:
-          path: ${{ steps.workspace.outputs.path }}/.npm-cache
-          key: ${{ runner.os }}-npm-reg-${{ steps.pkglock-hash.outputs.hash }}
-          restore-keys: |
-            ${{ runner.os }}-npm-reg-
-
-      - name: Restore Stylelint tarball cache
-        uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb # v5.0.1
-        with:
-          path: ${{ steps.workspace.outputs.path }}/.stylelint-cache
-          key: ${{ runner.os }}-stylelint-tar-${{ steps.stylelint-ref.outputs.ref }}
-
-      - name: Ensure Stylelint tarball
-        shell: bash
-        env:
-          STYLELINT_REF: ${{ steps.stylelint-ref.outputs.ref }}
-          STYLELINT_TARBALL_CACHE: ${{ steps.workspace.outputs.path }}/.stylelint-cache
-        run: |
-          set -euo pipefail
-          mkdir -p "$STYLELINT_TARBALL_CACHE"
-          tarball="$STYLELINT_TARBALL_CACHE/stylelint-$STYLELINT_REF.tar.gz"
-
-          if [ ! -f "$tarball" ]; then
-            echo "Downloading stylelint@$STYLELINT_REF tarball..."
-            curl -sSL "https://github.com/stylelint/stylelint/archive/${STYLELINT_REF}.tar.gz" -o "$tarball"
-          else
-            echo "Stylelint tarball already cached: $tarball"
-          fi
-          ls -lh "$tarball"
-
-      - name: Seed npm cache with Stylelint tarball
-        shell: bash
-        env:
-          STYLELINT_REF: ${{ steps.stylelint-ref.outputs.ref }}
-          STYLELINT_TARBALL_CACHE: ${{ steps.workspace.outputs.path }}/.stylelint-cache
-          NPM_CACHE_DIR: ${{ steps.workspace.outputs.path }}/.npm-cache
-        run: |
-          set -euo pipefail
-          tarball="$STYLELINT_TARBALL_CACHE/stylelint-$STYLELINT_REF.tar.gz"
-          mkdir -p "$NPM_CACHE_DIR"
-          npm cache add "$tarball" --cache "$NPM_CACHE_DIR"
 
       - name: Set up Node.js
         uses: actions/setup-node@395ad3262231945c25e8478fd5baf05154b1d79f # v6.1.0
