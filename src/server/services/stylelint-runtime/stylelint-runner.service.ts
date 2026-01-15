@@ -196,6 +196,62 @@ export class StylelintRunnerService {
 		}
 	}
 
+	async resolveConfig(
+		document: TextDocument,
+		runnerOptions: RunnerOptions = {},
+	): Promise<stylelint.Config | undefined> {
+		if (!this.#workspaceService) {
+			return undefined;
+		}
+
+		const workspaceFolder = await this.#workspaceFolderService.getWorkspaceFolder(
+			this.#connection,
+			document,
+		);
+		const fallbackFolder = workspaceFolder ?? this.#getDocumentFolder(document);
+
+		if (!fallbackFolder) {
+			return undefined;
+		}
+
+		const stylelintPath = runnerOptions.stylelintPath
+			? this.#resolveConfiguredStylelintPath(runnerOptions.stylelintPath, fallbackFolder)
+			: undefined;
+
+		const fsPath = this.#uri.parse(document.uri).fsPath;
+
+		if (!fsPath) {
+			return undefined;
+		}
+
+		try {
+			const result = await this.#workspaceService.resolveConfig({
+				workspaceFolder: fallbackFolder,
+				filePath: fsPath,
+				stylelintPath,
+				runnerOptions,
+			});
+
+			return result?.config;
+		} catch (error) {
+			if (error instanceof StylelintNotFoundError) {
+				return undefined;
+			}
+
+			if (error instanceof StylelintWorkerUnavailableError) {
+				this.#handleWorkerUnavailable(error, fallbackFolder);
+
+				if (error.notifyUser) {
+					throw error;
+				}
+
+				return undefined;
+			}
+
+			throw error;
+		}
+	}
+
 	async handleDocumentOpened(document: TextDocument): Promise<void> {
 		if (!this.#workspaceService) {
 			return;

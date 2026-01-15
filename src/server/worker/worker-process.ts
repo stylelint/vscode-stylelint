@@ -14,6 +14,8 @@ import {
 	type WorkerLintPayload,
 	type WorkerLintResult,
 	type WorkerRequest,
+	type WorkerResolveConfigPayload,
+	type WorkerResolveConfigResult,
 	type WorkerResolvePayload,
 	type WorkerResolveResult,
 	type WorkerResponse,
@@ -173,6 +175,12 @@ export class StylelintWorkerProcess {
 		return result;
 	}
 
+	async resolveConfig(payload: WorkerResolveConfigPayload): Promise<WorkerResolveConfigResult> {
+		const result = (await this.#sendRequest('resolveConfig', payload)) as WorkerResolveConfigResult;
+
+		return result;
+	}
+
 	dispose(): void {
 		if (this.#disposed) {
 			return;
@@ -235,7 +243,9 @@ export class StylelintWorkerProcess {
 				id,
 				type,
 
-				payload: (payload ?? {}) as WorkerLintPayload & WorkerResolvePayload,
+				payload: (payload ?? {}) as WorkerLintPayload &
+					WorkerResolvePayload &
+					WorkerResolveConfigPayload,
 			};
 
 			this.#child.send(request);
