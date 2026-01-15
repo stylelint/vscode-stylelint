@@ -24,6 +24,7 @@ import {
 	type SerializedWorkerError,
 	type WorkerLintPayload,
 	type WorkerRequest,
+	type WorkerResolveConfigPayload,
 	type WorkerResolvePayload,
 	type WorkerResponse,
 } from './types.js';
@@ -392,6 +393,43 @@ async function handleLint(
 	});
 }
 
+/**
+ * Handles a resolveConfig request from the parent process.
+ */
+async function handleResolveConfig(
+	request: WorkerRequest & { type: 'resolveConfig'; payload: WorkerResolveConfigPayload },
+): Promise<void> {
+	await ensureStylelint(
+		request.payload.stylelintPath,
+		request.payload.filePath,
+		request.payload.runnerOptions,
+	);
+
+	if (!state.stylelint || !state.resolvedPath) {
+		throw createNotFoundError();
+	}
+
+	// resolveConfig was added in Stylelint 14.2.0.
+	const resolveConfigFn = state.stylelint.resolveConfig as
+		| typeof state.stylelint.resolveConfig
+		| undefined;
+
+	let config: stylelint.Config | undefined;
+
+	if (typeof resolveConfigFn === 'function') {
+		config = await resolveConfigFn(request.payload.filePath);
+	}
+
+	sendMessage({
+		id: request.id,
+		success: true,
+		result: {
+			resolvedPath: state.resolvedPath,
+			config,
+		},
+	});
+}
+
 const handleMessage = async (request?: WorkerRequest): Promise<void> => {
 	if (!request) {
 		return;
@@ -402,6 +440,13 @@ const handleMessage = async (request?: WorkerRequest): Promise<void> => {
 			case 'resolve': {
 				await handleResolve(
 					request as WorkerRequest & { type: 'resolve'; payload: WorkerResolvePayload },
+				);
+				break;
+			}
+
+			case 'resolveConfig': {
+				await handleResolveConfig(
+					request as WorkerRequest & { type: 'resolveConfig'; payload: WorkerResolveConfigPayload },
 				);
 				break;
 			}
