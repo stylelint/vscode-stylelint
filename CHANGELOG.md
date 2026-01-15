@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fixed: formatting with Stylelint 14 and 15 when using custom syntaxes ([#813](https://github.com/stylelint/vscode-stylelint/pull/813)).
+
 ## 2.0.1 - 2026-01-13
 
 - Fixed: "RangeError: Maximum call stack size exceeded" error ([#810](https://github.com/stylelint/vscode-stylelint/pull/810)).

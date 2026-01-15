@@ -230,6 +230,72 @@ describe('FormatterLspModule', () => {
 		expect(fixes.calls[0]?.options).toMatchSnapshot();
 	});
 
+	it('should merge resolved config with formatting rules', async () => {
+		const document = setDocument('a {}', 'css', 'file:///foo.css');
+
+		options.setValidateLanguages([document.languageId]);
+		fixes.setFixes(document.uri, [LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
+		fixes.setResolvedConfig(document.uri, {
+			customSyntax: 'postcss-scss',
+			rules: {
+				'color-no-invalid-hex': true,
+			},
+		});
+
+		await service.handleDocumentFormatting({
+			textDocument: { uri: document.uri },
+			options: {
+				insertSpaces: true,
+				tabSize: 2,
+				insertFinalNewline: true,
+				trimFinalNewlines: false,
+			},
+		});
+
+		expect(fixes.resolveConfigCalls).toHaveLength(1);
+		expect(fixes.resolveConfigCalls[0]?.document).toEqual(document);
+
+		const passedOptions = fixes.calls[0]?.options as { config?: unknown };
+
+		expect(passedOptions?.config).toEqual({
+			customSyntax: 'postcss-scss',
+			rules: {
+				indentation: [2],
+				'no-missing-end-of-source-newline': true,
+			},
+		});
+	});
+
+	it('should use only formatting rules when resolveConfig returns undefined', async () => {
+		const document = setDocument('a {}', 'css', 'file:///foo.css');
+
+		options.setValidateLanguages([document.languageId]);
+		fixes.setFixes(document.uri, [LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
+		// Do not set a resolved config - it will return undefined
+
+		await service.handleDocumentFormatting({
+			textDocument: { uri: document.uri },
+			options: {
+				insertSpaces: true,
+				tabSize: 2,
+				insertFinalNewline: true,
+				trimFinalNewlines: false,
+			},
+		});
+
+		expect(fixes.resolveConfigCalls).toHaveLength(1);
+
+		// Should still have a config with formatting rules
+		const passedOptions = fixes.calls[0]?.options as { config?: unknown };
+
+		expect(passedOptions?.config).toEqual({
+			rules: {
+				indentation: [2],
+				'no-missing-end-of-source-newline': true,
+			},
+		});
+	});
+
 	it('with no text document, should not attempt to format', async () => {
 		const result = await service.handleDocumentFormatting({
 			textDocument: undefined as unknown as LSP.TextDocumentIdentifier,

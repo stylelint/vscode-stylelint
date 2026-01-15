@@ -35,4 +35,25 @@ describe('Document formatting', () => {
 `,
 		);
 	});
+
+	pre16It('should format document with customSyntax from stylelint config', async () => {
+		const editor = await openDocument('format-custom-syntax/test.scss');
+
+		editor.options.tabSize = 2;
+		editor.options.insertSpaces = true;
+
+		await sleep(1000); // HACK: Prevent flaky test.
+		await commands.executeCommand('editor.action.formatDocument');
+
+		assert.equal(
+			editor.document.getText(),
+			`/* prettier-ignore */
+$primary-color: #fff;
+
+.foo {
+  color: $primary-color;
+}
+`,
+		);
+	});
 });

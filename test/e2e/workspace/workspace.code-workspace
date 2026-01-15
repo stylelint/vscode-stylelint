@@ -5,6 +5,7 @@
 		{ "path": "custom-syntax" },
 		{ "path": "defaults" },
 		{ "path": "descriptionless-disables" },
+		{ "path": "format-custom-syntax" },
 		{ "path": "ignore-disables" },
 		{ "path": "no-rules-configured" },
 		{ "path": "report-disables" },
