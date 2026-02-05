@@ -3,7 +3,11 @@ import type winston from 'winston';
 
 import { inject } from '../../../di/index.js';
 import type { RunnerOptions } from '../../stylelint/types.js';
-import type { WorkerLintResult, WorkerResolveResult } from '../../worker/types.js';
+import type {
+	WorkerLintResult,
+	WorkerResolveConfigResult,
+	WorkerResolveResult,
+} from '../../worker/types.js';
 import { StylelintNotFoundError } from '../../worker/worker-process.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
 import { PackageRootCacheService } from './package-root-cache.service.js';
@@ -22,6 +26,13 @@ export type WorkspaceResolveRequest = {
 	workspaceFolder: string;
 	stylelintPath?: string;
 	codeFilename?: string;
+	runnerOptions?: RunnerOptions;
+};
+
+export type WorkspaceResolveConfigRequest = {
+	workspaceFolder: string;
+	filePath: string;
+	stylelintPath?: string;
 	runnerOptions?: RunnerOptions;
 };
 
@@ -127,6 +138,47 @@ export class WorkspaceStylelintService {
 		} catch (error) {
 			if (error instanceof StylelintNotFoundError) {
 				this.#logger?.debug('Workspace Stylelint not found during resolve', {
+					workspaceFolder: request.workspaceFolder,
+				});
+			}
+
+			throw error;
+		}
+	}
+
+	async resolveConfig(
+		request: WorkspaceResolveConfigRequest,
+	): Promise<WorkerResolveConfigResult | undefined> {
+		const pnpConfig = await this.#pnpConfigurationCache.findConfiguration(request.filePath);
+		const workerRoot = await this.#packageRootCache.determineWorkerRoot(
+			request.workspaceFolder,
+			request.filePath,
+			request.stylelintPath,
+		);
+		const environmentKey = await this.#workerEnvironment.createKey({
+			workerRoot,
+			stylelintPath: request.stylelintPath,
+			pnpConfig,
+		});
+
+		try {
+			return await this.#workerRegistry.runWithWorker(
+				{
+					workspaceFolder: request.workspaceFolder,
+					workerRoot,
+					pnpConfig,
+					environmentKey,
+				},
+				async (worker) =>
+					await worker.resolveConfig({
+						filePath: request.filePath,
+						stylelintPath: request.stylelintPath,
+						runnerOptions: request.runnerOptions,
+					}),
+			);
+		} catch (error) {
+			if (error instanceof StylelintNotFoundError) {
+				this.#logger?.debug('Workspace Stylelint not found during resolveConfig', {
 					workspaceFolder: request.workspaceFolder,
 				});
 			}

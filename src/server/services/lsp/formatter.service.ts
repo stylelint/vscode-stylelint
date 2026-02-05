@@ -198,10 +198,24 @@ export class FormatterLspService {
 			return null;
 		}
 
+		// Resolve the file's configuration first to ensure settings like
+		// customSyntax are preserved when formatting.
+		const resolvedConfig = await this.#fixes.resolveConfig(document);
+		const formattingRules = formattingOptionsToRules(options);
+
+		// Only include config properties that affect syntax parsing. Other
+		// properties are excluded to avoid interfering with formatting.
+		const mergedConfig = resolvedConfig
+			? {
+					customSyntax: resolvedConfig.customSyntax,
+					rules: {
+						...formattingRules,
+					},
+				}
+			: { rules: formattingRules };
+
 		const linterOptions = {
-			config: {
-				rules: formattingOptionsToRules(options),
-			},
+			config: mergedConfig,
 		};
 
 		this.#logger?.debug('Formatting document', { uri, linterOptions });

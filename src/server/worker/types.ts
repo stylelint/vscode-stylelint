@@ -16,6 +16,12 @@ export type WorkerResolvePayload = {
 	runnerOptions?: RunnerOptions;
 };
 
+export type WorkerResolveConfigPayload = {
+	filePath: string;
+	stylelintPath?: string;
+	runnerOptions?: RunnerOptions;
+};
+
 export type WorkerLintResult = {
 	resolvedPath: string;
 	linterResult: LinterResult;
@@ -28,6 +34,11 @@ export type WorkerResolveResult = {
 	version?: string;
 };
 
+export type WorkerResolveConfigResult = {
+	resolvedPath: string;
+	config: stylelint.Config | undefined;
+};
+
 export type WorkerRequest =
 	| {
 			id: string;
@@ -38,6 +49,11 @@ export type WorkerRequest =
 			id: string;
 			type: 'resolve';
 			payload: WorkerResolvePayload;
+	  }
+	| {
+			id: string;
+			type: 'resolveConfig';
+			payload: WorkerResolveConfigPayload;
 	  }
 	| {
 			id: string;
@@ -55,7 +71,7 @@ export type WorkerResponse =
 	| {
 			id: string;
 			success: true;
-			result?: WorkerLintResult | WorkerResolveResult | undefined;
+			result?: WorkerLintResult | WorkerResolveResult | WorkerResolveConfigResult | undefined;
 	  }
 	| {
 			id: string;

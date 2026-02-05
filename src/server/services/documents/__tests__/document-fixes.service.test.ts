@@ -90,4 +90,57 @@ describe('DocumentFixesService', () => {
 			error,
 		});
 	});
+
+	it('should resolve config and log success', async () => {
+		const document = createDocument();
+		const config: stylelint.Config = {
+			customSyntax: 'postcss-scss',
+			rules: { 'color-no-invalid-hex': true },
+		};
+
+		(
+			runner as unknown as { resolveConfig: MockedFunction<() => Promise<stylelint.Config>> }
+		).resolveConfig = vi.fn().mockResolvedValueOnce(config);
+
+		const result = await service.resolveConfig(document);
+
+		expect(options.getOptions).toHaveBeenCalledWith(document.uri);
+		expect(result).toEqual(config);
+		expect(logger.debug).toHaveBeenLastCalledWith('Config resolved', {
+			uri: document.uri,
+			hasConfig: true,
+		});
+	});
+
+	it('should return undefined and log when config is not found', async () => {
+		const document = createDocument();
+
+		(
+			runner as unknown as { resolveConfig: MockedFunction<() => Promise<undefined>> }
+		).resolveConfig = vi.fn().mockResolvedValueOnce(undefined);
+
+		const result = await service.resolveConfig(document);
+
+		expect(result).toBeUndefined();
+		expect(logger.debug).toHaveBeenLastCalledWith('Config resolved', {
+			uri: document.uri,
+			hasConfig: false,
+		});
+	});
+
+	it('should swallow errors and log when resolveConfig throws', async () => {
+		const document = createDocument();
+		const error = new Error('config error');
+
+		(runner as unknown as { resolveConfig: MockedFunction<() => Promise<never>> }).resolveConfig =
+			vi.fn().mockRejectedValueOnce(error);
+
+		const result = await service.resolveConfig(document);
+
+		expect(result).toBeUndefined();
+		expect(logger.error).toHaveBeenLastCalledWith('Error resolving config', {
+			uri: document.uri,
+			error,
+		});
+	});
 });
