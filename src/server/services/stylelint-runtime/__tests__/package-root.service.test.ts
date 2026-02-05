@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
 import { FsPromisesModuleToken, PathModuleToken } from '../../../tokens.js';
 import { createError } from '../../../../../test/mockSystemErrors.js';
-import { PackageRootService } from '../package-root.service';
+import { PackageRootService } from '../package-root.service.js';
 
 type FileSystemLeaf = string | Error;
 interface FileSystemTree {

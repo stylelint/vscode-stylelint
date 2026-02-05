@@ -3,7 +3,7 @@ import type stylelint from 'stylelint';
 import { beforeEach, describe, expect, test, vi, type MockedFunction } from 'vitest';
 import type { RunnerOptions } from '../../../stylelint/types.js';
 import type { PackageRootService } from '../package-root.service.js';
-import { StylelintOptionsService } from '../stylelint-options.service';
+import { StylelintOptionsService } from '../stylelint-options.service.js';
 
 const fakeUri = {
 	parse: (value: string) => ({ fsPath: value, root: '/' }),

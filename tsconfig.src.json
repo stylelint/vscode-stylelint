@@ -2,11 +2,10 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"rootDir": "src",
-		"typeRoots": ["./types", "./node_modules/@types"],
 		"types": ["node", "semver", "vscode", "path-is-inside"],
 		"outDir": "build",
 		"sourceMap": true
 	},
-	"include": ["src/**/*", "types/*.d.ts"],
+	"include": ["src/**/*"],
 	"exclude": ["**/coverage", "**/__tests__", "test/types.d.ts"]
 }
