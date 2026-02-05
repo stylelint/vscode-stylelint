@@ -4,10 +4,9 @@
 		"module": "esnext",
 		"moduleResolution": "bundler",
 		"target": "es2022",
-		"typeRoots": ["./types", "./node_modules/@types"],
 		"noEmit": true,
 		"isolatedModules": true
 	},
-	"include": ["src/**/*", "test/**/*", "types/*.d.ts"],
+	"include": ["src/**/*", "test/**/*"],
 	"exclude": ["**/coverage", "test/e2e/workspace"]
 }

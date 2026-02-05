@@ -4,7 +4,7 @@ import { Readable } from 'node:stream';
 import { beforeAll, describe, expect, it } from 'vitest';
 
 import { createError } from '../../../../../test/mockSystemErrors.js';
-import { ProcessRunnerService } from '../process-runner.service';
+import { ProcessRunnerService } from '../process-runner.service.js';
 
 type MockProcessConfig = {
 	args: string[];

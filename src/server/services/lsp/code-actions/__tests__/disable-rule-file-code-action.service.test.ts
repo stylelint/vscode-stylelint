@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as LSP from 'vscode-languageserver-protocol';
-import { DisableRuleFileCodeActionService } from '../disable-rule-file-code-action.service';
+import { DisableRuleFileCodeActionService } from '../disable-rule-file-code-action.service.js';
 
 const fileFactory = new DisableRuleFileCodeActionService({ EOL: '\n' });
 

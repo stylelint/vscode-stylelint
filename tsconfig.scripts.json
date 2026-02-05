@@ -1,8 +1,7 @@
 {
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
-		"typeRoots": ["./types", "./node_modules/@types"],
-		"types": ["node", "babel__core"],
+		"types": ["node"],
 		"noEmit": true,
 		"skipLibCheck": true
 	},

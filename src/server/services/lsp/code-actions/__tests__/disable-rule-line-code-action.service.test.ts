@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import * as LSP from 'vscode-languageserver-protocol';
-import { DisableRuleLineCodeActionService } from '../disable-rule-line-code-action.service';
+import { DisableRuleLineCodeActionService } from '../disable-rule-line-code-action.service.js';
 
 const lineFactory = new DisableRuleLineCodeActionService({ EOL: '\n' });
 
