@@ -138,7 +138,7 @@ jobs:
         run: npm run test:e2e -- --silent
 
   test-node-versions:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     timeout-minutes: 30
     permissions:
       contents: read
