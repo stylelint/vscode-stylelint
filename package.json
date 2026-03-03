@@ -286,7 +286,7 @@
     "postcss-scss": "^4.0.9",
     "postcss-styled-syntax": "^0.7.1",
     "prettier": "^3.8.1",
-    "stylelint": "^17.1.1",
+    "stylelint": "^17.3.0",
     "stylelint-processor-glamorous": "^0.3.0",
     "stylelint-processor-styled-components": "^1.10.0",
     "stylelint-scss": "^7.0.0",
