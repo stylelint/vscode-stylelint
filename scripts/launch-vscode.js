@@ -37,7 +37,7 @@ function parseLaunchArguments(argv) {
 		}
 
 		if (arg === '--') {
-			// eslint-disable-next-line no-useless-assignment -- This variable is actually used in the previous `if` block.
+			// eslint-disable-next-line no-useless-assignment -- This variable is actually used in the `if` block above.
 			passthroughMode = true;
 			passthroughArgs.push(...argv.slice(index));
 			break;
