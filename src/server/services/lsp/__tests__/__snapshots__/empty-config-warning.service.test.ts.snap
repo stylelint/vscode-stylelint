@@ -1,0 +1,63 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EmptyConfigWarningLspService > if config is an empty object, should warn 1`] = `
+[
+  {
+    "message": "The "stylelint.config" setting is set to an empty object ({}). This overrides config file lookup and may cause "No rules found" errors. Remove this setting from User, Remote, or Workspace settings to let Stylelint find your configuration file.",
+    "type": "warn",
+  },
+]
+`;
+
+exports[`EmptyConfigWarningLspService > if config is an empty object, should warn 2`] = `
+[
+  [
+    "The "stylelint.config" setting is set to an empty object, overriding config file lookup",
+  ],
+]
+`;
+
+exports[`EmptyConfigWarningLspService > in VS Code with showDocument support and user accepts, should open settings 1`] = `
+[
+  {
+    "message": "The "stylelint.config" setting is set to an empty object ({}). This overrides config file lookup and may cause "No rules found" errors. Remove this setting from User, Remote, or Workspace settings to let Stylelint find your configuration file.",
+    "type": "warn",
+  },
+]
+`;
+
+exports[`EmptyConfigWarningLspService > in VS Code with showDocument support and user accepts, should open settings 2`] = `
+[
+  {
+    "external": true,
+    "uri": "vscode://settings/stylelint.config",
+  },
+]
+`;
+
+exports[`EmptyConfigWarningLspService > in VS Code with showDocument support and user dismisses, should not open settings 1`] = `
+[
+  {
+    "message": "The "stylelint.config" setting is set to an empty object ({}). This overrides config file lookup and may cause "No rules found" errors. Remove this setting from User, Remote, or Workspace settings to let Stylelint find your configuration file.",
+    "type": "warn",
+  },
+]
+`;
+
+exports[`EmptyConfigWarningLspService > in non-VS Code editor with showDocument support, should warn without action button 1`] = `
+[
+  {
+    "message": "The "stylelint.config" setting is set to an empty object ({}). This overrides config file lookup and may cause "No rules found" errors. Remove this setting from User, Remote, or Workspace settings to let Stylelint find your configuration file.",
+    "type": "warn",
+  },
+]
+`;
+
+exports[`EmptyConfigWarningLspService > without showDocument support, should warn without action button 1`] = `
+[
+  {
+    "message": "The "stylelint.config" setting is set to an empty object ({}). This overrides config file lookup and may cause "No rules found" errors. Remove this setting from User, Remote, or Workspace settings to let Stylelint find your configuration file.",
+    "type": "warn",
+  },
+]
+`;
