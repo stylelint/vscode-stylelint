@@ -2,7 +2,7 @@ import childProcess from 'node:child_process';
 import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import * as LSP from 'vscode-languageserver-protocol';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import { StreamMessageReader, StreamMessageWriter } from 'vscode-jsonrpc/node';
@@ -108,6 +108,31 @@ const waitForNotification = <T>(
 		}, ms);
 	});
 
+const waitForRequest = <T, R>(
+	connection: LSP.ProtocolConnection,
+	method: string,
+	response: R,
+	predicate?: (params: T) => boolean,
+	ms = 5000,
+): Promise<T> =>
+	new Promise((resolve, reject) => {
+		// eslint-disable-next-line prefer-const -- Assigned after handler is defined.
+		let timeoutId: NodeJS.Timeout;
+
+		connection.onRequest(method, (params: T) => {
+			if (!predicate || predicate(params)) {
+				clearTimeout(timeoutId);
+				resolve(params);
+			}
+
+			return response;
+		});
+
+		timeoutId = setTimeout(() => {
+			reject(new Error(`Timed out waiting for request: ${method}`));
+		}, ms);
+	});
+
 const openDocumentAndWaitForDiagnostics = async (
 	client: LSP.ProtocolConnection,
 	uri: string,
@@ -183,6 +208,7 @@ describe('Language server', () => {
 
 		const initParams: LSP.InitializeParams = {
 			processId: null,
+			clientInfo: { name: 'Visual Studio Code', version: '1.109.5' },
 			rootUri: pathToFileURL(workspaceRoot).toString(),
 			capabilities: {
 				workspace: { configuration: true },
@@ -196,6 +222,10 @@ describe('Language server', () => {
 
 	afterAll(async () => {
 		await shutdownServer(startedServer);
+	});
+
+	afterEach(() => {
+		stylelintSettings = undefined;
 	});
 
 	it('exposes expected capabilities', async () => {
@@ -473,6 +503,40 @@ describe('Language server', () => {
 		);
 
 		expect(formatted).toBe('a {\n  color: red;\n}\n');
+
+		await closeDocument(client, documentUri);
+	});
+
+	it('shows a warning when stylelint.config is set to an empty object', async () => {
+		stylelintSettings = { config: {}, validate: ['css'] };
+
+		await client.sendNotification(LSP.DidChangeConfigurationNotification.type, {
+			settings: { stylelint: stylelintSettings },
+		});
+
+		const documentUri = pathToFileURL(path.join(workspaceRoot, 'empty-config.css')).toString();
+
+		const warningPromise = waitForRequest<LSP.ShowMessageRequestParams, null>(
+			client,
+			LSP.ShowMessageRequest.type.method,
+			null,
+			(params) =>
+				params.type === LSP.MessageType.Warning && params.message.includes('stylelint.config'),
+		);
+
+		await client.sendNotification(LSP.DidOpenTextDocumentNotification.type, {
+			textDocument: {
+				uri: documentUri,
+				languageId: 'css',
+				version: 1,
+				text: 'a { color: red; }',
+			},
+		});
+
+		const warning = await warningPromise;
+
+		expect(warning.message).toContain('empty object');
+		expect(warning.message).toContain('No rules found');
 
 		await closeDocument(client, documentUri);
 	});
