@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Added: warning when `stylelint.config` is an empty object ([#846](https://github.com/stylelint/vscode-stylelint/pull/846)).
+
 ## 2.0.2 - 2026-02-06
 
 - Fixed: formatting with Stylelint 14 and 15 when using custom syntaxes ([#813](https://github.com/stylelint/vscode-stylelint/pull/813)).
