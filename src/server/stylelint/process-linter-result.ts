@@ -1,5 +1,4 @@
 import * as crypto from 'crypto';
-import type { Warning } from 'stylelint';
 import type LSP from 'vscode-languageserver-protocol';
 import type { Logger } from 'winston';
 import type { RuleCustomization } from '../types.js';
@@ -8,6 +7,7 @@ import {
 	type LintDiagnostics,
 	type LinterResult,
 	type RuleMetadataSource,
+	type Warning,
 } from './types.js';
 import { warningToDiagnostic } from './warning-to-diagnostic.js';
 

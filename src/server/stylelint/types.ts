@@ -6,6 +6,14 @@ export type Stylelint = typeof stylelint;
 export type ConfigurationError = Error & { code: 78 };
 export type RuleMetadataSnapshot = Record<string, stylelint.RuleMeta | undefined>;
 
+/**
+ * A Stylelint warning.
+ */
+export type Warning = stylelint.Warning & {
+	/** URL for the rule documentation. Available in Stylelint 16.7+. */
+	url?: string;
+};
+
 export type RuleMetadataSource = {
 	get(ruleName: string): stylelint.RuleMeta | undefined;
 };
@@ -14,7 +22,7 @@ export type RuleMetadataSource = {
  * Minimal subset of a Stylelint lint result required by the language server.
  */
 export type LintResult = {
-	warnings: stylelint.Warning[];
+	warnings: Warning[];
 	invalidOptionWarnings: stylelint.LintResult['invalidOptionWarnings'];
 	ignored?: boolean;
 };
@@ -60,7 +68,7 @@ export type LintDiagnostics = {
 	/**
 	 * Gets the original warning from the given diagnostic.
 	 */
-	getWarning?: (diagnostic: LSP.Diagnostic) => stylelint.Warning | null;
+	getWarning?: (diagnostic: LSP.Diagnostic) => Warning | null;
 };
 
 /**

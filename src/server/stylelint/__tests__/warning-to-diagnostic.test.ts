@@ -1,10 +1,11 @@
-import stylelint, { Warning } from 'stylelint';
+import stylelint from 'stylelint';
 import { beforeEach, describe, expect, test } from 'vitest';
 import { DiagnosticSeverity } from 'vscode-languageserver-types';
 import type { Logger } from 'winston';
 import { RuleCustomization } from '../../types.js';
 import { warningToDiagnostic } from '../warning-to-diagnostic.js';
 import { createTestLogger } from '../../../../test/helpers/test-logger.js';
+import type { Warning } from '../types.js';
 
 const { lint } = stylelint;
 
