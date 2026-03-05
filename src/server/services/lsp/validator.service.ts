@@ -56,9 +56,27 @@ export class ValidatorLspService {
 		void this.#validateAll();
 	}
 
+	@textDocumentEvent('onDidOpen')
+	async handleDocumentOpened({ document }: TextDocumentChangeEvent<TextDocument>): Promise<void> {
+		await this.#validate(document);
+	}
+
 	@textDocumentEvent('onDidChangeContent')
 	async handleDocumentChanged({ document }: TextDocumentChangeEvent<TextDocument>): Promise<void> {
-		await this.#validate(document);
+		const options = await this.#options.getOptions(document.uri);
+
+		if (options.run === 'onType') {
+			await this.#validate(document);
+		}
+	}
+
+	@textDocumentEvent('onDidSave')
+	async handleDocumentSaved({ document }: TextDocumentChangeEvent<TextDocument>): Promise<void> {
+		const options = await this.#options.getOptions(document.uri);
+
+		if (options.run === 'onSave') {
+			await this.#validate(document);
+		}
 	}
 
 	@textDocumentEvent('onDidClose')

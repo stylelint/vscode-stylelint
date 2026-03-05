@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added: `stylelint.run` setting to control when the linter runs ([#848](https://github.com/stylelint/vscode-stylelint/issues/848)).
 - Added: warning when `stylelint.config` is an empty object ([#846](https://github.com/stylelint/vscode-stylelint/pull/846)).
 
 ## 2.0.2 - 2026-02-06
