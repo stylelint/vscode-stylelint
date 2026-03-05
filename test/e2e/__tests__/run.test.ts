@@ -3,11 +3,10 @@ import * as assert from 'node:assert/strict';
 import {
 	openDocument,
 	closeAllEditors,
-	getStylelintDiagnostics,
 	restoreFile,
-	sleep,
 	waitForDiagnostics,
 	assertDiagnostics,
+	waitForDiagnosticsLength,
 } from '../helpers.js';
 
 import { Range, Position } from 'vscode';
@@ -23,27 +22,9 @@ describe('"stylelint.run" setting', () => {
 		it('should not lint on type, but should lint on save', async () => {
 			const editor = await openDocument('run/test.css');
 
-			assert.deepEqual(getStylelintDiagnostics(editor.document.uri), []);
+			const initialDiagnostics = await waitForDiagnostics(editor);
 
-			const success = await editor.edit((editBuilder) => {
-				editBuilder.replace(new Range(new Position(2, 9), new Position(2, 16)), '#fff');
-			});
-
-			assert.ok(success, 'Edit should succeed');
-
-			await sleep(500);
-
-			assert.deepEqual(
-				getStylelintDiagnostics(editor.document.uri),
-				[],
-				'No new diagnostics should appear while typing when run is onSave',
-			);
-
-			await editor.document.save();
-
-			const diagnostics = await waitForDiagnostics(editor);
-
-			assertDiagnostics(diagnostics, [
+			assertDiagnostics(initialDiagnostics, [
 				{
 					code: 'color-hex-length',
 					codeDescription: 'https://stylelint.io/user-guide/rules/color-hex-length',
@@ -52,6 +33,18 @@ describe('"stylelint.run" setting', () => {
 					severity: 'error',
 				},
 			]);
+
+			const success = await editor.edit((editBuilder) => {
+				editBuilder.replace(new Range(new Position(2, 9), new Position(2, 13)), '#ffffff');
+			});
+
+			assert.ok(success, 'Edit should succeed');
+
+			await waitForDiagnosticsLength(editor.document.uri, 1);
+
+			await editor.document.save();
+
+			await waitForDiagnosticsLength(editor.document.uri, 0);
 		});
 	});
 });
