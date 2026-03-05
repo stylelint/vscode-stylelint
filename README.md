@@ -281,6 +281,21 @@ e.g.
 
 Sets the Stylelint [`ignoreDisables`](https://stylelint.io/user-guide/usage/options/#ignoredDisables) option. If `true`, Stylelint ignores `stylelint-disable` (e.g. `/* stylelint-disable block-no-empty */`) comments.
 
+#### `stylelint.ignorePath`
+
+> Type: `string`  
+> Default: `""`
+
+Sets the Stylelint [`ignorePath`](https://stylelint.io/user-guide/options/#ignorepath) option. Path to a file containing patterns describing files to ignore. Use to override automatic `.stylelintignore` detection.
+
+You can use `${workspaceFolder}` to refer to the folder opened in VS Code.
+
+e.g.
+
+```json
+  "stylelint.ignorePath": "${workspaceFolder}/.gitignore"
+```
+
 #### `stylelint.reportDescriptionlessDisables`
 
 > Type: `boolean`  

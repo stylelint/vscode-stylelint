@@ -1,0 +1,4 @@
+{
+	"stylelint.ignorePath": "${workspaceFolder}/.customignore",
+	"css.validate": false
+}

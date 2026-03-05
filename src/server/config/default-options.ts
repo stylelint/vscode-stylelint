@@ -13,6 +13,7 @@ export const defaultLanguageServerOptions: LanguageServerOptions = {
 	configBasedir: '',
 	customSyntax: '',
 	ignoreDisables: false,
+	ignorePath: '',
 	packageManager: 'npm',
 	reportDescriptionlessDisables: false,
 	reportInvalidScopeDisables: false,

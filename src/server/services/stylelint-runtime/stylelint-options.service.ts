@@ -55,6 +55,7 @@ export class StylelintOptionsService {
 			configBasedir,
 			customSyntax,
 			ignoreDisables,
+			ignorePath,
 			reportDescriptionlessDisables,
 			reportNeedlessDisables,
 			reportInvalidScopeDisables,
@@ -73,6 +74,7 @@ export class StylelintOptionsService {
 			customSyntax:
 				this.#resolvePathTemplate(customSyntax, workspaceFolder) ?? baseOptions.customSyntax,
 			ignoreDisables: ignoreDisables ?? baseOptions.ignoreDisables,
+			ignorePath: this.#resolvePathTemplate(ignorePath, workspaceFolder) ?? baseOptions.ignorePath,
 			reportDescriptionlessDisables:
 				reportDescriptionlessDisables ?? baseOptions.reportDescriptionlessDisables,
 			reportNeedlessDisables: reportNeedlessDisables ?? baseOptions.reportNeedlessDisables,

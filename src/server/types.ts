@@ -91,6 +91,7 @@ export type LanguageServerOptions = {
 	configFile?: string;
 	customSyntax?: string;
 	ignoreDisables?: boolean;
+	ignorePath?: string;
 	packageManager: PackageManager;
 	reportDescriptionlessDisables?: boolean;
 	reportInvalidScopeDisables?: boolean;

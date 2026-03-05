@@ -15,6 +15,7 @@ exports[`StylelintRunner > should call stylelint.lint with the document path and
   "fix": true,
   "formatter": [Function],
   "ignoreDisables": undefined,
+  "ignorePath": undefined,
   "reportDescriptionlessDisables": undefined,
   "reportInvalidScopeDisables": undefined,
   "reportNeedlessDisables": undefined,
