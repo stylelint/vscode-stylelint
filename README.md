@@ -141,8 +141,8 @@ Controls whether this extension is enabled or not.
 
 Controls when the linter runs.
 
-- `onType`: Runs as you type and lints immediately on each change.
-- `onSave`: Only lints after saving a document.
+- `onType`: Runs on each change as you type.
+- `onSave`: Only runs after you save a document.
 
 #### `stylelint.logLevel`
 
