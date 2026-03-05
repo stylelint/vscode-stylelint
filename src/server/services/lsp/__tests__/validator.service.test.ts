@@ -312,4 +312,75 @@ describe('ValidatorLspModule', () => {
 			{ uri: document.uri, diagnostics: lintDiagnostics },
 		]);
 	});
+
+	describe('run mode', () => {
+		it('handleDocumentOpened should always validate', async () => {
+			const document = setDocument();
+			const lintDiagnostics = [createDiagnostic('lint')];
+
+			options.setValidateLanguages(['css']);
+			options.setRunMode('onSave');
+			runner.setLintResult(document.uri, createDiagnosticsResult(lintDiagnostics));
+
+			await service.handleDocumentOpened(createChangeEvent(document));
+
+			expect(connection.sendDiagnosticsCalls).toEqual([
+				{ uri: document.uri, diagnostics: lintDiagnostics },
+			]);
+		});
+
+		it('handleDocumentChanged should skip validation when run is onSave', async () => {
+			const document = setDocument();
+
+			options.setValidateLanguages(['css']);
+			options.setRunMode('onSave');
+			runner.setLintResult(document.uri, createDiagnosticsResult([createDiagnostic('lint')]));
+
+			await service.handleDocumentChanged(createChangeEvent(document));
+
+			expect(runner.lintCalls).toHaveLength(0);
+		});
+
+		it('handleDocumentChanged should validate when run is onType', async () => {
+			const document = setDocument();
+			const lintDiagnostics = [createDiagnostic('lint')];
+
+			options.setValidateLanguages(['css']);
+			options.setRunMode('onType');
+			runner.setLintResult(document.uri, createDiagnosticsResult(lintDiagnostics));
+
+			await service.handleDocumentChanged(createChangeEvent(document));
+
+			expect(connection.sendDiagnosticsCalls).toEqual([
+				{ uri: document.uri, diagnostics: lintDiagnostics },
+			]);
+		});
+
+		it('handleDocumentSaved should validate when run is onSave', async () => {
+			const document = setDocument();
+			const lintDiagnostics = [createDiagnostic('lint')];
+
+			options.setValidateLanguages(['css']);
+			options.setRunMode('onSave');
+			runner.setLintResult(document.uri, createDiagnosticsResult(lintDiagnostics));
+
+			await service.handleDocumentSaved(createChangeEvent(document));
+
+			expect(connection.sendDiagnosticsCalls).toEqual([
+				{ uri: document.uri, diagnostics: lintDiagnostics },
+			]);
+		});
+
+		it('handleDocumentSaved should skip validation when run is onType', async () => {
+			const document = setDocument();
+
+			options.setValidateLanguages(['css']);
+			options.setRunMode('onType');
+			runner.setLintResult(document.uri, createDiagnosticsResult([createDiagnostic('lint')]));
+
+			await service.handleDocumentSaved(createChangeEvent(document));
+
+			expect(runner.lintCalls).toHaveLength(0);
+		});
+	});
 });

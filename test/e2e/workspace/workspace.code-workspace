@@ -9,6 +9,7 @@
 		{ "path": "ignore-disables" },
 		{ "path": "no-rules-configured" },
 		{ "path": "report-disables" },
+		{ "path": "run" },
 		{ "path": "severity-override" },
 		{ "path": "stylelint-path" },
 		{ "path": "validate" },

@@ -72,6 +72,12 @@ export interface DidRegisterDocumentFormattingEditProviderNotificationParams {
 }
 
 /**
+ * Run mode for the linter. `onType` lints as you type, while `onSave` only
+ * lints after saving a document.
+ */
+export type RunMode = 'onSave' | 'onType';
+
+/**
  * Language server options.
  */
 export type LanguageServerOptions = {
@@ -89,6 +95,7 @@ export type LanguageServerOptions = {
 	reportDescriptionlessDisables?: boolean;
 	reportInvalidScopeDisables?: boolean;
 	reportNeedlessDisables?: boolean;
+	run: RunMode;
 	rules?: {
 		customizations?: RuleCustomization[];
 	};

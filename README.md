@@ -134,6 +134,16 @@ Though relying on a [Stylelint configuration file](https://stylelint.io/user-gui
 
 Controls whether this extension is enabled or not.
 
+#### `stylelint.run`
+
+> Type: `"onSave" | "onType"`  
+> Default: `"onType"`
+
+Controls when the linter runs.
+
+- `onType`: Runs on each change as you type.
+- `onSave`: Only runs after you save a document.
+
 #### `stylelint.logLevel`
 
 > Type: `"error" | "warn" | "info" | "debug"`  

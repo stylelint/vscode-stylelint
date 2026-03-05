@@ -56,6 +56,16 @@
           "default": true,
           "description": "Control whether Stylelint is enabled or not."
         },
+        "stylelint.run": {
+          "scope": "resource",
+          "type": "string",
+          "enum": [
+            "onSave",
+            "onType"
+          ],
+          "default": "onType",
+          "description": "Control when the extension lints your files. onType lints files as you edit them, while onSave only lints when you save the file."
+        },
         "stylelint.logLevel": {
           "scope": "machine",
           "type": "string",

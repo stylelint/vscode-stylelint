@@ -17,6 +17,7 @@ export const defaultLanguageServerOptions: LanguageServerOptions = {
 	reportDescriptionlessDisables: false,
 	reportInvalidScopeDisables: false,
 	reportNeedlessDisables: false,
+	run: 'onType',
 	rules: {
 		customizations: [],
 	},
