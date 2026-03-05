@@ -88,6 +88,7 @@ describe('Extension entry point', () => {
 			})),
 			createFileSystemWatcher: fileWatcherMock,
 			workspaceFolders: [],
+			onDidChangeConfiguration: vi.fn(() => ({ dispose: vi.fn() })),
 		} as unknown as VSCodeWorkspace;
 
 		registerCommandMock = vi.fn();
