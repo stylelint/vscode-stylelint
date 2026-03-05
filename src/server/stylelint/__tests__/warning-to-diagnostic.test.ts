@@ -63,6 +63,46 @@ describe('warningToDiagnostic', () => {
 		expect(warningToDiagnostic(warnings[0], logger, rules)).toMatchSnapshot();
 	});
 
+	test('should use URL from warning when provided', () => {
+		const warning: Warning = {
+			rule: 'color-named',
+			severity: 'error',
+			text: 'Test message',
+			line: 1,
+			column: 1,
+			url: 'https://example.com/custom-url',
+		};
+
+		const diagnostic = warningToDiagnostic(warning, logger);
+
+		expect(diagnostic).not.toBeNull();
+		expect(diagnostic!.codeDescription).toEqual({ href: 'https://example.com/custom-url' });
+	});
+
+	test('should prefer URL from warning over rule metadata', () => {
+		const warning: Warning = {
+			rule: 'color-named',
+			severity: 'error',
+			text: 'Test message',
+			line: 1,
+			column: 1,
+			url: 'https://example.com/custom-url',
+		};
+
+		const rules = {
+			'color-named': {
+				url: 'https://stylelint.io/rules/color-named',
+			},
+		} as {
+			[name: string]: Partial<stylelint.RuleMeta>;
+		};
+
+		const diagnostic = warningToDiagnostic(warning, logger, rules);
+
+		expect(diagnostic).not.toBeNull();
+		expect(diagnostic!.codeDescription).toEqual({ href: 'https://example.com/custom-url' });
+	});
+
 	describe('severity override', () => {
 		const createWarning = (rule: string, severity: 'error' | 'warning' = 'error'): Warning => ({
 			rule,

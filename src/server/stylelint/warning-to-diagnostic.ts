@@ -165,7 +165,7 @@ export function warningToDiagnostic(
 			? Position.create(warning.endLine - 1, warning.endColumn - 1)
 			: Position.create(warning.line - 1, warning.column);
 
-	const ruleDocUrl = ruleMetadata?.[warning.rule]?.url;
+	const ruleDocUrl = warning.url ?? ruleMetadata?.[warning.rule]?.url;
 
 	const diagnostic = Diagnostic.create(
 		Range.create(start, end),

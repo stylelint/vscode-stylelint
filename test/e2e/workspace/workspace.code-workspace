@@ -2,6 +2,7 @@
 	"folders": [
 		{ "path": "code-actions" },
 		{ "path": "config" },
+		{ "path": "custom-rule-url" },
 		{ "path": "custom-syntax" },
 		{ "path": "defaults" },
 		{ "path": "descriptionless-disables" },
