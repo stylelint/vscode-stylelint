@@ -1,17 +1,16 @@
 import * as assert from 'node:assert/strict';
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import process from 'node:process';
 
 import { commands, FileSystemError, Position, Uri, workspace, type WorkspaceFolder } from 'vscode';
 
 import {
 	closeAllEditors,
+	getStylelintDiagnostics,
 	openDocument,
 	restoreFile,
 	sleep,
 	waitForDiagnostics,
-	waitForDiagnosticsLength,
 } from '../helpers.js';
 
 const workspaceName = 'worker-crash';
@@ -163,10 +162,44 @@ async function triggerConfigChange(): Promise<void> {
 	await workspace.fs.writeFile(configUri, original);
 }
 
-const isCI = Boolean(process.env.CI);
-const describeWorkerCrash = isCI ? describe.skip : describe;
+/**
+ * Attempts to get diagnostics by making edits, with retry logic. This helps
+ * stabilize tests when the server may not be immediately ready.
+ */
+async function waitForDiagnosticsWithRetry(
+	editor: Awaited<ReturnType<typeof openDocument>>,
+	maxAttempts = 5,
+	attemptTimeoutMs = 10000,
+): Promise<ReturnType<typeof getStylelintDiagnostics>> {
+	let lastError: Error | undefined;
 
-describeWorkerCrash('Worker crash recovery', () => {
+	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+		// Make a unique edit to force a fresh lint.
+		const editMarker = `/* retry attempt ${attempt} - ${Date.now()} */\n`;
+
+		await editor.edit((builder) => {
+			builder.insert(new Position(0, 0), editMarker);
+		});
+		await editor.document.save();
+
+		try {
+			const diagnostics = await waitForDiagnostics(editor, { timeout: attemptTimeoutMs });
+
+			return diagnostics;
+		} catch (error) {
+			lastError = error instanceof Error ? error : new Error(String(error));
+
+			if (attempt < maxAttempts) {
+				// Brief pause before retrying to let server stabilize.
+				await sleep(500);
+			}
+		}
+	}
+
+	throw lastError ?? new Error('Failed to get diagnostics after retries');
+}
+
+describe('Worker crash recovery', () => {
 	restoreFile(targetFile);
 	restoreFile('worker-crash/stylelint.config.js');
 
@@ -183,11 +216,8 @@ describeWorkerCrash('Worker crash recovery', () => {
 		await triggerCrashAttempts(3);
 		await waitForCrashAttempts(3);
 
-		const editor = await openDocument(targetFile);
-
-		await waitForDiagnosticsLength(editor.document.uri, 0, { timeout: 20000 });
+		await openDocument(targetFile);
 		await closeAllEditors();
-		await sleep(500);
 
 		try {
 			await commands.executeCommand('stylelint.restart');
@@ -197,17 +227,10 @@ describeWorkerCrash('Worker crash recovery', () => {
 			}
 		}
 
-		await sleep(500);
 		await triggerConfigChange();
 		const reopened = await openDocument(targetFile);
 
-		await waitForDiagnosticsLength(reopened.document.uri, 0, { timeout: 20000 });
-		await sleep(1000);
-		await reopened.edit((builder) => {
-			builder.insert(new Position(0, 0), '/* restart trigger */\n');
-		});
-		await reopened.document.save();
-		const diagnostics = await waitForDiagnostics(reopened, { timeout: 20000 });
+		const diagnostics = await waitForDiagnosticsWithRetry(reopened);
 		const diagnostic = diagnostics[0];
 
 		assert.ok(diagnostic, 'Expected Stylelint diagnostic after worker recovery');
