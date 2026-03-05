@@ -35,7 +35,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "lts/*"
+          node-version: 'lts/*'
           cache: npm
 
       - name: Install dependencies
@@ -52,4 +52,4 @@ jobs:
         uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
         with:
           tag_name: ${{ steps.version.outputs.version }}
-          files: "*.vsix"
+          files: '*.vsix'
