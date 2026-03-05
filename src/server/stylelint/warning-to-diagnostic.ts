@@ -2,6 +2,7 @@ import type stylelint from 'stylelint';
 import { Diagnostic, DiagnosticSeverity, Position, Range } from 'vscode-languageserver-types';
 import type { RuleCustomization, SeverityOverride } from '../types.js';
 import type { Logger } from 'winston';
+import type { Warning } from './types.js';
 
 /**
  * Converts a severity override value to LSP DiagnosticSeverity. Internal method
@@ -26,7 +27,7 @@ function severityOverrideToLSPSeverity(
  * Applies severity customizations to a warning.
  */
 function applySeverityCustomization(
-	warning: stylelint.Warning,
+	warning: Warning,
 	ruleCustomizations: RuleCustomization[] | undefined,
 	logger: Logger,
 ): DiagnosticSeverity | null {
@@ -147,7 +148,7 @@ function applySeverityCustomization(
  * @param ruleCustomizations Optional rule customizations for severity overrides.
  */
 export function warningToDiagnostic(
-	warning: stylelint.Warning,
+	warning: Warning,
 	logger: Logger,
 	ruleMetadata?: stylelint.LinterResult['ruleMetadata'],
 	ruleCustomizations?: RuleCustomization[],
@@ -165,7 +166,7 @@ export function warningToDiagnostic(
 			? Position.create(warning.endLine - 1, warning.endColumn - 1)
 			: Position.create(warning.line - 1, warning.column);
 
-	const ruleDocUrl = ruleMetadata?.[warning.rule]?.url;
+	const ruleDocUrl = warning.url ?? ruleMetadata?.[warning.rule]?.url;
 
 	const diagnostic = Diagnostic.create(
 		Range.create(start, end),

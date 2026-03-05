@@ -469,6 +469,43 @@ a { color: #000 }
 			},
 		]);
 	});
+
+	testOnVersion('>=16.7', 'should use custom URL from rule configuration', async () => {
+		expect.assertions(1);
+		const runner = resolveStylelintRunner();
+		const result = await runner.lintDocument(
+			createDocument('custom-url.css', 'css', 'a { color: #fff; }'),
+			{
+				config: {
+					rules: {
+						'color-hex-length': ['long', { url: 'https://example.com/custom-docs' }],
+					},
+				},
+			},
+		);
+
+		expect(result.diagnostics).toEqual([
+			{
+				code: 'color-hex-length',
+				codeDescription: {
+					href: 'https://example.com/custom-docs',
+				},
+				message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+				range: {
+					end: {
+						character: 15,
+						line: 0,
+					},
+					start: {
+						character: 11,
+						line: 0,
+					},
+				},
+				severity: 1,
+				source: 'Stylelint',
+			},
+		]);
+	});
 });
 
 describe('StylelintRunner with a configuration file', () => {

@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fixed: `url` reported on Stylelint warnings not being used for documentation links ([#852](https://github.com/stylelint/vscode-stylelint/issues/852)).
 - Added: `stylelint.ignorePath` setting to specify a custom ignore file ([#851](https://github.com/stylelint/vscode-stylelint/issues/851)).
 - Added: `stylelint.run` setting to control when the linter runs ([#848](https://github.com/stylelint/vscode-stylelint/issues/848)).
 - Added: notification prompting to restart the extension host when `stylelint.logLevel` setting changes ([#849](https://github.com/stylelint/vscode-stylelint/pull/849)).
