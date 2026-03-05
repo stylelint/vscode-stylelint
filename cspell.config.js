@@ -13,6 +13,7 @@ const config = {
 		'Cooldown',
 		'caniuse',
 		'color',
+		'customignore',
 		'Descriptionless',
 		'ENOTDIR',
 		'esbuild',
