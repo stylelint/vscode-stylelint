@@ -41,6 +41,8 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 	readonly #notificationDisposables: Disposable[] = [];
 	readonly #commandDisposables: Disposable[] = [];
 	#settingMonitorDisposable?: Disposable;
+	#configChangeDisposable?: Disposable;
+	#initialLogLevel: string | undefined;
 
 	constructor(
 		languageClient: LanguageClient,
@@ -69,6 +71,7 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 
 		await this.#resetWorkspaceState();
 		this.#registerCommands();
+		this.#registerConfigurationChangeHandler();
 
 		this.#settingMonitorDisposable = this.#createSettingMonitor(this.#client).start();
 		this.#context.subscriptions.push(this.#settingMonitorDisposable);
@@ -78,6 +81,16 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		await this.#stopClient();
 		this.#disposeNotifications();
 		this.#disposeCommands();
+
+		if (this.#configChangeDisposable) {
+			try {
+				this.#configChangeDisposable.dispose();
+			} catch {
+				// Best-effort cleanup.
+			}
+
+			this.#configChangeDisposable = undefined;
+		}
 
 		if (this.#settingMonitorDisposable) {
 			try {
@@ -176,6 +189,36 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 
 		this.#registerDisposable(executeAutofixDisposable);
 		this.#registerDisposable(restartDisposable);
+	}
+
+	#registerConfigurationChangeHandler(): void {
+		this.#initialLogLevel = this.#workspace.getConfiguration('stylelint').get<string>('logLevel');
+
+		this.#configChangeDisposable = this.#workspace.onDidChangeConfiguration(async (event) => {
+			if (!event.affectsConfiguration('stylelint.logLevel')) {
+				return;
+			}
+
+			const newLogLevel = this.#workspace.getConfiguration('stylelint').get<string>('logLevel');
+
+			if (newLogLevel === this.#initialLogLevel) {
+				return;
+			}
+
+			this.#initialLogLevel = newLogLevel;
+
+			const restartAction = 'Restart Extension Host';
+			const result = await this.#window.showInformationMessage(
+				'The log level setting has changed. Restart the extension host for the change to take effect.',
+				restartAction,
+			);
+
+			if (result === restartAction) {
+				await this.#commands.executeCommand('workbench.action.restartExtensionHost');
+			}
+		});
+
+		this.#context.subscriptions.push(this.#configChangeDisposable);
 	}
 
 	async #resetWorkspaceState(): Promise<void> {
