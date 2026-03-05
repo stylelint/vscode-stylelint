@@ -305,4 +305,74 @@ describe('buildStylelintOptions', () => {
 			cwd: '/workspace',
 		});
 	});
+
+	test('with ignorePath in runner options, should override base options', async () => {
+		findPackageRoot.mockResolvedValueOnce('/workspace');
+
+		const options: stylelint.LinterOptions = {
+			config: {},
+			ignorePath: '/.stylelintignore',
+		};
+
+		const runnerOptions: RunnerOptions = {
+			ignorePath: '/workspace/.gitignore',
+		};
+
+		const result = await build('/workspace/file.css', '/workspace', options, runnerOptions);
+
+		expect(result).toEqual({
+			...options,
+			ignorePath: '/workspace/.gitignore',
+			cwd: '/workspace',
+		});
+	});
+
+	test('with ignorePath containing ${workspaceFolder}, should resolve the path', async () => {
+		findPackageRoot.mockResolvedValueOnce('/workspace');
+
+		const options: stylelint.LinterOptions = {
+			config: {},
+			ignorePath: '/.stylelintignore',
+		};
+
+		const runnerOptions: RunnerOptions = {
+			ignorePath: '${workspaceFolder}/.gitignore',
+		};
+
+		const result = await build('/workspace/file.css', '/workspace', options, runnerOptions);
+
+		expect(result).toEqual({
+			...options,
+			ignorePath: '/workspace/.gitignore',
+			cwd: '/workspace',
+		});
+	});
+
+	test('with ignorePath containing ${workspaceFolder} but no workspace, should not resolve the path', async () => {
+		findPackageRoot.mockResolvedValueOnce('/workspace');
+
+		const options: stylelint.LinterOptions = {
+			config: {},
+			ignorePath: '/.stylelintignore',
+		};
+
+		const runnerOptions: RunnerOptions = {
+			ignorePath: '${workspaceFolder}/.gitignore',
+		};
+
+		const result = await build('/workspace/file.css', undefined, options, runnerOptions);
+
+		expect(result).toEqual({
+			config: {},
+			configBasedir: undefined,
+			configFile: undefined,
+			customSyntax: undefined,
+			ignoreDisables: undefined,
+			ignorePath: '${workspaceFolder}/.gitignore',
+			reportDescriptionlessDisables: undefined,
+			reportInvalidScopeDisables: undefined,
+			reportNeedlessDisables: undefined,
+			cwd: '/workspace',
+		});
+	});
 });

@@ -125,6 +125,12 @@
           "default": "",
           "description": "An absolute path to a custom PostCSS-compatible syntax module."
         },
+        "stylelint.ignorePath": {
+          "scope": "resource",
+          "type": "string",
+          "default": "",
+          "description": "Path to a file containing patterns describing files to ignore. Use to override automatic `.stylelintignore` detection."
+        },
         "stylelint.reportDescriptionlessDisables": {
           "scope": "resource",
           "type": "boolean",
