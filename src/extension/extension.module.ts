@@ -5,37 +5,19 @@ import { extensionTokens } from './di-tokens.js';
 import { ExtensionRuntimeService } from './extension-runtime.service.js';
 import {
 	createClientOptions,
-	createLanguageClient,
 	createPublicApi,
-	createServerOptions,
-	createSettingMonitorFactory,
+	LanguageClientService,
+	ServerOptionsService,
 } from './services/index.js';
 
 export const extensionModule = module({
 	register: [
-		{
-			token: extensionTokens.serverOptions,
-			inject: [extensionTokens.serverModulePath, extensionTokens.workspace],
-			useFactory: createServerOptions,
-		},
+		ServerOptionsService,
+		LanguageClientService,
 		{
 			token: extensionTokens.clientOptions,
-			inject: [extensionTokens.workspace],
+			inject: [extensionTokens.workspace, extensionTokens.window],
 			useFactory: createClientOptions,
-		},
-		{
-			token: extensionTokens.settingMonitorFactory,
-			inject: [extensionTokens.languageClientModule],
-			useFactory: createSettingMonitorFactory,
-		},
-		{
-			token: extensionTokens.languageClient,
-			inject: [
-				extensionTokens.languageClientModule,
-				extensionTokens.serverOptions,
-				extensionTokens.clientOptions,
-			],
-			useFactory: createLanguageClient,
 		},
 		provideValue(extensionTokens.publicApi, createPublicApi),
 		ExtensionRuntimeService,

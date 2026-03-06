@@ -78,6 +78,31 @@
           "default": "info",
           "description": "Controls the log level used by the Stylelint extension and language server. Restart the extension host or the window after changing the setting, since it's picked up at initialization."
         },
+        "stylelint.runtime": {
+          "scope": "machine-overridable",
+          "type": [
+            "string",
+            "null"
+          ],
+          "default": null,
+          "markdownDescription": "The location of the node binary to run Stylelint under."
+        },
+        "stylelint.execArgv": {
+          "scope": "machine-overridable",
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "markdownDescription": "Additional exec argv arguments passed to the Node.js runtime."
+        },
         "stylelint.codeAction.disableRuleComment": {
           "scope": "resource",
           "type": "object",

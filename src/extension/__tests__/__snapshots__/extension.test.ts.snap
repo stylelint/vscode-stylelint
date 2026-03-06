@@ -35,6 +35,11 @@ exports[`Extension entry point > should create a language client 1`] = `
         "scheme": "untitled",
       },
     ],
+    "outputChannel": {
+      "append": [MockFunction],
+      "appendLine": [MockFunction],
+      "dispose": [MockFunction],
+    },
     "synchronize": {
       "fileEvents": [
         {
