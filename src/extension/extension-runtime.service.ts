@@ -12,7 +12,7 @@ import {
 } from '../server/index.js';
 import { extensionTokens } from './di-tokens.js';
 import type { VSCodeCommands, VSCodeWindow, VSCodeWorkspace } from './services/environment.js';
-import type { SettingMonitorFactory } from './services/language-client.js';
+import { LanguageClientService } from './services/language-client.service.js';
 import { ApiEvent, type PublicApi } from './types.js';
 
 const workspaceNotificationError =
@@ -21,64 +21,67 @@ const workspaceNotificationError =
 @runtimeService()
 @inject({
 	inject: [
-		extensionTokens.languageClient,
+		LanguageClientService,
 		extensionTokens.window,
 		extensionTokens.commands,
 		extensionTokens.workspace,
 		extensionTokens.context,
-		extensionTokens.settingMonitorFactory,
 		extensionTokens.publicApi,
 	],
 })
 export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
-	readonly #client: LanguageClient;
+	readonly #languageClientService: LanguageClientService;
 	readonly #window: VSCodeWindow;
 	readonly #commands: VSCodeCommands;
 	readonly #workspace: VSCodeWorkspace;
 	readonly #context: ExtensionContext;
-	readonly #createSettingMonitor: SettingMonitorFactory;
 	readonly #api: PublicApi;
 	readonly #notificationDisposables: Disposable[] = [];
 	readonly #commandDisposables: Disposable[] = [];
+	#client: LanguageClient;
 	#settingMonitorDisposable?: Disposable;
 	#configChangeDisposable?: Disposable;
-	#initialLogLevel: string | undefined;
+	#settingSnapshots = new Map<string, string>();
+	#needsRecreate = false;
 
 	constructor(
-		languageClient: LanguageClient,
+		languageClientService: LanguageClientService,
 		window: VSCodeWindow,
 		commands: VSCodeCommands,
 		workspace: VSCodeWorkspace,
 		context: ExtensionContext,
-		settingMonitorFactory: SettingMonitorFactory,
 		api: PublicApi,
 	) {
-		this.#client = languageClient;
+		this.#languageClientService = languageClientService;
 		this.#window = window;
 		this.#commands = commands;
 		this.#workspace = workspace;
 		this.#context = context;
-		this.#createSettingMonitor = settingMonitorFactory;
 		this.#api = api;
+		this.#client = this.#languageClientService.createClient();
 	}
 
 	async onStart(): Promise<void> {
-		try {
-			await this.#startClient();
-		} catch (error) {
-			await this.#showError(error);
-		}
-
-		await this.#resetWorkspaceState();
 		this.#registerCommands();
 		this.#registerConfigurationChangeHandler();
 
-		this.#settingMonitorDisposable = this.#createSettingMonitor(this.#client).start();
+		this.#settingMonitorDisposable = this.#createEnableSettingHandler();
 		this.#context.subscriptions.push(this.#settingMonitorDisposable);
+
+		try {
+			await this.#startClient();
+		} catch (error) {
+			this.#needsRecreate = true;
+			await this.#showError(error);
+
+			return;
+		}
+
+		await this.#resetWorkspaceState();
 	}
 
 	async onShutdown(): Promise<void> {
-		await this.#stopClient();
+		await this.#disposeClient();
 		this.#disposeNotifications();
 		this.#disposeCommands();
 
@@ -108,11 +111,48 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		this.#registerNotificationHandlers();
 	}
 
-	async #stopClient(): Promise<void> {
+	/**
+	 * Watches stylelint.enable and starts/stops the current client accordingly.
+	 * Returns a disposable that removes the listener.
+	 */
+	#createEnableSettingHandler(): Disposable {
+		return this.#workspace.onDidChangeConfiguration(async (event) => {
+			if (!event.affectsConfiguration('stylelint.enable')) {
+				return;
+			}
+
+			const enabled = this.#workspace.getConfiguration('stylelint').get<boolean>('enable', true);
+
+			if (enabled && (this.#needsRecreate || this.#client.needsStart())) {
+				try {
+					if (this.#needsRecreate) {
+						this.#needsRecreate = false;
+						await this.#disposeClient();
+						this.#client = this.#languageClientService.createClient();
+					}
+
+					await this.#startClient();
+				} catch (error) {
+					this.#needsRecreate = true;
+					await this.#showError(error);
+				}
+			} else if (!enabled && this.#client.needsStop()) {
+				try {
+					await this.#client.stop();
+				} catch (error) {
+					if (!this.#isClientInactiveError(error)) {
+						await this.#showError(error);
+					}
+				}
+			}
+		});
+	}
+
+	async #disposeClient(): Promise<void> {
 		try {
-			await this.#client.stop();
+			await this.#client.dispose();
 		} catch (error) {
-			if (this.#isConnectionDisposedError(error)) {
+			if (this.#isClientInactiveError(error)) {
 				return;
 			}
 
@@ -123,17 +163,19 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 	#registerNotificationHandlers(): void {
 		this.#disposeNotifications();
 
+		const client = this.#client;
+
 		this.#notificationDisposables.push(
-			this.#client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
+			client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
 				this.#api.codeActionReady = true;
 			}),
-			this.#client.onNotification(
+			client.onNotification(
 				Notification.DidRegisterDocumentFormattingEditProvider,
 				(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
 					this.#api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
 				},
 			),
-			this.#client.onNotification(Notification.DidResetConfiguration, () => {
+			client.onNotification(Notification.DidResetConfiguration, () => {
 				this.#api.emit(ApiEvent.DidResetConfiguration);
 			}),
 		);
@@ -167,24 +209,35 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		);
 
 		const restartDisposable = this.#commands.registerCommand('stylelint.restart', async () => {
-			await this.#resetWorkspaceState();
+			this.#settingMonitorDisposable?.dispose();
+			this.#settingMonitorDisposable = undefined;
+			this.#disposeNotifications();
 
 			try {
-				await this.#client.stop();
+				await this.#disposeClient();
 			} catch (error) {
-				if (!this.#isConnectionDisposedError(error)) {
+				if (!this.#isClientInactiveError(error)) {
 					await this.#showError(error);
 
 					return;
 				}
 			}
 
-			try {
-				await this.#startClient();
-				await this.#resetWorkspaceState();
-			} catch (error) {
-				await this.#showError(error);
+			this.#client = this.#languageClientService.createClient();
+			this.#needsRecreate = false;
+
+			const enabled = this.#workspace.getConfiguration('stylelint').get<boolean>('enable', true);
+
+			if (enabled) {
+				try {
+					await this.#startClient();
+					await this.#resetWorkspaceState();
+				} catch (error) {
+					await this.#showError(error);
+				}
 			}
+
+			this.#settingMonitorDisposable = this.#createEnableSettingHandler();
 		});
 
 		this.#registerDisposable(executeAutofixDisposable);
@@ -192,29 +245,100 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 	}
 
 	#registerConfigurationChangeHandler(): void {
-		this.#initialLogLevel = this.#workspace.getConfiguration('stylelint').get<string>('logLevel');
+		/**
+		 * Settings that require a restart when changed. Each entry maps a
+		 * setting key under "stylelint." to the restart strategy. "server"
+		 * means just the language server needs a restart, "extension-host"
+		 * means the entire extension host needs a restart for the setting to
+		 * take effect.
+		 */
+		const restartSettings: Record<string, 'extension-host' | 'server'> = {
+			logLevel: 'extension-host',
+			runtime: 'server',
+			execArgv: 'server',
+		};
+
+		const settingKeys = Object.keys(restartSettings);
+
+		// Snapshot current values.
+		const config = this.#workspace.getConfiguration('stylelint');
+
+		for (const key of settingKeys) {
+			this.#settingSnapshots.set(key, JSON.stringify(config.get(key)));
+		}
 
 		this.#configChangeDisposable = this.#workspace.onDidChangeConfiguration(async (event) => {
-			if (!event.affectsConfiguration('stylelint.logLevel')) {
+			const qualifiedKeys = settingKeys.map((key) => `stylelint.${key}`);
+
+			if (!qualifiedKeys.some((qk) => event.affectsConfiguration(qk))) {
 				return;
 			}
 
-			const newLogLevel = this.#workspace.getConfiguration('stylelint').get<string>('logLevel');
+			const currentConfig = this.#workspace.getConfiguration('stylelint');
 
-			if (newLogLevel === this.#initialLogLevel) {
+			let needsExtensionHostRestart = false;
+			const changedSettings = new Set<string>();
+
+			for (const key of settingKeys) {
+				const newValue = JSON.stringify(currentConfig.get(key));
+
+				if (newValue !== this.#settingSnapshots.get(key)) {
+					this.#settingSnapshots.set(key, newValue);
+					changedSettings.add(key);
+
+					if (restartSettings[key] === 'extension-host') {
+						needsExtensionHostRestart = true;
+					}
+				}
+			}
+
+			// When an extension host restart is needed, only mention those
+			// settings in the message, since only those settings actually
+			// require the full restart.
+			const relevantKeys = needsExtensionHostRestart
+				? [...changedSettings].filter((k) => restartSettings[k] === 'extension-host')
+				: [...changedSettings];
+
+			if (relevantKeys.length === 0) {
 				return;
 			}
 
-			this.#initialLogLevel = newLogLevel;
+			this.#needsRecreate = true;
 
-			const restartAction = 'Restart Extension Host';
+			const enabled = currentConfig.get<boolean>('enable', true);
+
+			// When the extension is disabled, only extension host changes still
+			// need a prompt. The enable handler will recreate the client when
+			// the user re-enables.
+			//
+			// Likewise, if enable just flipped to true in the same edit, the
+			// the enable handler will pick up #needsRecreate and handle the
+			// server restart, so skip the redundant prompt.
+			if (
+				!needsExtensionHostRestart &&
+				(!enabled || event.affectsConfiguration('stylelint.enable'))
+			) {
+				return;
+			}
+
+			const subject =
+				relevantKeys.length === 1
+					? `The stylelint.${relevantKeys[0]} setting has`
+					: 'Stylelint server settings have';
+
+			const { label, command } = needsExtensionHostRestart
+				? { label: 'Restart Extension Host', command: 'workbench.action.restartExtensionHost' }
+				: { label: 'Restart Stylelint Server', command: 'stylelint.restart' };
+
+			const target = needsExtensionHostRestart ? 'extension host' : 'Stylelint server';
+
 			const result = await this.#window.showInformationMessage(
-				'The log level setting has changed. Restart the extension host for the change to take effect.',
-				restartAction,
+				`${subject} changed. Restart the ${target} for the change to take effect.`,
+				label,
 			);
 
-			if (result === restartAction) {
-				await this.#commands.executeCommand('workbench.action.restartExtensionHost');
+			if (result === label) {
+				await this.#commands.executeCommand(command);
 			}
 		});
 
@@ -268,7 +392,14 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		);
 	}
 
-	#isConnectionDisposedError(error: unknown): boolean {
-		return error instanceof Error && error.message.includes('connection got disposed');
+	#isClientInactiveError(error: unknown): boolean {
+		if (!(error instanceof Error)) {
+			return false;
+		}
+
+		return (
+			error.message.includes('connection got disposed') ||
+			error.message.includes("can't be stopped")
+		);
 	}
 }

@@ -8,6 +8,10 @@ import { parseLogLevel } from '../shared/log-level.js';
 
 const connection = createConnection(ProposedFeatures.all);
 
+connection.console.info(
+	`Stylelint language server running on Node.js ${process.version} from ${process.execPath}`,
+);
+
 const isDevelopment = process.env.NODE_ENV === 'development';
 const configuredLogLevel = parseLogLevel(process.env.STYLELINT_LOG_LEVEL);
 

@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ExtensionContext, TextEditor } from 'vscode';
-import type { LanguageClient, NodeModule, SettingMonitor } from 'vscode-languageclient/node';
+import type { LanguageClient, NodeModule } from 'vscode-languageclient/node';
 import {
 	DidRegisterDocumentFormattingEditProviderNotificationParams,
 	Notification,
@@ -28,9 +28,9 @@ const mockTextEditor = {
 
 const start = vi.fn();
 const stop = vi.fn();
+const dispose = vi.fn();
 const onNotification = vi.fn();
 const sendRequest = vi.fn();
-const settingMonitorStart = vi.fn();
 
 const mockExtensionContext = {
 	subscriptions: [],
@@ -40,7 +40,6 @@ let mockWorkspace: VSCodeWorkspace;
 let mockCommands: VSCodeCommands;
 let mockWindow: VSCodeWindow;
 let mockLanguageClient: ReturnType<typeof vi.fn>;
-let mockSettingMonitor: ReturnType<typeof vi.fn>;
 let languageClientInstance: LanguageClient;
 let moduleOverrides: Iterable<ExtensionOverrideEntry>;
 let registerCommandMock: ReturnType<typeof vi.fn>;
@@ -84,7 +83,13 @@ describe('Extension entry point', () => {
 		fileWatcherMock = vi.fn((pattern: string) => ({ pattern }));
 		mockWorkspace = {
 			getConfiguration: vi.fn(() => ({
-				get: vi.fn(() => 'info'),
+				get: vi.fn((key: string, defaultValue?: unknown) => {
+					if (key === 'logLevel') {
+						return 'info';
+					}
+
+					return defaultValue;
+				}),
 			})),
 			createFileSystemWatcher: fileWatcherMock,
 			workspaceFolders: [],
@@ -99,6 +104,11 @@ describe('Extension entry point', () => {
 		showErrorMessageMock = vi.fn(async () => undefined);
 		mockWindow = {
 			activeTextEditor: undefined,
+			createOutputChannel: vi.fn(() => ({
+				append: vi.fn(),
+				appendLine: vi.fn(),
+				dispose: vi.fn(),
+			})),
 			showErrorMessage: showErrorMessageMock,
 			showInformationMessage: vi.fn(),
 			showWarningMessage: vi.fn(),
@@ -109,6 +119,7 @@ describe('Extension entry point', () => {
 			sendRequest,
 			start,
 			stop,
+			dispose,
 		} as unknown as LanguageClient;
 
 		// eslint-disable-next-line prefer-arrow-callback -- Must be constructable via `new`
@@ -119,13 +130,6 @@ describe('Extension entry point', () => {
 		) {
 			return languageClientInstance;
 		});
-		// eslint-disable-next-line prefer-arrow-callback -- Must be constructable via `new`
-		mockSettingMonitor = vi.fn(function MockSettingMonitor() {
-			return {
-				start: settingMonitorStart,
-			} as unknown as SettingMonitor;
-		});
-
 		const overrides: ExtensionOverrideEntry[] = [
 			[extensionTokens.workspace, mockWorkspace],
 			[extensionTokens.commands, mockCommands],
@@ -134,7 +138,6 @@ describe('Extension entry point', () => {
 				extensionTokens.languageClientModule,
 				{
 					LanguageClient: mockLanguageClient as unknown as LanguageClientModule['LanguageClient'],
-					SettingMonitor: mockSettingMonitor as unknown as LanguageClientModule['SettingMonitor'],
 				} as LanguageClientModule,
 			],
 		];
@@ -264,26 +267,23 @@ describe('Extension entry point', () => {
 
 		await registerCommandMock.mock.calls[1][1]();
 
-		expect(stop).toHaveBeenCalled();
+		expect(dispose).toHaveBeenCalled();
 		expect(start).toHaveBeenCalled();
 	});
 
-	it('should monitor settings', async () => {
-		const disposable = { dispose: () => undefined };
-
-		settingMonitorStart.mockReturnValueOnce(disposable);
-
+	it('should monitor stylelint.enable setting', async () => {
 		await activate(mockExtensionContext, moduleOverrides);
 
 		const { subscriptions } = mockExtensionContext;
+		const onDidChangeCfg = mockWorkspace.onDidChangeConfiguration as ReturnType<typeof vi.fn>;
 
-		const mockLanguageClientInstance = mockLanguageClient.mock.results[0].value;
+		// Called twice, once for restart settings handler, once for enable handler.
+		expect(onDidChangeCfg).toHaveBeenCalledTimes(2);
 
-		expect(mockSettingMonitor).toHaveBeenCalled();
-		expect(mockSettingMonitor.mock.calls[0][0]).toBe(mockLanguageClientInstance);
-		expect(mockSettingMonitor.mock.calls[0][1]).toBe('stylelint.enable');
-		expect(settingMonitorStart).toHaveBeenCalled();
-		expect(subscriptions).toContain(disposable);
+		// The enable handler's disposable should be in subscriptions.
+		const enableHandlerDisposable = onDidChangeCfg.mock.results[1].value;
+
+		expect(subscriptions).toContain(enableHandlerDisposable);
 	});
 
 	it('should listen for the DidRegisterCodeActionRequestHandler notification', async () => {
@@ -411,15 +411,15 @@ describe('Extension entry point', () => {
 		expect(showErrorMessageMock.mock.calls[1]).toEqual(['Stylelint: String problem!']);
 	});
 
-	it('should stop language client on deactivate', async () => {
+	it('should dispose language client on deactivate', async () => {
 		await activate(mockExtensionContext, moduleOverrides);
 		await deactivate();
 
-		expect(stop).toHaveBeenCalledTimes(1);
+		expect(dispose).toHaveBeenCalledTimes(1);
 	});
 
-	it('should show error message when deactivate fails to stop the client', async () => {
-		stop.mockImplementation(() => {
+	it('should show error message when deactivate fails to dispose the client', async () => {
+		dispose.mockImplementation(() => {
 			throw new Error('foo');
 		});
 
@@ -437,8 +437,8 @@ describe('Extension entry point', () => {
 		);
 	});
 
-	it('should show unknown error message when deactivate fails to stop the client', async () => {
-		stop.mockImplementation(() => {
+	it('should show unknown error message when deactivate fails to dispose the client', async () => {
+		dispose.mockImplementation(() => {
 			throw undefined; // eslint-disable-line @typescript-eslint/only-throw-error
 		});
 

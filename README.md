@@ -151,6 +151,36 @@ Controls when the linter runs.
 
 Controls the log level used by the Stylelint extension and language server. Restart the extension host or the window after changing the setting, since it's picked up at initialization.
 
+#### `stylelint.runtime`
+
+> Type: `string | null`  
+> Default: `null`
+
+The location of the node binary to run Stylelint under. By default, the extension uses the Node.js runtime bundled with VS Code. Set this to use a different Node.js version on your system.
+
+For example:
+
+```json
+  "stylelint.runtime": "/usr/local/bin/node"
+```
+
+Changing this setting requires a server restart to take effect.
+
+#### `stylelint.execArgv`
+
+> Type: `string[] | null`  
+> Default: `null`
+
+Additional exec argv arguments passed to the Node.js runtime.
+
+For example:
+
+```json
+  "stylelint.execArgv": ["--max_old_space_size=8192"]
+```
+
+Changing this setting requires a server restart to take effect.
+
 #### `stylelint.validate`
 
 > Type: `string[]`  

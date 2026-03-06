@@ -130,7 +130,7 @@ The rest of the extension code never imports `vscode` directly and depends on th
 
 ### 3.3 Extension module: language client, public API, runtime service
 
-`src/extension/extension.module.ts` composes the extension's own services on top of the platform module. It registers providers for `extensionTokens.serverOptions` and `extensionTokens.clientOptions`, created by `createServerOptions(...)` and `createClientOptions(...)` in `src/extension/services/language-client.ts`. It also provides `extensionTokens.settingMonitorFactory`, which knows how to create a `SettingMonitor` from the language client module, and `extensionTokens.languageClient`, created by `createLanguageClient(...)` using the language client module, server options, and client options. The module wires up `extensionTokens.publicApi` via `createPublicApi(...)` and registers `ExtensionRuntimeService` itself as a runtime service.
+`src/extension/extension.module.ts` composes the extension's own services on top of the platform module. It registers providers for `extensionTokens.clientOptions`, created by `createClientOptions(...)` in `src/extension/services/language-client.ts`, plus `ServerOptionsService` and `LanguageClientService` as class providers. The module wires up `extensionTokens.publicApi` via `createPublicApi(...)` and registers `ExtensionRuntimeService` itself as a runtime service.
 
 All of these are normal DI providers: the module is just a declarative description of how to build them.
 
