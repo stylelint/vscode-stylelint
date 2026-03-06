@@ -16,7 +16,6 @@ import {
 } from '../../decorators.js';
 import { formattingOptionsToRules } from '../../stylelint/index.js';
 import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../tokens.js';
-import { Notification } from '../../types.js';
 import { DocumentFixesService } from '../documents/document-fixes.service.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
 import { WorkspaceOptionsService } from '../workspace/workspace-options.service.js';
@@ -120,11 +119,6 @@ export class FormatterLspService {
 			uri: document.uri,
 			options,
 		});
-
-		await this.#connection.sendNotification(
-			Notification.DidRegisterDocumentFormattingEditProvider,
-			{ uri: document.uri, options },
-		);
 	}
 
 	#deregister(uri: string): void {

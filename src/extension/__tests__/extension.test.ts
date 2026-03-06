@@ -1,14 +1,8 @@
-import { EventEmitter } from 'events';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { ExtensionContext, TextEditor } from 'vscode';
 import type { LanguageClient, NodeModule } from 'vscode-languageclient/node';
-import {
-	DidRegisterDocumentFormattingEditProviderNotificationParams,
-	Notification,
-} from '../../server/index.js';
 import { activate, deactivate } from '../extension.js';
 import { extensionTokens } from '../di-tokens.js';
-import { ApiEvent } from '../types.js';
 
 type VSCodeWorkspace = (typeof import('vscode'))['workspace'];
 type VSCodeCommands = (typeof import('vscode'))['commands'];
@@ -29,7 +23,6 @@ const mockTextEditor = {
 const start = vi.fn();
 const stop = vi.fn();
 const dispose = vi.fn();
-const onNotification = vi.fn();
 const sendRequest = vi.fn();
 
 const mockExtensionContext = {
@@ -115,7 +108,6 @@ describe('Extension entry point', () => {
 		} as unknown as VSCodeWindow;
 
 		languageClientInstance = {
-			onNotification,
 			sendRequest,
 			start,
 			stop,
@@ -156,12 +148,6 @@ describe('Extension entry point', () => {
 		} catch {
 			// Ignore errors during cleanup to keep individual test expectations isolated.
 		}
-	});
-
-	it('should provide a public API', async () => {
-		const api = await activate(mockExtensionContext, moduleOverrides);
-
-		expect(api).toBeInstanceOf(EventEmitter);
 	});
 
 	it('should create a language client', async () => {
@@ -284,109 +270,6 @@ describe('Extension entry point', () => {
 		const enableHandlerDisposable = onDidChangeCfg.mock.results[1].value;
 
 		expect(subscriptions).toContain(enableHandlerDisposable);
-	});
-
-	it('should listen for the DidRegisterCodeActionRequestHandler notification', async () => {
-		await activate(mockExtensionContext, moduleOverrides);
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		expect(onNotification).toHaveBeenCalled();
-		expect(onNotification.mock.calls[0][0]).toBe(Notification.DidRegisterCodeActionRequestHandler);
-		expect(onNotification.mock.calls[0][1]).toBeInstanceOf(Function);
-	});
-
-	it('should set codeActionReady to true when the DidRegisterCodeActionRequestHandler notification is received', async () => {
-		const api = await activate(mockExtensionContext, moduleOverrides);
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		onNotification.mock.calls[0][1]();
-
-		expect(api.codeActionReady).toBe(true);
-	});
-
-	it('should listen for the DidRegisterDocumentFormattingEditProvider notification', async () => {
-		await activate(mockExtensionContext, moduleOverrides);
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		expect(onNotification).toHaveBeenCalled();
-		expect(onNotification.mock.calls[1][0]).toBe(
-			Notification.DidRegisterDocumentFormattingEditProvider,
-		);
-		expect(onNotification.mock.calls[1][1]).toBeInstanceOf(Function);
-	});
-
-	it('should emit the DidRegisterDocumentFormattingEditProvider event when the DidRegisterDocumentFormattingEditProvider notification is received', async () => {
-		const api = await activate(mockExtensionContext, moduleOverrides);
-
-		const promise = new Promise<DidRegisterDocumentFormattingEditProviderNotificationParams>(
-			(resolve) => {
-				api.on(ApiEvent.DidRegisterDocumentFormattingEditProvider, resolve);
-			},
-		);
-
-		const params: DidRegisterDocumentFormattingEditProviderNotificationParams = {
-			uri: 'file:///foo.css',
-			options: {
-				documentSelector: [{ scheme: 'file', pattern: '/foo.css' }],
-			},
-		};
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		onNotification.mock.calls[1][1](params);
-
-		await expect(promise).resolves.toStrictEqual(params);
-	});
-
-	it('should listen for the DidResetConfiguration notification', async () => {
-		await activate(mockExtensionContext, moduleOverrides);
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		expect(onNotification).toHaveBeenCalled();
-		expect(onNotification.mock.calls[2][0]).toBe(Notification.DidResetConfiguration);
-		expect(onNotification.mock.calls[2][1]).toBeInstanceOf(Function);
-	});
-
-	it('should emit the DidResetConfiguration event when the DidResetConfiguration notification is received', async () => {
-		const api = await activate(mockExtensionContext, moduleOverrides);
-
-		const promise = new Promise<void>((resolve) => {
-			api.on(ApiEvent.DidResetConfiguration, resolve);
-		});
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		onNotification.mock.calls[2][1]();
-
-		await expect(promise).resolves.toBeUndefined();
-	});
-
-	it('should show an error message if registering notifications fails', async () => {
-		onNotification.mockImplementation((): void => {
-			throw new Error('Problem!');
-		});
-
-		await activate(mockExtensionContext, moduleOverrides);
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		await deactivate();
-
-		onNotification.mockImplementation((): void => {
-			throw 'String problem!'; // eslint-disable-line @typescript-eslint/only-throw-error
-		});
-
-		await activate(mockExtensionContext, moduleOverrides);
-
-		await new Promise((resolve) => setImmediate(resolve));
-
-		expect(showErrorMessageMock).toHaveBeenCalledTimes(2);
-		expect(showErrorMessageMock.mock.calls[0]).toEqual(['Stylelint: Problem!']);
-		expect(showErrorMessageMock.mock.calls[1]).toEqual(['Stylelint: String problem!']);
 	});
 
 	it('should show an error message if restarting the language server fails', async () => {

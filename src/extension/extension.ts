@@ -9,7 +9,6 @@ import { extensionTokens } from './di-tokens.js';
 import { extensionModule } from './extension.module.js';
 import { createExtensionPlatformModule } from './platform.module.js';
 import type { VSCodeWindow } from './services/environment.js';
-import type { PublicApi } from './types.js';
 
 let application: RuntimeApplication | undefined;
 let resolvedWindow: VSCodeWindow | undefined;
@@ -20,9 +19,9 @@ let resolvedWindow: VSCodeWindow | undefined;
 export async function activate(
 	context: ExtensionContext,
 	overrides?: RuntimeApplicationOptions['overrides'],
-): Promise<PublicApi> {
+): Promise<void> {
 	if (application) {
-		return application.resolve(extensionTokens.publicApi);
+		return;
 	}
 
 	application = createRuntimeApplication({
@@ -38,8 +37,6 @@ export async function activate(
 	}
 
 	resolvedWindow = application.resolve(extensionTokens.window);
-
-	return application.resolve(extensionTokens.publicApi);
 }
 
 /**

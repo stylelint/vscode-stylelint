@@ -6,7 +6,6 @@ import type { LanguageClientOptions } from 'vscode-languageclient/node';
 type LanguageClientModule = typeof import('vscode-languageclient/node');
 
 import { createToken } from '../di/index.js';
-import type { PublicApi } from './types.js';
 
 export const extensionTokens = {
 	context: createToken<ExtensionContext>('extension-context'),
@@ -16,5 +15,4 @@ export const extensionTokens = {
 	commands: createToken<typeof vscode.commands>('extension-commands'),
 	window: createToken<typeof vscode.window>('extension-window'),
 	languageClientModule: createToken<LanguageClientModule>('extension-language-client-module'),
-	publicApi: createToken<PublicApi>('extension-public-api'),
 } as const;

@@ -1,5 +1,4 @@
 import { CodeActionKind as VSCodeActionKind } from 'vscode-languageserver-types';
-import type LSP from 'vscode-languageserver-protocol';
 import type stylelint from 'stylelint';
 import type { PackageManager } from './stylelint/index.js';
 
@@ -45,31 +44,6 @@ export type RuleCustomization = {
 	 */
 	severity: SeverityOverride;
 };
-
-/**
- * Language server notification names.
- */
-export enum Notification {
-	DidRegisterCodeActionRequestHandler = 'stylelint/didRegisterCodeActionRequestHandler',
-	DidRegisterDocumentFormattingEditProvider = 'stylelint/didRegisterDocumentFormattingEditProvider',
-	DidResetConfiguration = 'stylelint/didResetConfiguration',
-	ResetWorkspaceState = 'stylelint/resetWorkspaceState',
-}
-
-/**
- * `DidRegisterDocumentFormattingEditProvider` notification parameters.
- */
-export interface DidRegisterDocumentFormattingEditProviderNotificationParams {
-	/**
-	 * The URI of the document for which the formatting provider was registered.
-	 */
-	readonly uri: string;
-
-	/**
-	 * The options used to register the document formatting provider.
-	 */
-	readonly options: LSP.DocumentFormattingRegistrationOptions;
-}
 
 /**
  * Run mode for the linter. `onType` lints as you type, while `onSave` only

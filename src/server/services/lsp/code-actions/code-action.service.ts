@@ -6,20 +6,10 @@ import type winston from 'winston';
 
 import { inject } from '../../../../di/index.js';
 import { getEditInfo, RuleCodeActionsCollection } from '../../../utils/index.js';
-import {
-	codeActionRequest,
-	command,
-	initialize,
-	lspService,
-	notification,
-} from '../../../decorators.js';
+import { codeActionRequest, command, initialize, lspService } from '../../../decorators.js';
 import { isDisableReportRule } from '../../../stylelint/index.js';
 import { lspConnectionToken, textDocumentsToken } from '../../../tokens.js';
-import {
-	CommandId,
-	Notification,
-	CodeActionKind as StylelintCodeActionKind,
-} from '../../../types.js';
+import { CommandId, CodeActionKind as StylelintCodeActionKind } from '../../../types.js';
 import { DocumentDiagnosticsService } from '../../documents/document-diagnostics.service.js';
 import { DocumentFixesService } from '../../documents/document-fixes.service.js';
 import { type LoggingService, loggingServiceToken } from '../../infrastructure/logging.service.js';
@@ -68,17 +58,6 @@ export class CodeActionService {
 		this.#disableRuleFileFactory = disableRuleFileFactory;
 		this.#connection = connection;
 		this.#logger = loggingService.createLogger(CodeActionService);
-	}
-
-	@notification(LSP.InitializedNotification.type)
-	onInitialized(): void {
-		void this.#connection
-			.sendNotification(Notification.DidRegisterCodeActionRequestHandler)
-			.catch((error: unknown) => {
-				this.#logger?.error('Failed to send DidRegisterCodeActionRequestHandler notification', {
-					error,
-				});
-			});
 	}
 
 	@initialize()
