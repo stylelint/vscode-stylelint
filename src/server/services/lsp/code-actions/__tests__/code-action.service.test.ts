@@ -18,7 +18,7 @@ import {
 import { createTestLogger, type TestLogger } from '../../../../../../test/helpers/test-logger.js';
 import { createContainer, module, provideTestValue } from '../../../../../di/index.js';
 import { lspConnectionToken, OsModuleToken, textDocumentsToken } from '../../../../tokens.js';
-import { Notification, CodeActionKind as StylelintCodeActionKind } from '../../../../types.js';
+import { CodeActionKind as StylelintCodeActionKind } from '../../../../types.js';
 import { DocumentDiagnosticsService, DocumentFixesService } from '../../../documents/index.js';
 import {
 	type LoggingService,
@@ -34,10 +34,6 @@ const defaultRange = LSP.Range.create(LSP.Position.create(0, 0), LSP.Position.cr
 
 type CodeActionConnectionStub = {
 	connection: Connection;
-	sendNotificationCalls: Array<{
-		method: string | LSP.ProtocolNotificationType<unknown, unknown>;
-		params: unknown;
-	}>;
 	windowShowDocumentCalls: LSP.ShowDocumentParams[];
 	setShowDocumentResponder(
 		responder: (
@@ -47,7 +43,6 @@ type CodeActionConnectionStub = {
 };
 
 function createCodeActionConnectionStub(): CodeActionConnectionStub {
-	const sendNotificationCalls: CodeActionConnectionStub['sendNotificationCalls'] = [];
 	const windowShowDocumentCalls: LSP.ShowDocumentParams[] = [];
 	let showDocumentResponder: (
 		params: LSP.ShowDocumentParams,
@@ -66,19 +61,12 @@ function createCodeActionConnectionStub(): CodeActionConnectionStub {
 				return showDocumentResponder(params);
 			},
 		},
-		sendNotification: async (
-			method: string | LSP.ProtocolNotificationType<unknown, unknown>,
-			params?: unknown,
-		) => {
-			sendNotificationCalls.push({ method, params });
-		},
 		onCodeAction: () => ({ dispose() {} }) as LSP.Disposable,
 		onNotification: () => ({ dispose() {} }) as LSP.Disposable,
 	} as unknown as Connection;
 
 	return {
 		connection,
-		sendNotificationCalls,
 		windowShowDocumentCalls,
 		setShowDocumentResponder: (responder) => {
 			showDocumentResponder = responder;
@@ -154,17 +142,6 @@ describe('CodeActionService', () => {
 
 	it('onInitialize should return capabilities', () => {
 		expect(service.onInitialize?.()).toMatchSnapshot();
-	});
-
-	it('handleInitialized should send DidRegister notification', async () => {
-		service.onInitialized();
-
-		expect(connection.sendNotificationCalls).toEqual([
-			{
-				method: Notification.DidRegisterCodeActionRequestHandler,
-				params: undefined,
-			},
-		]);
 	});
 
 	it('with action kind Source, should create fix-all command actions', async () => {

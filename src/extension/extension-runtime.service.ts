@@ -5,15 +5,10 @@ import type { LanguageClient } from 'vscode-languageclient/node';
 
 import { inject } from '../di/index.js';
 import { runtimeService, type RuntimeLifecycleParticipant } from '../di/runtime/index.js';
-import {
-	CommandId,
-	Notification,
-	type DidRegisterDocumentFormattingEditProviderNotificationParams,
-} from '../server/index.js';
+import { CommandId } from '../server/index.js';
 import { extensionTokens } from './di-tokens.js';
 import type { VSCodeCommands, VSCodeWindow, VSCodeWorkspace } from './services/environment.js';
 import { LanguageClientService } from './services/language-client.service.js';
-import { ApiEvent, type PublicApi } from './types.js';
 
 const workspaceNotificationError =
 	'Failed to apply Stylelint fixes to the document. Please consider opening an issue with steps to reproduce.';
@@ -26,7 +21,6 @@ const workspaceNotificationError =
 		extensionTokens.commands,
 		extensionTokens.workspace,
 		extensionTokens.context,
-		extensionTokens.publicApi,
 	],
 })
 export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
@@ -35,8 +29,6 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 	readonly #commands: VSCodeCommands;
 	readonly #workspace: VSCodeWorkspace;
 	readonly #context: ExtensionContext;
-	readonly #api: PublicApi;
-	readonly #notificationDisposables: Disposable[] = [];
 	readonly #commandDisposables: Disposable[] = [];
 	#client: LanguageClient;
 	#settingMonitorDisposable?: Disposable;
@@ -50,14 +42,12 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		commands: VSCodeCommands,
 		workspace: VSCodeWorkspace,
 		context: ExtensionContext,
-		api: PublicApi,
 	) {
 		this.#languageClientService = languageClientService;
 		this.#window = window;
 		this.#commands = commands;
 		this.#workspace = workspace;
 		this.#context = context;
-		this.#api = api;
 		this.#client = this.#languageClientService.createClient();
 	}
 
@@ -73,16 +63,11 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		} catch (error) {
 			this.#needsRecreate = true;
 			await this.#showError(error);
-
-			return;
 		}
-
-		await this.#resetWorkspaceState();
 	}
 
 	async onShutdown(): Promise<void> {
 		await this.#disposeClient();
-		this.#disposeNotifications();
 		this.#disposeCommands();
 
 		if (this.#configChangeDisposable) {
@@ -108,7 +93,6 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 
 	async #startClient(): Promise<void> {
 		await this.#client.start();
-		this.#registerNotificationHandlers();
 	}
 
 	/**
@@ -160,27 +144,6 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		}
 	}
 
-	#registerNotificationHandlers(): void {
-		this.#disposeNotifications();
-
-		const client = this.#client;
-
-		this.#notificationDisposables.push(
-			client.onNotification(Notification.DidRegisterCodeActionRequestHandler, () => {
-				this.#api.codeActionReady = true;
-			}),
-			client.onNotification(
-				Notification.DidRegisterDocumentFormattingEditProvider,
-				(params: DidRegisterDocumentFormattingEditProviderNotificationParams) => {
-					this.#api.emit(ApiEvent.DidRegisterDocumentFormattingEditProvider, params);
-				},
-			),
-			client.onNotification(Notification.DidResetConfiguration, () => {
-				this.#api.emit(ApiEvent.DidResetConfiguration);
-			}),
-		);
-	}
-
 	#registerCommands(): void {
 		const executeAutofixDisposable = this.#commands.registerCommand(
 			'stylelint.executeAutofix',
@@ -211,7 +174,6 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		const restartDisposable = this.#commands.registerCommand('stylelint.restart', async () => {
 			this.#settingMonitorDisposable?.dispose();
 			this.#settingMonitorDisposable = undefined;
-			this.#disposeNotifications();
 
 			try {
 				await this.#disposeClient();
@@ -231,7 +193,6 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 			if (enabled) {
 				try {
 					await this.#startClient();
-					await this.#resetWorkspaceState();
 				} catch (error) {
 					await this.#showError(error);
 				}
@@ -345,33 +306,9 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 		this.#context.subscriptions.push(this.#configChangeDisposable);
 	}
 
-	async #resetWorkspaceState(): Promise<void> {
-		const folders = this.#workspace.workspaceFolders ?? [];
-
-		await Promise.all(
-			folders.map(async (folder) =>
-				this.#client.sendNotification(Notification.ResetWorkspaceState, {
-					workspaceFolder: folder.uri.fsPath,
-				}),
-			),
-		);
-	}
-
 	#registerDisposable(disposable: Disposable): void {
 		this.#commandDisposables.push(disposable);
 		this.#context.subscriptions.push(disposable);
-	}
-
-	#disposeNotifications(): void {
-		for (const disposable of this.#notificationDisposables) {
-			try {
-				disposable.dispose();
-			} catch {
-				// Ignore clean-up failures.
-			}
-		}
-
-		this.#notificationDisposables.length = 0;
 	}
 
 	#disposeCommands(): void {

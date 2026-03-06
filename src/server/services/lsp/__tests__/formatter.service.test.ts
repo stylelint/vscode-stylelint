@@ -17,7 +17,6 @@ import {
 import { createTestLogger, type TestLogger } from '../../../../../test/helpers/test-logger.js';
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
 import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../../tokens.js';
-import { Notification } from '../../../types.js';
 import { DocumentFixesService } from '../../documents/document-fixes.service.js';
 import { type LoggingService, loggingServiceToken } from '../../infrastructure/logging.service.js';
 import { NotificationService } from '../../infrastructure/notification.service.js';
@@ -33,15 +32,10 @@ type FormattingConnectionStub = {
 		options: LSP.DocumentFormattingRegistrationOptions;
 		disposable: Disposable & { disposed: boolean };
 	}>;
-	sendNotificationCalls: Array<{
-		method: string | LSP.ProtocolNotificationType<unknown, unknown>;
-		params: unknown;
-	}>;
 };
 
 function createFormattingConnectionStub(): FormattingConnectionStub {
 	const clientRegisterCalls: FormattingConnectionStub['clientRegisterCalls'] = [];
-	const sendNotificationCalls: FormattingConnectionStub['sendNotificationCalls'] = [];
 
 	const connection = {
 		client: {
@@ -61,20 +55,6 @@ function createFormattingConnectionStub(): FormattingConnectionStub {
 				return disposable;
 			},
 		},
-		window: {
-			sendNotification: async (
-				method: string | LSP.ProtocolNotificationType<unknown, unknown>,
-				params: unknown,
-			) => {
-				sendNotificationCalls.push({ method, params });
-			},
-		},
-		sendNotification: async (
-			method: string | LSP.ProtocolNotificationType<unknown, unknown>,
-			params?: unknown,
-		) => {
-			sendNotificationCalls.push({ method, params });
-		},
 		onDocumentFormatting: () => ({ dispose() {} }) as LSP.Disposable,
 		onNotification: () => ({ dispose() {} }) as LSP.Disposable,
 	} as unknown as Connection;
@@ -82,7 +62,6 @@ function createFormattingConnectionStub(): FormattingConnectionStub {
 	return {
 		connection,
 		clientRegisterCalls,
-		sendNotificationCalls,
 	};
 }
 
@@ -108,21 +87,6 @@ function createFormatterUriDependency(): Pick<typeof URI, 'parse'> {
 
 			return parsed;
 		},
-	};
-}
-
-function createDocumentFilter(uri: string): LSP.DocumentFilter {
-	const parsed = createFormatterUriDependency().parse(uri);
-	const basePath =
-		parsed.scheme === 'file'
-			? (parsed.fsPath ?? parsed.path ?? '')
-			: (parsed.path ?? parsed.fsPath ?? '');
-	const normalizedPath = basePath.replace(/\\/g, '/');
-	const pattern = normalizedPath.replace(/[[\]{}]/g, '?');
-
-	return {
-		scheme: parsed.scheme,
-		pattern,
 	};
 }
 
@@ -383,26 +347,6 @@ describe('FormatterLspModule', () => {
 		await flushPromises();
 
 		expect(connection.clientRegisterCalls).toMatchSnapshot();
-		expect(connection.sendNotificationCalls).toEqual([
-			{
-				method: Notification.DidRegisterDocumentFormattingEditProvider,
-				params: {
-					uri: fileDocument.uri,
-					options: {
-						documentSelector: [createDocumentFilter(fileDocument.uri)],
-					},
-				},
-			},
-			{
-				method: Notification.DidRegisterDocumentFormattingEditProvider,
-				params: {
-					uri: schemeDocument.uri,
-					options: {
-						documentSelector: [createDocumentFilter(schemeDocument.uri)],
-					},
-				},
-			},
-		]);
 	});
 
 	it('handleDocumentClosed should dispose existing registrations', async () => {

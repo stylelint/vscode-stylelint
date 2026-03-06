@@ -13,8 +13,8 @@ This is not a line-by-line reference. Instead, the goal of this document is to c
 - [3. Extension architecture](#3-extension-architecture)
   - [3.1 Activation and application lifecycle](#31-activation-and-application-lifecycle)
   - [3.2 Platform module: binding VS Code to tokens](#32-platform-module-binding-vs-code-to-tokens)
-  - [3.3 Extension module: language client, public API, runtime service](#33-extension-module-language-client-public-api-runtime-service)
-  - [3.4 ExtensionRuntimeService: commands and notifications](#34-extensionruntimeservice-commands-and-notifications)
+  - [3.3 Extension module: language client, runtime service](#33-extension-module-language-client-runtime-service)
+  - [3.4 ExtensionRuntimeService: registering commands](#34-extensionruntimeservice-registering-commands)
 - [4. Language server architecture](#4-language-server-architecture)
   - [4.1 Entry point and bootstrap](#41-entry-point-and-bootstrap)
   - [4.2 Server-side modules](#42-server-side-modules)
@@ -128,21 +128,21 @@ Put simply, the extension is itself a DI-backed application whose lifecycle is b
 
 The rest of the extension code never imports `vscode` directly and depends on these tokens instead. This keeps host APIs behind explicit seams and makes them replaceable in tests.
 
-### 3.3 Extension module: language client, public API, runtime service
+### 3.3 Extension module: language client, runtime service
 
-`src/extension/extension.module.ts` composes the extension's own services on top of the platform module. It registers providers for `extensionTokens.clientOptions`, created by `createClientOptions(...)` in `src/extension/services/language-client.ts`, plus `ServerOptionsService` and `LanguageClientService` as class providers. The module wires up `extensionTokens.publicApi` via `createPublicApi(...)` and registers `ExtensionRuntimeService` itself as a runtime service.
+`src/extension/extension.module.ts` composes the extension's own services on top of the platform module. It registers providers for `extensionTokens.clientOptions`, created by `createClientOptions(...)` in `src/extension/services/language-client.ts`, plus `ServerOptionsService` and `LanguageClientService` as class providers. The module registers `ExtensionRuntimeService` as a runtime service.
 
 All of these are normal DI providers: the module is just a declarative description of how to build them.
 
-### 3.4 ExtensionRuntimeService: commands and notifications
+### 3.4 ExtensionRuntimeService: registering commands
 
 `ExtensionRuntimeService` in `src/extension/extension-runtime.service.ts` is the main runtime service on the extension side.
 
-It is decorated both as a runtime service, via `@runtimeService()` from `src/di/runtime/`, and as an injectable class, via `@inject({ inject: [...] })` listing the tokens it needs (window, workspace, commands, context, language client, setting monitor factory, public API).
+It is decorated both as a runtime service, via `@runtimeService()` from `src/di/runtime/`, and as an injectable class, via `@inject({ inject: [...] })` listing the tokens it needs (window, workspace, commands, context, language client, setting monitor factory).
 
 When the runtime application starts, it creates an instance of `ExtensionRuntimeService` from the container and then calls its lifecycle methods (`onStart`, `onShutdown` if implemented).
 
-Inside `ExtensionRuntimeService` you will find the concrete VS Code integration. It wraps the language client in a `SettingMonitor` so that the server starts or stops based on the user's `stylelint.enable` setting. It registers VS Code commands listed in `package.json`, such as `stylelint.executeAutofix` and `stylelint.restart`, by wiring them to LSP commands or notifications against the language client. And it raises events on the public API when the server notifies the extension of features such as document formatting support.
+Inside `ExtensionRuntimeService` you will find the concrete VS Code integration. It wraps the language client in a `SettingMonitor` so that the server starts or stops based on the user's `stylelint.enable` setting. It registers VS Code commands listed in `package.json`, such as `stylelint.executeAutofix` and `stylelint.restart`, by wiring them to LSP commands against the language client.
 
 Architecturally, you can think of `ExtensionRuntimeService` as the extension's main function, but expressed as a long-lived service bound into the runtime lifecycle rather than as a single `activate()` body.
 
