@@ -9,10 +9,14 @@ import { URI } from 'vscode-uri';
 import type winston from 'winston';
 
 import { inject } from '../../../di/index.js';
-import { processLinterResult } from '../../stylelint/process-linter-result.js';
+import {
+	processLinterResult,
+	processMultiFileLinterResult,
+} from '../../stylelint/process-linter-result.js';
 import {
 	createRuleMetadataSourceFromSnapshot,
 	type LintDiagnostics,
+	type MultiFileLintDiagnostics,
 	type RunnerOptions,
 	type StylelintResolutionResult,
 } from '../../stylelint/types.js';
@@ -107,12 +111,10 @@ export class StylelintRunnerService {
 			this.#connection,
 			document,
 		);
-		const resolvedStylelintPath = runnerOptions.stylelintPath
-			? this.#resolveConfiguredStylelintPath(
-					runnerOptions.stylelintPath,
-					workspaceFolder ?? this.#getDocumentFolder(document),
-				)
-			: undefined;
+		const resolvedStylelintPath = this.#resolveConfiguredStylelintPath(
+			runnerOptions.stylelintPath,
+			workspaceFolder ?? this.#getDocumentFolder(document),
+		);
 		const options = await this.#createLinterOptions(
 			document,
 			workspaceFolder,
@@ -140,6 +142,57 @@ export class StylelintRunnerService {
 		return { diagnostics: [] };
 	}
 
+	/**
+	 * Lint all files in a workspace folder.
+	 * @param workspaceFolder Absolute path to the workspace folder.
+	 * @param runnerOptions Extension options derived from settings.
+	 */
+	async lintWorkspaceFolder(
+		workspaceFolder: string,
+		runnerOptions: RunnerOptions = {},
+	): Promise<MultiFileLintDiagnostics> {
+		const stylelintPath = this.#resolveConfiguredStylelintPath(
+			runnerOptions.stylelintPath,
+			workspaceFolder,
+		);
+		const options = await this.#createBaseOptions(
+			this.#uri.file(workspaceFolder).toString(),
+			workspaceFolder,
+			runnerOptions,
+			{
+				files: [runnerOptions.lintFilesGlob || '**/*.css'],
+				cwd: workspaceFolder,
+				allowEmptyInput: true,
+			},
+		);
+
+		this.#logger?.info('Linting workspace folder', { workspaceFolder });
+
+		try {
+			const result = await this.#workspaceService.lint({
+				workspaceFolder,
+				options,
+				stylelintPath,
+				runnerOptions,
+			});
+
+			if (!result) {
+				this.#logger?.info('No Stylelint found for workspace folder', { workspaceFolder });
+
+				return new Map();
+			}
+
+			return processMultiFileLinterResult(
+				createRuleMetadataSourceFromSnapshot(result.ruleMetadata),
+				result.linterResult,
+				this.#logger,
+				runnerOptions.rules?.customizations,
+			);
+		} catch (error) {
+			return this.#handleLintError<MultiFileLintDiagnostics>(error, workspaceFolder, new Map());
+		}
+	}
+
 	async resolve(
 		document: TextDocument,
 		runnerOptions: RunnerOptions = {},
@@ -158,9 +211,10 @@ export class StylelintRunnerService {
 			return undefined;
 		}
 
-		const stylelintPath = runnerOptions.stylelintPath
-			? this.#resolveConfiguredStylelintPath(runnerOptions.stylelintPath, fallbackFolder)
-			: undefined;
+		const stylelintPath = this.#resolveConfiguredStylelintPath(
+			runnerOptions.stylelintPath,
+			fallbackFolder,
+		);
 
 		try {
 			const result = await this.#workspaceService.resolve({
@@ -178,21 +232,7 @@ export class StylelintRunnerService {
 					}
 				: undefined;
 		} catch (error) {
-			if (error instanceof StylelintNotFoundError) {
-				return undefined;
-			}
-
-			if (error instanceof StylelintWorkerUnavailableError) {
-				this.#handleWorkerUnavailable(error, fallbackFolder);
-
-				if (error.notifyUser) {
-					throw error;
-				}
-
-				return undefined;
-			}
-
-			throw error;
+			return this.#handleLintError(error, fallbackFolder, undefined);
 		}
 	}
 
@@ -214,9 +254,10 @@ export class StylelintRunnerService {
 			return undefined;
 		}
 
-		const stylelintPath = runnerOptions.stylelintPath
-			? this.#resolveConfiguredStylelintPath(runnerOptions.stylelintPath, fallbackFolder)
-			: undefined;
+		const stylelintPath = this.#resolveConfiguredStylelintPath(
+			runnerOptions.stylelintPath,
+			fallbackFolder,
+		);
 
 		const fsPath = this.#uri.parse(document.uri).fsPath;
 
@@ -234,21 +275,7 @@ export class StylelintRunnerService {
 
 			return result?.config;
 		} catch (error) {
-			if (error instanceof StylelintNotFoundError) {
-				return undefined;
-			}
-
-			if (error instanceof StylelintWorkerUnavailableError) {
-				this.#handleWorkerUnavailable(error, fallbackFolder);
-
-				if (error.notifyUser) {
-					throw error;
-				}
-
-				return undefined;
-			}
-
-			throw error;
+			return this.#handleLintError(error, fallbackFolder, undefined);
 		}
 	}
 
@@ -305,7 +332,14 @@ export class StylelintRunnerService {
 		});
 	}
 
-	#resolveConfiguredStylelintPath(stylelintPath: string, baseFolder?: string): string {
+	#resolveConfiguredStylelintPath(
+		stylelintPath: string | undefined,
+		baseFolder?: string,
+	): string | undefined {
+		if (!stylelintPath) {
+			return undefined;
+		}
+
 		const pathModule = this.#path;
 
 		if (pathModule.isAbsolute(stylelintPath)) {
@@ -319,23 +353,23 @@ export class StylelintRunnerService {
 		return pathModule.resolve(stylelintPath);
 	}
 
-	async #createLinterOptions(
-		document: TextDocument,
+	async #createBaseOptions(
+		resourceUri: string,
 		workspaceFolder: string | undefined,
-		linterOptions: stylelint.LinterOptions,
 		runnerOptions: RunnerOptions,
+		linterOptions: stylelint.LinterOptions = {},
+		overrides: Partial<stylelint.LinterOptions> = {},
 	): Promise<stylelint.LinterOptions> {
 		const baseOptions = await this.#optionsBuilder.build(
-			document.uri,
+			resourceUri,
 			workspaceFolder,
 			linterOptions,
 			runnerOptions,
 		);
-		const { fsPath } = this.#uri.parse(document.uri);
 
 		const options: stylelint.LinterOptions = {
 			...baseOptions,
-			code: document.getText(),
+			...overrides,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore -- (TS2353) `computeEditInfo` option is available since v16.15.
 			computeEditInfo: true,
@@ -345,7 +379,42 @@ export class StylelintRunnerService {
 			options.formatter = noopFormatter;
 		}
 
-		const codeFilename = this.#getCodeFilename(fsPath);
+		return options;
+	}
+
+	#handleLintError<T>(error: unknown, workspaceFolder: string, fallback: T): T {
+		if (error instanceof StylelintNotFoundError) {
+			return fallback;
+		}
+
+		if (error instanceof StylelintWorkerUnavailableError) {
+			this.#handleWorkerUnavailable(error, workspaceFolder);
+
+			if (error.notifyUser) {
+				throw error;
+			}
+
+			return fallback;
+		}
+
+		throw error;
+	}
+
+	async #createLinterOptions(
+		document: TextDocument,
+		workspaceFolder: string | undefined,
+		linterOptions: stylelint.LinterOptions,
+		runnerOptions: RunnerOptions,
+	): Promise<stylelint.LinterOptions> {
+		const options = await this.#createBaseOptions(
+			document.uri,
+			workspaceFolder,
+			runnerOptions,
+			linterOptions,
+			{ code: document.getText() },
+		);
+
+		const codeFilename = this.#getCodeFilename(this.#uri.parse(document.uri).fsPath);
 
 		if (codeFilename) {
 			options.codeFilename = codeFilename;
@@ -451,21 +520,7 @@ export class StylelintRunnerService {
 		try {
 			return await this.#runLintWithErrorHandling(runLint, options);
 		} catch (error) {
-			if (error instanceof StylelintNotFoundError) {
-				return undefined;
-			}
-
-			if (error instanceof StylelintWorkerUnavailableError) {
-				this.#handleWorkerUnavailable(error, lintWorkspaceFolder);
-
-				if (error.notifyUser) {
-					throw error;
-				}
-
-				return undefined;
-			}
-
-			throw error;
+			return this.#handleLintError(error, lintWorkspaceFolder, undefined);
 		}
 	}
 

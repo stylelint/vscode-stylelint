@@ -1,16 +1,24 @@
 import type { Connection } from 'vscode-languageserver';
-import {
+import LSP, {
 	DidChangeConfigurationNotification,
 	DidChangeWatchedFilesNotification,
 } from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TextDocumentChangeEvent, TextDocuments } from 'vscode-languageserver/node';
+import { URI } from 'vscode-uri';
 import type winston from 'winston';
 import { inject } from '../../../di/index.js';
 import { displayError } from '../../utils/index.js';
-import { initialize, lspService, notification, textDocumentEvent } from '../../decorators.js';
+import {
+	command,
+	initialize,
+	lspService,
+	notification,
+	textDocumentEvent,
+} from '../../decorators.js';
 import type { LintDiagnostics } from '../../stylelint/index.js';
-import { lspConnectionToken, textDocumentsToken } from '../../tokens.js';
+import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../tokens.js';
+import { CommandId } from '../../types.js';
 import { DocumentDiagnosticsService } from '../documents/document-diagnostics.service.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
 import { StylelintRunnerService } from '../stylelint-runtime/stylelint-runner.service.js';
@@ -25,6 +33,7 @@ import { WorkspaceOptionsService } from '../workspace/workspace-options.service.
 		StylelintRunnerService,
 		lspConnectionToken,
 		loggingServiceToken,
+		UriModuleToken,
 	],
 })
 export class ValidatorLspService {
@@ -34,6 +43,8 @@ export class ValidatorLspService {
 	#runner: StylelintRunnerService;
 	#connection: Connection;
 	#logger?: winston.Logger;
+	#uri: typeof URI;
+	#publishedUris = new Set<string>();
 
 	constructor(
 		documents: TextDocuments<TextDocument>,
@@ -42,6 +53,7 @@ export class ValidatorLspService {
 		runner: StylelintRunnerService,
 		connection: Connection,
 		loggingService: LoggingService,
+		uriModule: typeof URI,
 	) {
 		this.#documents = documents;
 		this.#options = options;
@@ -49,11 +61,20 @@ export class ValidatorLspService {
 		this.#runner = runner;
 		this.#connection = connection;
 		this.#logger = loggingService.createLogger(ValidatorLspService);
+		this.#uri = uriModule;
 	}
 
 	@initialize()
-	onInitialize(): void {
+	onInitialize(): Partial<LSP.InitializeResult> | void {
 		void this.#validateAll();
+
+		return {
+			capabilities: {
+				executeCommandProvider: {
+					commands: [CommandId.LintFiles, CommandId.ClearAllProblems],
+				},
+			},
+		};
 	}
 
 	@textDocumentEvent('onDidOpen')
@@ -127,6 +148,7 @@ export class ValidatorLspService {
 				diagnostics: result.diagnostics,
 			});
 			this.#diagnostics.set(document, result.diagnostics, result);
+			this.#publishedUris.add(document.uri);
 			this.#logger?.debug('Diagnostics sent', { uri: document.uri });
 		} catch (error) {
 			displayError(this.#connection, error);
@@ -159,9 +181,87 @@ export class ValidatorLspService {
 		await Promise.allSettled(this.#documents.all().map((document) => this.#validate(document)));
 	}
 
+	@command(CommandId.ClearAllProblems)
+	async clearAllProblems(): Promise<void> {
+		for (const uri of this.#publishedUris) {
+			this.#diagnostics.clear(uri);
+			await this.#connection.sendDiagnostics({ uri, diagnostics: [] });
+		}
+
+		this.#publishedUris.clear();
+		this.#logger?.info('Cleared all diagnostics');
+	}
+
+	@command(CommandId.LintFiles)
+	async lintFiles(workspaceFolderUri?: string): Promise<void> {
+		if (workspaceFolderUri) {
+			await this.#lintFolder(workspaceFolderUri);
+
+			return;
+		}
+
+		const workspaceFolders = await this.#connection.workspace.getWorkspaceFolders();
+
+		if (!workspaceFolders || workspaceFolders.length === 0) {
+			this.#logger?.warn('No workspace folders found');
+
+			return;
+		}
+
+		await Promise.all(workspaceFolders.map((folder) => this.#lintFolder(folder.uri)));
+	}
+
+	async #lintFolder(workspaceFolderUri: string): Promise<void> {
+		const { fsPath } = this.#uri.parse(workspaceFolderUri);
+
+		if (!fsPath) {
+			this.#logger?.warn('Invalid workspace folder URI', { workspaceFolderUri });
+
+			return;
+		}
+
+		this.#logger?.info('Linting workspace folder', { workspaceFolderUri, fsPath });
+
+		try {
+			const extensionOptions = await this.#options.getOptions(workspaceFolderUri);
+
+			const multiFileDiagnostics = await this.#runner.lintWorkspaceFolder(fsPath, {
+				...extensionOptions,
+				config: extensionOptions.config ?? undefined,
+				lintFilesGlob: extensionOptions.lintFiles.glob,
+			});
+
+			for (const [filePath, lintDiagnostics] of multiFileDiagnostics) {
+				const fileUri = this.#uri.file(filePath).toString();
+
+				await this.#connection.sendDiagnostics({
+					uri: fileUri,
+					diagnostics: lintDiagnostics.diagnostics,
+				});
+
+				this.#publishedUris.add(fileUri);
+
+				const openDocument = this.#documents.get(fileUri);
+
+				if (openDocument) {
+					this.#diagnostics.set(openDocument, lintDiagnostics.diagnostics, lintDiagnostics);
+				}
+			}
+
+			this.#logger?.info('Workspace folder linting complete', {
+				workspaceFolderUri,
+				fileCount: multiFileDiagnostics.size,
+			});
+		} catch (error) {
+			displayError(this.#connection, error);
+			this.#logger?.error('Error linting workspace folder', { workspaceFolderUri, error });
+		}
+	}
+
 	async #clearDiagnostics(document: TextDocument): Promise<void> {
 		this.#logger?.debug('Clearing diagnostics for document', { uri: document.uri });
 		this.#diagnostics.clear(document.uri);
+		this.#publishedUris.delete(document.uri);
 		await this.#connection.sendDiagnostics({ uri: document.uri, diagnostics: [] });
 	}
 }

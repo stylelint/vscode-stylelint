@@ -22,6 +22,7 @@ export type RuleMetadataSource = {
  * Minimal subset of a Stylelint lint result required by the language server.
  */
 export type LintResult = {
+	source?: string;
 	warnings: Warning[];
 	invalidOptionWarnings: stylelint.LintResult['invalidOptionWarnings'];
 	ignored?: boolean;
@@ -72,6 +73,11 @@ export type LintDiagnostics = {
 };
 
 /**
+ * Diagnostics for a multi-file lint run, keyed by file URI.
+ */
+export type MultiFileLintDiagnostics = Map<string, LintDiagnostics>;
+
+/**
  * Disable report rule names.
  */
 export enum DisableReportRuleNames {
@@ -101,6 +107,7 @@ export type RunnerOptions = {
 	rules?: {
 		customizations?: RuleCustomization[];
 	};
+	lintFilesGlob?: string;
 };
 
 /**

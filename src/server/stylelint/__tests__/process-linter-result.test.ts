@@ -1,7 +1,11 @@
 import { describe, expect, test } from 'vitest';
 import { LinterResult, type default as stylelint } from 'stylelint';
-import { processLinterResult } from '../process-linter-result.js';
-import { Stylelint, createRuleMetadataSourceFromStylelint } from '../types.js';
+import { processLinterResult, processMultiFileLinterResult } from '../process-linter-result.js';
+import {
+	Stylelint,
+	createRuleMetadataSourceFromStylelint,
+	type LinterResult as InternalLinterResult,
+} from '../types.js';
 import { createTestLogger } from '../../../../test/helpers/test-logger.js';
 
 /** For compatibility with Stylelint versions prior to 17.x */
@@ -183,5 +187,132 @@ describe('processLinterResult', () => {
 				logger,
 			),
 		).toThrowErrorMatchingSnapshot();
+	});
+});
+
+describe('processMultiFileLinterResult', () => {
+	test('should return diagnostics keyed by file source', () => {
+		const result = processMultiFileLinterResult(
+			metadataSource,
+			{
+				results: [
+					{
+						source: '/path/to/file1.css',
+						warnings: [createMockWarning('unit-no-unknown')],
+						invalidOptionWarnings: [],
+						ignored: false,
+					},
+					{
+						source: '/path/to/file2.css',
+						warnings: [createMockWarning('at-rule-no-unknown')],
+						invalidOptionWarnings: [],
+						ignored: false,
+					},
+				],
+			} as InternalLinterResult,
+			logger,
+		);
+
+		expect(result.size).toBe(2);
+		expect(result.has('/path/to/file1.css')).toBe(true);
+		expect(result.has('/path/to/file2.css')).toBe(true);
+		expect(result.get('/path/to/file1.css')!.diagnostics).toHaveLength(1);
+		expect(result.get('/path/to/file2.css')!.diagnostics).toHaveLength(1);
+	});
+
+	test('should skip results without a source', () => {
+		const result = processMultiFileLinterResult(
+			metadataSource,
+			{
+				results: [
+					{
+						warnings: [createMockWarning('unit-no-unknown')],
+						invalidOptionWarnings: [],
+						ignored: false,
+					},
+					{
+						source: '/path/to/file.css',
+						warnings: [createMockWarning('at-rule-no-unknown')],
+						invalidOptionWarnings: [],
+						ignored: false,
+					},
+				],
+			} as InternalLinterResult,
+			logger,
+		);
+
+		expect(result.size).toBe(1);
+		expect(result.has('/path/to/file.css')).toBe(true);
+	});
+
+	test('should skip ignored results', () => {
+		const result = processMultiFileLinterResult(
+			metadataSource,
+			{
+				results: [
+					{
+						source: '/path/to/file.css',
+						warnings: [createMockWarning('unit-no-unknown')],
+						invalidOptionWarnings: [],
+						ignored: true,
+					},
+				],
+			} as InternalLinterResult,
+			logger,
+		);
+
+		expect(result.size).toBe(0);
+	});
+
+	test('should return empty map when no results', () => {
+		const result = processMultiFileLinterResult(
+			metadataSource,
+			{ results: [] } as InternalLinterResult,
+			logger,
+		);
+
+		expect(result.size).toBe(0);
+	});
+
+	test('should throw on invalid option warnings', () => {
+		expect(() =>
+			processMultiFileLinterResult(
+				metadataSource,
+				{
+					results: [
+						{
+							source: '/path/to/file.css',
+							warnings: [],
+							invalidOptionWarnings: [{ text: 'Invalid option' }],
+							ignored: false,
+						},
+					],
+				} as InternalLinterResult,
+				logger,
+			),
+		).toThrow('Invalid option');
+	});
+
+	test('should handle multiple warnings per file', () => {
+		const result = processMultiFileLinterResult(
+			metadataSource,
+			{
+				results: [
+					{
+						source: '/path/to/file.css',
+						warnings: [
+							createMockWarning('unit-no-unknown'),
+							createMockWarning('at-rule-no-unknown'),
+						],
+						invalidOptionWarnings: [],
+						ignored: false,
+					},
+				],
+			} as InternalLinterResult,
+			logger,
+		);
+
+		expect(result.size).toBe(1);
+		expect(result.get('/path/to/file.css')!.diagnostics).toHaveLength(2);
 	});
 });

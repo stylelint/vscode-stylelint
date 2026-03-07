@@ -235,7 +235,12 @@ describe('Language server', () => {
 				completionProvider: {},
 				documentFormattingProvider: true,
 				executeCommandProvider: {
-					commands: ['stylelint.applyAutoFix', 'stylelint.openRuleDoc'],
+					commands: [
+						'stylelint.applyAutoFix',
+						'stylelint.openRuleDoc',
+						'stylelint.lintFiles',
+						'stylelint.clearAllProblems',
+					],
 				},
 				textDocumentSync: LSP.TextDocumentSyncKind.Full,
 			},

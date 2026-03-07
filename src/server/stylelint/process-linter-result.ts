@@ -5,7 +5,9 @@ import type { RuleCustomization } from '../types.js';
 import {
 	InvalidOptionError,
 	type LintDiagnostics,
+	type LintResult,
 	type LinterResult,
+	type MultiFileLintDiagnostics,
 	type RuleMetadataSource,
 	type Warning,
 } from './types.js';
@@ -30,46 +32,20 @@ function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
 }
 
 /**
- * Processes the results of a Stylelint lint run.
- *
- * If Stylelint reported any warnings, they are converted to Diagnostics and
- * returned. If the lint results contain raw output in the `code` property, it
- * is also returned, along with any formatted report (`report`) or any legacy
- * autofixed code (`output`).
- *
- * Throws an `InvalidOptionError` for any invalid option warnings reported by
- * Stylelint.
- * @param stylelint The Stylelint instance that was used.
- * @param result The results returned by Stylelint.
- * @param ruleCustomizations Optional rule customizations for severity overrides.
+ * Resolves the rule metadata record from a linter result, falling back to
+ * the built-in rule metadata source when necessary.
  */
-export function processLinterResult(
-	ruleMetadataSource: RuleMetadataSource | undefined,
+function resolveRuleMetadata(
 	linterResult: LinterResult,
-	logger: Logger,
-	ruleCustomizations?: RuleCustomization[],
-): LintDiagnostics {
-	const { results } = linterResult;
-
-	if (results.length === 0) {
-		return { diagnostics: [] };
+	ruleMetadataSource: RuleMetadataSource | undefined,
+): LinterResult['ruleMetadata'] {
+	if (linterResult.ruleMetadata) {
+		return linterResult.ruleMetadata;
 	}
 
-	const [{ invalidOptionWarnings, warnings, ignored }] = results;
-
-	if (ignored) {
-		return { diagnostics: [] };
-	}
-
-	if (invalidOptionWarnings.length !== 0) {
-		throw new InvalidOptionError(invalidOptionWarnings);
-	}
-
-	let { ruleMetadata } = linterResult;
-
-	if (!ruleMetadata && ruleMetadataSource) {
+	if (ruleMetadataSource) {
 		// Create built-in rule metadata lookup for backwards compatibility.
-		ruleMetadata = new Proxy(
+		return new Proxy(
 			{},
 			{
 				get: (_, key: string) => ruleMetadataSource.get(key),
@@ -77,10 +53,30 @@ export function processLinterResult(
 		);
 	}
 
+	return undefined;
+}
+
+/**
+ * Converts a single Stylelint lint result into diagnostics.
+ */
+function processSingleLintResult(
+	result: LintResult,
+	logger: Logger,
+	ruleMetadata: LinterResult['ruleMetadata'],
+	ruleCustomizations?: RuleCustomization[],
+): LintDiagnostics {
+	if (result.ignored) {
+		return { diagnostics: [] };
+	}
+
+	if (result.invalidOptionWarnings.length !== 0) {
+		throw new InvalidOptionError(result.invalidOptionWarnings);
+	}
+
 	const diagnostics: LSP.Diagnostic[] = [];
 	const warningsMap = new Map<string, Warning>();
 
-	for (const warning of warnings) {
+	for (const warning of result.warnings) {
 		const diagnostic = warningToDiagnostic(warning, logger, ruleMetadata, ruleCustomizations);
 
 		// Only add diagnostic if it wasn't suppressed.
@@ -95,7 +91,44 @@ export function processLinterResult(
 
 		return warningsMap.get(key) ?? null;
 	};
-	const lintDiagnostics: LintDiagnostics = { diagnostics, getWarning };
+
+	return { diagnostics, getWarning };
+}
+
+/**
+ * Processes the results of a Stylelint lint run.
+ *
+ * If Stylelint reported any warnings, they are converted to Diagnostics and
+ * returned. If the lint results contain raw output in the `code` property, it
+ * is also returned, along with any formatted report (`report`) or any legacy
+ * autofixed code (`output`).
+ *
+ * Throws an `InvalidOptionError` for any invalid option warnings reported by
+ * Stylelint.
+ * @param ruleMetadataSource Rule metadata source for documentation links.
+ * @param linterResult The results returned by Stylelint.
+ * @param logger The logger to use.
+ * @param ruleCustomizations Optional rule customizations for severity overrides.
+ */
+export function processLinterResult(
+	ruleMetadataSource: RuleMetadataSource | undefined,
+	linterResult: LinterResult,
+	logger: Logger,
+	ruleCustomizations?: RuleCustomization[],
+): LintDiagnostics {
+	const { results } = linterResult;
+
+	if (results.length === 0) {
+		return { diagnostics: [] };
+	}
+
+	const ruleMetadata = resolveRuleMetadata(linterResult, ruleMetadataSource);
+	const lintDiagnostics = processSingleLintResult(
+		results[0],
+		logger,
+		ruleMetadata,
+		ruleCustomizations,
+	);
 
 	let hasReport = false;
 
@@ -127,4 +160,40 @@ export function processLinterResult(
 	}
 
 	return lintDiagnostics;
+}
+
+/**
+ * Processes the results of a multi-file Stylelint lint run.
+ *
+ * Each result is expected to have a `source` property containing the absolute
+ * file path of the linted file. Results without a source are skipped. The
+ * returned map is keyed by file path.
+ *
+ * @param ruleMetadataSource Rule metadata source for documentation links.
+ * @param linterResult The results returned by Stylelint.
+ * @param logger The logger to use.
+ * @param ruleCustomizations Optional rule customizations for severity overrides.
+ */
+export function processMultiFileLinterResult(
+	ruleMetadataSource: RuleMetadataSource | undefined,
+	linterResult: LinterResult,
+	logger: Logger,
+	ruleCustomizations?: RuleCustomization[],
+): MultiFileLintDiagnostics {
+	const { results } = linterResult;
+	const multiFileResult: MultiFileLintDiagnostics = new Map();
+	const ruleMetadata = resolveRuleMetadata(linterResult, ruleMetadataSource);
+
+	for (const result of results) {
+		if (!result.source || result.ignored) {
+			continue;
+		}
+
+		multiFileResult.set(
+			result.source,
+			processSingleLintResult(result, logger, ruleMetadata, ruleCustomizations),
+		);
+	}
+
+	return multiFileResult;
 }
