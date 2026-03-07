@@ -122,9 +122,15 @@ export function processLinterResult(
 		return { diagnostics: [] };
 	}
 
+	const firstResult = results[0];
+
+	if (firstResult.ignored) {
+		return { diagnostics: [] };
+	}
+
 	const ruleMetadata = resolveRuleMetadata(linterResult, ruleMetadataSource);
 	const lintDiagnostics = processSingleLintResult(
-		results[0],
+		firstResult,
 		logger,
 		ruleMetadata,
 		ruleCustomizations,
