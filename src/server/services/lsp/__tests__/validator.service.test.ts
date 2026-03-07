@@ -3,6 +3,7 @@ import type { Connection } from 'vscode-languageserver';
 import * as LSP from 'vscode-languageserver-protocol';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TextDocumentChangeEvent } from 'vscode-languageserver/node';
+import { URI } from 'vscode-uri';
 
 import {
 	createDocumentDiagnosticsServiceStub,
@@ -19,7 +20,8 @@ import { createTestLogger, type TestLogger } from '../../../../../test/helpers/t
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
 import { getLanguageServerServiceMetadata } from '../../../decorators.js';
 import type { LintDiagnostics } from '../../../stylelint/index.js';
-import { lspConnectionToken, textDocumentsToken } from '../../../tokens.js';
+import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../../tokens.js';
+import { CommandId } from '../../../types.js';
 import { DocumentDiagnosticsService } from '../../documents/document-diagnostics.service.js';
 import { type LoggingService, loggingServiceToken } from '../../infrastructure/logging.service.js';
 import { NotificationService } from '../../infrastructure/notification.service.js';
@@ -34,12 +36,14 @@ type DiagnosticsConnectionStub = {
 	sendDiagnosticsCalls: Array<{ uri: string; diagnostics: LSP.Diagnostic[] }>;
 	windowMessages: string[];
 	setSendDiagnosticsError(error: unknown): void;
+	setWorkspaceFolders(folders: Array<{ uri: string; name: string }>): void;
 };
 
 function createDiagnosticsConnectionStub(): DiagnosticsConnectionStub {
 	const sendDiagnosticsCalls: DiagnosticsConnectionStub['sendDiagnosticsCalls'] = [];
 	const windowMessages: string[] = [];
 	let sendDiagnosticsError: unknown;
+	let workspaceFolders: Array<{ uri: string; name: string }> = [];
 
 	const connection = {
 		sendDiagnostics: async (params: LSP.PublishDiagnosticsParams) => {
@@ -56,6 +60,9 @@ function createDiagnosticsConnectionStub(): DiagnosticsConnectionStub {
 				windowMessages.push(message);
 			},
 		},
+		workspace: {
+			getWorkspaceFolders: async () => workspaceFolders,
+		},
 		onNotification: () => ({ dispose() {} }) as LSP.Disposable,
 	} as unknown as Connection;
 
@@ -65,6 +72,9 @@ function createDiagnosticsConnectionStub(): DiagnosticsConnectionStub {
 		windowMessages,
 		setSendDiagnosticsError: (error: unknown) => {
 			sendDiagnosticsError = error;
+		},
+		setWorkspaceFolders: (folders: Array<{ uri: string; name: string }>) => {
+			workspaceFolders = folders;
 		},
 	};
 }
@@ -142,6 +152,7 @@ describe('ValidatorLspModule', () => {
 					provideTestValue(StylelintRunnerService, () => runner),
 					provideTestValue(lspConnectionToken, () => connection.connection),
 					provideTestValue(loggingServiceToken, () => loggingService),
+					provideTestValue(UriModuleToken, () => URI),
 					NotificationService,
 					ValidatorLspService,
 				],
@@ -155,7 +166,7 @@ describe('ValidatorLspModule', () => {
 		expect(service).toBeInstanceOf(ValidatorLspService);
 	});
 
-	it('onInitialize should validate all documents', async () => {
+	it('onInitialize should validate all documents and return command capabilities', async () => {
 		const first = setDocument('a {}', 'css', 'file:///foo.css');
 		const second = setDocument('b {}', 'css', 'file:///bar.css');
 		const firstDiagnostics = [createDiagnostic('first')];
@@ -165,9 +176,17 @@ describe('ValidatorLspModule', () => {
 		runner.setLintResult(first.uri, createDiagnosticsResult(firstDiagnostics));
 		runner.setLintResult(second.uri, createDiagnosticsResult(secondDiagnostics));
 
-		service.onInitialize();
+		const result = service.onInitialize();
+
 		await flushPromises();
 
+		expect(result).toEqual({
+			capabilities: {
+				executeCommandProvider: {
+					commands: [CommandId.LintFiles, CommandId.ClearAllProblems],
+				},
+			},
+		});
 		expect(connection.sendDiagnosticsCalls).toEqual([
 			{ uri: first.uri, diagnostics: firstDiagnostics },
 			{ uri: second.uri, diagnostics: secondDiagnostics },
@@ -381,6 +400,144 @@ describe('ValidatorLspModule', () => {
 			await service.handleDocumentSaved(createChangeEvent(document));
 
 			expect(runner.lintCalls).toHaveLength(0);
+		});
+	});
+
+	describe('lintFiles', () => {
+		it('should lint all workspace folders when no argument is provided', async () => {
+			const lintDiagnostics = [createDiagnostic('error')];
+			const multiResult = new Map([['/workspace/file.css', { diagnostics: lintDiagnostics }]]);
+
+			runner.setLintWorkspaceFolderResult(multiResult);
+
+			const folderUri = URI.file('/workspace').toString();
+
+			connection.setWorkspaceFolders([{ uri: folderUri, name: 'workspace' }]);
+
+			await service.lintFiles();
+
+			expect(runner.lintWorkspaceFolderCalls).toHaveLength(1);
+			expect(connection.sendDiagnosticsCalls).toHaveLength(1);
+			expect(connection.sendDiagnosticsCalls[0].diagnostics).toEqual(lintDiagnostics);
+		});
+
+		it('should lint only the specified folder', async () => {
+			const lintDiagnostics = [createDiagnostic('error')];
+			const multiResult = new Map([['/specific/file.css', { diagnostics: lintDiagnostics }]]);
+
+			runner.setLintWorkspaceFolderResult(multiResult);
+
+			const folderUri = URI.file('/specific').toString();
+
+			connection.setWorkspaceFolders([
+				{ uri: URI.file('/workspace').toString(), name: 'workspace' },
+				{ uri: folderUri, name: 'specific' },
+			]);
+
+			await service.lintFiles(folderUri);
+
+			expect(runner.lintWorkspaceFolderCalls).toHaveLength(1);
+			expect(connection.sendDiagnosticsCalls).toHaveLength(1);
+		});
+
+		it('should do nothing when no workspace folders exist', async () => {
+			connection.setWorkspaceFolders([]);
+
+			await service.lintFiles();
+
+			expect(connection.sendDiagnosticsCalls).toHaveLength(0);
+			expect(runner.lintWorkspaceFolderCalls).toHaveLength(0);
+		});
+
+		it('should cache lint results for open documents', async () => {
+			const lintDiagnostics = [createDiagnostic('error')];
+			const lintResult = { diagnostics: lintDiagnostics };
+			const multiResult = new Map([['/workspace/file.css', lintResult]]);
+
+			runner.setLintWorkspaceFolderResult(multiResult);
+
+			const folderUri = URI.file('/workspace').toString();
+			const fileUri = URI.file('/workspace/file.css').toString();
+
+			setDocument('.a { color: red; }', 'css', fileUri);
+			connection.setWorkspaceFolders([{ uri: folderUri, name: 'workspace' }]);
+
+			await service.lintFiles();
+
+			expect(diagnostics.setCalls).toHaveLength(1);
+			expect(diagnostics.setCalls[0].document.uri).toBe(fileUri);
+		});
+
+		it('should pass the lintFiles.glob setting to the runner', async () => {
+			const folderUri = URI.file('/workspace').toString();
+
+			options.setOptions(folderUri, {
+				lintFiles: { glob: '**/*.{css,scss}' },
+			});
+
+			runner.setLintWorkspaceFolderResult(new Map());
+			connection.setWorkspaceFolders([{ uri: folderUri, name: 'workspace' }]);
+
+			await service.lintFiles();
+
+			expect(runner.lintWorkspaceFolderCalls).toHaveLength(1);
+			expect(runner.lintWorkspaceFolderCalls[0].runnerOptions?.lintFilesGlob).toBe(
+				'**/*.{css,scss}',
+			);
+		});
+	});
+
+	describe('clearAllProblems', () => {
+		it('should clear diagnostics for open documents', async () => {
+			const document = setDocument();
+			const lintDiagnostics = [createDiagnostic('lint')];
+
+			options.setValidateLanguages(['css']);
+			runner.setLintResult(document.uri, createDiagnosticsResult(lintDiagnostics));
+
+			await service.handleDocumentOpened(createChangeEvent(document));
+
+			expect(connection.sendDiagnosticsCalls).toHaveLength(1);
+
+			await service.clearAllProblems();
+
+			expect(connection.sendDiagnosticsCalls).toHaveLength(2);
+			expect(connection.sendDiagnosticsCalls[1]).toEqual({
+				uri: document.uri,
+				diagnostics: [],
+			});
+			expect(diagnostics.clearCalls).toEqual([document.uri]);
+		});
+
+		it('should clear diagnostics published by lintFiles', async () => {
+			const lintDiagnostics = [createDiagnostic('error')];
+			const multiResult = new Map([
+				['/workspace/a.css', { diagnostics: lintDiagnostics }],
+				['/workspace/b.css', { diagnostics: lintDiagnostics }],
+			]);
+
+			runner.setLintWorkspaceFolderResult(multiResult);
+
+			const folderUri = URI.file('/workspace').toString();
+
+			connection.setWorkspaceFolders([{ uri: folderUri, name: 'workspace' }]);
+
+			await service.lintFiles();
+
+			expect(connection.sendDiagnosticsCalls).toHaveLength(2);
+
+			await service.clearAllProblems();
+
+			// 2 from lintFiles + 2 clears.
+			expect(connection.sendDiagnosticsCalls).toHaveLength(4);
+			expect(connection.sendDiagnosticsCalls[2].diagnostics).toEqual([]);
+			expect(connection.sendDiagnosticsCalls[3].diagnostics).toEqual([]);
+		});
+
+		it('should do nothing when no diagnostics exist', async () => {
+			await service.clearAllProblems();
+
+			expect(connection.sendDiagnosticsCalls).toHaveLength(0);
 		});
 	});
 });

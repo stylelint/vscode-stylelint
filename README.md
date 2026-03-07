@@ -77,9 +77,12 @@ The extension first looks for a copy of Stylelint installed in the open workspac
 
 ### Commands
 
-The extension adds two commands to the command palette:
+The extension adds the following commands to the command palette:
 
-- `Fix all auto-fixable problems` - apply fixes to all automatically fixable problems
+- `Fix all auto-fixable Problems` - apply fixes to all automatically fixable problems
+- `Lint All Files` - lint all files matching the [`stylelint.lintFiles.glob`](#stylelintlintfilesglob) pattern in every workspace folder
+- `Lint Workspace Folder` - lint all matching files in a single workspace folder
+- `Clear All Problems` - clear all Stylelint diagnostics
 - `Restart Stylelint Server` - restart the Stylelint LSP and runtime server
 
 ### Actions
@@ -324,6 +327,19 @@ e.g.
 
 ```json
   "stylelint.ignorePath": "${workspaceFolder}/.gitignore"
+```
+
+#### `stylelint.lintFiles.glob`
+
+> Type: `string`  
+> Default: `"**/*.css"`
+
+The glob pattern used by the "Lint All Files" and "Lint Workspace Folder" commands to discover files. Adjust this if you lint SCSS, Less, or other file types.
+
+e.g.
+
+```json
+  "stylelint.lintFiles.glob": "**/*.{css,scss}"
 ```
 
 #### `stylelint.reportDescriptionlessDisables`

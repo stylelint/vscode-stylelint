@@ -253,6 +253,12 @@
           },
           "default": [],
           "description": "Override severity levels for specific rules."
+        },
+        "stylelint.lintFiles.glob": {
+          "scope": "resource",
+          "type": "string",
+          "default": "**/*.css",
+          "description": "The glob pattern used by the \"Lint All Files\" and \"Lint Workspace Folder\" commands to discover files. Adjust this if you lint SCSS, Less, or other file types; for example, `**/*.{css,scss}`."
         }
       }
     },
@@ -261,6 +267,21 @@
         "title": "Fix all auto-fixable Problems",
         "category": "Stylelint",
         "command": "stylelint.executeAutofix"
+      },
+      {
+        "title": "Lint All Files",
+        "category": "Stylelint",
+        "command": "stylelint.lintAllFiles"
+      },
+      {
+        "title": "Lint Workspace Folder",
+        "category": "Stylelint",
+        "command": "stylelint.lintWorkspaceFolder"
+      },
+      {
+        "title": "Clear All Problems",
+        "category": "Stylelint",
+        "command": "stylelint.clearAllProblems"
       },
       {
         "title": "Restart Stylelint Server",

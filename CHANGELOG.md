@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Added: commands to lint all files and clear all problems ([#857](https://github.com/stylelint/vscode-stylelint/pull/857)).
 - Added: `stylelint.runtime` and `stylelint.execArgv` settings to customize the Node.js binary and exec arguments used by the language server ([#854](https://github.com/stylelint/vscode-stylelint/pull/854)).
 - Fixed: `url` reported on Stylelint warnings not being used for documentation links ([#852](https://github.com/stylelint/vscode-stylelint/pull/852)).
 - Added: `stylelint.ignorePath` setting to specify a custom ignore file ([#851](https://github.com/stylelint/vscode-stylelint/pull/851)).

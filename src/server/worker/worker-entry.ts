@@ -61,7 +61,8 @@ const state: {
 const createLinterResultSubset = (linterResult: stylelint.LinterResult): LinterResult => {
 	const subset: LinterResult = {
 		results: (Array.isArray(linterResult.results) ? linterResult.results : []).map(
-			({ warnings, invalidOptionWarnings, ignored }) => ({
+			({ source, warnings, invalidOptionWarnings, ignored }) => ({
+				source,
 				warnings: warnings ?? [],
 				invalidOptionWarnings: invalidOptionWarnings ?? [],
 				ignored,

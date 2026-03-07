@@ -8,6 +8,8 @@ import type { PackageManager } from './stylelint/index.js';
 export enum CommandId {
 	ApplyAutoFix = 'stylelint.applyAutoFix',
 	OpenRuleDoc = 'stylelint.openRuleDoc',
+	LintFiles = 'stylelint.lintFiles',
+	ClearAllProblems = 'stylelint.clearAllProblems',
 }
 
 /**
@@ -77,6 +79,9 @@ export type LanguageServerOptions = {
 	snippet: string[];
 	stylelintPath?: string;
 	validate: string[];
+	lintFiles: {
+		glob: string;
+	};
 };
 
 export interface PnPConfiguration {
