@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { commands, workspace, Uri } from 'vscode';
+import { commands, ConfigurationTarget, workspace, Uri } from 'vscode';
 import {
 	assertDiagnostics,
 	closeAllEditors,
@@ -226,6 +226,66 @@ describe('Lint Commands', () => {
 					severity: 'error',
 				},
 			]);
+		});
+
+		describe('with custom glob', () => {
+			let monorepoFolder: NonNullable<typeof workspace.workspaceFolders>[0];
+
+			before(async () => {
+				const folder = workspace.workspaceFolders?.find(({ name }) => name === 'monorepo');
+
+				if (!folder) {
+					throw new Error('Monorepo workspace folder not found');
+				}
+
+				monorepoFolder = folder;
+
+				const config = workspace.getConfiguration('stylelint', monorepoFolder);
+
+				await config.update(
+					'lintFiles.glob',
+					'packages/app-a/**/*.css',
+					ConfigurationTarget.WorkspaceFolder,
+				);
+			});
+
+			after(async () => {
+				const config = workspace.getConfiguration('stylelint', monorepoFolder);
+
+				await config.update('lintFiles.glob', undefined, ConfigurationTarget.WorkspaceFolder);
+			});
+
+			it('should only lint files matching a workspace-root-relative glob', async () => {
+				await commands.executeCommand('stylelint.lintWorkspaceFolder', monorepoFolder);
+
+				const styleAUri = Uri.file(
+					path.join(monorepoFolder.uri.fsPath, 'packages', 'app-a', 'style-a.css'),
+				);
+
+				const styleADiagnostics = await waitFor(
+					() => getStylelintDiagnostics(styleAUri),
+					(result) => result.length > 0,
+					{ timeout: 30000 },
+				);
+
+				assertDiagnostics(styleADiagnostics, [
+					{
+						code: 'color-hex-length',
+						message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+						range: [2, 9, 2, 13],
+						severity: 'error',
+					},
+				]);
+
+				// app-b should not have diagnostics since glob only targets app-a.
+				const styleBUri = Uri.file(
+					path.join(monorepoFolder.uri.fsPath, 'packages', 'app-b', 'style-b.css'),
+				);
+
+				const styleBDiagnostics = getStylelintDiagnostics(styleBUri);
+
+				assertDiagnostics(styleBDiagnostics, []);
+			});
 		});
 	});
 });
