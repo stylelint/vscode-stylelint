@@ -31,6 +31,7 @@ import {
 	StylelintWorkerUnavailableError,
 } from '../../worker/worker-process.js';
 import { LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
+import { PackageRootService } from './package-root.service.js';
 import { StylelintOptionsService } from './stylelint-options.service.js';
 import { WorkspaceFolderService } from '../workspace/workspace-folder.service.js';
 import { WorkspaceStylelintService } from './workspace-stylelint.service.js';
@@ -50,6 +51,7 @@ const noopFormatter = (() => '') as unknown as stylelint.LinterOptions['formatte
 		WorkspaceStylelintService,
 		WorkspaceFolderService,
 		StylelintOptionsService,
+		PackageRootService,
 	],
 })
 export class StylelintRunnerService {
@@ -71,6 +73,7 @@ export class StylelintRunnerService {
 	#workspaceFolderService: WorkspaceFolderService;
 
 	#optionsBuilder: StylelintOptionsService;
+	#packageRootFinder: PackageRootService;
 	readonly #os: typeof os;
 	readonly #path: typeof path;
 	readonly #uri: typeof URI;
@@ -84,6 +87,7 @@ export class StylelintRunnerService {
 		workspaceService: WorkspaceStylelintService,
 		workspaceFolderService: WorkspaceFolderService,
 		optionsBuilder: StylelintOptionsService,
+		packageRootFinder: PackageRootService,
 	) {
 		this.#os = osModule;
 		this.#path = pathModule;
@@ -93,6 +97,7 @@ export class StylelintRunnerService {
 		this.#workspaceService = workspaceService;
 		this.#workspaceFolderService = workspaceFolderService;
 		this.#optionsBuilder = optionsBuilder;
+		this.#packageRootFinder = packageRootFinder;
 	}
 
 	/**
@@ -151,33 +156,85 @@ export class StylelintRunnerService {
 		workspaceFolder: string,
 		runnerOptions: RunnerOptions = {},
 	): Promise<MultiFileLintDiagnostics> {
+		const subPackages = await this.#packageRootFinder.findSubPackages(workspaceFolder);
+
+		if (subPackages.length === 0) {
+			return this.#lintSingleRoot(workspaceFolder, workspaceFolder, runnerOptions);
+		}
+
+		this.#logger?.info('Found sub-packages in workspace folder', {
+			workspaceFolder,
+			subPackages,
+		});
+
+		const allDiagnostics: MultiFileLintDiagnostics = new Map();
+
+		// Lint each sub-package with its own cwd so that per-package
+		// .stylelintignore and configs are resolved correctly.
+		const subPackageLints = subPackages.map((pkg) =>
+			this.#lintSingleRoot(pkg, workspaceFolder, runnerOptions),
+		);
+
+		// Also lint files directly under the workspace root that are not
+		// inside any sub-package.
+		const exclusions = subPackages.map((pkg) => {
+			const relative = this.#path.relative(workspaceFolder, pkg).split(this.#path.sep).join('/');
+
+			return `!${relative}/**`;
+		});
+
+		const rootLint = this.#lintSingleRoot(
+			workspaceFolder,
+			workspaceFolder,
+			runnerOptions,
+			exclusions,
+		);
+
+		const results = await Promise.all([...subPackageLints, rootLint]);
+
+		for (const result of results) {
+			for (const [filePath, diagnostics] of result) {
+				allDiagnostics.set(filePath, diagnostics);
+			}
+		}
+
+		return allDiagnostics;
+	}
+
+	async #lintSingleRoot(
+		cwd: string,
+		workspaceFolder: string,
+		runnerOptions: RunnerOptions,
+		extraGlobs: string[] = [],
+	): Promise<MultiFileLintDiagnostics> {
 		const stylelintPath = this.#resolveConfiguredStylelintPath(
 			runnerOptions.stylelintPath,
 			workspaceFolder,
 		);
+		const baseGlob = runnerOptions.lintFilesGlob || '**/*.css';
 		const options = await this.#createBaseOptions(
-			this.#uri.file(workspaceFolder).toString(),
+			this.#uri.file(cwd).toString(),
 			workspaceFolder,
 			runnerOptions,
 			{
-				files: [runnerOptions.lintFilesGlob || '**/*.css'],
-				cwd: workspaceFolder,
+				files: [baseGlob, ...extraGlobs],
+				cwd,
 				allowEmptyInput: true,
 			},
 		);
 
-		this.#logger?.info('Linting workspace folder', { workspaceFolder });
+		this.#logger?.info('Linting folder', { cwd, workspaceFolder });
 
 		try {
 			const result = await this.#workspaceService.lint({
-				workspaceFolder,
+				workspaceFolder: cwd,
 				options,
 				stylelintPath,
 				runnerOptions,
 			});
 
 			if (!result) {
-				this.#logger?.info('No Stylelint found for workspace folder', { workspaceFolder });
+				this.#logger?.info('No Stylelint found for folder', { cwd });
 
 				return new Map();
 			}
@@ -189,7 +246,7 @@ export class StylelintRunnerService {
 				runnerOptions.rules?.customizations,
 			);
 		} catch (error) {
-			return this.#handleLintError<MultiFileLintDiagnostics>(error, workspaceFolder, new Map());
+			return this.#handleLintError<MultiFileLintDiagnostics>(error, cwd, new Map());
 		}
 	}
 

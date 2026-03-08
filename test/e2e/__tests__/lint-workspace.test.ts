@@ -94,4 +94,138 @@ describe('Lint Commands', () => {
 
 		assertDiagnostics(cleared, []);
 	});
+
+	describe('Monorepo', () => {
+		it('should lint files across monorepo packages with per-package configs', async () => {
+			const monorepoFolder = workspace.workspaceFolders?.find(({ name }) => name === 'monorepo');
+
+			if (!monorepoFolder) {
+				throw new Error('Monorepo workspace folder not found');
+			}
+
+			await commands.executeCommand('stylelint.lintWorkspaceFolder', monorepoFolder);
+
+			const styleAUri = Uri.file(
+				path.join(monorepoFolder.uri.fsPath, 'packages', 'app-a', 'style-a.css'),
+			);
+
+			const styleADiagnostics = await waitFor(
+				() => getStylelintDiagnostics(styleAUri),
+				(result) => result.length > 0,
+				{ timeout: 30000 },
+			);
+
+			assertDiagnostics(styleADiagnostics, [
+				{
+					code: 'color-hex-length',
+					message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+					range: [2, 9, 2, 13],
+					severity: 'error',
+				},
+			]);
+
+			const styleBUri = Uri.file(
+				path.join(monorepoFolder.uri.fsPath, 'packages', 'app-b', 'style-b.css'),
+			);
+
+			const styleBDiagnostics = await waitFor(
+				() => getStylelintDiagnostics(styleBUri),
+				(result) => result.length > 0,
+				{ timeout: 30000 },
+			);
+
+			assertDiagnostics(styleBDiagnostics, [
+				{
+					code: 'color-named',
+					message: 'Unexpected named color "red" (color-named)',
+					range: [2, 9, 2, 12],
+					severity: 'error',
+				},
+			]);
+		});
+
+		it('should respect per-package .stylelintignore files when linting workspace folder', async () => {
+			const monorepoFolder = workspace.workspaceFolders?.find(({ name }) => name === 'monorepo');
+
+			if (!monorepoFolder) {
+				throw new Error('Monorepo workspace folder not found');
+			}
+
+			await commands.executeCommand('stylelint.lintWorkspaceFolder', monorepoFolder);
+
+			const styleAUri = Uri.file(
+				path.join(monorepoFolder.uri.fsPath, 'packages', 'app-a', 'style-a.css'),
+			);
+
+			await waitFor(
+				() => getStylelintDiagnostics(styleAUri),
+				(result) => result.length > 0,
+				{ timeout: 30000 },
+			);
+
+			const ignoredAUri = Uri.file(
+				path.join(monorepoFolder.uri.fsPath, 'packages', 'app-a', 'ignored-a.css'),
+			);
+
+			const ignoredADiagnostics = getStylelintDiagnostics(ignoredAUri);
+
+			assertDiagnostics(ignoredADiagnostics, []);
+
+			const ignoredBUri = Uri.file(
+				path.join(monorepoFolder.uri.fsPath, 'packages', 'app-b', 'ignored-b.css'),
+			);
+
+			const ignoredBDiagnostics = getStylelintDiagnostics(ignoredBUri);
+
+			assertDiagnostics(ignoredBDiagnostics, []);
+		});
+
+		it('should lint all files across monorepo packages via lintAllFiles', async () => {
+			const monorepoFolder = workspace.workspaceFolders?.find(({ name }) => name === 'monorepo');
+
+			if (!monorepoFolder) {
+				throw new Error('Monorepo workspace folder not found');
+			}
+
+			await commands.executeCommand('stylelint.lintAllFiles');
+
+			const styleAUri = Uri.file(
+				path.join(monorepoFolder.uri.fsPath, 'packages', 'app-a', 'style-a.css'),
+			);
+
+			const styleADiagnostics = await waitFor(
+				() => getStylelintDiagnostics(styleAUri),
+				(result) => result.length > 0,
+				{ timeout: 30000 },
+			);
+
+			assertDiagnostics(styleADiagnostics, [
+				{
+					code: 'color-hex-length',
+					message: 'Expected "#fff" to be "#ffffff" (color-hex-length)',
+					range: [2, 9, 2, 13],
+					severity: 'error',
+				},
+			]);
+
+			const styleBUri = Uri.file(
+				path.join(monorepoFolder.uri.fsPath, 'packages', 'app-b', 'style-b.css'),
+			);
+
+			const styleBDiagnostics = await waitFor(
+				() => getStylelintDiagnostics(styleBUri),
+				(result) => result.length > 0,
+				{ timeout: 30000 },
+			);
+
+			assertDiagnostics(styleBDiagnostics, [
+				{
+					code: 'color-named',
+					message: 'Unexpected named color "red" (color-named)',
+					range: [2, 9, 2, 12],
+					severity: 'error',
+				},
+			]);
+		});
+	});
 });

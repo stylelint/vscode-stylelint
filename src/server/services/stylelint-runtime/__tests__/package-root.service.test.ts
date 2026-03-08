@@ -72,10 +72,25 @@ beforeEach(() => {
 		return createStats(typeof entry !== 'string');
 	}) as unknown as Pick<typeof import('fs/promises'), 'stat'>['stat'];
 
+	const readdir = vi.fn(async (value: string | URL) => {
+		const targetPath = toPathString(value);
+		const entry = getEntry(targetPath);
+
+		if (entry === undefined || typeof entry === 'string' || entry instanceof Error) {
+			throw createError('ENOENT', targetPath, -4058, 'readdir');
+		}
+
+		return Object.entries(entry).map(([name, child]) => ({
+			name,
+			isDirectory: () => typeof child !== 'string' && !(child instanceof Error),
+			isFile: () => typeof child === 'string',
+		}));
+	}) as unknown as Pick<typeof import('fs/promises'), 'readdir'>['readdir'];
+
 	const container = createContainer(
 		module({
 			register: [
-				provideTestValue(FsPromisesModuleToken, () => ({ stat })),
+				provideTestValue(FsPromisesModuleToken, () => ({ stat, readdir })),
 				provideTestValue(PathModuleToken, () => path),
 				PackageRootService,
 			],

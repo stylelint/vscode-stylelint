@@ -35,6 +35,7 @@ type RunnerDependencyOverrides = {
 	workspaceFolderService?: WorkspaceFolderServiceStub;
 	connection?: Connection;
 	loggingService?: LoggingService;
+	packageRootFinder?: PackageRootService;
 };
 
 let getWorkspaceFolderMock: WorkspaceFolderMock =
@@ -113,6 +114,8 @@ const createRunner = (
 		workspaceService,
 		workspaceFolderService,
 		optionsBuilder,
+		dependencyOverrides.packageRootFinder ??
+			({ findSubPackages: async () => [] } as unknown as PackageRootService),
 	);
 };
 
