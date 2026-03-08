@@ -1,3 +1,4 @@
+import type fs from 'fs/promises';
 import os from 'os';
 import path from 'path';
 import type stylelint from 'stylelint';
@@ -21,6 +22,7 @@ import {
 	type StylelintResolutionResult,
 } from '../../stylelint/types.js';
 import {
+	FsPromisesModuleToken,
 	lspConnectionToken,
 	OsModuleToken,
 	PathModuleToken,
@@ -46,6 +48,7 @@ const noopFormatter = (() => '') as unknown as stylelint.LinterOptions['formatte
 		OsModuleToken,
 		PathModuleToken,
 		UriModuleToken,
+		FsPromisesModuleToken,
 		lspConnectionToken,
 		loggingServiceToken,
 		WorkspaceStylelintService,
@@ -77,11 +80,13 @@ export class StylelintRunnerService {
 	readonly #os: typeof os;
 	readonly #path: typeof path;
 	readonly #uri: typeof URI;
+	readonly #fs: Pick<typeof fs, 'glob'>;
 
 	constructor(
 		osModule: typeof os,
 		pathModule: typeof path,
 		uriModule: typeof URI,
+		fsModule: Pick<typeof fs, 'glob'>,
 		connection: Connection,
 		loggingService: LoggingService,
 		workspaceService: WorkspaceStylelintService,
@@ -92,6 +97,7 @@ export class StylelintRunnerService {
 		this.#os = osModule;
 		this.#path = pathModule;
 		this.#uri = uriModule;
+		this.#fs = fsModule;
 		this.#connection = connection;
 		this.#logger = loggingService.createLogger(StylelintRunnerService);
 		this.#workspaceService = workspaceService;
@@ -167,30 +173,52 @@ export class StylelintRunnerService {
 			subPackages,
 		});
 
+		// Resolve the glob from the workspace root so that patterns relative
+		// to the root work correctly.
+		const baseGlob = runnerOptions.lintFilesGlob || '**/*.css';
+		const resolvedFiles: string[] = [];
+
+		for await (const file of this.#fs.glob(baseGlob, { cwd: workspaceFolder })) {
+			resolvedFiles.push(this.#path.resolve(workspaceFolder, file));
+		}
+
+		// Group files by the deepest matching sub-package or workspace root.
+		const filesByRoot = new Map<string, string[]>();
+
+		for (const absoluteFile of resolvedFiles) {
+			let bestMatch = workspaceFolder;
+			let bestDepth = 0;
+
+			for (const pkg of subPackages) {
+				const rel = this.#path.relative(pkg, absoluteFile);
+
+				if (!rel.startsWith('..') && !this.#path.isAbsolute(rel)) {
+					const depth = pkg.split(this.#path.sep).length;
+
+					if (depth > bestDepth) {
+						bestMatch = pkg;
+						bestDepth = depth;
+					}
+				}
+			}
+
+			const list = filesByRoot.get(bestMatch);
+
+			if (list) {
+				list.push(absoluteFile);
+			} else {
+				filesByRoot.set(bestMatch, [absoluteFile]);
+			}
+		}
+
 		const allDiagnostics: MultiFileLintDiagnostics = new Map();
+		const lintPromises: Promise<MultiFileLintDiagnostics>[] = [];
 
-		// Lint each sub-package with its own cwd so that per-package
-		// .stylelintignore and configs are resolved correctly.
-		const subPackageLints = subPackages.map((pkg) =>
-			this.#lintSingleRoot(pkg, workspaceFolder, runnerOptions),
-		);
+		for (const [root, files] of filesByRoot) {
+			lintPromises.push(this.#lintSingleRoot(root, workspaceFolder, runnerOptions, files));
+		}
 
-		// Also lint files directly under the workspace root that are not
-		// inside any sub-package.
-		const exclusions = subPackages.map((pkg) => {
-			const relative = this.#path.relative(workspaceFolder, pkg).split(this.#path.sep).join('/');
-
-			return `!${relative}/**`;
-		});
-
-		const rootLint = this.#lintSingleRoot(
-			workspaceFolder,
-			workspaceFolder,
-			runnerOptions,
-			exclusions,
-		);
-
-		const results = await Promise.all([...subPackageLints, rootLint]);
+		const results = await Promise.all(lintPromises);
 
 		for (const result of results) {
 			for (const [filePath, diagnostics] of result) {
@@ -205,19 +233,23 @@ export class StylelintRunnerService {
 		cwd: string,
 		workspaceFolder: string,
 		runnerOptions: RunnerOptions,
-		extraGlobs: string[] = [],
+		filePaths?: string[],
 	): Promise<MultiFileLintDiagnostics> {
 		const stylelintPath = this.#resolveConfiguredStylelintPath(
 			runnerOptions.stylelintPath,
 			workspaceFolder,
 		);
-		const baseGlob = runnerOptions.lintFilesGlob || '**/*.css';
+		// When filePaths are provided, convert them to forward-slash relative
+		// paths for Stylelint. Otherwise, use the glob directly.
+		const files = filePaths
+			? filePaths.map((f) => this.#path.relative(cwd, f).split(this.#path.sep).join('/'))
+			: [runnerOptions.lintFilesGlob || '**/*.css'];
 		const options = await this.#createBaseOptions(
 			this.#uri.file(cwd).toString(),
 			workspaceFolder,
 			runnerOptions,
 			{
-				files: [baseGlob, ...extraGlobs],
+				files,
 				cwd,
 				allowEmptyInput: true,
 			},
