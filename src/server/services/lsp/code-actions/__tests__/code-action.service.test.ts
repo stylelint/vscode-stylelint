@@ -171,8 +171,7 @@ describe('CodeActionService', () => {
 		rule: string,
 	) {
 		return result?.find(
-			(a): a is LSP.CodeAction =>
-				'title' in a && a.title === `Fix all ${rule} problems`,
+			(a): a is LSP.CodeAction => 'title' in a && a.title === `Fix all ${rule} problems`,
 		);
 	}
 

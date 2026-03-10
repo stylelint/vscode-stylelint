@@ -386,64 +386,68 @@ describe('Language server', () => {
 		await closeDocument(client, documentUri);
 	});
 
-	it('provides fix-all-per-rule code actions when multiple fixable diagnostics exist for a rule', async () => {
-		stylelintSettings = {
-			config: {
-				rules: { 'color-hex-length': 'long' },
-			},
-			validate: ['css'],
-		};
-
-		await client.sendNotification(LSP.DidChangeConfigurationNotification.type, {
-			settings: { stylelint: stylelintSettings },
-		});
-
-		const documentUri = pathToFileURL(path.join(workspaceRoot, 'fix-all-rule.css')).toString();
-		const documentText = 'a { color: #000; background: #fff; }\n';
-		const { diagnostics, version } = await openDocumentAndWaitForDiagnostics(
-			client,
-			documentUri,
-			'css',
-			documentText,
-		);
-
-		expect(diagnostics.diagnostics.length).toBeGreaterThanOrEqual(2);
-
-		const quickFixActions =
-			(await client.sendRequest(LSP.CodeActionRequest.type, {
-				textDocument: { uri: documentUri },
-				range: {
-					start: { line: 0, character: 0 },
-					end: { line: 0, character: 0 },
+	testOnVersion(
+		'>=16.15',
+		'provides fix-all-per-rule code actions when multiple fixable diagnostics exist for a rule',
+		async () => {
+			stylelintSettings = {
+				config: {
+					rules: { 'color-hex-length': 'long' },
 				},
-				context: { diagnostics: diagnostics.diagnostics, only: [LSP.CodeActionKind.QuickFix] },
-			})) ?? [];
+				validate: ['css'],
+			};
 
-		const fixAllRuleAction = quickFixActions.find(
-			(action): action is LSP.CodeAction =>
-				'title' in action && /^Fix all .+ problems$/.test(action.title),
-		);
+			await client.sendNotification(LSP.DidChangeConfigurationNotification.type, {
+				settings: { stylelint: stylelintSettings },
+			});
 
-		expect(fixAllRuleAction).toBeDefined();
-		expect(fixAllRuleAction?.kind).toBe(LSP.CodeActionKind.QuickFix);
+			const documentUri = pathToFileURL(path.join(workspaceRoot, 'fix-all-rule.css')).toString();
+			const documentText = 'a { color: #000; background: #fff; }\n';
+			const { diagnostics, version } = await openDocumentAndWaitForDiagnostics(
+				client,
+				documentUri,
+				'css',
+				documentText,
+			);
 
-		const fixAllEdit = fixAllRuleAction?.edit?.documentChanges?.[0] as
-			| LSP.TextDocumentEdit
-			| undefined;
+			expect(diagnostics.diagnostics.length).toBeGreaterThanOrEqual(2);
 
-		expect(fixAllEdit).toBeDefined();
+			const quickFixActions =
+				(await client.sendRequest(LSP.CodeActionRequest.type, {
+					textDocument: { uri: documentUri },
+					range: {
+						start: { line: 0, character: 0 },
+						end: { line: 0, character: 0 },
+					},
+					context: { diagnostics: diagnostics.diagnostics, only: [LSP.CodeActionKind.QuickFix] },
+				})) ?? [];
 
-		const fixedText = fixAllEdit
-			? TextDocument.applyEdits(
-					TextDocument.create(documentUri, 'css', version, documentText),
-					fixAllEdit.edits,
-				)
-			: undefined;
+			const fixAllRuleAction = quickFixActions.find(
+				(action): action is LSP.CodeAction =>
+					'title' in action && /^Fix all .+ problems$/.test(action.title),
+			);
 
-		expect(fixedText).toBe('a { color: #000000; background: #ffffff; }\n');
+			expect(fixAllRuleAction).toBeDefined();
+			expect(fixAllRuleAction?.kind).toBe(LSP.CodeActionKind.QuickFix);
 
-		await closeDocument(client, documentUri);
-	});
+			const fixAllEdit = fixAllRuleAction?.edit?.documentChanges?.[0] as
+				| LSP.TextDocumentEdit
+				| undefined;
+
+			expect(fixAllEdit).toBeDefined();
+
+			const fixedText = fixAllEdit
+				? TextDocument.applyEdits(
+						TextDocument.create(documentUri, 'css', version, documentText),
+						fixAllEdit.edits,
+					)
+				: undefined;
+
+			expect(fixedText).toBe('a { color: #000000; background: #ffffff; }\n');
+
+			await closeDocument(client, documentUri);
+		},
+	);
 
 	it('applies auto-fixes via executeCommand', async () => {
 		stylelintSettings = {
