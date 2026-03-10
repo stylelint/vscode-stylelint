@@ -31,7 +31,7 @@ describe('server decorators', () => {
 			}
 
 			@initialize()
-			onInitialize(): Partial<LSP.InitializeResult> | void {
+			onInitialize(): Partial<LSP.InitializeResult> {
 				this.value += 10;
 
 				return { capabilities: { experimental: { ready: true } } };

@@ -61,7 +61,7 @@ export class CodeActionService {
 	}
 
 	@initialize()
-	onInitialize(): Partial<LSP.InitializeResult> | void {
+	onInitialize(): Partial<LSP.InitializeResult> {
 		return {
 			capabilities: {
 				codeActionProvider: {

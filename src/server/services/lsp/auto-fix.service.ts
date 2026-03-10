@@ -53,7 +53,7 @@ export class AutoFixService {
 	}
 
 	@initialize()
-	onInitialize(): Partial<LSP.InitializeResult> | void {
+	onInitialize(): Partial<LSP.InitializeResult> {
 		return {
 			capabilities: {
 				executeCommandProvider: {

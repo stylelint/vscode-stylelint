@@ -65,7 +65,7 @@ export class ValidatorLspService {
 	}
 
 	@initialize()
-	onInitialize(): Partial<LSP.InitializeResult> | void {
+	onInitialize(): Partial<LSP.InitializeResult> {
 		void this.#validateAll();
 
 		return {
