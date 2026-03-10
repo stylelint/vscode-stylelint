@@ -198,11 +198,11 @@ a { color: #000 }
 				message: 'Unclosed string (CssSyntaxError)',
 				range: {
 					end: {
-						character: 10,
+						character: 1,
 						line: 0,
 					},
 					start: {
-						character: 9,
+						character: 0,
 						line: 0,
 					},
 				},
