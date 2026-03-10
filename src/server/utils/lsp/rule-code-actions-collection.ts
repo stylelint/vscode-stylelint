@@ -8,8 +8,9 @@ import type { RuleCodeActions } from './types.js';
  *
  * Actions are prioritized in the order:
  *
- * 1. Disable rule actions
- * 2. Show documentation actions
+ * 1. Fix all instances of a rule
+ * 2. Disable rule actions
+ * 3. Show documentation actions
  */
 export class RuleCodeActionsCollection implements Iterable<CodeAction> {
 	/**
@@ -40,6 +41,10 @@ export class RuleCodeActionsCollection implements Iterable<CodeAction> {
 	 */
 	*[Symbol.iterator](): IterableIterator<CodeAction> {
 		for (const actions of this.#actions.values()) {
+			if (actions.fixAll) {
+				yield actions.fixAll;
+			}
+
 			if (actions.disableLine) {
 				yield actions.disableLine;
 			}

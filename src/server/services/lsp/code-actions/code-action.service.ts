@@ -212,6 +212,8 @@ export class CodeActionService {
 			}
 		}
 
+		this.#addFixAllForRuleActions(document, result);
+
 		return [...this.#getQuickFixActions(document, context), ...result, ...fixAllActions];
 	}
 
@@ -264,6 +266,75 @@ export class CodeActionService {
 		}
 
 		return actions;
+	}
+
+	#addFixAllForRuleActions(document: TextDocument, result: RuleCodeActionsCollection): void {
+		const lintResult = this.#diagnostics.getLintResult(document.uri);
+
+		if (!lintResult || document.version !== lintResult.version) {
+			return;
+		}
+
+		const allDiagnostics = this.#diagnostics.getDiagnostics(document.uri);
+		const editsByRule = new Map<
+			string,
+			{ edit: LSP.TextEdit; startOffset: number; endOffset: number }[]
+		>();
+
+		for (const diagnostic of allDiagnostics) {
+			if (diagnostic.source !== 'Stylelint' || typeof diagnostic.code !== 'string') {
+				continue;
+			}
+
+			const editInfo = getEditInfo(document, diagnostic, lintResult);
+
+			if (!editInfo) {
+				continue;
+			}
+
+			const startOffset = document.offsetAt(editInfo.edit.range.start);
+			const endOffset = document.offsetAt(editInfo.edit.range.end);
+
+			let edits = editsByRule.get(diagnostic.code);
+
+			if (!edits) {
+				edits = [];
+				editsByRule.set(diagnostic.code, edits);
+			}
+
+			edits.push({ edit: editInfo.edit, startOffset, endOffset });
+		}
+
+		const identifier = { uri: document.uri, version: document.version };
+
+		for (const [rule, edits] of editsByRule) {
+			if (edits.length < 2) {
+				continue;
+			}
+
+			// Sort by start offset and filter out overlapping edits.
+			edits.sort((a, b) => a.startOffset - b.startOffset);
+
+			const nonOverlapping: LSP.TextEdit[] = [];
+			let lastEnd = -1;
+
+			for (const entry of edits) {
+				if (entry.startOffset >= lastEnd) {
+					nonOverlapping.push(entry.edit);
+					lastEnd = entry.endOffset;
+				}
+			}
+
+			if (nonOverlapping.length < 2) {
+				continue;
+			}
+
+			result.get(rule).fixAll = LSP.CodeAction.create(
+				`Fix all ${rule} problems`,
+				{ documentChanges: [LSP.TextDocumentEdit.create(identifier, nonOverlapping)] },
+				LSP.CodeActionKind.QuickFix,
+			);
+		}
 	}
 
 	#getOpenRuleDocAction({ code, codeDescription }: LSP.Diagnostic): LSP.CodeAction | undefined {
