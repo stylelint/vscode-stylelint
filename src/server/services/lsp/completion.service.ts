@@ -40,7 +40,7 @@ export class CompletionService {
 	}
 
 	@initialize()
-	onInitialize(): Partial<LSP.InitializeResult> | void {
+	onInitialize(): Partial<LSP.InitializeResult> {
 		return {
 			capabilities: {
 				completionProvider: {},

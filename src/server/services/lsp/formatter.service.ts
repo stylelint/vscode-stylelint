@@ -58,7 +58,7 @@ export class FormatterLspService {
 	}
 
 	@initialize()
-	onInitialize(params?: LSP.InitializeParams): Partial<LSP.InitializeResult> | void {
+	onInitialize(params?: LSP.InitializeParams): Partial<LSP.InitializeResult> {
 		this.#registerDynamically = Boolean(
 			params?.capabilities.textDocument?.formatting?.dynamicRegistration,
 		);

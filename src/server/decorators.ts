@@ -351,7 +351,7 @@ export function command(
 /**
  * Decorator to mark a method as an initialization handler.
  */
-export function initialize(): MethodDecoratorFunction<InitializeHandler> {
+export function initialize(): CompatibleMethodDecorator<InitializeHandler> {
 	// Function type used to match decorator signature.
 
 	return (target: Function, { kind, addInitializer }: ClassMethodDecoratorContext) => {
