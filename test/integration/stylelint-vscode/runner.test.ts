@@ -186,7 +186,7 @@ a { color: #000 }
 				config: {
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- for stylelint v14
 					// @ts-ignore for stylelint v14
-					processors: ['stylelint-processor-styled-components'],
+					processors: [path.join(__dirname, 'fake-processor.js')],
 					rules: {},
 				},
 			},
