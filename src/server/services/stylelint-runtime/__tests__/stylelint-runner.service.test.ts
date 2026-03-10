@@ -32,9 +32,11 @@ type RunnerDependencyOverrides = {
 	os?: typeof import('node:os');
 	path?: typeof path;
 	uri?: typeof URI;
+	fs?: Pick<typeof import('node:fs/promises'), 'glob'>;
 	workspaceFolderService?: WorkspaceFolderServiceStub;
 	connection?: Connection;
 	loggingService?: LoggingService;
+	packageRootFinder?: PackageRootService;
 };
 
 let getWorkspaceFolderMock: WorkspaceFolderMock =
@@ -108,11 +110,19 @@ const createRunner = (
 		dependencyOverrides.os ?? createOsMock(),
 		dependencyOverrides.path ?? (path.posix as unknown as typeof path),
 		dependencyOverrides.uri ?? createUriMock(),
+		dependencyOverrides.fs ??
+			({
+				async *glob() {
+					/* empty */
+				},
+			} as Pick<typeof import('node:fs/promises'), 'glob'>),
 		dependencyOverrides.connection ?? mockConnection,
 		loggingService,
 		workspaceService,
 		workspaceFolderService,
 		optionsBuilder,
+		dependencyOverrides.packageRootFinder ??
+			({ findSubPackages: async () => [] } as unknown as PackageRootService),
 	);
 };
 

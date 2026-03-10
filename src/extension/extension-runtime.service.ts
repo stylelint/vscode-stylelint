@@ -1,6 +1,6 @@
 // @no-unit-test -- Relies on VS Code runtime objects and language client side-effects covered by integration tests.
 
-import type { Disposable, ExtensionContext } from 'vscode';
+import type { Disposable, ExtensionContext, WorkspaceFolder } from 'vscode';
 import type { LanguageClient } from 'vscode-languageclient/node';
 
 import { inject } from '../di/index.js';
@@ -201,8 +201,52 @@ export class ExtensionRuntimeService implements RuntimeLifecycleParticipant {
 			this.#settingMonitorDisposable = this.#createEnableSettingHandler();
 		});
 
+		const lintAllFilesDisposable = this.#commands.registerCommand(
+			'stylelint.lintAllFiles',
+			async () => {
+				try {
+					await this.#client.sendRequest('workspace/executeCommand', {
+						command: CommandId.LintFiles,
+						arguments: [],
+					});
+				} catch {
+					await this.#window.showErrorMessage(
+						'Failed to lint files. Please consider opening an issue with steps to reproduce.',
+					);
+				}
+			},
+		);
+
+		const lintWorkspaceFolderDisposable = this.#commands.registerCommand(
+			'stylelint.lintWorkspaceFolder',
+			async (workspaceFolder?: WorkspaceFolder) => {
+				const folder =
+					workspaceFolder ??
+					(this.#workspace.workspaceFolders?.length === 1
+						? this.#workspace.workspaceFolders[0]
+						: await this.#window.showWorkspaceFolderPick());
+
+				if (!folder) {
+					return;
+				}
+
+				try {
+					await this.#client.sendRequest('workspace/executeCommand', {
+						command: CommandId.LintFiles,
+						arguments: [folder.uri.toString()],
+					});
+				} catch {
+					await this.#window.showErrorMessage(
+						'Failed to lint workspace folder. Please consider opening an issue with steps to reproduce.',
+					);
+				}
+			},
+		);
+
 		this.#registerDisposable(executeAutofixDisposable);
 		this.#registerDisposable(restartDisposable);
+		this.#registerDisposable(lintAllFilesDisposable);
+		this.#registerDisposable(lintWorkspaceFolderDisposable);
 	}
 
 	#registerConfigurationChangeHandler(): void {

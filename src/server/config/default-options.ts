@@ -25,4 +25,7 @@ export const defaultLanguageServerOptions: LanguageServerOptions = {
 	snippet: ['css', 'postcss'],
 	stylelintPath: '',
 	validate: ['css', 'postcss'],
+	lintFiles: {
+		glob: '**/*.css',
+	},
 };

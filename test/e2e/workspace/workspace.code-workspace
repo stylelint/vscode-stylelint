@@ -19,6 +19,7 @@
 		{ "path": "worker-crash" },
 		{ "path": "ignore-cwd" },
 		{ "path": "postcss-html" },
+		{ "path": "monorepo" },
 	],
 	"settings": {},
 }
