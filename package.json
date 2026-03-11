@@ -349,13 +349,17 @@
     "postcss-styled-syntax": "^0.7.1",
     "prettier": "^3.8.1",
     "stylelint": "^17.4.0",
-    "stylelint-processor-glamorous": "^0.3.0",
-    "stylelint-processor-styled-components": "^1.10.0",
     "stylelint-scss": "^7.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
     "vitest": "^4.0.18"
+  },
+  "overrides": {
+    "mocha": {
+      "diff": "^8.0.3",
+      "serialize-javascript": "^7.0.3"
+    }
   },
   "scripts": {
     "build": "tsc -p tsconfig.src.json",

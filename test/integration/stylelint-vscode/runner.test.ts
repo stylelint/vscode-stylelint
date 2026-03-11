@@ -186,7 +186,7 @@ a { color: #000 }
 				config: {
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment -- for stylelint v14
 					// @ts-ignore for stylelint v14
-					processors: ['stylelint-processor-styled-components'],
+					processors: [path.join(__dirname, 'fake-processor.js')],
 					rules: {},
 				},
 			},
@@ -198,11 +198,11 @@ a { color: #000 }
 				message: 'Unclosed string (CssSyntaxError)',
 				range: {
 					end: {
-						character: 10,
+						character: 1,
 						line: 0,
 					},
 					start: {
-						character: 9,
+						character: 0,
 						line: 0,
 					},
 				},
