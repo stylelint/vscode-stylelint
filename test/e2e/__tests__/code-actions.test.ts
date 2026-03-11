@@ -17,6 +17,7 @@ import {
 
 const cssPath = 'code-actions/test.css';
 const cssForEditInfoPath = 'code-actions/edit-info.css';
+const cssForFixAllRulePath = 'code-actions/fix-all-rule.css';
 const jsPath = 'code-actions/test.js';
 
 describe('Code actions', () => {
@@ -26,6 +27,7 @@ describe('Code actions', () => {
 
 	restoreFile(cssPath);
 	restoreFile(jsPath);
+	restoreFile(cssForFixAllRulePath);
 
 	it('should provide code actions for problems', async () => {
 		const editor = await openDocument(cssPath);
@@ -256,6 +258,35 @@ const css = css\`
 				editor.document.getText(),
 				`a {
   color: #000000;
+}
+`,
+			);
+		},
+	);
+
+	ifItHaveProblemEditsIt(
+		'should provide a fix-all action for a rule with multiple fixable problems',
+		async () => {
+			const editor = await openDocument(cssForFixAllRulePath);
+
+			await waitForDiagnostics(editor);
+
+			// Cursor on the first color-hex-length violation.
+			const actions = await getCodeActions(editor, new Selection(1, 11, 1, 11));
+
+			const fixAllRuleAction = actions.find((action) =>
+				action.title.match(/^Fix all .+ problems$/),
+			);
+
+			assert.ok(fixAllRuleAction?.edit, 'Expected a fix-all-per-rule action');
+
+			await workspace.applyEdit(fixAllRuleAction.edit);
+
+			assert.equal(
+				editor.document.getText(),
+				`a {
+  color: #000000;
+  background: #ffffff;
 }
 `,
 			);

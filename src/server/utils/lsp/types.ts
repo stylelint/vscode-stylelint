@@ -5,6 +5,11 @@ import type LSP from 'vscode-languageserver-protocol';
  */
 export interface RuleCodeActions {
 	/**
+	 * Action to fix all instances of this rule in the document.
+	 */
+	fixAll?: LSP.CodeAction;
+
+	/**
 	 * Action to disable the rule for a specific line.
 	 */
 	disableLine?: LSP.CodeAction;

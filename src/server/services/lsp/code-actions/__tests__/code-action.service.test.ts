@@ -106,6 +106,75 @@ describe('CodeActionService', () => {
 
 	const requestCodeActions = (params: LSP.CodeActionParams) => service.handleCodeAction(params);
 
+	/**
+	 * Sets up fixable warnings and diagnostics, then requests code actions.
+	 * Diagnostic ranges are derived from fix ranges on line 0.
+	 */
+	async function requestWithFixes(
+		content: string,
+		fixDefs: Array<{ rule: string; range: [number, number]; text: string }>,
+		contextIndices?: number[],
+	) {
+		const document = setDocument(content);
+
+		options.setValidateLanguages([document.languageId]);
+
+		const warnings = fixDefs.map((def, i) => ({
+			rule: def.rule,
+			line: 1,
+			column: def.range[0] + 1,
+			text: `problem ${i + 1}`,
+			severity: 'error' as const,
+			fix: { range: def.range, text: def.text },
+		}));
+
+		const allDiagnostics: LSP.Diagnostic[] = fixDefs.map((def, i) => ({
+			message: `problem ${i + 1}`,
+			source: 'Stylelint',
+			range: LSP.Range.create(0, def.range[0], 0, def.range[1]),
+			code: def.rule,
+			severity: LSP.DiagnosticSeverity.Error,
+		}));
+
+		const warningMap = new Map<string, (typeof warnings)[number]>();
+
+		for (const [i, d] of allDiagnostics.entries()) {
+			warningMap.set(
+				`${d.range.start.line}:${d.range.start.character}:${d.range.end.line}:${d.range.end.character}`,
+				warnings[i],
+			);
+		}
+
+		diagnostics.setDiagnostics(document.uri, allDiagnostics);
+		diagnostics.setLintResult(document.uri, {
+			diagnostics: allDiagnostics,
+			version: document.version,
+			getWarning: (d: LSP.Diagnostic) => {
+				const key = `${d.range.start.line}:${d.range.start.character}:${d.range.end.line}:${d.range.end.character}`;
+
+				return warningMap.get(key) ?? null;
+			},
+		});
+
+		const indices = contextIndices ?? Array.from({ length: fixDefs.length }, (_, i) => i);
+
+		return requestCodeActions(
+			createParams({
+				context: { diagnostics: indices.map((i) => allDiagnostics[i]) },
+				textDocument: { uri: document.uri },
+			}),
+		);
+	}
+
+	function findFixAllAction(
+		result: (LSP.Command | LSP.CodeAction)[] | null | undefined,
+		rule: string,
+	) {
+		return result?.find(
+			(a): a is LSP.CodeAction => 'title' in a && a.title === `Fix all ${rule} problems`,
+		);
+	}
+
 	beforeEach(() => {
 		documents = createTextDocumentsStore();
 		options = createWorkspaceOptionsStub();
@@ -323,6 +392,73 @@ describe('CodeActionService', () => {
 		expect(logger.debug).toHaveBeenLastCalledWith('Document should not be validated, ignoring', {
 			uri: document.uri,
 			language: document.languageId,
+		});
+	});
+
+	describe('fix all per rule', () => {
+		it('should create fix-all action when a rule has 2+ fixable diagnostics', async () => {
+			const result = await requestWithFixes(
+				'aa bb cc',
+				[
+					{ rule: 'test-rule', range: [0, 2], text: 'AA' },
+					{ rule: 'test-rule', range: [3, 5], text: 'BB' },
+				],
+				[0],
+			);
+
+			const action = findFixAllAction(result, 'test-rule');
+
+			expect(action).toBeDefined();
+			expect(action).toHaveProperty('kind', LSP.CodeActionKind.QuickFix);
+			expect(action?.edit?.documentChanges).toHaveLength(1);
+
+			const textDocEdit = action?.edit?.documentChanges?.[0] as LSP.TextDocumentEdit;
+
+			expect(textDocEdit.edits).toHaveLength(2);
+		});
+
+		it('should not create fix-all action when a rule has only 1 fixable diagnostic', async () => {
+			const result = await requestWithFixes('aa bb', [
+				{ rule: 'test-rule', range: [0, 2], text: 'AA' },
+			]);
+
+			expect(findFixAllAction(result, 'test-rule')).toBeUndefined();
+		});
+
+		it('should exclude overlapping edits from fix-all action', async () => {
+			const result = await requestWithFixes(
+				'aabb cc', // cspell:disable-line
+				[
+					{ rule: 'test-rule', range: [0, 3], text: 'AA' },
+					{ rule: 'test-rule', range: [2, 4], text: 'BB' }, // overlaps first
+					{ rule: 'test-rule', range: [5, 7], text: 'CC' },
+				],
+				[0],
+			);
+
+			const action = findFixAllAction(result, 'test-rule');
+
+			expect(action).toBeDefined();
+
+			// Should only include warning 1 (0-3) and 3 (5-7), skipping warning
+			// 2 (2-4) which overlaps.
+			const textDocEdit = action?.edit?.documentChanges?.[0] as LSP.TextDocumentEdit;
+
+			expect(textDocEdit.edits).toHaveLength(2);
+			expect(textDocEdit.edits[0]).toMatchObject({ newText: 'AA' });
+			expect(textDocEdit.edits[1]).toMatchObject({ newText: 'CC' });
+		});
+
+		it('should not create fix-all action when all overlapping edits reduce count below 2', async () => {
+			const result = await requestWithFixes(
+				'aabb', // cspell:disable-line
+				[
+					{ rule: 'test-rule', range: [0, 3], text: 'AA' },
+					{ rule: 'test-rule', range: [2, 4], text: 'BB' }, // overlaps
+				],
+			);
+
+			expect(findFixAllAction(result, 'test-rule')).toBeUndefined();
 		});
 	});
 

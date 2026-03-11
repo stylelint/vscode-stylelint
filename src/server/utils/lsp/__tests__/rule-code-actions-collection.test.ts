@@ -10,15 +10,18 @@ describe('RuleCodeActionsCollection', () => {
 	});
 
 	it('should add code actions', () => {
+		const fixAll = CodeAction.create('fixAll', 'kind');
 		const disableLine = CodeAction.create('disableLine', 'kind');
 		const disableFile = CodeAction.create('disableFile', 'kind');
 		const documentation = CodeAction.create('documentation', 'kind');
 		const collection = new RuleCodeActionsCollection();
 
+		collection.get('rule').fixAll = fixAll;
 		collection.get('rule').disableLine = disableLine;
 		collection.get('rule').disableFile = disableFile;
 		collection.get('rule').documentation = documentation;
 
+		expect(collection.get('rule').fixAll).toBe(fixAll);
 		expect(collection.get('rule').disableLine).toBe(disableLine);
 		expect(collection.get('rule').disableFile).toBe(disableFile);
 		expect(collection.get('rule').documentation).toBe(documentation);
@@ -27,6 +30,7 @@ describe('RuleCodeActionsCollection', () => {
 	it('size should return the number of code actions', () => {
 		const collection = new RuleCodeActionsCollection();
 
+		collection.get('rule').fixAll = CodeAction.create('fixAll', 'kind');
 		collection.get('rule').disableLine = CodeAction.create('disableLine', 'kind');
 		collection.get('rule').disableFile = CodeAction.create('disableFile', 'kind');
 		collection.get('rule').documentation = CodeAction.create('documentation', 'kind');
@@ -34,10 +38,11 @@ describe('RuleCodeActionsCollection', () => {
 		collection.get('rule 3').disableFile = CodeAction.create('disableFile', 'kind');
 		collection.get('rule 4').documentation = CodeAction.create('documentation', 'kind');
 
-		expect(collection.size).toBe(6);
+		expect(collection.size).toBe(7);
 	});
 
 	it('should iterate over the code actions in prioritized order', () => {
+		const rule1FixAll = CodeAction.create('fixAll', 'kind');
 		const rule1DisableLine = CodeAction.create('disableLine', 'kind');
 		const rule1DisableFile = CodeAction.create('disableFile', 'kind');
 		const rule1Documentation = CodeAction.create('documentation', 'kind');
@@ -48,6 +53,7 @@ describe('RuleCodeActionsCollection', () => {
 
 		const collection = new RuleCodeActionsCollection();
 
+		collection.get('rule 1').fixAll = rule1FixAll;
 		collection.get('rule 1').disableLine = rule1DisableLine;
 		collection.get('rule 1').disableFile = rule1DisableFile;
 		collection.get('rule 1').documentation = rule1Documentation;
@@ -58,6 +64,7 @@ describe('RuleCodeActionsCollection', () => {
 
 		const iterator = collection[Symbol.iterator]();
 
+		expect(iterator.next().value).toBe(rule1FixAll);
 		expect(iterator.next().value).toBe(rule1DisableLine);
 		expect(iterator.next().value).toBe(rule1DisableFile);
 		expect(iterator.next().value).toBe(rule1Documentation);
