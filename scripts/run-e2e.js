@@ -12,6 +12,11 @@ const packageJson = require('../package.json');
 async function runE2ETest() {
 	try {
 		// Build bundle.
+		// Delete NODE_RUN_SCRIPT_NAME to work around a Windows bug where it
+		// isn't updated for recursive node --run calls, causing wireit to
+		// misidentify the script.
+		// See https://github.com/google/wireit/issues/1168.
+		delete process.env.NODE_RUN_SCRIPT_NAME;
 		console.log('Building bundle...');
 		execSync('node --run build-bundle', { stdio: 'inherit' });
 
