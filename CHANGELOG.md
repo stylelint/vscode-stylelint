@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fixed: Files in `node_modules` not being ignored due to a bug in Stylelint 17.4.0 and below ([#861](https://github.com/stylelint/vscode-stylelint/issues/861)).
 - Added: "Fix all \<rule\> problems" quick fix action for rules with multiple auto-fixable diagnostics ([#859](https://github.com/stylelint/vscode-stylelint/pull/859)).
 - Added: commands to lint all files and clear all problems ([#857](https://github.com/stylelint/vscode-stylelint/pull/857)).
 - Added: `stylelint.runtime` and `stylelint.execArgv` settings to customize the Node.js binary and exec arguments used by the language server ([#854](https://github.com/stylelint/vscode-stylelint/pull/854)).
