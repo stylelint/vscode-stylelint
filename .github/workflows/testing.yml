@@ -92,19 +92,21 @@ jobs:
         env:
           NPM_CONFIG_CACHE: ${{ steps.workspace.outputs.path }}/.npm-cache
           NPM_CONFIG_PREFER_OFFLINE: true
-        run: npm run switch-stylelint ${{ matrix.stylelint }}
+        run: node --run switch-stylelint ${{ matrix.stylelint }}
+
+      - uses: google/wireit@f21db1f3a6a4db31f42787a958cf2a18308effed # setup-github-actions-caching/v2.0.3
 
       - name: Run unit tests
         working-directory: ${{ steps.workspace.outputs.path }}
-        run: npm run test:unit -- --coverage
+        run: node --run test:unit -- -- --coverage
 
       - name: Build and bundle
         working-directory: ${{ steps.workspace.outputs.path }}
-        run: npm run build-bundle
+        run: node --run build-bundle
 
       - name: Run integration tests
         working-directory: ${{ steps.workspace.outputs.path }}
-        run: npm run test:integration -- --coverage
+        run: node --run test:integration -- -- --coverage
 
       - name: Get VS Code binary cache key
         id: vscode-cache-key
@@ -130,12 +132,12 @@ jobs:
       - name: Run end-to-end tests (Linux)
         if: ${{ runner.os == 'Linux' }}
         working-directory: ${{ steps.workspace.outputs.path }}
-        run: xvfb-run -a npm run test:e2e -- --silent
+        run: xvfb-run -a node --run test:e2e -- --silent
 
       - name: Run end-to-end tests (non-Linux)
         if: ${{ runner.os != 'Linux' }}
         working-directory: ${{ steps.workspace.outputs.path }}
-        run: npm run test:e2e -- --silent
+        run: node --run test:e2e -- --silent
 
   test-node-versions:
     runs-on: ubuntu-slim
@@ -151,4 +153,4 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - name: Test Node.js versions
-        run: npm run test:node-versions
+        run: node --run test:node-versions

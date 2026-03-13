@@ -35,7 +35,7 @@ const getWorkerEntryPath = (): string => {
 	}
 
 	throw new Error(
-		'Unable to locate the Stylelint worker entry file. Run "npm run build-bundle" before executing integration tests.',
+		'Unable to locate the Stylelint worker entry file. Run "node --run build-bundle" before executing integration tests.',
 	);
 };
 

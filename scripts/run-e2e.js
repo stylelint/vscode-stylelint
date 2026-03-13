@@ -7,12 +7,13 @@ const packageJson = require('../package.json');
 
 /**
  * Run end-to-end tests for the VS Code extension.
+ * @returns {Promise<number>} The exit code to use when exiting the process.
  */
 async function runE2ETest() {
 	try {
 		// Build bundle.
 		console.log('Building bundle...');
-		execSync('npm run build-bundle', { stdio: 'inherit' });
+		execSync('node --run build-bundle', { stdio: 'inherit' });
 
 		// Run vscode-test with all passed arguments.
 		console.log();
@@ -25,6 +26,7 @@ async function runE2ETest() {
 			stdio: 'inherit',
 		});
 
+		/** @type {number} */
 		const exitCode = await new Promise((resolve) => {
 			vscodeTest.on('close', resolve);
 		});

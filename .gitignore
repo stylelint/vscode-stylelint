@@ -73,6 +73,8 @@ local.py
 # -------------------------------------------------
 # Generated files
 # -------------------------------------------------
+.stylelint-version
+.wireit
 dist
 build
 /var/static/

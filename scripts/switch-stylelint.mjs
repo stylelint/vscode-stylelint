@@ -1,10 +1,12 @@
+import { rm, writeFile } from 'node:fs/promises';
+import { resolve } from 'node:path';
 import { execa } from 'execa';
 import { stderr, stdout, exit, argv } from 'node:process';
 import { satisfies, validRange } from 'semver';
 import packageConfig from '../package.json' with { type: 'json' };
 
 function usage() {
-	stderr.write(`Usage: npm run switch-stylelint [version] [-- OPTIONS]
+	stderr.write(`Usage: node --run switch-stylelint [version] [-- OPTIONS]
 
 Switches the installed Stylelint version used for testing. Does not modify
 package.json or package-lock.json.
@@ -19,9 +21,9 @@ Options:
   --h, --help  Show this help message
 
 Examples:
-  npm run switch-stylelint            # Installs Stylelint from package.json
-  npm run switch-stylelint 16         # Installs Stylelint 16
-  npm run switch-stylelint -- --show  # Shows installed Stylelint version
+  node --run switch-stylelint            # Installs Stylelint from package.json
+  node --run switch-stylelint 16         # Installs Stylelint 16
+  node --run switch-stylelint -- --show  # Shows installed Stylelint version
 `);
 }
 
@@ -304,8 +306,33 @@ const allMatch = installedPackages.every(([, spec, desiredGitSha, meta]) =>
 	matchesSpec(spec, meta, desiredGitSha),
 );
 
+const isDefaultVersion = Object.entries(selectedPackages).every(
+	([pkg, ver]) =>
+		/** @type {Record<string, string>} */ (packageConfig.devDependencies)[pkg] === ver,
+);
+const versionFilePath = resolve(import.meta.dirname, '..', '.stylelint-version');
+
+/**
+ * Update the version file that wireit uses to detect which Stylelint version is
+ * installed. When the default version is selected, the file is deleted so that
+ * the cache state matches a fresh npm install. For non-default versions, the
+ * file is written with the selected package specs.
+ */
+async function updateVersionFile() {
+	if (isDefaultVersion) {
+		await rm(versionFilePath, { force: true });
+	} else {
+		const content = Object.entries(selectedPackages)
+			.map(([pkg, ver]) => `${pkg}@${ver}`)
+			.join('\n');
+
+		await writeFile(versionFilePath, content + '\n');
+	}
+}
+
 if (allMatch) {
 	stderr.write('>>> Packages already match requested versions. Skipping install.\n');
+	await updateVersionFile();
 	exit(0);
 }
 
@@ -316,5 +343,6 @@ installedPackages
 	});
 
 await install();
+await updateVersionFile();
 
 stderr.write('>>> Done.\n');
