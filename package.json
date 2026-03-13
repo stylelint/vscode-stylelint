@@ -368,7 +368,7 @@
     "build-watch": "tsc -p tsconfig.src.json --watch",
     "bundle": "wireit",
     "bundle:minify": "wireit",
-    "bundle-watch": "node --experimental-transform-types scripts/bundle.mts --sourcemap --watch",
+    "bundle-watch": "node --experimental-strip-types scripts/bundle.mts --sourcemap --watch",
     "build-bundle": "wireit",
     "format": "prettier . --write",
     "lint": "wireit",
