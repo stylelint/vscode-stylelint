@@ -242,6 +242,55 @@ describe('StylelintRunner', () => {
 		);
 	});
 
+	test('should ignore node_modules files', async () => {
+		expect.assertions(2);
+
+		const workspaceOverrides = {
+			lint: vi.fn(async () => ({
+				resolvedPath: '/workspace/node_modules/stylelint',
+				linterResult: createLintResult(),
+			})),
+		};
+
+		const result = await createRunner(undefined, workspaceOverrides).lintDocument(
+			createMockDocument('a {}', '/workspace/node_modules/pkg/file.css'),
+			{ config: { rules: { 'block-no-empty': true } } },
+		);
+
+		expect(result.diagnostics).toEqual([]);
+		expect(workspaceOverrides.lint).not.toHaveBeenCalled();
+	});
+
+	test('should not ignore node_modules files when disableDefaultIgnores is true', async () => {
+		expect.assertions(1);
+
+		const blockWarning: stylelint.Warning = {
+			line: 1,
+			column: 3,
+			endLine: 1,
+			endColumn: 5,
+			rule: 'block-no-empty',
+			severity: 'error',
+			text: 'Unexpected empty block (block-no-empty)',
+		};
+		const workspaceOverrides = {
+			lint: vi.fn(async () => ({
+				resolvedPath: '/workspace/node_modules/stylelint',
+				linterResult: createLintResult([blockWarning]),
+			})),
+		};
+
+		const result = await createRunner(undefined, workspaceOverrides).lintDocument(
+			createMockDocument('a {}', '/workspace/node_modules/pkg/file.css'),
+			{
+				config: { rules: { 'block-no-empty': true } },
+				disableDefaultIgnores: true,
+			},
+		);
+
+		expect(result.diagnostics).toHaveLength(1);
+	});
+
 	test('should use workspace worker results when available', async () => {
 		const warning: stylelint.Warning = {
 			line: 1,

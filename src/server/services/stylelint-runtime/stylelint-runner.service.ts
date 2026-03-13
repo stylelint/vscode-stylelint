@@ -566,6 +566,19 @@ export class StylelintRunnerService {
 				runnerOptions.rules?.customizations,
 			);
 		const runLint = async (lintOptions: stylelint.LinterOptions): Promise<LintDiagnostics> => {
+			// Stylelint 17.4.0 and below has a bug where node_modules is not
+			// ignored properly when using `codeFilename` instead of `files`. This
+			// checks if the given linting options would trigger the bug.
+			//
+			// See https://github.com/stylelint/stylelint/issues/9129
+			if (
+				lintOptions.codeFilename &&
+				!lintOptions.disableDefaultIgnores &&
+				/(?:^|[\\/])node_modules(?:[\\/]|$)/.test(lintOptions.codeFilename)
+			) {
+				return { diagnostics: [] };
+			}
+
 			const result =
 				lintOptions === options && cachedResult
 					? cachedResult
