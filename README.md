@@ -15,6 +15,7 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension for 
 - [Usage](#usage)
   - [Commands](#commands)
   - [Actions](#actions)
+  - [Problem Matchers](#problem-matchers)
   - [Extension Settings](#extension-settings)
 - [Migrating](#migrating)
   - [From vscode-stylelint 1.x](#from-vscode-stylelint-1x)
