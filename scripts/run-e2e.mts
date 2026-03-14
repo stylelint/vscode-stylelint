@@ -1,15 +1,12 @@
-'use strict';
+import { execSync, spawn } from 'node:child_process';
+import process from 'node:process';
 
-const { execSync, spawn } = require('child_process');
-const process = require('process');
-
-const packageJson = require('../package.json');
+import packageJson from '../package.json' with { type: 'json' };
 
 /**
  * Run end-to-end tests for the VS Code extension.
- * @returns {Promise<number>} The exit code to use when exiting the process.
  */
-async function runE2ETest() {
+async function runE2ETest(): Promise<number> {
 	try {
 		// Build bundle.
 		// Delete NODE_RUN_SCRIPT_NAME to work around a Windows bug where it
@@ -31,8 +28,7 @@ async function runE2ETest() {
 			stdio: 'inherit',
 		});
 
-		/** @type {number} */
-		const exitCode = await new Promise((resolve) => {
+		const exitCode: number = await new Promise((resolve) => {
 			vscodeTest.on('close', resolve);
 		});
 

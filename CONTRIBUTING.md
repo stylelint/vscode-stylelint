@@ -288,7 +288,7 @@ Most test files live next to the code they exercise:
 
 - **Unit tests** live under `src/**/__tests__/` and use the naming pattern `<module>.test.ts`.
 - **Integration tests** live under `test/integration/` and cover interactions between larger pieces, such as the extension and server processes.
-- **End-to-end tests** live under `test/e2e/` and drive a real VS Code instance through `scripts/run-e2e.js`.
+- **End-to-end tests** live under `test/e2e/` and drive a real VS Code instance through `scripts/run-e2e.mts`.
 
 The `lint:unit-tests` script enforces the "one module, one unit test file" rule for everything under `src/`. When you add a new module, expect to add a matching unit test, unless you deliberately opt out with the `@no-unit-test` pragma described earlier.
 
