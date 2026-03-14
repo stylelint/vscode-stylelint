@@ -93,8 +93,30 @@ export function describeOnVersion(
 	return describe.skip(describeName, fn);
 }
 
-export function sleep(ms: number) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
+/**
+ * Sleep for the specified number of milliseconds, or until the provided
+ * AbortSignal is aborted.
+ * @param ms The number of milliseconds to sleep.
+ * @param signal An optional AbortSignal to cancel the sleep.
+ * @returns A promise that resolves when the sleep is complete or aborted.
+ */
+export function sleep(ms: number, signal?: AbortSignal): Promise<void> {
+	if (signal?.aborted) {
+		return Promise.resolve();
+	}
+
+	return new Promise((resolve) => {
+		const timer = setTimeout(resolve, ms);
+
+		signal?.addEventListener(
+			'abort',
+			() => {
+				clearTimeout(timer);
+				resolve();
+			},
+			{ once: true },
+		);
+	});
 }
 
 async function getWorkspaceFile(filePath: string): Promise<Uri> {
