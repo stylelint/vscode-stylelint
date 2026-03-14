@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "stylelint-compact",
+			"type": "shell",
+			"command": "../../../../node_modules/.bin/stylelint --formatter=compact test.css; echo ''",
+			"problemMatcher": "$stylelint-compact",
+			"presentation": {
+				"reveal": "silent",
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "stylelint-unix",
+			"type": "shell",
+			"command": "../../../../node_modules/.bin/stylelint",
+			"args": ["--formatter=unix", "test.css"],
+			"problemMatcher": "$stylelint-unix",
+			"presentation": {
+				"reveal": "silent",
+				"panel": "shared"
+			}
+		}
+	]
+}

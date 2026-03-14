@@ -9,6 +9,7 @@
 		{ "path": "format-custom-syntax" },
 		{ "path": "ignore-disables" },
 		{ "path": "ignore-path" },
+		{ "path": "lint-task" },
 		{ "path": "no-rules-configured" },
 		{ "path": "report-disables" },
 		{ "path": "run" },

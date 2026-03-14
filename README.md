@@ -126,6 +126,45 @@ You can also selectively enable and disable specific languages using VS Code's l
   }
 ```
 
+### Problem Matchers
+
+The extension contributes [problem matchers](https://code.visualstudio.com/docs/debugtest/tasks#_defining-a-problem-matcher) that can be used to parse Stylelint CLI output from [VS Code tasks](https://code.visualstudio.com/docs/debugtest/tasks) into the Problems panel.
+
+Two problem matchers are available, corresponding to a selection of [Stylelint's formatters](https://stylelint.io/user-guide/options/#formatter):
+
+- **`$stylelint-compact`** for the `compact` formatter
+- **`$stylelint-unix`** for the `unix` formatter
+
+For example, to lint all CSS files using a task with the compact formatter, set up a task like so:
+
+```json
+// .vscode/tasks.json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "lint:stylelint",
+      "problemMatcher": "$stylelint-compact"
+    }
+  ]
+}
+```
+
+where `lint:stylelint` is a script running Stylelint with the compact formatter:
+
+```json
+// package.json
+{
+  "scripts": {
+    "lint:stylelint": "stylelint --formatter=compact \"**/*.css\""
+  }
+}
+```
+
+> [!NOTE]
+> Stylelint's default formatter uses multiline output, which VS Code's problem matcher system [does not fully support](https://github.com/stylelint/vscode-stylelint/issues/150#issuecomment-975191285). This is why you must use either the `compact` or `unix` formatter to use the problem matchers.
+
 ### Extension Settings
 
 Though relying on a [Stylelint configuration file](https://stylelint.io/user-guide/configure) in your project is highly recommended, you can instead use the following [extension settings](https://code.visualstudio.com/docs/getstarted/settings):

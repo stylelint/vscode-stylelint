@@ -190,7 +190,7 @@ export function waitForDiagnosticsLength(
 
 type ExpectedRange = [number, number, number, number];
 
-type ExpectedDiagnostic = {
+export type ExpectedDiagnostic = {
 	code: number | string;
 	codeDescription?: string;
 	message: string;

@@ -1,0 +1,101 @@
+/* prettier-ignore */ /* cspell:disable */
+
+/* color-hex-length: "long" - #fff should be #ffffff */
+a {
+  color: #fff;
+}
+
+/* value-keyword-case: "lower" - BLOCK should be block */
+b {
+  display: BLOCK;
+}
+
+/* color-no-invalid-hex - #abcxyz is not valid */
+c {
+  color: #abcxyz;
+}
+
+/* font-family-no-duplicate-names - duplicate "serif" */
+d {
+  font-family: serif, serif;
+}
+
+/* declaration-block-no-duplicate-properties - duplicate "color" */
+e {
+  color: red;
+  color: blue;
+}
+
+/* block-no-empty - empty block */
+f {}
+
+/* number-max-precision: 2 - too many decimal places */
+h {
+  width: 10.123px;
+}
+
+/* selector-pseudo-class-no-unknown - :hoverr is not real */
+i:hoverr {
+  color: red;
+}
+
+/* selector-pseudo-element-colon-notation: "double" - should be :: */
+j:before {
+  content: "";
+}
+
+/* selector-type-case: "lower" - A should be a */
+A {
+  color: red;
+}
+
+/* shorthand-property-no-redundant-values - 1px 1px 1px 1px -> 1px */
+k {
+  margin: 1px 1px 1px 1px;
+}
+
+/* declaration-block-single-line-max-declarations: 1 - too many */
+l { color: red; display: block; }
+
+/* no-duplicate-selectors - .dup appears twice */
+.dup { color: red; }
+.dup { color: blue; }
+
+/* comment-no-empty - empty comment */
+/* */
+
+/* font-family-name-quotes: "always-where-recommended" - missing quotes */
+m {
+  font-family: Times New Roman, serif;
+}
+
+/* declaration-no-important - !important is disallowed */
+o {
+  color: red !important;
+}
+
+/* unit-no-unknown - "pxx" is invalid */
+p {
+  width: 100pxx;
+}
+
+/* property-no-unknown - "colr" is not a property */
+q {
+  colr: red;
+}
+
+/* max-nesting-depth: 2 - too deeply nested */
+s {
+  & t {
+    & u {
+      & v {
+        color: red;
+      }
+    }
+  }
+}
+
+/* selector-max-id: 0 - IDs are not allowed */
+#myid {
+  color: red;
+}
