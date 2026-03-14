@@ -424,14 +424,14 @@
     "lint:types": "wireit",
     "lint:unit-tests": "wireit",
     "test": "wireit",
-    "test:e2e": "node scripts/run-e2e.js",
+    "test:e2e": "node --experimental-strip-types scripts/run-e2e.mts",
     "test:integration": "wireit",
     "test:unit": "wireit",
-    "test:node-versions": "node scripts/test-node-versions.js",
+    "test:node-versions": "node --experimental-strip-types scripts/test-node-versions.mts",
     "vscode:prepublish": "wireit",
-    "vscode:launch": "node scripts/launch-vscode.js",
+    "vscode:launch": "node --experimental-strip-types scripts/launch-vscode.mts",
     "publish": "vsce publish --no-git-tag-version --no-update-package-json",
-    "switch-stylelint": "node scripts/switch-stylelint.mjs"
+    "switch-stylelint": "node --experimental-strip-types scripts/switch-stylelint.mts"
   },
   "wireit": {
     "env": {

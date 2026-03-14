@@ -1,17 +1,15 @@
-'use strict';
+import path from 'node:path';
+import { execSync, spawn } from 'node:child_process';
+import process from 'node:process';
 
-const path = require('node:path');
-const { execSync, spawn } = require('node:child_process');
-const process = require('node:process');
-
-const {
+import {
 	downloadAndUnzipVSCode,
 	resolveCliArgsFromVSCodeExecutablePath,
-} = require('@vscode/test-electron');
+} from '@vscode/test-electron';
 
-const packageJson = require('../package.json');
+import packageJson from '../package.json' with { type: 'json' };
 
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(import.meta.dirname, '..');
 const defaultWorkspace = path.resolve(rootDir, 'test/e2e/workspace/workspace.code-workspace');
 const minimumVscodeVersion = packageJson.engines?.vscode.match(/^>=(.+)$/)?.[1];
 const allowedLogLevels = new Set(['trace', 'debug', 'info', 'warn', 'error', 'critical', 'off']);
@@ -20,12 +18,9 @@ if (!minimumVscodeVersion) {
 	throw new Error(`Unexpected VS Code engine constraint: ${packageJson.engines?.vscode}`);
 }
 
-/**
- * @param {string[]} argv
- */
-function parseLaunchArguments(argv) {
+function parseLaunchArguments(argv: string[]) {
 	let logLevel = 'debug';
-	const passthroughArgs = [];
+	const passthroughArgs: string[] = [];
 	let passthroughMode = false;
 
 	for (let index = 0; index < argv.length; index += 1) {
@@ -76,9 +71,8 @@ function parseLaunchArguments(argv) {
 
 /**
  * Builds the extension bundle and launches VS Code via @vscode/test-electron without running tests.
- * @returns {Promise<number>} The exit code of the VS Code process.
  */
-async function launchVSCode() {
+async function launchVSCode(): Promise<number> {
 	try {
 		console.log('Building bundle...');
 		execSync('node --run build-bundle', { stdio: 'inherit' });
@@ -120,8 +114,7 @@ async function launchVSCode() {
 			env,
 		});
 
-		/** @type {number} */
-		const exitCode = await new Promise((resolve) => {
+		const exitCode: number = await new Promise((resolve) => {
 			vscodeProcess.on('close', resolve);
 		});
 

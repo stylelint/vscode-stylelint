@@ -1,9 +1,7 @@
-'use strict';
+import assert from 'node:assert';
+import process from 'node:process';
 
-const assert = require('node:assert');
-const process = require('node:process');
-
-const packageJson = require('../package.json');
+import packageJson from '../package.json' with { type: 'json' };
 
 const nodeVersion = process.version.slice(1); // trim the 'v' from the version
 
