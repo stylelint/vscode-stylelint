@@ -302,6 +302,52 @@
           ".stylelintignore"
         ]
       }
+    ],
+    "problemPatterns": [
+      {
+        "name": "stylelint-compact",
+        "regexp": "^(.+): line (\\d+), col (\\d+), (\\w+) - (.*?)\\s\\(([^)]+)\\)\\s*$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "severity": 4,
+        "message": 5,
+        "code": 6
+      },
+      {
+        "name": "stylelint-unix",
+        "regexp": "^(.+):(\\d+):(\\d+): (.*?)\\s\\(([^)]+)\\) \\[(\\w+)\\]\\s*$",
+        "file": 1,
+        "line": 2,
+        "column": 3,
+        "message": 4,
+        "code": 5,
+        "severity": 6
+      }
+    ],
+    "problemMatchers": [
+      {
+        "name": "stylelint-compact",
+        "label": "Stylelint problems (compact formatter)",
+        "owner": "Stylelint",
+        "source": "Stylelint",
+        "fileLocation": [
+          "autoDetect",
+          "${workspaceFolder}"
+        ],
+        "pattern": "$stylelint-compact"
+      },
+      {
+        "name": "stylelint-unix",
+        "label": "Stylelint problems (unix formatter)",
+        "owner": "Stylelint",
+        "source": "Stylelint",
+        "fileLocation": [
+          "autoDetect",
+          "${workspaceFolder}"
+        ],
+        "pattern": "$stylelint-unix"
+      }
     ]
   },
   "dependencies": {
