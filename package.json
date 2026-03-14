@@ -353,7 +353,8 @@
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.56.1",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "wireit": "^0.14.12"
   },
   "overrides": {
     "mocha": {
@@ -362,30 +363,205 @@
     }
   },
   "scripts": {
-    "build": "tsc -p tsconfig.src.json",
+    "build": "wireit",
     "build-bundle-watch": "run:p build-watch bundle-watch",
-    "build-watch": "npm run build -- --watch",
-    "bundle": "npm run bundle-base -- --sourcemap",
-    "bundle-base": "tsx scripts/bundle.ts",
-    "bundle-watch": "npm run bundle-base -- --sourcemap --watch",
-    "build-bundle": "run-s build bundle",
+    "build-watch": "tsc -p tsconfig.src.json --watch",
+    "bundle": "wireit",
+    "bundle:minify": "wireit",
+    "bundle-watch": "node --experimental-strip-types scripts/bundle.mts --sourcemap --watch",
+    "build-bundle": "wireit",
     "format": "prettier . --write",
-    "lint": "run-s \"lint:*\"",
-    "lint:formatting": "prettier . --check",
-    "lint:js": "eslint --cache --concurrency=auto",
-    "lint:spelling": "cspell lint --no-progress",
-    "lint:types": "tsc -b",
-    "lint:unit-tests": "tsx scripts/enforce-unit-tests-per-file.ts",
-    "test": "npm run build-bundle && npm run vitest --",
+    "lint": "wireit",
+    "lint:formatting": "wireit",
+    "lint:js": "wireit",
+    "lint:spelling": "wireit",
+    "lint:types": "wireit",
+    "lint:unit-tests": "wireit",
+    "test": "wireit",
     "test:e2e": "node scripts/run-e2e.js",
-    "test:integration": "npm run vitest -- --project integration",
-    "test:unit": "npm run vitest -- --project unit",
+    "test:integration": "wireit",
+    "test:unit": "wireit",
     "test:node-versions": "node scripts/test-node-versions.js",
-    "vitest": "vitest run",
-    "vscode:prepublish": "npm run build && npm run bundle-base -- --minify",
+    "vscode:prepublish": "wireit",
     "vscode:launch": "node scripts/launch-vscode.js",
     "publish": "vsce publish --no-git-tag-version --no-update-package-json",
     "switch-stylelint": "node scripts/switch-stylelint.mjs"
+  },
+  "wireit": {
+    "env": {
+      "files": [
+        "package.json",
+        ".nvmrc",
+        ".stylelint-version"
+      ]
+    },
+    "build": {
+      "command": "tsc -p tsconfig.src.json",
+      "dependencies": [
+        "env"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "tsconfig.src.json",
+        "tsconfig.base.json"
+      ],
+      "output": [
+        "build/**",
+        "tsconfig.src.tsbuildinfo"
+      ],
+      "clean": "if-file-deleted"
+    },
+    "bundle": {
+      "command": "node --experimental-transform-types scripts/bundle.mts --sourcemap",
+      "dependencies": [
+        "build"
+      ],
+      "files": [
+        "scripts/bundle.mts"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "bundle:minify": {
+      "command": "node --experimental-transform-types scripts/bundle.mts --minify",
+      "dependencies": [
+        "build"
+      ],
+      "files": [
+        "scripts/bundle.mts"
+      ],
+      "output": [
+        "dist/**"
+      ]
+    },
+    "build-bundle": {
+      "dependencies": [
+        "bundle"
+      ]
+    },
+    "lint": {
+      "dependencies": [
+        "lint:formatting",
+        "lint:js",
+        "lint:spelling",
+        "lint:types",
+        "lint:unit-tests"
+      ]
+    },
+    "lint:formatting": {
+      "command": "prettier . --check",
+      "dependencies": [
+        "env"
+      ],
+      "files": [
+        "**/*.{js,mjs,cjs,ts,mts,cts,json,md,yml,css,scss}",
+        ".editorconfig",
+        ".prettierignore"
+      ],
+      "output": []
+    },
+    "lint:js": {
+      "command": "eslint --cache --concurrency=auto",
+      "dependencies": [
+        "env"
+      ],
+      "files": [
+        "**/*.{js,mjs,cjs,ts,mts,cts}"
+      ],
+      "output": [
+        ".eslintcache"
+      ]
+    },
+    "lint:spelling": {
+      "command": "cspell lint --no-progress",
+      "dependencies": [
+        "env"
+      ],
+      "files": [
+        "**/*.{js,mjs,cjs,ts,mts,cts,json,md,yml,css,scss}"
+      ],
+      "output": []
+    },
+    "lint:types": {
+      "command": "tsc -b",
+      "dependencies": [
+        "env"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "test/**/*.ts",
+        "scripts/**",
+        "*.{js,mjs,mts}",
+        ".*.js",
+        "tsconfig*.json"
+      ],
+      "output": [
+        "tsconfig.src.tsbuildinfo",
+        "tsconfig.scripts.tsbuildinfo",
+        "tsconfig.test.tsbuildinfo"
+      ],
+      "clean": "if-file-deleted"
+    },
+    "lint:unit-tests": {
+      "command": "node --experimental-transform-types scripts/enforce-unit-tests-per-file.mts",
+      "dependencies": [
+        "env"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "scripts/enforce-unit-tests-per-file.mts"
+      ],
+      "output": []
+    },
+    "test": {
+      "command": "vitest run",
+      "dependencies": [
+        "build-bundle"
+      ],
+      "files": [
+        "src/**",
+        "test/**",
+        "vitest.config.mts",
+        "vitest.config.unit.mts",
+        "vitest.config.integration.mts"
+      ],
+      "output": []
+    },
+    "test:integration": {
+      "command": "vitest run --project integration",
+      "dependencies": [
+        "build-bundle"
+      ],
+      "files": [
+        "src/**/*.ts",
+        "test/integration/**",
+        "test/helpers/**",
+        "test/shared/**",
+        "vitest.config.mts",
+        "vitest.config.integration.mts"
+      ],
+      "output": []
+    },
+    "test:unit": {
+      "command": "vitest run --project unit",
+      "dependencies": [
+        "env"
+      ],
+      "files": [
+        "src/**",
+        "test/helpers/**",
+        "test/*.ts",
+        "vitest.config.mts",
+        "vitest.config.unit.mts"
+      ],
+      "output": []
+    },
+    "vscode:prepublish": {
+      "dependencies": [
+        "bundle:minify"
+      ]
+    }
   },
   "prettier": "@stylelint/prettier-config",
   "volta": {

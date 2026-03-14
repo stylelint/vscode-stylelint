@@ -1,7 +1,7 @@
-import fs from 'fs/promises';
-import path from 'path';
-import readline from 'readline';
-import process from 'process';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import readline from 'node:readline';
+import process from 'node:process';
 import glob from 'fast-glob';
 
 /**
@@ -124,7 +124,7 @@ async function fileExists(filePath: string): Promise<boolean> {
  * corresponding unit test file in the `__tests__` directory at the same level.
  */
 async function enforceUnitTestsPerFile(): Promise<void> {
-	const cwd = path.join(__dirname, '..');
+	const cwd = path.join(import.meta.dirname, '..');
 
 	const srcFiles = await glob('src/**/*.{ts,js}', {
 		cwd,

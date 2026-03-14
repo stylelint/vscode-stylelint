@@ -4,8 +4,8 @@
 const config = {
 	version: '0.2',
 	language: 'en-GB',
-	files: ['**/*.js', '**/*.ts', '**/*.json', '**/*.md', '**/*.yml', '**/*.css', '**/*.scss'],
-	ignorePaths: ['**/node_modules', '**/.yarn', '**/coverage', 'dist', 'build'],
+	files: ['**/*.{js,mjs,cjs,ts,mts,cts,json,md,yml,css,scss}'],
+	ignorePaths: ['**/node_modules', '**/.yarn', '**/coverage', '.wireit', 'dist', 'build'],
 	words: [
 		'Autofix',
 		'browserslist',
@@ -38,7 +38,9 @@ const config = {
 		'sugarss',
 		'thibaudcolas',
 		'uinteger',
+		'vars',
 		'vscodeignore',
+		'wireit',
 		'Xerus',
 		'Supertypes',
 		'Unregistration', // Not a word but is used upstream in the LSP package.

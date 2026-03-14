@@ -4,7 +4,7 @@ import { rm } from 'node:fs/promises';
 import * as esbuild from 'esbuild';
 import glob from 'fast-glob';
 
-const rootDir = path.resolve(__dirname, '..');
+const rootDir = path.resolve(import.meta.dirname, '..');
 
 const args = new Set(process.argv.slice(2));
 

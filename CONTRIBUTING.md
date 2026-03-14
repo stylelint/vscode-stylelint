@@ -56,7 +56,7 @@ After cloning the repository, install dependencies and build the project once:
 
 ```bash
 npm install
-npm run build
+node --run build
 ```
 
 From there, most contributions follow the same rhythm. You make a focused change, get fast feedback while you work, check that the pieces still fit together inside this repository, and then check that the packaged extension behaves correctly when VS Code actually loads it. Before you open a pull request you run the same kinds of checks that CI will, so there are no surprises.
@@ -65,34 +65,34 @@ The commands below are organised around that flow rather than listed exhaustivel
 
 For fast feedback while you are editing, you usually rely on your IDE's TypeScript integration. You can also keep a build running:
 
-- `npm run build` compiles the TypeScript sources once. It is useful after changing build-time types or when you want to be sure the project compiles cleanly.
-- `npm run build-watch` keeps `tsc` running in watch mode so compile errors show up quickly as you edit.
+- `node --run build` compiles the TypeScript sources once. It is useful after changing build-time types or when you want to be sure the project compiles cleanly.
+- `node --run build-watch` keeps `tsc` running in watch mode so compile errors show up quickly as you edit.
 
 For repository-level tests that do not involve a real VS Code instance, you normally work with the unit and integration suites:
 
-- `npm run test:unit` runs the unit test suite under `src/**/__tests__/`. This answers "does this module behave correctly in isolation?".
-- `npm run test:unit -- <path>` narrows that to a subset of tests, for example `src/di` or `src/server/services/workspace`. This is often the main command you use while iterating on a change.
-- `npm run test:integration` runs the integration tests under `test/integration/`, which exercise multiple components together (for example, the extension and server processes talking to one another). Use this when you change wiring, configuration, or anything that spans different parts of the codebase.
-- `npm run test` builds, bundles, and then runs both unit and integration tests. It gives you confidence that all code-level tests pass, but it still runs everything inside a controlled Node.js environment, not a live VS Code session.
+- `node --run test:unit` runs the unit test suite under `src/**/__tests__/`. This answers "does this module behave correctly in isolation?".
+- `node --run test:unit -- <path>` narrows that to a subset of tests, for example `src/di` or `src/server/services/workspace`. This is often the main command you use while iterating on a change.
+- `node --run test:integration` runs the integration tests under `test/integration/`, which exercise multiple components together (for example, the extension and server processes talking to one another). Use this when you change wiring, configuration, or anything that spans different parts of the codebase.
+- `node --run test` builds, bundles, and then runs both unit and integration tests. It gives you confidence that all code-level tests pass, but it still runs everything inside a controlled Node.js environment, not a live VS Code session.
 
 To answer the question "does this extension behave correctly when VS Code loads it the way users do?", use the end-to-end suite:
 
-- `npm run test:e2e` starts a controlled instance of VS Code, installs the built extension, and runs the tests under `test/e2e/`. This is the safety net for the full extension lifecycle: activation events, contributed commands, configuration, client/server startup, and anything else that might behave differently once VS Code is in the loop.
+- `node --run test:e2e` starts a controlled instance of VS Code, installs the built extension, and runs the tests under `test/e2e/`. This is the safety net for the full extension lifecycle: activation events, contributed commands, configuration, client/server startup, and anything else that might behave differently once VS Code is in the loop.
 
 Since the extension supports older versions of Stylelint, you should also test that the extension and server behave correctly with those older versions.
 
-- `npm run switch-stylelint [version]` changes the Stylelint version used by both the extension and the tests.  
-  For example, `npm run switch-stylelint 16` makes the extension use Stylelint 16.x. You can then run any of the test commands above to verify behaviour with that version.  
-  `npm run switch-stylelint` without arguments switches back to the default version defined in `package.json`.  
-  Run `npm run switch-stylelint -- --help` for details.
+- `node --run switch-stylelint [version]` changes the Stylelint version used by both the extension and the tests.  
+  For example, `node --run switch-stylelint 16` makes the extension use Stylelint 16.x. You can then run any of the test commands above to verify behaviour with that version.  
+  `node --run switch-stylelint` without arguments switches back to the default version defined in `package.json`.  
+  Run `node --run switch-stylelint -- --help` for details.
 
 > [!NOTE]
 > For more information on testing, see [section 5](#5-working-with-tests).
 
 Finally, to keep the codebase consistent and healthy, there are a couple of formatting and linting entry points:
 
-- `npm run format` runs Prettier over the repo and writes changes.
-- `npm run lint` runs the full lint pipeline: type checking, ESLint, formatting check, spelling, and the unit-test mapping check.
+- `node --run format` runs Prettier over the repo and writes changes.
+- `node --run lint` runs the full lint pipeline: type checking, ESLint, formatting check, spelling, and the unit-test mapping check.
 
 The more granular lint scripts such as `lint:js`, `lint:formatting`, or `lint:unit-tests` are mainly useful when you want to re-run a single check that is already failing, without running the entire `lint` pipeline.
 
@@ -103,21 +103,21 @@ A typical development workflow might look like this:
 npm install
 
 # Check that the project builds cleanly:
-npm run build
+node --run build
 
 # While working in a specific area:
-npm run test:unit -- src/di
+node --run test:unit -- src/di
 
 # When needing to verify that interactions between components still work correctly:
-npm run test:integration
+node --run test:integration
 
 # When needing to verify that the extension and language server behave correctly in a live VS Code session:
-npm run test:e2e
+node --run test:e2e
 
 # Before pushing or opening a PR, run the same checks as CI:
-npm run test
-npm run lint
-npm run test:e2e
+node --run test
+node --run lint
+node --run test:e2e
 ```
 
 The `lint:unit-tests` script is strict: for each module under `src/`, it expects a corresponding unit test file with the same base name plus a `.test` suffix in a sibling `__tests__` directory. For example, `src/server/runtime/application.ts` must have `src/server/runtime/__tests__/application.test.ts`. If you add a new module and forget the test file, this script will fail.
@@ -292,9 +292,9 @@ Most test files live next to the code they exercise:
 
 The `lint:unit-tests` script enforces the "one module, one unit test file" rule for everything under `src/`. When you add a new module, expect to add a matching unit test, unless you deliberately opt out with the `@no-unit-test` pragma described earlier.
 
-In day-to-day work you will mostly run targeted tests that match the kind of change you are making. For example, while iterating on a specific module or folder you might use `npm run test:unit -- src/...`. When you touch wiring between components or DI modules, `npm run test:integration` is more helpful. And when you change how the extension behaves inside VS Code itself, you should run `npm run test:e2e`.
+In day-to-day work you will mostly run targeted tests that match the kind of change you are making. For example, while iterating on a specific module or folder you might use `node --run test:unit -- src/...`. When you touch wiring between components or DI modules, `node --run test:integration` is more helpful. And when you change how the extension behaves inside VS Code itself, you should run `node --run test:e2e`.
 
-Running `npm run test` before you push gives you a single command that builds, bundles, and runs both the unit and integration suites. End-to-end tests are separate because they take longer and involve launching VS Code.
+Running `node --run test` before you push gives you a single command that builds, bundles, and runs both the unit and integration suites. End-to-end tests are separate because they take longer and involve launching VS Code.
 
 ### 5.2 Unit tests and DI-heavy code
 
@@ -638,7 +638,7 @@ describe("DocumentSummaryService", () => {
 
 This test defines a small module, uses `beforeEach` to refresh fakes and build a fresh container, and keeps the assertion focused on the behaviour you care about: that, given a URI, the service asks for options, runs Stylelint, and reports the warning count.
 
-With the test in place, `npm run test:unit -- src/server/services/documents` and `npm run lint:unit-tests` should both succeed.
+With the test in place, `node --run test:unit -- src/server/services/documents` and `node --run lint:unit-tests` should both succeed.
 
 ---
 

@@ -4,6 +4,7 @@
 		"module": "esnext",
 		"moduleResolution": "bundler",
 		"target": "es2022",
+		"types": ["node", "semver", "vscode", "path-is-inside", "vitest/globals", "mocha"],
 		"noEmit": true,
 		"isolatedModules": true
 	},

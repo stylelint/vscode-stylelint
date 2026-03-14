@@ -12,6 +12,7 @@ const nodeVersion = fs.readFileSync(new URL('.nvmrc', import.meta.url), 'utf8');
 export default defineConfig([
 	globalIgnores([
 		'.vscode-test',
+		'.wireit',
 		'build',
 		'coverage',
 		'dist',

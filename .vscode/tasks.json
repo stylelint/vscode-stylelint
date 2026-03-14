@@ -4,21 +4,21 @@
 		{
 			"label": "Build Extension",
 			"type": "shell",
-			"command": "npm run build",
+			"command": "node --run build",
 			"problemMatcher": ["$tsc"]
 		},
 		{
 			"label": "Build Extension (Watch)",
 			"type": "shell",
 			"isBackground": true,
-			"command": "npm run build-watch",
+			"command": "node --run build-watch",
 			"problemMatcher": ["$tsc-watch"]
 		},
 		{
 			"label": "Bundle Extension (Watch)",
 			"type": "shell",
 			"isBackground": true,
-			"command": "npm run bundle-watch",
+			"command": "node --run bundle-watch",
 			"dependsOn": ["Build Extension (Watch)"],
 			"problemMatcher": [
 				{
@@ -51,14 +51,14 @@
 		{
 			"label": "Lint Types",
 			"type": "shell",
-			"command": "npm run lint:types",
+			"command": "node --run lint:types",
 			"problemMatcher": ["$tsc"]
 		},
 		{
 			"label": "Lint Types (Watch)",
 			"type": "shell",
 			"isBackground": true,
-			"command": "npm run lint:types -- --watch",
+			"command": "node --run lint:types -- --watch",
 			"problemMatcher": ["$tsc-watch"]
 		}
 	]

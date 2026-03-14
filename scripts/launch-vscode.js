@@ -76,11 +76,12 @@ function parseLaunchArguments(argv) {
 
 /**
  * Builds the extension bundle and launches VS Code via @vscode/test-electron without running tests.
+ * @returns {Promise<number>} The exit code of the VS Code process.
  */
 async function launchVSCode() {
 	try {
 		console.log('Building bundle...');
-		execSync('npm run build-bundle', { stdio: 'inherit' });
+		execSync('node --run build-bundle', { stdio: 'inherit' });
 
 		console.log(`Ensuring VS Code ${minimumVscodeVersion} is available...`);
 		const vscodeExecutablePath = await downloadAndUnzipVSCode(minimumVscodeVersion);
@@ -119,6 +120,7 @@ async function launchVSCode() {
 			env,
 		});
 
+		/** @type {number} */
 		const exitCode = await new Promise((resolve) => {
 			vscodeProcess.on('close', resolve);
 		});
