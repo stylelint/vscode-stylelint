@@ -38,4 +38,12 @@ describe('.stylelintignore', () => {
 
 		assert.deepEqual(getStylelintDiagnostics(ignoredDocument.uri), []);
 	});
+
+	it('should ignore files in node_modules by default when opened in the editor', async () => {
+		const { document } = await openDocument(
+			'defaults/node_modules/stylelint-e2e-fixtures/ignored-by-default.css',
+		);
+
+		assert.deepEqual(getStylelintDiagnostics(document.uri), []);
+	});
 });

@@ -137,6 +137,42 @@ describe('StylelintRunner', () => {
 		expect(result.diagnostics).toEqual([]);
 	});
 
+	test('should ignore node_modules files by default when using codeFilename', async () => {
+		expect.assertions(1);
+		const runner = resolveStylelintRunner();
+		const result = await runner.lintDocument(
+			createDocument('node_modules/example/index.css', 'css', 'a {}'),
+			{
+				config: {
+					rules: {
+						'block-no-empty': true,
+					},
+				},
+			},
+		);
+
+		expect(result.diagnostics).toEqual([]);
+	});
+
+	test('should lint node_modules files when disableDefaultIgnores is true', async () => {
+		expect.assertions(2);
+		const runner = resolveStylelintRunner();
+		const result = await runner.lintDocument(
+			createDocument('node_modules/example/index.css', 'css', 'a {}'),
+			{
+				disableDefaultIgnores: true,
+				config: {
+					rules: {
+						'block-no-empty': true,
+					},
+				},
+			},
+		);
+
+		expect(result.diagnostics).toHaveLength(1);
+		expect(result.diagnostics[0]?.code).toBe('block-no-empty');
+	});
+
 	test('should support CSS-in-JS with customSyntax', async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
