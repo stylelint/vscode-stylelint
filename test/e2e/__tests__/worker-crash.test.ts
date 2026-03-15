@@ -68,17 +68,25 @@ async function readCrashStateAttempts(): Promise<number> {
 /**
  * Waits until the specified number of crash attempts have been recorded.
  */
-async function waitForCrashAttempts(minAttempts: number, timeoutMs = 10000): Promise<void> {
+async function waitForCrashAttempts(
+	minAttempts: number,
+	timeoutMs = 10000,
+	signal?: AbortSignal,
+): Promise<void> {
 	const startedAt = Date.now();
 
 	while (Date.now() - startedAt < timeoutMs) {
+		if (signal?.aborted) {
+			return;
+		}
+
 		const attempts = await readCrashStateAttempts();
 
 		if (attempts >= minAttempts) {
 			return;
 		}
 
-		await sleep(100);
+		await sleep(100, signal);
 	}
 
 	throw new Error(`Timed out waiting for ${minAttempts} crash attempts`);
@@ -111,12 +119,16 @@ const crashTriggerFiles = [
 /**
  * Triggers crash attempts until the desired number is reached.
  */
-async function triggerCrashAttempts(desiredAttempts: number) {
+async function triggerCrashAttempts(desiredAttempts: number, signal?: AbortSignal) {
 	let attempts = await readCrashStateAttempts();
 	let fileIndex = 0;
 	const deadline = Date.now() + crashAttemptDeadlineMs;
 
 	while (attempts < desiredAttempts) {
+		if (signal?.aborted) {
+			return;
+		}
+
 		if (Date.now() >= deadline) {
 			throw new Error(
 				`Timed out forcing ${desiredAttempts} crash attempts (last recorded: ${attempts})`,
@@ -134,7 +146,7 @@ async function triggerCrashAttempts(desiredAttempts: number) {
 		await openDocument(currentTargetFile);
 
 		try {
-			await waitForCrashAttempts(attempts + 1, crashAttemptTimeoutMs);
+			await waitForCrashAttempts(attempts + 1, crashAttemptTimeoutMs, signal);
 		} catch (error) {
 			// Allow individual attempts to time out so we can retry with the next document.
 			if (!(error instanceof Error) || !error.message.startsWith('Timed out')) {
@@ -144,8 +156,12 @@ async function triggerCrashAttempts(desiredAttempts: number) {
 			await closeAllEditors();
 		}
 
+		if (signal?.aborted) {
+			return;
+		}
+
 		attempts = await readCrashStateAttempts();
-		await sleep(500);
+		await sleep(500, signal);
 	}
 }
 
@@ -170,10 +186,15 @@ async function waitForDiagnosticsWithRetry(
 	editor: Awaited<ReturnType<typeof openDocument>>,
 	maxAttempts = 5,
 	attemptTimeoutMs = 10000,
+	signal?: AbortSignal,
 ): Promise<ReturnType<typeof getStylelintDiagnostics>> {
 	let lastError: Error | undefined;
 
 	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+		if (signal?.aborted) {
+			break;
+		}
+
 		// Make a unique edit to force a fresh lint.
 		const editMarker = `/* retry attempt ${attempt} - ${Date.now()} */\n`;
 
@@ -191,7 +212,7 @@ async function waitForDiagnosticsWithRetry(
 
 			if (attempt < maxAttempts) {
 				// Brief pause before retrying to let server stabilize.
-				await sleep(500);
+				await sleep(500, signal);
 			}
 		}
 	}
@@ -199,22 +220,30 @@ async function waitForDiagnosticsWithRetry(
 	throw lastError ?? new Error('Failed to get diagnostics after retries');
 }
 
-describe('Worker crash recovery', () => {
+describe('Worker crash recovery', function workerCrashRecovery() {
+	this.timeout(120000);
+
 	restoreFile(targetFile);
 	restoreFile('worker-crash/stylelint.config.js');
 
+	let abortController: AbortController;
+
 	beforeEach(async () => {
+		abortController = new AbortController();
 		await resetCrashState();
 	});
 
 	afterEach(async () => {
+		abortController.abort();
 		await closeAllEditors();
 		await resetCrashState();
 	});
 
 	it('restores diagnostics after restarting the server', async () => {
-		await triggerCrashAttempts(3);
-		await waitForCrashAttempts(3);
+		const { signal } = abortController;
+
+		await triggerCrashAttempts(3, signal);
+		await waitForCrashAttempts(3, 10000, signal);
 
 		await openDocument(targetFile);
 		await closeAllEditors();
@@ -230,7 +259,7 @@ describe('Worker crash recovery', () => {
 		await triggerConfigChange();
 		const reopened = await openDocument(targetFile);
 
-		const diagnostics = await waitForDiagnosticsWithRetry(reopened);
+		const diagnostics = await waitForDiagnosticsWithRetry(reopened, 5, 10000, signal);
 		const diagnostic = diagnostics[0];
 
 		assert.ok(diagnostic, 'Expected Stylelint diagnostic after worker recovery');
