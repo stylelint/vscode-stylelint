@@ -27,13 +27,9 @@ Examples:
 `);
 }
 
-/** @typedef { 'default' | '17' | '16' | '15' | '14' } StylelintVersion */
+type StylelintVersion = 'default' | '17' | '16' | '15' | '14';
 
-/**
- * @param {unknown} version
- * @returns {version is StylelintVersion} Whether the provided version is valid.
- */
-function isStylelintVersion(version) {
+function isStylelintVersion(version: unknown): version is StylelintVersion {
 	return (
 		version === 'default' ||
 		version === '17' ||
@@ -67,27 +63,22 @@ if (!isStylelintVersion(version)) {
 // Type wizardry to require all map entries to have the same keys, so that no
 // packages are forgotten in any version.
 
-/**
- * @template U
- * @typedef {U extends U ? keyof U : never} UnionKeys
- */
+type UnionKeys<U> = U extends U ? keyof U : never;
 
 /**
  * Helper function to help TypeScript infer the correct types for the map.
- * @template T
- * @param {T & Record<keyof T, Record<UnionKeys<T[keyof T]>, string>>} map
- * @returns {T}
  */
-function createPackageMap(map) {
+function createPackageMap<T extends Record<string, Record<string, string>>>(
+	map: T & Record<keyof T, Record<UnionKeys<T[keyof T]>, string>>,
+): T {
 	return map;
 }
 
-/**
- * @typedef {Object} InstalledPackage
- * @property {string} [version]
- * @property {string} [resolved]
- * @property {string} [from]
- */
+interface InstalledPackage {
+	version?: string;
+	resolved?: string;
+	from?: string;
+}
 
 const packageMap = createPackageMap({
 	default: {
@@ -125,11 +116,7 @@ const install = () =>
 
 const gitSpecPattern = /^(?:git\+)?(?:https?|ssh):\/\/|^(?:git|github):|\.git(?:#|$)/i;
 
-/**
- * @param {string} spec
- * @returns {{ url: string, ref: string | null }}
- */
-const parseGitSpec = (spec) => {
+const parseGitSpec = (spec: string): { url: string; ref: string | null } => {
 	const cleaned = spec.replace(/^git\+/, '');
 	const [base, ref = null] = cleaned.split('#', 2);
 
@@ -152,8 +139,7 @@ const parseGitSpec = (spec) => {
 	return { url: base.endsWith('.git') ? base : `${base}.git`, ref };
 };
 
-/** @param {string} spec */
-const normalizeGitSpec = (spec) => {
+const normalizeGitSpec = (spec: string): string => {
 	const [rawBase, ref] = spec.replace(/^git\+/, '').split('#', 2);
 	const base = rawBase
 		.replace(/^git@github\.com:/i, 'github.com/')
@@ -164,14 +150,9 @@ const normalizeGitSpec = (spec) => {
 	return `${base}${ref ? `#${ref}` : ''}`;
 };
 
-/** @param {string} spec */
-const isGitSpec = (spec) => gitSpecPattern.test(spec);
+const isGitSpec = (spec: string): boolean => gitSpecPattern.test(spec);
 
-/**
- * @param {string} pkg
- * @returns {Promise<InstalledPackage | null>}
- */
-const readInstalled = async (pkg) => {
+const readInstalled = async (pkg: string): Promise<InstalledPackage | null> => {
 	try {
 		const result = await execa('npm', ['list', pkg, '--depth=0', '--json'], {
 			stderr: 'pipe',
@@ -203,11 +184,7 @@ const readInstalled = async (pkg) => {
 	}
 };
 
-/**
- * @param {string} spec
- * @returns {Promise<string | null>}
- */
-const resolveGitSha = async (spec) => {
+const resolveGitSha = async (spec: string): Promise<string | null> => {
 	const { url, ref } = parseGitSpec(spec);
 	const targetRef = ref ?? 'HEAD';
 
@@ -224,8 +201,7 @@ const resolveGitSha = async (spec) => {
 	}
 };
 
-/** @param {string | undefined} value */
-const extractGitSha = (value) => {
+const extractGitSha = (value: string | undefined): string | null => {
 	if (!value) {
 		return null;
 	}
@@ -241,12 +217,11 @@ const extractGitSha = (value) => {
 	return sha && /^[a-f0-9]{7,40}$/i.test(sha) ? sha.toLowerCase() : null;
 };
 
-/**
- * @param {string} desiredSpec
- * @param {InstalledPackage | null} installed
- * @param {string | null} desiredGitSha
- */
-const matchesSpec = (desiredSpec, installed, desiredGitSha = null) => {
+const matchesSpec = (
+	desiredSpec: string,
+	installed: InstalledPackage | null,
+	desiredGitSha: string | null = null,
+): boolean => {
 	if (!installed) {
 		return false;
 	}
@@ -275,8 +250,7 @@ const matchesSpec = (desiredSpec, installed, desiredGitSha = null) => {
 		: false;
 };
 
-/** @param {InstalledPackage | null} installed */
-const describeInstalled = (installed) => {
+const describeInstalled = (installed: InstalledPackage | null): string => {
 	if (!installed) {
 		return 'not installed';
 	}
@@ -292,23 +266,22 @@ const describeInstalled = (installed) => {
 	return installed.version ?? 'unknown version';
 };
 
-/** @type {Array<[string, string, string | null, InstalledPackage | null]>} */
-const installedPackages = await Promise.all(
-	Object.entries(selectedPackages).map(async ([pkg, spec]) => [
-		pkg,
-		spec,
-		await resolveGitSha(spec),
-		await readInstalled(pkg),
-	]),
-);
+const installedPackages: Array<[string, string, string | null, InstalledPackage | null]> =
+	await Promise.all(
+		Object.entries(selectedPackages).map(async ([pkg, spec]) => [
+			pkg,
+			spec,
+			await resolveGitSha(spec),
+			await readInstalled(pkg),
+		]),
+	);
 
 const allMatch = installedPackages.every(([, spec, desiredGitSha, meta]) =>
 	matchesSpec(spec, meta, desiredGitSha),
 );
 
 const isDefaultVersion = Object.entries(selectedPackages).every(
-	([pkg, ver]) =>
-		/** @type {Record<string, string>} */ (packageConfig.devDependencies)[pkg] === ver,
+	([pkg, ver]) => (packageConfig.devDependencies as Record<string, string>)[pkg] === ver,
 );
 const versionFilePath = resolve(import.meta.dirname, '..', '.stylelint-version');
 

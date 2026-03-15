@@ -26,7 +26,7 @@ export default defineConfig([
 		'**/__tests__/**/*.js',
 		'**/__tests__/**/*.cjs',
 		'**/__tests__/**/*.mjs',
-		'scripts/switch-stylelint.mjs', // Contains syntax unsupported by ESLint
+		'scripts/switch-stylelint.mts', // Contains syntax unsupported by ESLint
 	]),
 
 	...stylelint,
