@@ -14,6 +14,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     outputs:
       extension-changed: ${{ steps.check.outputs.extension-changed }}
       server-changed: ${{ steps.check.outputs.server-changed }}
