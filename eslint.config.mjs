@@ -87,6 +87,14 @@ export default defineConfig([
 	},
 
 	{
+		files: ['packages/language-server/bin/**'],
+		rules: {
+			// The bin entry point imports from build output that only exists after compilation.
+			'n/no-missing-import': 'off',
+		},
+	},
+
+	{
 		files: ['**/*.ts'],
 		extends: [tsEslint.configs.recommendedTypeChecked],
 		languageOptions: {

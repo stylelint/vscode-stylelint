@@ -25,18 +25,22 @@
   "exports": {
     ".": {
       "types": "./build/server/index.d.ts",
+      "source": "./src/server/index.ts",
       "default": "./build/server/index.js"
     },
     "./di": {
       "types": "./build/di/index.d.ts",
+      "source": "./src/di/index.ts",
       "default": "./build/di/index.js"
     },
     "./di/runtime": {
       "types": "./build/di/runtime/index.d.ts",
+      "source": "./src/di/runtime/index.ts",
       "default": "./build/di/runtime/index.js"
     },
     "./shared/log-level": {
       "types": "./build/shared/log-level.d.ts",
+      "source": "./src/shared/log-level.ts",
       "default": "./build/shared/log-level.js"
     }
   },

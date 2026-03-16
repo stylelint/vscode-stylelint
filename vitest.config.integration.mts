@@ -7,4 +7,9 @@ export default defineConfig({
 		include: ['test/integration/**/*.ts'],
 		exclude: ['test/e2e/**', 'test/integration/connection-manager.ts'],
 	},
+	ssr: {
+		resolve: {
+			conditions: ['source'],
+		},
+	},
 });

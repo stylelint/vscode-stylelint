@@ -7,4 +7,9 @@ export default defineConfig({
 		include: ['src/**/__tests__/**/*.ts', 'packages/language-server/src/**/__tests__/**/*.ts'],
 		exclude: ['test/e2e/**', 'test/integration/**'],
 	},
+	ssr: {
+		resolve: {
+			conditions: ['source'],
+		},
+	},
 });
