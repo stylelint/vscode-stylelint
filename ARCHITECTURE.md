@@ -67,7 +67,7 @@ createLanguageServerApplication()"]
     EXT["VS Code extension
 src/extension"]
     SRV["Language server
-src/server"]
+packages/language-server/src/server"]
   end
 
   TOK --> MOD
@@ -114,7 +114,7 @@ Almost all of that work is expressed through the shared DI/runtime layer instead
 
 ### 3.1 Activation and application lifecycle
 
-The main entry point for VS Code is `src/extension/extension.ts`. The `activate(context, overrides?)` function builds and starts a runtime application by calling `createRuntimeApplication(...)` from `src/di/runtime/`. That application is composed from two modules: `createExtensionPlatformModule(context)` for platform wiring and `extensionModule` for the extension's own features. The resulting `RuntimeApplication` owns a DI container, starts runtime services, and becomes the central point for resolving extension services and tokens, for example the public API or the VS Code window.
+The main entry point for VS Code is `src/extension/extension.ts`. The `activate(context, overrides?)` function builds and starts a runtime application by calling `createRuntimeApplication(...)` from `packages/language-server/src/di/runtime/`, imported as `@stylelint/language-server/di/runtime`. That application is composed from two modules: `createExtensionPlatformModule(context)` for platform wiring and `extensionModule` for the extension's own features. The resulting `RuntimeApplication` owns a DI container, starts runtime services, and becomes the central point for resolving extension services and tokens, for example the public API or the VS Code window.
 
 On deactivate, `deactivate()` asks the application to dispose itself. If disposal fails, the extension falls back to `vscode.window` to show an error and then re-throws so VS Code sees that deactivate failed.
 
@@ -138,7 +138,7 @@ All of these are normal DI providers: the module is just a declarative descripti
 
 `ExtensionRuntimeService` in `src/extension/extension-runtime.service.ts` is the main runtime service on the extension side.
 
-It is decorated both as a runtime service, via `@runtimeService()` from `src/di/runtime/`, and as an injectable class, via `@inject({ inject: [...] })` listing the tokens it needs (window, workspace, commands, context, language client, setting monitor factory).
+It is decorated both as a runtime service, via `@runtimeService()` from `packages/language-server/src/di/runtime/`, and as an injectable class, via `@inject({ inject: [...] })` listing the tokens it needs (window, workspace, commands, context, language client, setting monitor factory).
 
 When the runtime application starts, it creates an instance of `ExtensionRuntimeService` from the container and then calls its lifecycle methods (`onStart`, `onShutdown` if implemented).
 
@@ -151,19 +151,19 @@ Architecturally, you can think of `ExtensionRuntimeService` as the extension's m
 
 ## 4. Language server architecture
 
-The language server lives under `src/server/`. It is a standalone Node.js process that owns an LSP `Connection` and a `TextDocuments` manager, uses a DI container and runtime to discover and run services, and delegates Stylelint work to a dedicated runtime layer that can use worker processes.
+The language server lives under `packages/language-server/src/server/`. It is a standalone Node.js process that owns an LSP `Connection` and a `TextDocuments` manager, uses a DI container and runtime to discover and run services, and delegates Stylelint work to a dedicated runtime layer that can use worker processes.
 
 ### 4.1 Entry point and bootstrap
 
-The compiled server is started by `src/extension/start-server.ts` inside the extension host. That entry point calls `createConnection(ProposedFeatures.all)` from `vscode-languageserver/node`, creates a `StylelintLanguageServer` instance from `src/server/server.ts` with the connection and logging options based on `NODE_ENV`, and then calls `server.start()`, after which the connection listens for LSP traffic.
+The compiled server is started by `src/extension/start-server.ts` inside the extension host. That entry point calls `createConnection(ProposedFeatures.all)` from `vscode-languageserver/node`, creates a `StylelintLanguageServer` instance from `packages/language-server/src/server/server.ts` with the connection and logging options based on `NODE_ENV`, and then calls `server.start()`, after which the connection listens for LSP traffic.
 
-In `src/server/server.ts`, `StylelintLanguageServer.start()` does the architectural heavy lifting. It first creates a feature module, then calls `createLanguageServerApplication()` and starts the resulting `RuntimeApplication`, before finally telling the LSP connection to `listen()`. On dispose, it shuts down the application and disposes the connection.
+In `packages/language-server/src/server/server.ts`, `StylelintLanguageServer.start()` does the architectural heavy lifting. It first creates a feature module, then calls `createLanguageServerApplication()` and starts the resulting `RuntimeApplication`, before finally telling the LSP connection to `listen()`. On dispose, it shuts down the application and disposes the connection.
 
 This mirrors the extension side in that the server is also expressed as a DI-backed application whose lifetime is the life of the LSP `Connection`.
 
 ### 4.2 Server-side modules
 
-The core server behaviour is grouped into modules under `src/server/modules/`:
+The core server behaviour is grouped into modules under `packages/language-server/src/server/modules/`:
 
 - `platformModule` binds host primitives and Node APIs (TextDocuments, `fs/promises`, `path`, `child_process`, etc.) to tokens.
 - `infrastructureModule` contains project-wide infrastructure services such as logging and command dispatch.
@@ -172,17 +172,17 @@ The core server behaviour is grouped into modules under `src/server/modules/`:
 - `documentsModule` contains document-oriented services such as document fixes.
 - `lspModule` holds LSP-facing glue such as initialization and notification handlers.
 
-`languageServerModule` in `src/server/server.module.ts` simply imports those modules and exposes them as one combined feature module. This keeps the bootstrap in `server.ts` simple: it does not know which services exist, only that there is a composed `languageServerModule` representing them.
+`languageServerModule` in `packages/language-server/src/server/server.module.ts` simply imports those modules and exposes them as one combined feature module. This keeps the bootstrap in `server.ts` simple: it does not know which services exist, only that there is a composed `languageServerModule` representing them.
 
 ### 4.3 Binding LSP into the runtime
 
-`src/server/runtime/application.ts` provides `createLanguageServerApplication(...)`, which adapts the generic runtime into a language-server-aware application. Given an LSP `Connection`, a list of DI modules (platform plus feature modules), and optional overrides or factories, it creates an overrides map that seeds `lspConnectionToken` with the actual `Connection` instance. It then uses `createRuntimeApplication()` to build a runtime application, and finally subscribes to `connection.onShutdown` so the application is disposed when the client shuts down.
+`packages/language-server/src/server/runtime/application.ts` provides `createLanguageServerApplication(...)`, which adapts the generic runtime into a language-server-aware application. Given an LSP `Connection`, a list of DI modules (platform plus feature modules), and optional overrides or factories, it creates an overrides map that seeds `lspConnectionToken` with the actual `Connection` instance. It then uses `createRuntimeApplication()` to build a runtime application, and finally subscribes to `connection.onShutdown` so the application is disposed when the client shuts down.
 
 From the point of view of the shared runtime, the language server is just another application with a special runtime feature responsible for LSP-specific wiring.
 
 ### 4.4 LanguageServerFeature and runtime
 
-The LSP-specific wiring lives in `src/server/runtime/language-server-feature.ts` and `lsp-service-runtime.ts`.
+The LSP-specific wiring lives in `packages/language-server/src/server/runtime/language-server-feature.ts` and `lsp-service-runtime.ts`.
 
 At a high level, `LanguageServerFeature` implements a `RuntimeFeature` from the DI runtime. When the runtime starts, it calls `LanguageServerFeature.apply(context)`. That method resolves infrastructure services from the container, builds a `LanguageServerServiceRuntime` with those dependencies and the LSP `Connection`, walks the set of services and registers any that are LSP-aware, and sets up global LSP behaviour such as `onInitialize`, `onInitialized`, `onShutdown`, and configuration change wiring.
 
@@ -194,7 +194,7 @@ You never touch the central wiring in `LanguageServerFeature` or `LanguageServer
 
 ## 5. Shared DI and runtime layer
 
-Both the extension and the server are built on the same small DI/runtime library in `src/di/`.
+Both the extension and the server are built on the same small DI/runtime library in `packages/language-server/src/di/` (published as `@stylelint/language-server/di`).
 
 ### 5.1 Core concepts recap
 
@@ -209,7 +209,7 @@ Architecturally, this means there is no central service locator or god object. I
 
 ### 5.2 Injection and scopes
 
-The injector lives in `src/di/`. The important pieces are `createToken<T>(description)`, which creates a typed token that can be used as a DI key, and the `@inject({ scope?, inject? })` decorator, which marks a class as injectable and declares what should be passed to its constructor.
+The injector lives in `packages/language-server/src/di/`. The important pieces are `createToken<T>(description)`, which creates a typed token that can be used as a DI key, and the `@inject({ scope?, inject? })` decorator, which marks a class as injectable and declares what should be passed to its constructor.
 
 The `inject` property lists tokens or classes to resolve for each constructor parameter, while `scope` controls lifetime, defaulting to `singleton` with some helpers using `transient` when a fresh instance is needed each time.
 
@@ -237,7 +237,7 @@ From an architectural standpoint, you can see modules as the wiring layer that s
 
 ### 5.4 Runtime applications and services
 
-The runtime layer in `src/di/runtime/` is where the DI container gains lifecycle and feature concepts.
+The runtime layer in `packages/language-server/src/di/runtime/` is where the DI container gains lifecycle and feature concepts.
 
 - A **runtime application** wraps a container and knows how to start runtime services and features via `start()`, dispose them in a controlled order via `dispose()`, resolve dependencies via `resolve(token)` by delegating to the container, and expose metadata about registered services.
 - **Runtime services** are classes decorated with `@runtimeService()`. They are created when the application starts, and if they implement `RuntimeLifecycleParticipant` their `onStart` and `onShutdown` hooks are called. `ExtensionRuntimeService` and the language-server LSP services are both examples of runtime services.
@@ -247,7 +247,7 @@ Because the runtime treats services and features generically, the extension and 
 
 ## 6. Stylelint runtime and workers
 
-Running Stylelint efficiently and robustly is its own sub-system, implemented under `src/server/services/stylelint-runtime/` and wired by `stylelintRuntimeModule`.
+Running Stylelint efficiently and robustly is its own sub-system, implemented under `packages/language-server/src/server/services/stylelint-runtime/` and wired by `stylelintRuntimeModule`.
 
 The main design goals here are to isolate Stylelint loading and execution from the LSP wiring, to support features like Yarn Plug'n'Play (PnP) and different package roots, to support Stylelint as an ESM module, and to keep the language server reliable and isolated by delegating work to worker processes.
 
@@ -264,13 +264,13 @@ This keeps the Stylelint runtime concerns localised and makes it possible to evo
 
 ## 7. Workspace, documents, and LSP services
 
-Most of the server's feature code lives under `src/server/services/`, grouped by concern: workspace, documents, infrastructure, stylelint runtime, LSP helpers.
+Most of the server's feature code lives under `packages/language-server/src/server/services/`, grouped by concern: workspace, documents, infrastructure, stylelint runtime, LSP helpers.
 
 Here is how they relate at a conceptual level.
 
 ### 7.1 Workspace services
 
-Workspace services in `src/server/services/workspace/` are responsible for tracking workspace folders and associated metadata via `WorkspaceFolderService`, loading and caching Stylelint options for particular URIs or workspace folders via `WorkspaceOptionsService`, and reacting to configuration changes, for example via `DidChangeConfigurationNotification`.
+Workspace services in `packages/language-server/src/server/services/workspace/` are responsible for tracking workspace folders and associated metadata via `WorkspaceFolderService`, loading and caching Stylelint options for particular URIs or workspace folders via `WorkspaceOptionsService`, and reacting to configuration changes, for example via `DidChangeConfigurationNotification`.
 
 They are wired into LSP events via decorators, with initialization handlers to report capabilities and perform initial scans, and configuration change handlers to clear caches or recalculate options.
 
@@ -278,7 +278,7 @@ Other services, such as the Stylelint runner and document services, depend on wo
 
 ### 7.2 Document and diagnostics services
 
-Document services in `src/server/services/documents/` handle document-oriented tasks such as computing diagnostics when documents change, providing document fixes and code actions, and implementing document formatting via Stylelint when that feature is enabled.
+Document services in `packages/language-server/src/server/services/documents/` handle document-oriented tasks such as computing diagnostics when documents change, providing document fixes and code actions, and implementing document formatting via Stylelint when that feature is enabled.
 
 These services are typically LSP-facing. They are decorated with `@lspService()` and method-level decorators like `@textDocumentEvent(eventName)`, `@codeActionRequest()`, or `@documentFormattingRequest()`. They depend on `TextDocuments`, workspace services, and the Stylelint runner via DI, and they use `NotificationService` or direct connection APIs to publish diagnostics and other LSP notifications.
 
@@ -286,7 +286,7 @@ The point is to keep each service focused on a single responsibility, such as "t
 
 ### 7.3 Infrastructure services
 
-Infrastructure services in `src/server/services/infrastructure/` provide shared building blocks. `CommandService` is a simple command bus used by `@command` handlers, so LSP commands from the client are routed through this service to the appropriate handlers. `NotificationService` is a facade around LSP notifications, used to centralise error handling and logging. Logging services are abstractions over `winston` that provide structured logging and control over log levels and destinations.
+Infrastructure services in `packages/language-server/src/server/services/infrastructure/` provide shared building blocks. `CommandService` is a simple command bus used by `@command` handlers, so LSP commands from the client are routed through this service to the appropriate handlers. `NotificationService` is a facade around LSP notifications, used to centralise error handling and logging. Logging services are abstractions over `winston` that provide structured logging and control over log levels and destinations.
 
 These services are consumed everywhere, but they are still normal DI services. Nothing in the system reaches into global singletons for commands or logs.
 

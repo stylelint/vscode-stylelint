@@ -126,7 +126,7 @@ async function fileExists(filePath: string): Promise<boolean> {
 async function enforceUnitTestsPerFile(): Promise<void> {
 	const cwd = path.join(import.meta.dirname, '..');
 
-	const srcFiles = await glob('src/**/*.{ts,js}', {
+	const srcFiles = await glob(['src/**/*.{ts,js}', 'packages/language-server/src/**/*.{ts,js}'], {
 		cwd,
 		absolute: true,
 		ignore: ['**/__tests__', '**/index.{ts,js}', '**/types.{ts,js}', '**/__tests__/fixtures/**'],
@@ -178,10 +178,13 @@ async function enforceUnitTestsPerFile(): Promise<void> {
 	}
 
 	// Check for extraneous unit test files without a corresponding module.
-	const testFiles = await glob('src/**/__tests__/*.{ts,js}', {
-		cwd,
-		absolute: true,
-	});
+	const testFiles = await glob(
+		['src/**/__tests__/*.{ts,js}', 'packages/language-server/src/**/__tests__/*.{ts,js}'],
+		{
+			cwd,
+			absolute: true,
+		},
+	);
 
 	for (const testFile of testFiles) {
 		if (handledExtraneousTestFiles.has(testFile)) {

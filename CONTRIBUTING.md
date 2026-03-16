@@ -42,11 +42,11 @@ If you want a quick overview, the [organization](#1-how-the-project-is-organised
 
 The codebase is split into three broad areas.
 
-The first is the VS Code-facing extension in `src/extension/`. This is the part that VS Code loads. It is responsible for activation, starting the language server process, and exposing commands on the VS Code side. You generally touch this layer when you add new user-facing commands, configuration points, or integration with VS Code APIs such as notifications and status items.
+The first is the VS Code-facing extension in `src/extension/`. This is the part that VS Code loads. It is responsible for activation, starting the language server process, and exposing commands on the VS Code side. You generally touch this layer when you add new user-facing commands, configuration points, or integration with VS Code APIs such as notifications and status items. The extension imports the language server, DI framework, and shared utilities via the `@stylelint/language-server` package specifier.
 
-The second is the language server in `src/server/`. This is a standalone process that speaks the Language Server Protocol (LSP) and runs Stylelint on documents. Inside `src/server/`, the `runtime` directory contains the runtime features that bind into the LSP `Connection`, `modules` groups services, and `services` contains the actual behaviours, such as workspace, Stylelint running, logging, etc.
+The second is the language server in `packages/language-server/src/server/`. This is a standalone process that speaks the Language Server Protocol (LSP) and runs Stylelint on documents. Inside that directory, `runtime` contains the runtime features that bind into the LSP `Connection`, `modules` groups services, and `services` contains the actual behaviours, such as workspace, Stylelint running, logging, etc.
 
-The third is the DI framework in `src/di/`, used throughout the server and in the extension. It provides the building blocks for declaring, grouping, and instantiating services, and is what supports the runtime lifecycle hooks. It manages dependencies and lifecycles so that contributors can focus on implementing features instead of wiring.
+The third is the DI framework in `packages/language-server/src/di/`, used throughout the server and in the extension. It provides the building blocks for declaring, grouping, and instantiating services, and is what supports the runtime lifecycle hooks. It manages dependencies and lifecycles so that contributors can focus on implementing features instead of wiring.
 
 As mentioned above, the language server runs as a separate process. The extension simply launches it and forwards LSP messages, which means that most interesting work happens on the server side. Therefore, most of this guide focuses on working with the server.
 
@@ -71,7 +71,7 @@ For fast feedback while you are editing, you usually rely on your IDE's TypeScri
 For repository-level tests that do not involve a real VS Code instance, you normally work with the unit and integration suites:
 
 - `node --run test:unit` runs the unit test suite under `src/**/__tests__/`. This answers "does this module behave correctly in isolation?".
-- `node --run test:unit -- <path>` narrows that to a subset of tests, for example `src/di` or `src/server/services/workspace`. This is often the main command you use while iterating on a change.
+- `node --run test:unit -- <path>` narrows that to a subset of tests, for example `packages/language-server/src/di` or `packages/language-server/src/server/services/workspace`. This is often the main command you use while iterating on a change.
 - `node --run test:integration` runs the integration tests under `test/integration/`, which exercise multiple components together (for example, the extension and server processes talking to one another). Use this when you change wiring, configuration, or anything that spans different parts of the codebase.
 - `node --run test` builds, bundles, and then runs both unit and integration tests. It gives you confidence that all code-level tests pass, but it still runs everything inside a controlled Node.js environment, not a live VS Code session.
 
@@ -106,7 +106,7 @@ npm install
 node --run build
 
 # While working in a specific area:
-node --run test:unit -- src/di
+node --run test:unit -- packages/language-server/src/di
 
 # When needing to verify that interactions between components still work correctly:
 node --run test:integration
@@ -120,7 +120,23 @@ node --run lint
 node --run test:e2e
 ```
 
-The `lint:unit-tests` script is strict: for each module under `src/`, it expects a corresponding unit test file with the same base name plus a `.test` suffix in a sibling `__tests__` directory. For example, `src/server/runtime/application.ts` must have `src/server/runtime/__tests__/application.test.ts`. If you add a new module and forget the test file, this script will fail.
+When your PR includes a user-facing change, add a changeset before pushing:
+
+```bash
+npx changeset
+```
+
+This will prompt you to select which packages your change affects and the kind of version bump. Select packages based on what the change means for each package's users, not where the code lives:
+
+- **`@stylelint/vscode-stylelint` only:** changes that only affect the VS Code extension (commands, status bar, activation, extension-specific settings).
+- **`@stylelint/language-server` only:** changes that only affect external consumers of the language server package (its public API, CLI).
+- **Both:** most changes fall here. A fix to linting behaviour or diagnostics affects extension users _and_ anyone using the server directly.
+
+When in doubt, select both.
+
+Include the generated `.changeset/*.md` file in your PR. Internal refactors, test-only changes, and documentation updates do not need a changeset.
+
+The `lint:unit-tests` script is strict: for each module under `src/` and `packages/language-server/src/`, it expects a corresponding unit test file with the same base name plus a `.test` suffix in a sibling `__tests__` directory. For example, `packages/language-server/src/server/runtime/application.ts` must have `packages/language-server/src/server/runtime/__tests__/application.test.ts`. If you add a new module and forget the test file, this script will fail.
 
 For files that do not need unit tests, such as simple exports of types or constants, you can add a comment like this at the top of the file to exempt it:
 
@@ -133,7 +149,7 @@ For files that do not need unit tests, such as simple exports of types or consta
 > [!TIP]
 > If you want to skip straight to a concrete example of adding a new service, jump to [section 8](#8-worked-example-adding-a-new-service).
 
-Almost everything in `src/server/` is created and connected via a small DI framework in `src/di/`. The point of this system is to keep wiring separate from behaviour so that services can focus on what they do, not how they are constructed.
+Almost everything in `packages/language-server/src/server/` is created and connected via a small DI framework in `packages/language-server/src/di/`. The point of this system is to keep wiring separate from behaviour so that services can focus on what they do, not how they are constructed.
 
 For day-to-day work, you do not need to understand every detail of the DI implementation. You mainly need to recognise a few patterns you will see and use when you add or change behaviour.
 
@@ -150,8 +166,8 @@ Most of the time, services depend on other services purely through their constru
 
 When you need to depend on external things, such as platform APIs or third-party libraries, those are surfaced as tokens defined near the code that owns them. Some examples you will see in the codebase:
 
-- `src/server/tokens.ts` centralises LSP-level primitives such as `textDocumentsToken` and `lspConnectionToken`.
-- `src/server/services/infrastructure/logging.service.ts` defines `winstonToken` so the server can swap between the real `winston` instance and a fake in tests.
+- `packages/language-server/src/server/tokens.ts` centralises LSP-level primitives such as `textDocumentsToken` and `lspConnectionToken`.
+- `packages/language-server/src/server/services/infrastructure/logging.service.ts` defines `winstonToken` so the server can swap between the real `winston` instance and a fake in tests.
 - `src/extension/di-tokens.ts` wraps VS Code objects such as `Window`, `Commands`, and `Workspace` so the extension can stub or override them in integration tests.
 
 As a contributor, you will usually:
@@ -161,7 +177,7 @@ As a contributor, you will usually:
 
 ### 3.2 Declaring injection with decorators
 
-The `@inject` decorator in `src/di/inject.ts` makes classes resolvable by the container. It records which tokens or classes should be passed to the constructor.
+The `@inject` decorator in `packages/language-server/src/di/inject.ts` makes classes resolvable by the container. It records which tokens or classes should be passed to the constructor.
 
 At a high level, the pattern looks like this:
 
@@ -180,7 +196,7 @@ export class MyFeatureService {
 }
 ```
 
-Real services such as `ExtensionRuntimeService` in `src/extension/extension-runtime.service.ts` or `WorkspaceOptionsService` in `src/server/services/workspace/workspace-options.service.ts` follow exactly this pattern. They declare what dependencies they need, the DI container constructs them, and the rest of your code calls their public methods.
+Real services such as `ExtensionRuntimeService` in `src/extension/extension-runtime.service.ts` or `WorkspaceOptionsService` in `packages/language-server/src/server/services/workspace/workspace-options.service.ts` follow exactly this pattern. They declare what dependencies they need, the DI container constructs them, and the rest of your code calls their public methods.
 
 By default, services are singletons - that is, one instance per application - which is what you almost always want. Transient services exist, but you rarely need them for normal feature work.
 
@@ -188,7 +204,7 @@ By default, services are singletons - that is, one instance per application - wh
 
 Modules gather related providers. In practice, you will encounter modules in two main places:
 
-- the main server and extension modules under `src/server/modules/` and `src/extension/`, where you register real services; and
+- the main server and extension modules under `packages/language-server/src/server/modules/` and `src/extension/`, where you register real services; and
 - tiny test modules that create just enough wiring to exercise the behaviour you care about.
 
 Here is a typical test module pattern you will see in this repository:
@@ -202,7 +218,7 @@ const testModule = module({
 });
 ```
 
-For production wiring, modules under `src/server/modules/` follow the same idea but register real services instead of fakes. When you add a new service under `src/server/services/`, you will usually also add it to one of these modules so the language server can discover it.
+For production wiring, modules under `packages/language-server/src/server/modules/` follow the same idea but register real services instead of fakes. When you add a new service under `packages/language-server/src/server/services/`, you will usually also add it to one of these modules so the language server can discover it.
 
 ### 3.4 Creating and using a container in tests
 
@@ -222,7 +238,7 @@ const container = createContainer(testModule);
 const service = container.resolve(MyFeatureService);
 ```
 
-This mirrors the way services are built in production, but with a much smaller graph. The tests in `src/server/services/**/__tests__/` contain many real examples of this pattern.
+This mirrors the way services are built in production, but with a much smaller graph. The tests in `packages/language-server/src/server/services/**/__tests__/` contain many real examples of this pattern.
 
 ## 4. How the server and extension use DI and decorators
 
@@ -231,14 +247,14 @@ Now that you have a feel for the DI building blocks, this section focuses on how
 At a high level:
 
 - The extension side (`src/extension/`) is where you add VS Code commands, configuration points, and public API surface. It talks to the language server via LSP.
-- The server side (`src/server/`) is where most Stylelint and LSP behaviour lives. You typically add or modify services here when changing diagnostics, code actions, or server-side commands.
+- The server side (`packages/language-server/src/server/`) is where most Stylelint and LSP behaviour lives. You typically add or modify services here when changing diagnostics, code actions, or server-side commands.
 
 ### 4.1 Platform modules
 
 Both halves of the project have a platform module that binds host APIs (VS Code, Node, LSP) to tokens:
 
 - `src/extension/platform.module.ts` provides the VS Code `ExtensionContext`, window/commands/workspace facades, language client factories, and the setting monitor.
-- `src/server/platform.module.ts` provides `TextDocuments`, core Node modules (`fs/promises`, `path`, `child_process`, etc.), and LSP helpers.
+- `packages/language-server/src/server/modules/platform.module.ts` provides `TextDocuments`, core Node modules (`fs/promises`, `path`, `child_process`, etc.), and LSP helpers.
 
 In normal day-to-day work you rarely need to edit these. If you ever need a new host API - for example, a VS Code surface that is not currently exposed - you would:
 
@@ -252,13 +268,13 @@ The rest of your code should continue to depend on tokens and services rather th
 On both the extension and server side, the top-level entry points build a runtime application from the platform module plus feature modules, then start it:
 
 - `src/extension/extension.ts` creates the extension application and wires up the language client and commands.
-- `src/server/server.ts` creates the language-server application around an LSP connection and calls `listen()`.
+- `packages/language-server/src/server/server.ts` creates the language-server application around an LSP connection and calls `listen()`.
 
-For normal contributions you do not need to change this wiring. You plug new behaviour in by adding or modifying services under `src/server/services/` or `src/extension/`, and registering them in the existing modules under `src/server/modules/` or the extension module.
+For normal contributions you do not need to change this wiring. You plug new behaviour in by adding or modifying services under `packages/language-server/src/server/services/` or `src/extension/`, and registering them in the existing modules under `packages/language-server/src/server/modules/` or the extension module.
 
 ### 4.3 LSP decorators
 
-Server-side services use decorators from `src/server/decorators.ts` to describe how they participate in the LSP lifecycle. This lets you express LSP handlers declaratively inside a service class instead of wiring them in a central file.
+Server-side services use decorators from `packages/language-server/src/server/decorators.ts` to describe how they participate in the LSP lifecycle. This lets you express LSP handlers declaratively inside a service class instead of wiring them in a central file.
 
 `@lspService()` marks a class as an LSP-aware runtime service, and method-level decorators declare which LSP requests, notifications, or document events a method should handle.
 
@@ -274,7 +290,7 @@ When you add a new LSP-facing service, the practical steps are:
 
 1. Decorate the class with both `@inject(...)` and `@lspService()`.
 2. Use the method decorators that correspond to the LSP events you need.
-3. Register the class inside the appropriate module under `src/server/modules/`.
+3. Register the class inside the appropriate module under `packages/language-server/src/server/modules/`.
 
 Once you have done this, the language server runtime will discover and register your handlers automatically. You do not need to edit any central connection wiring. The worked example in [section 8](#8-worked-example-adding-a-new-service) walks through this pattern end-to-end.
 
@@ -286,11 +302,11 @@ Tests in this repository are there to give you confidence as you change the code
 
 Most test files live next to the code they exercise:
 
-- **Unit tests** live under `src/**/__tests__/` and use the naming pattern `<module>.test.ts`.
+- **Unit tests** live under `src/**/__tests__/` and `packages/language-server/src/**/__tests__/`, using the naming pattern `<module>.test.ts`.
 - **Integration tests** live under `test/integration/` and cover interactions between larger pieces, such as the extension and server processes.
 - **End-to-end tests** live under `test/e2e/` and drive a real VS Code instance through `scripts/run-e2e.mts`.
 
-The `lint:unit-tests` script enforces the "one module, one unit test file" rule for everything under `src/`. When you add a new module, expect to add a matching unit test, unless you deliberately opt out with the `@no-unit-test` pragma described earlier.
+The `lint:unit-tests` script enforces the "one module, one unit test file" rule for everything under `src/` and `packages/language-server/src/`. When you add a new module, expect to add a matching unit test, unless you deliberately opt out with the `@no-unit-test` pragma described earlier.
 
 In day-to-day work you will mostly run targeted tests that match the kind of change you are making. For example, while iterating on a specific module or folder you might use `node --run test:unit -- src/...`. When you touch wiring between components or DI modules, `node --run test:integration` is more helpful. And when you change how the extension behaves inside VS Code itself, you should run `node --run test:e2e`.
 
@@ -309,7 +325,7 @@ A common pattern for DI-heavy services looks like this:
 Here is a cut-down version of the `WorkspaceStylelintService` unit test that follows this pattern:
 
 ```ts
-// src/server/services/stylelint-runtime/__tests__/workspace-stylelint.service.test.ts
+// packages/language-server/src/server/services/stylelint-runtime/__tests__/workspace-stylelint.service.test.ts
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import {
@@ -392,20 +408,20 @@ When you are about to introduce your own ad-hoc mock, it is worth scanning `test
 
 ### 5.4 Choosing the right level of test
 
-Not every change needs every kind of test. If you are tweaking a pure helper, such as a small function under `src/server/utils/`, you will usually write or update a straightforward unit test that calls the function directly and asserts on the result. If you are changing a DI-backed service, for example a workspace or Stylelint runtime service, it is better to test it via a small container so that constructor injection and tokens behave the same way they do in production.
+Not every change needs every kind of test. If you are tweaking a pure helper, such as a small function under `packages/language-server/src/server/utils/`, you will usually write or update a straightforward unit test that calls the function directly and asserts on the result. If you are changing a DI-backed service, for example a workspace or Stylelint runtime service, it is better to test it via a small container so that constructor injection and tokens behave the same way they do in production.
 
-For changes that affect runtime and LSP wiring, focused tests under `src/server/runtime/__tests__/` and the integration suite under `test/integration/` are your friends. When you change how decorators behave or how handlers are registered, start by looking at these tests and extend them if necessary. Extension-side behaviour, such as commands, public API events, and language client wiring, is generally exercised through the integration and end-to-end suites rather than through deep mocks of VS Code APIs.
+For changes that affect runtime and LSP wiring, focused tests under `packages/language-server/src/server/runtime/__tests__/` and the integration suite under `test/integration/` are your friends. When you change how decorators behave or how handlers are registered, start by looking at these tests and extend them if necessary. Extension-side behaviour, such as commands, public API events, and language client wiring, is generally exercised through the integration and end-to-end suites rather than through deep mocks of VS Code APIs.
 
 If you find yourself reaching for `vi.mock` or `vi.spyOn` on internal modules, it is often a sign that the dependency you care about is not yet expressed as a DI token or injectable class. In those cases, consider improving the wiring first so you can swap in a fake implementation cleanly. The result is usually simpler production code and more robust tests.
 
 ## 6. Exporting services from index files
 
-Service directories under `src/server/services/` generally have an `index.ts` file that re-exports the concrete services in that folder. This makes it possible for modules under `src/server/modules/`, and other consumers, to import a cohesive group of services from one place instead of reaching into individual files.
+Service directories under `packages/language-server/src/server/services/` generally have an `index.ts` file that re-exports the concrete services in that folder. This makes it possible for modules under `packages/language-server/src/server/modules/`, and other consumers, to import a cohesive group of services from one place instead of reaching into individual files.
 
 As a concrete pattern, document-related services are re-exported from their folder index and then consumed by the corresponding module. A typical `index.ts` looks like this:
 
 ```ts
-// src/server/services/documents/index.ts
+// packages/language-server/src/server/services/documents/index.ts
 export * from "./document-fixes.service.js";
 // export * from "./other-document-service.service.js";
 ```
@@ -413,11 +429,11 @@ export * from "./document-fixes.service.js";
 The module that wires these services into the server imports from the index rather than from individual files:
 
 ```ts
-// src/server/modules/documents.module.ts
+// packages/language-server/src/server/modules/documents.module.ts
 import { DocumentFixesService } from "../services/documents/index.js";
 ```
 
-When you add a new service to a folder under `src/server/services/`, update that folder's `index.ts` to export it alongside the existing services, and adjust the module imports if necessary. This keeps imports consistent and makes it easy to see at a glance which services a folder exposes.
+When you add a new service to a folder under `packages/language-server/src/server/services/`, update that folder's `index.ts` to export it alongside the existing services, and adjust the module imports if necessary. This keeps imports consistent and makes it easy to see at a glance which services a folder exposes.
 
 ## 7. Putting it all together
 
@@ -426,8 +442,8 @@ When you add a new server-side capability, you are usually doing three things at
 If you keep the following mental checkpoints in mind, you will stay aligned with the existing structure:
 
 - Every cross-cutting dependency that isn't a simple pure function should be expressed as either a class with `@inject` or a `createToken` symbol.
-- Every new service should have a home module under `src/server/modules/` that registers it.
-- Every new module under `src/` should come with a matching `<module>.test.ts` file under a sibling `__tests__` directory.
+- Every new service should have a home module under `packages/language-server/src/server/modules/` that registers it.
+- Every new module under `src/` or `packages/language-server/src/` should come with a matching `<module>.test.ts` file under a sibling `__tests__` directory.
 - Every service that participates in LSP events should be decorated with `@lspService()` and use the method decorators to declare its handlers.
 - For anything that touches LSP internals, the runtime tests are your primary reference.
 
@@ -446,17 +462,17 @@ Before writing any code, it helps to sketch the flow in terms of this project's 
 1. The extension defines a VS Code command in `src/extension/` that sends an LSP request or command to the server.
 2. The server declares a new command handler via `@command(...)` in a class marked with `@lspService()`.
 3. That class is constructed via DI using `@inject`, so it can depend on other services such as `WorkspaceOptionsService` or `StylelintRunnerService`.
-4. The class is registered in an appropriate module under `src/server/modules/`, so that `LanguageServerApplication` will see it when assembling modules.
+4. The class is registered in an appropriate module under `packages/language-server/src/server/modules/`, so that `LanguageServerApplication` will see it when assembling modules.
 5. `LanguageServerServiceRuntime` discovers the new handler and registers it with `CommandService`, which ultimately receives command invocations from the extension.
 
 You do not need to touch the runtime wiring in `application.ts` or `lsp-service-runtime.ts` for this; they are designed so that you can plug in modules and services declaratively.
 
 ### 8.2 Defining the service class
 
-Start on the server side by defining a new service class. For the sake of example, imagine we add `DocumentSummaryService` under `src/server/services/documents/`:
+Start on the server side by defining a new service class. For the sake of example, imagine we add `DocumentSummaryService` under `packages/language-server/src/server/services/documents/`:
 
 ```ts
-// src/server/services/documents/document-summary.service.ts
+// packages/language-server/src/server/services/documents/document-summary.service.ts
 import { lspService, command } from "../../decorators.js";
 import { inject } from "../../../di/index.js";
 import { WorkspaceOptionsService } from "../workspace/workspace-options.service.js";
@@ -493,7 +509,7 @@ Several project-specific patterns appear here:
 
 - The class is both an LSP service (`@lspService`) and a DI target (`@inject`). The decorators work together: DI constructs the instance; initialization hooks from `@lspService` then register its handlers.
 - Constructor dependencies are expressed as class types. Because both `WorkspaceOptionsService` and `StylelintRunnerService` are themselves registered in DI modules, the container can satisfy them.
-- The `@command` decorator uses a `CommandId` from `src/server/types.ts`, which keeps server-facing command identifiers consistent across the codebase.
+- The `@command` decorator uses a `CommandId` from `packages/language-server/src/server/types.ts`, which keeps server-facing command identifiers consistent across the codebase.
 - The handler method signature is very close to business logic. It receives a URI and returns a structured object. The runtime wraps this in LSP plumbing when the command is invoked.
 
 In a real implementation you would probably accept a more structured parameter than a bare URI, but the pattern is the same.
@@ -503,7 +519,7 @@ In a real implementation you would probably accept a more structured parameter t
 Before the new service can be conveniently consumed elsewhere, update the `index.ts` file in the same folder to export it. This follows the general convention described earlier for service folders.
 
 ```ts
-// src/server/services/documents/index.ts
+// packages/language-server/src/server/services/documents/index.ts
 export * from "./document-fixes.service.js";
 export * from "./document-summary.service.js";
 // export * from "./other-document-service.service.js";
@@ -513,10 +529,10 @@ With this in place, document-related modules can import a coherent set of servic
 
 ### 8.4 Registering the service in a module
 
-Next, make sure the service is visible to the DI container by registering it in one of the server modules under `src/server/modules/`. Suppose document-related services are wired through `documents.module.ts`:
+Next, make sure the service is visible to the DI container by registering it in one of the server modules under `packages/language-server/src/server/modules/`. Suppose document-related services are wired through `documents.module.ts`:
 
 ```ts
-// src/server/modules/documents.module.ts
+// packages/language-server/src/server/modules/documents.module.ts
 import { module } from "../../di/index.js";
 import {
   DocumentFixesService,
@@ -585,10 +601,10 @@ The extension uses `workspace/executeCommand` and the shared `CommandId` enum to
 
 ### 8.7 Testing the service
 
-To keep `lint:unit-tests` happy and to lock in the behaviour, add a unit test under `src/server/services/documents/__tests__/document-summary.service.test.ts`. The test follows the same pattern as in section 5: build a tiny DI module, resolve the service from a container, and assert on its public behaviour.
+To keep `lint:unit-tests` happy and to lock in the behaviour, add a unit test under `packages/language-server/src/server/services/documents/__tests__/document-summary.service.test.ts`. The test follows the same pattern as in section 5: build a tiny DI module, resolve the service from a container, and assert on its public behaviour.
 
 ```ts
-// src/server/services/documents/__tests__/document-summary.service.test.ts
+// packages/language-server/src/server/services/documents/__tests__/document-summary.service.test.ts
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import {
   createContainer,
@@ -638,7 +654,7 @@ describe("DocumentSummaryService", () => {
 
 This test defines a small module, uses `beforeEach` to refresh fakes and build a fresh container, and keeps the assertion focused on the behaviour you care about: that, given a URI, the service asks for options, runs Stylelint, and reports the warning count.
 
-With the test in place, `node --run test:unit -- src/server/services/documents` and `node --run lint:unit-tests` should both succeed.
+With the test in place, `node --run test:unit -- packages/language-server/src/server/services/documents` and `node --run lint:unit-tests` should both succeed.
 
 ---
 

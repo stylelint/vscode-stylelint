@@ -2,10 +2,11 @@
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"rootDir": "src",
-		"types": ["node", "semver", "vscode", "path-is-inside"],
+		"types": ["node", "vscode"],
 		"outDir": "build",
 		"sourceMap": true
 	},
 	"include": ["src/**/*"],
-	"exclude": ["**/coverage", "**/__tests__", "test/types.d.ts"]
+	"exclude": ["**/coverage", "**/__tests__", "test/types.d.ts"],
+	"references": [{ "path": "./packages/language-server" }]
 }

@@ -3,8 +3,8 @@ import { TextDocument } from 'vscode-languageserver-textdocument';
 import type {
 	DocumentDiagnosticsService,
 	DocumentLintResult,
-} from '../../../src/server/services/index.js';
-import type { LintDiagnostics } from '../../../src/server/stylelint/index.js';
+} from '../../../packages/language-server/src/server/services/index.js';
+import type { LintDiagnostics } from '../../../packages/language-server/src/server/stylelint/index.js';
 
 export type DocumentDiagnosticsServiceStub = Pick<
 	DocumentDiagnosticsService,

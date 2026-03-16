@@ -14,6 +14,7 @@ export default defineConfig([
 		'.vscode-test',
 		'.wireit',
 		'build',
+		'packages/language-server/build',
 		'coverage',
 		'dist',
 		'test/integration/coverage',

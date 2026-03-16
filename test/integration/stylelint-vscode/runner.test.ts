@@ -6,21 +6,24 @@ import { afterAll, afterEach, beforeEach, describe, expect, test } from 'vitest'
 import type { Connection } from 'vscode-languageserver';
 import { TextDocument } from 'vscode-languageserver-textdocument';
 
-import { createContainer } from '../../../src/di/index.js';
+import { createContainer } from '../../../packages/language-server/src/di/index.js';
 import {
 	StylelintRunnerService,
 	WorkspaceStylelintService,
-} from '../../../src/server/services/index.js';
-import type { LintDiagnostics, RunnerOptions } from '../../../src/server/stylelint/index.js';
-import { platformModule } from '../../../src/server/modules/platform.module.js';
-import { stylelintRuntimeModule } from '../../../src/server/modules/stylelint-runtime.module.js';
-import { workspaceModule } from '../../../src/server/modules/workspace.module.js';
-import { lspConnectionToken } from '../../../src/server/tokens.js';
-import { loggingServiceToken } from '../../../src/server/services/infrastructure/logging.service.js';
+} from '../../../packages/language-server/src/server/services/index.js';
+import type {
+	LintDiagnostics,
+	RunnerOptions,
+} from '../../../packages/language-server/src/server/stylelint/index.js';
+import { platformModule } from '../../../packages/language-server/src/server/modules/platform.module.js';
+import { stylelintRuntimeModule } from '../../../packages/language-server/src/server/modules/stylelint-runtime.module.js';
+import { workspaceModule } from '../../../packages/language-server/src/server/modules/workspace.module.js';
+import { lspConnectionToken } from '../../../packages/language-server/src/server/tokens.js';
+import { loggingServiceToken } from '../../../packages/language-server/src/server/services/infrastructure/logging.service.js';
 import {
 	StylelintWorkerCrashedError,
 	StylelintWorkerUnavailableError,
-} from '../../../src/server/worker/worker-process.js';
+} from '../../../packages/language-server/src/server/worker/worker-process.js';
 import {
 	createLoggingServiceStub,
 	snapshotLintDiagnostics,

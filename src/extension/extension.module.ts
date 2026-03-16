@@ -1,6 +1,6 @@
 // @no-unit-test -- Module definition file that only composes providers.
 
-import { module } from '../di/index.js';
+import { module } from '@stylelint/language-server/di';
 import { extensionTokens } from './di-tokens.js';
 import { ExtensionRuntimeService } from './extension-runtime.service.js';
 import {

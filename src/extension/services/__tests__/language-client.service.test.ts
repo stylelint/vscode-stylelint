@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { LanguageClientOptions, ServerOptions } from 'vscode-languageclient/node';
 
-import { createContainer, module, provideTestValue } from '../../../di/index.js';
+import { createContainer, module, provideTestValue } from '@stylelint/language-server/di';
 import { extensionTokens } from '../../di-tokens.js';
 import type { LanguageClientModule } from '../environment.js';
 import { LanguageClientService } from '../language-client.service.js';

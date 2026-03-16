@@ -1,0 +1,82 @@
+{
+  "name": "@stylelint/language-server",
+  "version": "0.0.0",
+  "description": "Stylelint Language Server Protocol implementation",
+  "keywords": [
+    "stylelint",
+    "language-server",
+    "lsp",
+    "css",
+    "less",
+    "sass",
+    "scss",
+    "lint",
+    "linter"
+  ],
+  "homepage": "https://github.com/stylelint/vscode-stylelint#readme",
+  "bugs": "https://github.com/stylelint/vscode-stylelint/issues",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stylelint/vscode-stylelint.git",
+    "directory": "packages/language-server"
+  },
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./build/server/index.d.ts",
+      "default": "./build/server/index.js"
+    },
+    "./di": {
+      "types": "./build/di/index.d.ts",
+      "default": "./build/di/index.js"
+    },
+    "./di/runtime": {
+      "types": "./build/di/runtime/index.d.ts",
+      "default": "./build/di/runtime/index.js"
+    },
+    "./shared/log-level": {
+      "types": "./build/shared/log-level.d.ts",
+      "default": "./build/shared/log-level.js"
+    }
+  },
+  "main": "build/server/index.js",
+  "types": "build/server/index.d.ts",
+  "bin": {
+    "stylelint-language-server": "bin/stylelint-language-server.mjs"
+  },
+  "files": [
+    "build/",
+    "bin/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "fast-diff": "^1.3.0",
+    "path-is-inside": "^1.0.2",
+    "rfdc": "^1.4.1",
+    "semver": "^7.7.4",
+    "serialize-error": "^13.0.1",
+    "triple-beam": "^1.4.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-protocol": "^3.17.5",
+    "vscode-languageserver-textdocument": "^1.0.12",
+    "vscode-languageserver-types": "^3.17.5",
+    "vscode-uri": "^3.1.0",
+    "winston": "^3.19.0",
+    "winston-transport": "^4.9.0"
+  },
+  "devDependencies": {
+    "@types/path-is-inside": "^1.0.3",
+    "@types/semver": "^7.7.1",
+    "@types/triple-beam": "^1.3.5",
+    "stylelint": "^17.4.0",
+    "vitest": "^4.0.18"
+  },
+  "engines": {
+    "node": ">=22.17.0"
+  }
+}

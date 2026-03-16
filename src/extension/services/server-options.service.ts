@@ -1,8 +1,8 @@
 import process from 'node:process';
 import type { ServerOptions } from 'vscode-languageclient/node';
 
-import { inject } from '../../di/index.js';
-import { parseLogLevel } from '../../shared/log-level.js';
+import { inject } from '@stylelint/language-server/di';
+import { parseLogLevel } from '@stylelint/language-server/shared/log-level';
 import { extensionTokens } from '../di-tokens.js';
 import type { VSCodeWorkspace } from './environment.js';
 

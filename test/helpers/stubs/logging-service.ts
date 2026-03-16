@@ -1,6 +1,6 @@
 import { vi, type Mock } from 'vitest';
 
-import type { LoggingService } from '../../../src/server/services/index.js';
+import type { LoggingService } from '../../../packages/language-server/src/server/services/index.js';
 import { createTestLogger, TestLogger } from '../test-logger.js';
 
 export type LoggingServiceStub = LoggingService & {

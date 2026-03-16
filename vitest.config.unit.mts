@@ -4,7 +4,7 @@ export default defineConfig({
 	test: {
 		name: 'unit',
 		environment: 'node',
-		include: ['src/**/__tests__/**/*.ts'],
+		include: ['src/**/__tests__/**/*.ts', 'packages/language-server/src/**/__tests__/**/*.ts'],
 		exclude: ['test/e2e/**', 'test/integration/**'],
 	},
 });

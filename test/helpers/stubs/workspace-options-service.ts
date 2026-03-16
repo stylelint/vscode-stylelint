@@ -1,6 +1,9 @@
-import { defaultLanguageServerOptions } from '../../../src/server/config/default-options.js';
-import type { LanguageServerOptions, RunMode } from '../../../src/server/types.js';
-import type { WorkspaceOptionsService } from '../../../src/server/services/index.js';
+import { defaultLanguageServerOptions } from '../../../packages/language-server/src/server/config/default-options.js';
+import type {
+	LanguageServerOptions,
+	RunMode,
+} from '../../../packages/language-server/src/server/types.js';
+import type { WorkspaceOptionsService } from '../../../packages/language-server/src/server/services/index.js';
 
 export type WorkspaceOptionsServiceStub = Pick<WorkspaceOptionsService, 'getOptions'> & {
 	setValidateLanguages(languages: string[]): void;

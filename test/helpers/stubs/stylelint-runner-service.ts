@@ -1,11 +1,11 @@
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import type { StylelintRunnerService } from '../../../src/server/services/index.js';
+import type { StylelintRunnerService } from '../../../packages/language-server/src/server/services/index.js';
 import type {
 	LintDiagnostics,
 	MultiFileLintDiagnostics,
 	StylelintResolutionResult,
-} from '../../../src/server/stylelint/index.js';
-import type { RunnerOptions } from '../../../src/server/stylelint/types.js';
+} from '../../../packages/language-server/src/server/stylelint/index.js';
+import type { RunnerOptions } from '../../../packages/language-server/src/server/stylelint/types.js';
 
 export type StylelintRunnerStub = Pick<
 	StylelintRunnerService,
