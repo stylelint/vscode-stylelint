@@ -107,19 +107,23 @@ jobs:
           fi
 
           # Build file additions and deletions from the working tree.
-          ADDITIONS="[]"
-          DELETIONS="[]"
+          ADDITIONS_FILE=$(mktemp)
+          DELETIONS_FILE=$(mktemp)
+          echo '[]' > "$ADDITIONS_FILE"
+          echo '[]' > "$DELETIONS_FILE"
 
           while IFS= read -r file; do
             if [ -f "${file}" ]; then
-              ADDITIONS=$(jq \
-                --arg path "${file}" \
-                --arg contents "$(base64 -w 0 "${file}")" \
-                '. + [{path: $path, contents: $contents}]' <<< "${ADDITIONS}")
+              CONTENT_FILE=$(mktemp)
+              base64 -w 0 "${file}" > "$CONTENT_FILE"
+              jq --arg path "${file}" --rawfile contents "$CONTENT_FILE" \
+                '. + [{path: $path, contents: $contents}]' "$ADDITIONS_FILE" > "${ADDITIONS_FILE}.tmp"
+              mv "${ADDITIONS_FILE}.tmp" "$ADDITIONS_FILE"
+              rm "$CONTENT_FILE"
             else
-              DELETIONS=$(jq \
-                --arg path "${file}" \
-                '. + [{path: $path}]' <<< "${DELETIONS}")
+              jq --arg path "${file}" \
+                '. + [{path: $path}]' "$DELETIONS_FILE" > "${DELETIONS_FILE}.tmp"
+              mv "${DELETIONS_FILE}.tmp" "$DELETIONS_FILE"
             fi
           done < <(git diff --name-only HEAD)
 
@@ -129,8 +133,8 @@ jobs:
             --arg branch "${BRANCH}" \
             --arg oid "${HEAD_SHA}" \
             --arg headline "Release: ${{ steps.title.outputs.title }}" \
-            --argjson additions "${ADDITIONS}" \
-            --argjson deletions "${DELETIONS}" \
+            --slurpfile additions "$ADDITIONS_FILE" \
+            --slurpfile deletions "$DELETIONS_FILE" \
             '{
               query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }",
               variables: {
@@ -140,12 +144,14 @@ jobs:
                   message: { headline: $headline },
                   fileChanges: (
                     {}
-                    | if ($additions | length) > 0 then .additions = $additions else . end
-                    | if ($deletions | length) > 0 then .deletions = $deletions else . end
+                    | if ($additions[0] | length) > 0 then .additions = $additions[0] else . end
+                    | if ($deletions[0] | length) > 0 then .deletions = $deletions[0] else . end
                   )
                 }
               }
             }' | gh api graphql --input -
+
+          rm "$ADDITIONS_FILE" "$DELETIONS_FILE"
 
           echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
 
