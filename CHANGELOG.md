@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.1.0 - 2026-03-18
+
+- Added: "Fix all \<rule\> problems" quick fix action for rules with multiple auto-fixable diagnostics ([#859](https://github.com/stylelint/vscode-stylelint/pull/859)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Added: `stylelint.ignorePath` setting to specify a custom ignore file ([#851](https://github.com/stylelint/vscode-stylelint/pull/851)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Added: `stylelint.run` setting to control when the linter runs ([#848](https://github.com/stylelint/vscode-stylelint/pull/848)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Added: `stylelint.runtime` and `stylelint.execArgv` settings to customize the Node.js binary and exec arguments used by the language server ([#854](https://github.com/stylelint/vscode-stylelint/pull/854)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Added: commands to lint all files and clear all problems ([#857](https://github.com/stylelint/vscode-stylelint/pull/857)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Added: notification prompting to restart the extension host when `stylelint.logLevel` setting changes ([#849](https://github.com/stylelint/vscode-stylelint/pull/849)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Added: Problem matchers for `compact` and `unix` formatters ([#864](https://github.com/stylelint/vscode-stylelint/pull/864)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Added: warning when `stylelint.config` is an empty object ([#846](https://github.com/stylelint/vscode-stylelint/pull/846)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: `url` reported on Stylelint warnings not being used for documentation links ([#852](https://github.com/stylelint/vscode-stylelint/pull/852)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: Files in `node_modules` not being ignored due to a bug in Stylelint 17.4.0 and below ([#861](https://github.com/stylelint/vscode-stylelint/pull/861)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+
 ## 2.0.2 - 2026-02-06
 
 - Fixed: formatting with Stylelint 14 and 15 when using custom syntaxes ([#813](https://github.com/stylelint/vscode-stylelint/pull/813)).
