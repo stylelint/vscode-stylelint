@@ -52,7 +52,7 @@ for (const line of currentLines) {
 
 	if (line.startsWith('## ')) {
 		if (!latestVersion) {
-			latestVersion = line.replace('## ', '');
+			latestVersion = line.replace('## ', '').replace(/ - \d{4}-\d{2}-\d{2}$/, '');
 			newLines.push(`## ${latestVersion} - ${today}`);
 			continue;
 		} else {
