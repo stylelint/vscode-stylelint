@@ -1,6 +1,6 @@
 {
   "name": "@stylelint/vscode-stylelint",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "private": true,
   "description": "Proxy package for the VS Code extension. The actual package is the package at the root of the repository."
 }
