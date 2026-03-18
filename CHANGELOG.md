@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.1.0 - 2026-03-18
+## 2.1.0 - 2026-03-18 - 2026-03-18
 
 - Added: "Fix all \<rule\> problems" quick fix action for rules with multiple auto-fixable diagnostics ([#859](https://github.com/stylelint/vscode-stylelint/pull/859)) ([@adalinesimonian](https://github.com/adalinesimonian)).
 - Added: `stylelint.ignorePath` setting to specify a custom ignore file ([#851](https://github.com/stylelint/vscode-stylelint/pull/851)) ([@adalinesimonian](https://github.com/adalinesimonian)).
