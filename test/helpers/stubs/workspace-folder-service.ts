@@ -1,6 +1,6 @@
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type { WorkspaceFolderService } from '../../../src/server/services/index.js';
+import type { WorkspaceFolderService } from '../../../packages/language-server/src/server/services/index.js';
 
 export type WorkspaceFolderServiceStub = Pick<WorkspaceFolderService, 'getWorkspaceFolder'> & {
 	setWorkspaceFolder(uri: string, folder: string | undefined): void;

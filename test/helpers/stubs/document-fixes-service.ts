@@ -1,7 +1,7 @@
 import type stylelint from 'stylelint';
 import * as LSP from 'vscode-languageserver-protocol';
 import { TextDocument } from 'vscode-languageserver-textdocument';
-import type { DocumentFixesService } from '../../../src/server/services/index.js';
+import type { DocumentFixesService } from '../../../packages/language-server/src/server/services/index.js';
 
 export type DocumentFixesServiceStub = Pick<DocumentFixesService, 'getFixes' | 'resolveConfig'> & {
 	setFixes(uri: string, edits: LSP.TextEdit[]): void;

@@ -5,7 +5,7 @@ import type { ExtensionContext } from 'vscode';
 import type { LanguageClientOptions } from 'vscode-languageclient/node';
 type LanguageClientModule = typeof import('vscode-languageclient/node');
 
-import { createToken } from '../di/index.js';
+import { createToken } from '@stylelint/language-server/di';
 
 export const extensionTokens = {
 	context: createToken<ExtensionContext>('extension-context'),

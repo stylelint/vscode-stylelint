@@ -4,7 +4,7 @@ import {
 	createRuntimeApplication,
 	type RuntimeApplication,
 	type RuntimeApplicationOptions,
-} from '../di/runtime/index.js';
+} from '@stylelint/language-server/di/runtime';
 import { extensionTokens } from './di-tokens.js';
 import { extensionModule } from './extension.module.js';
 import { createExtensionPlatformModule } from './platform.module.js';

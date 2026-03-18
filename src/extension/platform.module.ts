@@ -2,7 +2,7 @@
 
 import type { ExtensionContext } from 'vscode';
 
-import { module, type ModuleMetadata, provideValue } from '../di/index.js';
+import { module, type ModuleMetadata, provideValue } from '@stylelint/language-server/di';
 import { extensionTokens } from './di-tokens.js';
 import {
 	getLanguageClientModule,

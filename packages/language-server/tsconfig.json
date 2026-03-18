@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"rootDir": "src",
+		"outDir": "build",
+		"lib": ["es2024", "ESNext.Array", "ESNext.Collection", "ESNext.Iterator"],
+		"types": ["node", "semver", "path-is-inside"],
+		"sourceMap": true
+	},
+	"include": ["src/**/*"],
+	"exclude": ["**/__tests__"]
+}

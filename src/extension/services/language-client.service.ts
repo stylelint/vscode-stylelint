@@ -1,6 +1,6 @@
 import type { LanguageClient, LanguageClientOptions } from 'vscode-languageclient/node';
 
-import { inject } from '../../di/index.js';
+import { inject } from '@stylelint/language-server/di';
 import { extensionTokens } from '../di-tokens.js';
 import type { LanguageClientModule } from './environment.js';
 import { ServerOptionsService } from './server-options.service.js';

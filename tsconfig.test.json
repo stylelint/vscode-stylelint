@@ -8,6 +8,6 @@
 		"noEmit": true,
 		"isolatedModules": true
 	},
-	"include": ["src/**/*", "test/**/*"],
+	"include": ["src/**/*", "test/**/*", "packages/language-server/src/**/*"],
 	"exclude": ["**/coverage", "test/e2e/workspace"]
 }

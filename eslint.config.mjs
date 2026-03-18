@@ -14,6 +14,7 @@ export default defineConfig([
 		'.vscode-test',
 		'.wireit',
 		'build',
+		'packages/language-server/build',
 		'coverage',
 		'dist',
 		'test/integration/coverage',
@@ -82,6 +83,14 @@ export default defineConfig([
 		},
 		rules: {
 			strict: ['error', 'safe'],
+		},
+	},
+
+	{
+		files: ['packages/language-server/bin/**'],
+		rules: {
+			// The bin entry point imports from build output that only exists after compilation.
+			'n/no-missing-import': 'off',
 		},
 	},
 

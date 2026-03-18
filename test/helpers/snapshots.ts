@@ -1,4 +1,4 @@
-import type { LintDiagnostics } from '../../src/server/stylelint/types.js';
+import type { LintDiagnostics } from '../../packages/language-server/src/server/stylelint/types.js';
 
 /**
  * Returns the subset of a Stylelint lint result that is safe to snapshot across

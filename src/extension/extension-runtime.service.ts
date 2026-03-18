@@ -3,9 +3,12 @@
 import type { Disposable, ExtensionContext, WorkspaceFolder } from 'vscode';
 import type { LanguageClient } from 'vscode-languageclient/node';
 
-import { inject } from '../di/index.js';
-import { runtimeService, type RuntimeLifecycleParticipant } from '../di/runtime/index.js';
-import { CommandId } from '../server/index.js';
+import { inject } from '@stylelint/language-server/di';
+import {
+	runtimeService,
+	type RuntimeLifecycleParticipant,
+} from '@stylelint/language-server/di/runtime';
+import { CommandId } from '@stylelint/language-server';
 import { extensionTokens } from './di-tokens.js';
 import type { VSCodeCommands, VSCodeWindow, VSCodeWorkspace } from './services/environment.js';
 import { LanguageClientService } from './services/language-client.service.js';

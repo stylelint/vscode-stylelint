@@ -6,27 +6,67 @@ on:
     types: [closed]
 
 jobs:
-  release:
-    uses: stylelint/.github/.github/workflows/call-release.yml@60889da59f384526b8185d2aa85b35620aa6bcc0 # 0.6.0
-    with:
-      publish: true
-      publish-npm: false
-    secrets:
-      VSCE_PAT: ${{ secrets.VSCE_PAT }}
-    permissions:
-      contents: write
-      id-token: write
-
-  upload-vsix:
-    needs: release
-    if: |
+  detect:
+    # Only run when a release PR is merged.
+    if: >
       github.event.pull_request.merged == true &&
       startsWith(github.event.pull_request.head.ref, 'release/')
 
     runs-on: ubuntu-latest
 
     permissions:
+      contents: read
+
+    outputs:
+      extension-changed: ${{ steps.check.outputs.extension-changed }}
+      server-changed: ${{ steps.check.outputs.server-changed }}
+      extension-version: ${{ steps.check.outputs.extension-version }}
+      server-version: ${{ steps.check.outputs.server-version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed packages
+        id: check
+        run: |
+          EXT_VERSION=$(jq -r '.version' package.json)
+          SERVER_VERSION=$(jq -r '.version' packages/language-server/package.json)
+          echo "extension-version=${EXT_VERSION}" >> "${GITHUB_OUTPUT}"
+          echo "server-version=${SERVER_VERSION}" >> "${GITHUB_OUTPUT}"
+
+          # A package needs releasing if its version tag doesn't already exist.
+          EXT_CHANGED=false
+          SERVER_CHANGED=false
+
+          if ! git tag --list "${EXT_VERSION}" | grep -q .; then
+            EXT_CHANGED=true
+          fi
+
+          if ! git tag --list "@stylelint/language-server@${SERVER_VERSION}" | grep -q .; then
+            SERVER_CHANGED=true
+          fi
+
+          echo "extension-changed=${EXT_CHANGED}" >> "${GITHUB_OUTPUT}"
+          echo "server-changed=${SERVER_CHANGED}" >> "${GITHUB_OUTPUT}"
+
+          echo "Extension ${EXT_VERSION}: changed=${EXT_CHANGED}"
+          echo "Server ${SERVER_VERSION}: changed=${SERVER_CHANGED}"
+
+  release-extension:
+    needs: detect
+    if: needs.detect.outputs.extension-changed == 'true'
+
+    runs-on: ubuntu-latest
+
+    environment: npm
+
+    permissions:
       contents: write
+
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -41,15 +81,84 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Publish to VS Code Marketplace
+        run: npm run publish
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
       - name: Package VSIX
         run: npx @vscode/vsce package
 
-      - name: Get version
-        id: version
-        run: echo "version=$(jq -r '.version' package.json)" >> "$GITHUB_OUTPUT"
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.detect.outputs.extension-version }}"
+          # Extract the section for this version.
+          BODY=$(sed -n "/^## ${VERSION//./\\.} /,/^## /{/^## ${VERSION//./\\.} /d;/^## /d;p}" CHANGELOG.md)
+          # Trim leading/trailing blank lines.
+          BODY=$(echo "${BODY}" | sed -e '/./,$!d' -e :a -e '/^\n*$/{$d;N;ba' -e '}')
+          echo "body<<CHANGELOG_EOF" >> "${GITHUB_OUTPUT}"
+          echo "${BODY}" >> "${GITHUB_OUTPUT}"
+          echo "CHANGELOG_EOF" >> "${GITHUB_OUTPUT}"
 
-      - name: Upload VSIX to release
-        uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b # v2.5.0
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@1853d73993c8ca1b2c9c1a7fede39682d0ab5c2a # v2.5.3
         with:
-          tag_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ needs.detect.outputs.extension-version }}
+          name: 'vscode-stylelint ${{ needs.detect.outputs.extension-version }}'
+          body: ${{ steps.changelog.outputs.body }}
           files: '*.vsix'
+
+  release-server:
+    needs: detect
+    if: needs.detect.outputs.server-changed == 'true'
+
+    runs-on: ubuntu-latest
+
+    environment: npm
+
+    permissions:
+      contents: write
+      id-token: write
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 'lts/*'
+          registry-url: 'https://registry.npmjs.org'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: node --run build
+
+      - name: Publish to npm
+        working-directory: packages/language-server
+        run: npm publish --provenance --access public
+
+      - name: Extract changelog
+        id: changelog
+        run: |
+          VERSION="${{ needs.detect.outputs.server-version }}"
+          # Extract the section for this version.
+          BODY=$(sed -n "/^## ${VERSION//./\\.} /,/^## /{/^## ${VERSION//./\\.} /d;/^## /d;p}" packages/language-server/CHANGELOG.md)
+          # Trim leading/trailing blank lines.
+          BODY=$(echo "${BODY}" | sed -e '/./,$!d' -e :a -e '/^\n*$/{$d;N;ba' -e '}')
+          echo "body<<CHANGELOG_EOF" >> "${GITHUB_OUTPUT}"
+          echo "${BODY}" >> "${GITHUB_OUTPUT}"
+          echo "CHANGELOG_EOF" >> "${GITHUB_OUTPUT}"
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@1853d73993c8ca1b2c9c1a7fede39682d0ab5c2a # v2.5.3
+        with:
+          tag_name: '@stylelint/language-server@${{ needs.detect.outputs.server-version }}'
+          name: '@stylelint/language-server ${{ needs.detect.outputs.server-version }}'
+          body: ${{ steps.changelog.outputs.body }}

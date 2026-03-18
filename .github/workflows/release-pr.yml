@@ -2,19 +2,222 @@ name: Release PR
 
 on:
   workflow_dispatch:
-    inputs:
-      new-version:
-        description: New version to release
-        required: true
-        type: choice
-        options: [patch, minor, major]
 
 jobs:
   release-pr:
-    uses: stylelint/.github/.github/workflows/call-release-pr.yml@60889da59f384526b8185d2aa85b35620aa6bcc0 # 0.6.0
-    with:
-      new-version: ${{ github.event.inputs.new-version }}
-      published-url: 'https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint'
+    # Prevent this action from running on forks.
+    if: github.repository == 'stylelint/vscode-stylelint'
+
+    runs-on: ubuntu-latest
+
     permissions:
       contents: write
       pull-requests: write
+
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        with:
+          node-version: 'lts/*'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Save previous versions
+        id: prev
+        run: |
+          echo "extension-version=$(jq -r '.version' package.json)" >> "${GITHUB_OUTPUT}"
+          echo "server-version=$(jq -r '.version' packages/language-server/package.json)" >> "${GITHUB_OUTPUT}"
+
+      - name: Version packages
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: npm run changeset
+
+      - name: Check for changes
+        id: changes
+        run: |
+          EXT_CHANGED=false
+          SERVER_CHANGED=false
+
+          if ! git diff --quiet HEAD -- package.json CHANGELOG.md; then
+            EXT_CHANGED=true
+          fi
+
+          if ! git diff --quiet HEAD -- packages/language-server/package.json packages/language-server/CHANGELOG.md; then
+            SERVER_CHANGED=true
+          fi
+
+          if [[ "${EXT_CHANGED}" == "false" && "${SERVER_CHANGED}" == "false" ]]; then
+            echo "::error::No packages to release. Add changesets first."
+            exit 1
+          fi
+
+          echo "extension-changed=${EXT_CHANGED}" >> "${GITHUB_OUTPUT}"
+          echo "server-changed=${SERVER_CHANGED}" >> "${GITHUB_OUTPUT}"
+
+          if [[ "${EXT_CHANGED}" == "true" ]]; then
+            echo "extension-version=$(jq -r '.version' package.json)" >> "${GITHUB_OUTPUT}"
+          fi
+
+          if [[ "${SERVER_CHANGED}" == "true" ]]; then
+            echo "server-version=$(jq -r '.version' packages/language-server/package.json)" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Build release title
+        id: title
+        run: |
+          PARTS=()
+
+          if [[ "${{ steps.changes.outputs.extension-changed }}" == "true" ]]; then
+            PARTS+=("vscode-stylelint ${{ steps.changes.outputs.extension-version }}")
+          fi
+
+          if [[ "${{ steps.changes.outputs.server-changed }}" == "true" ]]; then
+            PARTS+=("@stylelint/language-server ${{ steps.changes.outputs.server-version }}")
+          fi
+
+          TITLE=$(IFS=', '; echo "${PARTS[*]}")
+          echo "title=${TITLE}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create release commit
+        id: commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="release/next"
+          REPO="${{ github.repository }}"
+          HEAD_SHA=$(git rev-parse HEAD)
+
+          # Ensure the release branch exists and points to HEAD.
+          if gh api "repos/${REPO}/git/refs/heads/${BRANCH}" --silent 2>/dev/null; then
+            gh api "repos/${REPO}/git/refs/heads/${BRANCH}" \
+              --method PATCH --field sha="${HEAD_SHA}" --field force=true --silent
+          else
+            gh api "repos/${REPO}/git/refs" \
+              --method POST --field ref="refs/heads/${BRANCH}" --field sha="${HEAD_SHA}" --silent
+          fi
+
+          # Build file additions and deletions from the working tree.
+          ADDITIONS="[]"
+          DELETIONS="[]"
+
+          while IFS= read -r file; do
+            if [ -f "${file}" ]; then
+              ADDITIONS=$(jq \
+                --arg path "${file}" \
+                --arg contents "$(base64 -w 0 "${file}")" \
+                '. + [{path: $path, contents: $contents}]' <<< "${ADDITIONS}")
+            else
+              DELETIONS=$(jq \
+                --arg path "${file}" \
+                '. + [{path: $path}]' <<< "${DELETIONS}")
+            fi
+          done < <(git diff --name-only HEAD)
+
+          # Create a signed commit on the release branch via the GraphQL API.
+          jq -n \
+            --arg repo "${REPO}" \
+            --arg branch "${BRANCH}" \
+            --arg oid "${HEAD_SHA}" \
+            --arg headline "Release: ${{ steps.title.outputs.title }}" \
+            --argjson additions "${ADDITIONS}" \
+            --argjson deletions "${DELETIONS}" \
+            '{
+              query: "mutation($input: CreateCommitOnBranchInput!) { createCommitOnBranch(input: $input) { commit { oid } } }",
+              variables: {
+                input: {
+                  branch: { repositoryNameWithOwner: $repo, branchName: $branch },
+                  expectedHeadOid: $oid,
+                  message: { headline: $headline },
+                  fileChanges: (
+                    {}
+                    | if ($additions | length) > 0 then .additions = $additions else . end
+                    | if ($deletions | length) > 0 then .deletions = $deletions else . end
+                  )
+                }
+              }
+            }' | gh api graphql --input -
+
+          echo "branch=${BRANCH}" >> "${GITHUB_OUTPUT}"
+
+      - name: Create or update release PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="${{ steps.commit.outputs.branch }}"
+          REPO="${{ github.repository }}"
+          RUN_ID="${{ github.run_id }}"
+
+          EXISTING_PR=$(gh pr list --head "${BRANCH}" --state open --json number --jq '.[0].number')
+
+          BODY=""
+
+          if [[ "${{ steps.changes.outputs.extension-changed }}" == "true" ]]; then
+            EXT_VERSION="${{ steps.changes.outputs.extension-version }}"
+            EXT_PREV="${{ steps.prev.outputs.extension-version }}"
+            BODY+="This PR prepares the release of **vscode-stylelint ${EXT_VERSION}**.
+
+          - Changes: <https://github.com/${REPO}/compare/${EXT_PREV}...${BRANCH}>
+          - Published URL: https://marketplace.visualstudio.com/items?itemName=stylelint.vscode-stylelint
+          "
+          fi
+
+          if [[ "${{ steps.changes.outputs.server-changed }}" == "true" ]]; then
+            SERVER_VERSION="${{ steps.changes.outputs.server-version }}"
+            SERVER_PREV="${{ steps.prev.outputs.server-version }}"
+            SERVER_TAG="@stylelint/language-server@${SERVER_PREV}"
+
+            if [ -n "${BODY}" ]; then
+              BODY+="
+          ---
+
+          "
+            fi
+
+            BODY+="This PR prepares the release of **@stylelint/language-server ${SERVER_VERSION}**."
+
+            # Only include the compare link if the previous tag exists.
+            if git tag --list "${SERVER_TAG}" | grep -q .; then
+              BODY+="
+
+          - Changes: <https://github.com/${REPO}/compare/${SERVER_TAG}...${BRANCH}>"
+            fi
+
+            BODY+="
+          - Published URL: https://www.npmjs.com/package/@stylelint/language-server
+          "
+          fi
+
+          BODY+="
+          Checklist:
+          - [ ] Quickly review the changes on the URL above.
+          - [ ] The new versions are expected.
+          - [ ] The CHANGELOG.md files are as expected. If necessary, update them.
+          - [ ] Request a review from the owners team.
+
+          If the PR is approved and all checks have passed, you can merge it. Then, the release job will be automatically started.
+          Visit [**Actions**](https://github.com/${REPO}/actions) and watch the job.
+
+          *Generated by the [action run (id=${RUN_ID})](https://github.com/${REPO}/actions/runs/${RUN_ID})*"
+
+          if [ -n "${EXISTING_PR}" ]; then
+            gh pr edit "${EXISTING_PR}" \
+              --title "Release: ${{ steps.title.outputs.title }}" \
+              --body "${BODY}"
+            echo "Updated existing PR #${EXISTING_PR}."
+          else
+            gh pr create \
+              --title "Release: ${{ steps.title.outputs.title }}" \
+              --body "${BODY}" \
+              --base main \
+              --head "${BRANCH}"
+          fi

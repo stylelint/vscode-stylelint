@@ -3,8 +3,8 @@
 import path from 'node:path';
 import process from 'node:process';
 import { createConnection, ProposedFeatures } from 'vscode-languageserver/node';
-import { StylelintLanguageServer } from '../server/index.js';
-import { parseLogLevel } from '../shared/log-level.js';
+import { StylelintLanguageServer } from '@stylelint/language-server';
+import { parseLogLevel } from '@stylelint/language-server/shared/log-level';
 
 const connection = createConnection(ProposedFeatures.all);
 

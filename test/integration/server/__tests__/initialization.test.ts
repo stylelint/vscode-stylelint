@@ -1,5 +1,5 @@
 import * as LSP from 'vscode-languageserver-protocol';
-import { StylelintLanguageServer } from '../../../../src/server/index.js';
+import { StylelintLanguageServer } from '../../../../packages/language-server/src/server/index.js';
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { ConnectionManager } from '../../connection-manager.js';
 

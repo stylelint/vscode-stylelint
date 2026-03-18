@@ -2,6 +2,7 @@
 	"include": [],
 	"files": [],
 	"references": [
+		{ "path": "./packages/language-server" },
 		{ "path": "./tsconfig.src.json" },
 		{ "path": "./tsconfig.scripts.json" },
 		{ "path": "./tsconfig.test.json" }
