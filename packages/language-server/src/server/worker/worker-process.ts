@@ -21,14 +21,17 @@ import {
 	type WorkerResponse,
 } from './types.js';
 
+// Support both ESM and CJS.
+const currentDir = typeof __dirname === 'string' ? __dirname : import.meta.dirname;
+
 const getWorkerEntryPath = (): string => {
-	const bundledPath = path.join(__dirname, 'worker-entry.js');
+	const bundledPath = path.join(currentDir, 'worker-entry.js');
 
 	if (fs.existsSync(bundledPath)) {
 		return bundledPath;
 	}
 
-	const distPath = path.resolve(__dirname, '../../../../../dist/worker-entry.js');
+	const distPath = path.resolve(currentDir, '../../../../../dist/worker-entry.js');
 
 	if (fs.existsSync(distPath)) {
 		return distPath;
