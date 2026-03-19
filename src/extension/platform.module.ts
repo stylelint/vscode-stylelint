@@ -20,6 +20,11 @@ export function createExtensionPlatformModule(context: ExtensionContext): Module
 			provideValue(extensionTokens.workspace, () => getVsCodeModule().workspace),
 			provideValue(extensionTokens.commands, () => getVsCodeModule().commands),
 			provideValue(extensionTokens.window, () => getVsCodeModule().window),
+			provideValue(extensionTokens.languages, () => getVsCodeModule().languages),
+			provideValue(
+				extensionTokens.languageStatusSeverity,
+				() => getVsCodeModule().LanguageStatusSeverity,
+			),
 			provideValue(extensionTokens.languageClientModule, () => getLanguageClientModule()),
 			provideValue(extensionTokens.serverModulePath, () => resolveServerModulePath()),
 		],

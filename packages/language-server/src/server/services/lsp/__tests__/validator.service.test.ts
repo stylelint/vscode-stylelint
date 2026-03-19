@@ -57,6 +57,7 @@ function createDiagnosticsConnectionStub(): DiagnosticsConnectionStub {
 
 			sendDiagnosticsCalls.push({ uri: params.uri, diagnostics: params.diagnostics });
 		},
+		sendNotification: async () => {},
 		window: {
 			showErrorMessage: async (message: string) => {
 				windowMessages.push(message);

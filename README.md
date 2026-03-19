@@ -86,6 +86,7 @@ The extension adds the following commands to the command palette:
 - `Lint Workspace Folder` - lint all matching files in a single workspace folder
 - `Clear All Problems` - clear all Stylelint diagnostics
 - `Restart Stylelint Server` - restart the Stylelint LSP and runtime server
+- `Show Output Channel` - open the Stylelint output panel
 
 ### Actions
 
