@@ -216,17 +216,23 @@ describe('WorkerRegistryService', () => {
 
 		try {
 			const worker = createMockWorker();
-			const crashError = createCrashError('/workspace');
 			const { registry } = createRegistry([worker]);
 			const context: WorkerContext = {
 				workspaceFolder: '/workspace',
 				workerRoot: '/workspace',
 			};
 
-			worker.lint.mockRejectedValue(crashError);
+			// Creating a new error per call simulates separate crash events.
+			worker.lint.mockImplementation(() => {
+				throw createCrashError('/workspace');
+			});
 
-			await expect(registry.runWithWorker(context, executeLint)).rejects.toBe(crashError);
-			await expect(registry.runWithWorker(context, executeLint)).rejects.toBe(crashError);
+			await expect(registry.runWithWorker(context, executeLint)).rejects.toBeInstanceOf(
+				StylelintWorkerCrashedError,
+			);
+			await expect(registry.runWithWorker(context, executeLint)).rejects.toBeInstanceOf(
+				StylelintWorkerCrashedError,
+			);
 
 			const suppressionError = (await registry
 				.runWithWorker(context, executeLint)
@@ -244,7 +250,9 @@ describe('WorkerRegistryService', () => {
 
 			registry.notifyWorkspaceActivity('/workspace');
 
-			await expect(registry.runWithWorker(context, executeLint)).rejects.toBe(crashError);
+			await expect(registry.runWithWorker(context, executeLint)).rejects.toBeInstanceOf(
+				StylelintWorkerCrashedError,
+			);
 		} finally {
 			vi.useRealTimers();
 		}
@@ -268,8 +276,12 @@ describe('WorkerRegistryService', () => {
 				workerRoot: workspaceB,
 			};
 
-			workerA.lint.mockRejectedValue(createCrashError(workspaceA));
-			workerB.lint.mockRejectedValue(createCrashError(workspaceB));
+			workerA.lint.mockImplementation(() => {
+				throw createCrashError(workspaceA);
+			});
+			workerB.lint.mockImplementation(() => {
+				throw createCrashError(workspaceB);
+			});
 
 			const expectedErrors = [
 				StylelintWorkerCrashedError,
@@ -303,6 +315,36 @@ describe('WorkerRegistryService', () => {
 			expect(suppressedB.notifyUser).toBe(false);
 		} finally {
 			vi.useRealTimers();
+		}
+	});
+
+	test('counts a single crash only once even when multiple pending requests are rejected with the same error', async () => {
+		const worker = createMockWorker();
+		const { registry } = createRegistry([worker]);
+		const context: WorkerContext = {
+			workspaceFolder: '/workspace',
+			workerRoot: '/workspace',
+		};
+
+		// Simulate a worker crash that rejects multiple pending requests with
+		// the same error object. This is what happens when a child exits while
+		// several requests are in flight.
+		const sharedCrashError = createCrashError('/workspace');
+
+		worker.lint.mockRejectedValue(sharedCrashError);
+
+		// Fire three concurrent requests that all get the same crash error.
+		const results = await Promise.allSettled([
+			registry.runWithWorker(context, executeLint),
+			registry.runWithWorker(context, executeLint),
+			registry.runWithWorker(context, executeLint),
+		]);
+
+		// All three should be rejected with the original crash error, not a
+		// suppression error, because only one crash should have been counted.
+		for (const result of results) {
+			expect(result.status).toBe('rejected');
+			expect((result as PromiseRejectedResult).reason).toBe(sharedCrashError);
 		}
 	});
 });

@@ -21,4 +21,20 @@ describe('normalizeFsPath', () => {
 			'C:\\Users\\stylelint\\project',
 		);
 	});
+
+	it('uppercases a lowercase Windows drive letter', () => {
+		expect(normalizeFsPath('c:\\Users\\stylelint', 'win32')).toBe('C:\\Users\\stylelint');
+	});
+
+	it('keeps an uppercase Windows drive letter unchanged', () => {
+		expect(normalizeFsPath('C:\\Users\\stylelint', 'win32')).toBe('C:\\Users\\stylelint');
+	});
+
+	it('uppercases drive letter when also replacing forward slashes', () => {
+		expect(normalizeFsPath('e:/vscode-stylelint', 'win32')).toBe('E:\\vscode-stylelint');
+	});
+
+	it('does not modify non-drive-letter paths on Windows', () => {
+		expect(normalizeFsPath('\\\\server\\share', 'win32')).toBe('\\\\server\\share');
+	});
 });
