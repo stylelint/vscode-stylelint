@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 import type winston from 'winston';
@@ -17,6 +18,27 @@ import { WorkerProcessService } from './worker-process.service.js';
 const maxConsecutiveCrashes = 3;
 const workerRecoveryCooldownMs = 30 * 1000;
 const suppressionNotificationIntervalMs = 60 * 1000;
+
+// CI-only file-based diagnostic logging. Writes to .stylelint-server-diag.log
+// in the workerRoot so the e2e test can capture server-side decisions.
+const CI_DIAG = Boolean(process.env.CI);
+const CI_DIAG_FILENAME = '.stylelint-server-diag.log';
+
+/**
+ * Appends a timestamped diagnostic line to the server diagnostic log.
+ * Only writes when the CI environment variable is set.
+ */
+function ciDiagLog(workerRoot: string, message: string): void {
+	if (!CI_DIAG) return;
+
+	try {
+		const line = `[${new Date().toISOString()}] [PID:${process.pid}] [WorkerRegistry] ${message}\n`;
+
+		fs.appendFileSync(path.join(workerRoot, CI_DIAG_FILENAME), line);
+	} catch {
+		// Diagnostics must never break production code.
+	}
+}
 
 type WorkspaceKey = string;
 type PackageKey = string;
@@ -69,6 +91,14 @@ export class WorkerRegistryService {
 		executor: (worker: StylelintWorkerProcess) => Promise<T>,
 	): Promise<T> {
 		const record = this.#getWorker(context);
+
+		ciDiagLog(
+			context.workerRoot,
+			`runWithWorker ENTER: wsFolder=${context.workspaceFolder}, workerRoot=${context.workerRoot}, ` +
+				`consecutiveCrashes=${record.state.consecutiveCrashes}, cooldownExpiresAt=${record.state.cooldownExpiresAt ?? 'none'}, ` +
+				`isDisposed=${record.process.isDisposed()}, now=${Date.now()}`,
+		);
+
 		const suppressedError = this.#maybeCreateSuppressedError(
 			context.workspaceFolder,
 			context.workerRoot,
@@ -76,17 +106,29 @@ export class WorkerRegistryService {
 		);
 
 		if (suppressedError) {
+			ciDiagLog(
+				context.workerRoot,
+				`runWithWorker SUPPRESSED: retryInMs=${suppressedError.retryInMs}, notifyUser=${suppressedError.notifyUser}`,
+			);
 			throw suppressedError;
 		}
 
 		try {
+			ciDiagLog(context.workerRoot, `runWithWorker EXECUTING: calling executor`);
 			const result = await executor(record.process);
 
+			ciDiagLog(context.workerRoot, `runWithWorker SUCCESS: marking healthy`);
 			this.#markWorkerHealthy(record.state);
 
 			return result;
 		} catch (error) {
 			if (error instanceof StylelintWorkerCrashedError) {
+				ciDiagLog(
+					context.workerRoot,
+					`runWithWorker CRASH: kind=${error.kind}, code=${error.code}, signal=${error.signal}, ` +
+						`preCrashCount=${record.state.consecutiveCrashes}`,
+				);
+
 				throw this.#handleWorkerCrash(
 					context.workspaceFolder,
 					context.workerRoot,
@@ -95,6 +137,10 @@ export class WorkerRegistryService {
 				);
 			}
 
+			ciDiagLog(
+				context.workerRoot,
+				`runWithWorker ERROR (non-crash): ${error instanceof Error ? error.message : String(error)}`,
+			);
 			throw error;
 		}
 	}
@@ -102,6 +148,11 @@ export class WorkerRegistryService {
 	notifyWorkspaceActivity(workspaceFolder: string): void {
 		const workspaceKey = resolvePathKey(workspaceFolder);
 
+		// Log to the workspace folder since workerRoot is not available externally.
+		ciDiagLog(
+			workspaceFolder,
+			`notifyWorkspaceActivity: wsKey=${workspaceKey}, hasWorkers=${this.#workers.has(workspaceKey)}`,
+		);
 		this.#resetWorkspaceWorkers(workspaceKey);
 	}
 
@@ -172,6 +223,7 @@ export class WorkerRegistryService {
 
 		if (existing) {
 			if (existing.process.isDisposed()) {
+				ciDiagLog(context.workerRoot, `#getWorker: existing worker DISPOSED, creating replacement`);
 				existing.process.dispose();
 				const replacement = this.#createWorkerRecord(context);
 
@@ -185,6 +237,7 @@ export class WorkerRegistryService {
 				existing.environmentKey &&
 				existing.environmentKey !== context.environmentKey
 			) {
+				ciDiagLog(context.workerRoot, `#getWorker: environmentKey MISMATCH, creating replacement`);
 				existing.process.dispose();
 				const replacement = this.#createWorkerRecord(context);
 
@@ -197,9 +250,15 @@ export class WorkerRegistryService {
 				existing.environmentKey = context.environmentKey;
 			}
 
+			ciDiagLog(
+				context.workerRoot,
+				`#getWorker: REUSING existing worker, disposed=${existing.process.isDisposed()}, crashes=${existing.state.consecutiveCrashes}`,
+			);
+
 			return existing;
 		}
 
+		ciDiagLog(context.workerRoot, `#getWorker: CREATING new worker record`);
 		const record = this.#createWorkerRecord(context);
 
 		packageWorkers.set(pnpKey, record);
@@ -247,6 +306,12 @@ export class WorkerRegistryService {
 		state.consecutiveCrashes += 1;
 		state.lastCrashError = error;
 
+		ciDiagLog(
+			workerRoot,
+			`#handleWorkerCrash: consecutiveCrashes=${state.consecutiveCrashes}, maxConsecutiveCrashes=${maxConsecutiveCrashes}, ` +
+				`cooldownExpiresAt=${state.cooldownExpiresAt ?? 'none'}, kind=${error.kind}`,
+		);
+
 		if (state.consecutiveCrashes < maxConsecutiveCrashes) {
 			return error;
 		}
@@ -256,6 +321,11 @@ export class WorkerRegistryService {
 		if (!state.cooldownExpiresAt || now >= state.cooldownExpiresAt) {
 			state.cooldownExpiresAt = now + workerRecoveryCooldownMs;
 			state.lastNotificationAt = undefined;
+
+			ciDiagLog(
+				workerRoot,
+				`#handleWorkerCrash: ENTERING COOLDOWN, expiresAt=${state.cooldownExpiresAt}, cooldownMs=${workerRecoveryCooldownMs}`,
+			);
 
 			this.#logger?.warn('Stylelint worker entered cooldown after repeated crashes', {
 				workspaceFolder,
@@ -275,18 +345,29 @@ export class WorkerRegistryService {
 		const cooldown = state.cooldownExpiresAt;
 
 		if (!cooldown) {
+			ciDiagLog(workerRoot, `#maybeCreateSuppressedError: no cooldown, allowing`);
+
 			return undefined;
 		}
 
 		const now = Date.now();
 
 		if (now >= cooldown) {
+			ciDiagLog(
+				workerRoot,
+				`#maybeCreateSuppressedError: cooldown EXPIRED (expired=${cooldown}, now=${now}), clearing state`,
+			);
 			state.cooldownExpiresAt = undefined;
 			state.consecutiveCrashes = 0;
 			state.lastNotificationAt = undefined;
 
 			return undefined;
 		}
+
+		ciDiagLog(
+			workerRoot,
+			`#maybeCreateSuppressedError: cooldown ACTIVE (expiresAt=${cooldown}, now=${now}, remainingMs=${cooldown - now})`,
+		);
 
 		return this.#buildUnavailableError(workspaceFolder, workerRoot, state, now);
 	}
@@ -335,6 +416,10 @@ export class WorkerRegistryService {
 		for (const [packageKey, packageWorkers] of workers.entries()) {
 			for (const [pnpKey, record] of packageWorkers.entries()) {
 				if (this.#releaseSuppressedWorker(record.state)) {
+					ciDiagLog(
+						packageKey,
+						`#releaseSuppressedWorker: CLEARED cooldown for wsKey=${workspaceKey}, pkgKey=${packageKey}, pnpKey=${pnpKey}`,
+					);
 					this.#logger?.debug('Resetting Stylelint worker after workspace activity', {
 						workspaceFolder: workspaceKey,
 						packageRoot: packageKey,

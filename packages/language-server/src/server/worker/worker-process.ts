@@ -21,6 +21,27 @@ import {
 	type WorkerResponse,
 } from './types.js';
 
+// CI-only file-based diagnostic logging. Writes to .stylelint-server-diag.log
+// in the workerRoot so the e2e test can capture server-side decisions.
+const CI_DIAG = Boolean(process.env.CI);
+const CI_DIAG_FILENAME = '.stylelint-server-diag.log';
+
+/**
+ * Appends a timestamped diagnostic line to the server diagnostic log.
+ * Only writes when the CI environment variable is set.
+ */
+function ciDiagLog(workerRoot: string, message: string): void {
+	if (!CI_DIAG) return;
+
+	try {
+		const line = `[${new Date().toISOString()}] [PID:${process.pid}] [WorkerProcess] ${message}\n`;
+
+		fs.appendFileSync(path.join(workerRoot, CI_DIAG_FILENAME), line);
+	} catch {
+		// Diagnostics must never break production code.
+	}
+}
+
 // Support both ESM and CJS.
 const currentDir = typeof __dirname === 'string' ? __dirname : import.meta.dirname;
 
@@ -191,6 +212,11 @@ export class StylelintWorkerProcess {
 
 		this.#disposed = true;
 
+		ciDiagLog(
+			this.#workerRoot,
+			`dispose(): childPid=${this.#child?.pid ?? 'null'}, pendingCount=${this.#pending.size}`,
+		);
+
 		for (const [, pending] of this.#pending) {
 			pending.reject(new Error('Stylelint worker disposed.'));
 		}
@@ -225,6 +251,10 @@ export class StylelintWorkerProcess {
 
 		return await new Promise<WorkerSuccessResponse['result']>((resolve, reject) => {
 			if (!this.#child) {
+				ciDiagLog(
+					this.#workerRoot,
+					`#sendRequest FAIL: child null after #ensureChild, id=${id}, type=${type}`,
+				);
 				reject(new Error('Worker process is not available.'));
 
 				return;
@@ -251,12 +281,22 @@ export class StylelintWorkerProcess {
 					WorkerResolveConfigPayload,
 			};
 
-			this.#child.send(request);
+			const sendOk = this.#child.send(request);
+
+			ciDiagLog(
+				this.#workerRoot,
+				`#sendRequest: id=${id}, type=${type}, childPid=${this.#child.pid}, send()=${sendOk}, pendingCount=${this.#pending.size}`,
+			);
 		});
 	}
 
 	#ensureChild(): void {
 		if (this.#child || this.#disposed) {
+			ciDiagLog(
+				this.#workerRoot,
+				`#ensureChild SKIP: child=${this.#child ? `alive(pid=${this.#child.pid})` : 'null'}, disposed=${this.#disposed}, pending=${this.#pending.size}`,
+			);
+
 			return;
 		}
 
@@ -277,8 +317,18 @@ export class StylelintWorkerProcess {
 			},
 		});
 
+		ciDiagLog(
+			this.#workerRoot,
+			`#ensureChild FORKED: newPid=${this.#child.pid}, workerRoot=${this.#workerRoot}`,
+		);
+
 		this.#child.on('message', (message: WorkerResponse) => this.#handleMessage(message));
 		this.#child.on('exit', (code, signal) => {
+			ciDiagLog(
+				this.#workerRoot,
+				`EXIT event: code=${code}, signal=${signal}, disposed=${this.#disposed}, pendingCount=${this.#pending.size}, pendingIds=[${[...this.#pending.keys()].join(',')}]`,
+			);
+
 			const crashError = this.#disposed
 				? undefined
 				: new StylelintWorkerCrashedError(
@@ -305,7 +355,8 @@ export class StylelintWorkerProcess {
 
 			const rejectionError = crashError ?? new Error('Stylelint worker exited unexpectedly.');
 
-			for (const [, pending] of this.#pending) {
+			for (const [id, pending] of this.#pending) {
+				ciDiagLog(this.#workerRoot, `EXIT rejecting pending request: id=${id}`);
 				pending.reject(rejectionError);
 			}
 
@@ -313,6 +364,11 @@ export class StylelintWorkerProcess {
 		});
 
 		this.#child.on('error', (error) => {
+			ciDiagLog(
+				this.#workerRoot,
+				`ERROR event: message=${error.message}, disposed=${this.#disposed}, pendingCount=${this.#pending.size}`,
+			);
+
 			const crashError = new StylelintWorkerCrashedError(
 				`Stylelint worker for "${this.#workerRoot}" failed (${error.message ?? 'unknown'})`,
 				{
@@ -329,7 +385,8 @@ export class StylelintWorkerProcess {
 
 			this.#child = undefined;
 
-			for (const [, pending] of this.#pending) {
+			for (const [id, pending] of this.#pending) {
+				ciDiagLog(this.#workerRoot, `ERROR rejecting pending request: id=${id}`);
 				pending.reject(crashError);
 			}
 
