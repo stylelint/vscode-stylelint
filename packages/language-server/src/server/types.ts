@@ -1,4 +1,5 @@
 import { CodeActionKind as VSCodeActionKind } from 'vscode-languageserver-types';
+import { NotificationType } from 'vscode-languageserver-protocol';
 import type stylelint from 'stylelint';
 import type { PackageManager } from './stylelint/index.js';
 
@@ -88,3 +89,29 @@ export interface PnPConfiguration {
 	registerPath: string;
 	loaderPath?: string;
 }
+
+/**
+ * Status of the Stylelint language server for a given document. Refers to the
+ * whether the server ran successfully, not lint diagnostic severity.
+ */
+export enum Status {
+	/** Stylelint ran without errors. */
+	ok = 1,
+	/** Reserved for future use. */
+	warn = 2,
+	/** Stylelint failed to run. */
+	error = 3,
+}
+
+/**
+ * Parameters sent from server to client to report per-document status.
+ */
+export type StatusParams = {
+	uri: string;
+	state: Status;
+};
+
+/**
+ * Notification type for per-document Stylelint status changes.
+ */
+export const StatusNotification = new NotificationType<StatusParams>('stylelint/status');

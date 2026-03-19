@@ -14,5 +14,9 @@ export const extensionTokens = {
 	workspace: createToken<typeof vscode.workspace>('extension-workspace'),
 	commands: createToken<typeof vscode.commands>('extension-commands'),
 	window: createToken<typeof vscode.window>('extension-window'),
+	languages: createToken<typeof vscode.languages>('extension-languages'),
+	languageStatusSeverity: createToken<typeof vscode.LanguageStatusSeverity>(
+		'extension-language-status-severity',
+	),
 	languageClientModule: createToken<LanguageClientModule>('extension-language-client-module'),
 } as const;

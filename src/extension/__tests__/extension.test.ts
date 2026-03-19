@@ -7,6 +7,8 @@ import { extensionTokens } from '../di-tokens.js';
 type VSCodeWorkspace = (typeof import('vscode'))['workspace'];
 type VSCodeCommands = (typeof import('vscode'))['commands'];
 type VSCodeWindow = (typeof import('vscode'))['window'];
+type VSCodeLanguages = (typeof import('vscode'))['languages'];
+type VSCodeLanguageStatusSeverity = (typeof import('vscode'))['LanguageStatusSeverity'];
 type LanguageClientModule = typeof import('vscode-languageclient/node');
 type ExtensionToken = (typeof extensionTokens)[keyof typeof extensionTokens];
 type ExtensionOverrideEntry = [ExtensionToken, unknown];
@@ -24,6 +26,9 @@ const start = vi.fn();
 const stop = vi.fn();
 const dispose = vi.fn();
 const sendRequest = vi.fn();
+const onDidChangeState = vi.fn();
+const onNotification = vi.fn();
+const outputChannel = { show: vi.fn(), append: vi.fn(), appendLine: vi.fn(), dispose: vi.fn() };
 
 const mockExtensionContext = {
 	subscriptions: [],
@@ -32,6 +37,7 @@ const mockExtensionContext = {
 let mockWorkspace: VSCodeWorkspace;
 let mockCommands: VSCodeCommands;
 let mockWindow: VSCodeWindow;
+let mockLanguages: VSCodeLanguages;
 let mockLanguageClient: ReturnType<typeof vi.fn>;
 let languageClientInstance: LanguageClient;
 let moduleOverrides: Iterable<ExtensionOverrideEntry>;
@@ -87,6 +93,7 @@ describe('Extension entry point', () => {
 			createFileSystemWatcher: fileWatcherMock,
 			workspaceFolders: [],
 			onDidChangeConfiguration: vi.fn(() => ({ dispose: vi.fn() })),
+			onDidCloseTextDocument: vi.fn(() => ({ dispose: vi.fn() })),
 		} as unknown as VSCodeWorkspace;
 
 		registerCommandMock = vi.fn();
@@ -105,13 +112,29 @@ describe('Extension entry point', () => {
 			showErrorMessage: showErrorMessageMock,
 			showInformationMessage: vi.fn(),
 			showWarningMessage: vi.fn(),
+			onDidChangeActiveTextEditor: vi.fn(() => ({ dispose: vi.fn() })),
 		} as unknown as VSCodeWindow;
+
+		mockLanguages = {
+			createLanguageStatusItem: vi.fn(() => ({
+				name: '',
+				text: '',
+				severity: 0,
+				detail: undefined,
+				command: undefined,
+				selector: [],
+				dispose: vi.fn(),
+			})),
+		} as unknown as VSCodeLanguages;
 
 		languageClientInstance = {
 			sendRequest,
 			start,
 			stop,
 			dispose,
+			onDidChangeState,
+			onNotification,
+			outputChannel,
 		} as unknown as LanguageClient;
 
 		// eslint-disable-next-line prefer-arrow-callback -- Must be constructable via `new`
@@ -126,11 +149,17 @@ describe('Extension entry point', () => {
 			[extensionTokens.workspace, mockWorkspace],
 			[extensionTokens.commands, mockCommands],
 			[extensionTokens.window, mockWindow],
+			[extensionTokens.languages, mockLanguages],
+			[
+				extensionTokens.languageStatusSeverity,
+				{ Information: 0, Warning: 1, Error: 2 } as unknown as VSCodeLanguageStatusSeverity,
+			],
 			[
 				extensionTokens.languageClientModule,
 				{
 					LanguageClient: mockLanguageClient as unknown as LanguageClientModule['LanguageClient'],
-				} as LanguageClientModule,
+					State: { Stopped: 1, Running: 2, Starting: 3 },
+				} as unknown as LanguageClientModule,
 			],
 		];
 
@@ -263,8 +292,9 @@ describe('Extension entry point', () => {
 		const { subscriptions } = mockExtensionContext;
 		const onDidChangeCfg = mockWorkspace.onDidChangeConfiguration as ReturnType<typeof vi.fn>;
 
-		// Called twice, once for restart settings handler, once for enable handler.
-		expect(onDidChangeCfg).toHaveBeenCalledTimes(2);
+		// Called three times: restart settings handler, enable handler, and
+		// validate change handler.
+		expect(onDidChangeCfg).toHaveBeenCalledTimes(3);
 
 		// The enable handler's disposable should be in subscriptions.
 		const enableHandlerDisposable = onDidChangeCfg.mock.results[1].value;

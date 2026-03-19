@@ -290,6 +290,11 @@
         "title": "Restart Stylelint Server",
         "category": "Stylelint",
         "command": "stylelint.restart"
+      },
+      {
+        "title": "Show Output Channel",
+        "category": "Stylelint",
+        "command": "stylelint.showOutputChannel"
       }
     ],
     "jsonValidation": [

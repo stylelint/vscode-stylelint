@@ -37,6 +37,8 @@ export function getLanguageClientModule(): LanguageClientModule {
 export type VSCodeWorkspace = VSCodeModule['workspace'];
 export type VSCodeCommands = VSCodeModule['commands'];
 export type VSCodeWindow = VSCodeModule['window'];
+export type VSCodeLanguages = VSCodeModule['languages'];
+export type VSCodeLanguageStatusSeverity = VSCodeModule['LanguageStatusSeverity'];
 
 /**
  * Resolves the path to the compiled language server entry point.

@@ -17,7 +17,7 @@ import {
 } from '../../decorators.js';
 import type { LintDiagnostics } from '../../stylelint/index.js';
 import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../tokens.js';
-import { CommandId } from '../../types.js';
+import { CommandId, Status, StatusNotification } from '../../types.js';
 import { DocumentDiagnosticsService } from '../documents/document-diagnostics.service.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
 import { StylelintRunnerService } from '../stylelint-runtime/stylelint-runner.service.js';
@@ -149,12 +149,14 @@ export class ValidatorLspService {
 			this.#diagnostics.set(document, result.diagnostics, result);
 			this.#publishedUris.add(document.uri);
 			this.#logger?.debug('Diagnostics sent', { uri: document.uri });
+			this.#sendStatusNotification(document.uri, Status.ok);
 		} catch (error) {
 			displayError(this.#connection, error);
 			this.#logger?.error('Failed to send diagnostics', {
 				uri: document.uri,
 				error,
 			});
+			this.#sendStatusNotification(document.uri, Status.error);
 		}
 	}
 
@@ -169,9 +171,16 @@ export class ValidatorLspService {
 		} catch (error) {
 			displayError(this.#connection, error);
 			this.#logger?.error('Error running lint', { uri: document.uri, error });
+			this.#sendStatusNotification(document.uri, Status.error);
 
 			return undefined;
 		}
+	}
+
+	#sendStatusNotification(uri: string, state: Status): void {
+		this.#connection.sendNotification(StatusNotification, { uri, state }).catch(() => {
+			// Best effort, ignore any errors since it's non-critical.
+		});
 	}
 
 	@notification(DidChangeWatchedFilesNotification.type)
