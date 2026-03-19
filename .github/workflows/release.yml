@@ -108,6 +108,7 @@ jobs:
           name: 'vscode-stylelint ${{ needs.detect.outputs.extension-version }}'
           body: ${{ steps.changelog.outputs.body }}
           files: '*.vsix'
+          make_latest: true
 
   release-server:
     needs: detect
@@ -162,3 +163,4 @@ jobs:
           tag_name: '@stylelint/language-server@${{ needs.detect.outputs.server-version }}'
           name: '@stylelint/language-server ${{ needs.detect.outputs.server-version }}'
           body: ${{ steps.changelog.outputs.body }}
+          make_latest: false
