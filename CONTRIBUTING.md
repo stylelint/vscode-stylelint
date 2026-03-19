@@ -37,6 +37,7 @@ If you want a quick overview, the [organization](#1-how-the-project-is-organised
   - [8.5 Letting the runtime discover the handler](#85-letting-the-runtime-discover-the-handler)
   - [8.6 Adding the extension command](#86-adding-the-extension-command)
   - [8.7 Testing the service](#87-testing-the-service)
+- [9. Stylelint version support policy](#9-stylelint-version-support-policy)
 
 ## 1. How the project is organised
 
@@ -661,3 +662,19 @@ With the test in place, `node --run test:unit -- packages/language-server/src/se
 This worked example is intentionally small, but the same wiring pattern applies to more complex features. You define or reuse tokens, decorate your service with `@inject` and optionally `@lspService`, register it in a module, and then integrate it with the extension via commands or notifications.
 
 If you glance back at sections 3 and 4 now, you should recognise the pieces you just used: a service class, a module, LSP decorators, and a small test container.
+
+## 9. Stylelint version support policy
+
+The extension supports all Stylelint versions that work without active maintenance burden. We drop support only when maintaining compatibility causes bugs, blocks features, or adds meaningful complexity.
+
+When evaluating whether to drop support for a version, consider whether it:
+
+- Requires workarounds that increase code complexity beyond a reasonable threshold.
+- Causes numerous test failures unrelated to the version's own behaviour.
+- Prevents adoption of new Stylelint APIs.
+- Requires compromises in the API surface or UX for users on current versions.
+- Has known security vulnerabilities that would require unsafe patterns to support.
+
+When we decide to drop support for a version, we provide at least 3 months' notice with a deprecation warning before removal. This gives users a predictable window to migrate.
+
+For more context on this policy, see [the version support policy discussion](https://github.com/stylelint/vscode-stylelint/issues/829).
