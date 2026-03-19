@@ -41,6 +41,7 @@ const currentLines = content.split('\n');
 const newLines: string[] = [];
 const entries: string[] = [];
 let latestVersion: string | undefined = undefined;
+let originalDate: string | undefined = undefined;
 let stoppedIndex = -1;
 let subHeader = false;
 
@@ -52,8 +53,11 @@ for (const line of currentLines) {
 
 	if (line.startsWith('## ')) {
 		if (!latestVersion) {
+			const dateMatch = / - (\d{4}-\d{2}-\d{2})$/.exec(line);
+
+			originalDate = dateMatch?.[1] ?? today;
 			latestVersion = line.replace('## ', '').replace(/ - \d{4}-\d{2}-\d{2}$/, '');
-			newLines.push(`## ${latestVersion} - ${today}`);
+			newLines.push(`## ${latestVersion} - ${originalDate}`);
 			continue;
 		} else {
 			entries.sort(byPrefixOrder);
@@ -93,5 +97,19 @@ if (
 	newLines.push('', ...entries, '');
 }
 
-writeFileSync(path, newLines.join('\n'), 'utf8');
+const newContent = newLines.join('\n');
+
+// If the rewrite didn't change anything, skip writing so the release pipeline
+// does not see a spurious diff.
+if (newContent === content) {
+	console.log(`"${path}" is unchanged, skipping.`); // eslint-disable-line no-console
+	process.exit(0);
+}
+
+// Content changed, stamp today's date on the latest version heading.
+writeFileSync(
+	path,
+	newContent.replace(`## ${latestVersion} - ${originalDate}`, `## ${latestVersion} - ${today}`),
+	'utf8',
+);
 console.log(`"${path}" rewritten.`); // eslint-disable-line no-console
