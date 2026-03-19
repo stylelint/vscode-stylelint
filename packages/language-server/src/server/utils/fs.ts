@@ -11,5 +11,15 @@ export function normalizeFsPath(
 		return undefined;
 	}
 
-	return platform === 'win32' ? value.replace(/\//gu, '\\') : value;
+	if (platform !== 'win32') {
+		return value;
+	}
+
+	let result = value.replace(/\//gu, '\\');
+
+	if (/^[a-z]:\\/u.test(result)) {
+		result = result[0].toUpperCase() + result.slice(1);
+	}
+
+	return result;
 }

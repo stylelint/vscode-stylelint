@@ -33,6 +33,7 @@ type WorkerHealthState = {
 	consecutiveCrashes: number;
 	cooldownExpiresAt?: number;
 	lastCrashError?: StylelintWorkerCrashedError;
+	lastHandledCrashError?: StylelintWorkerCrashedError;
 	lastNotificationAt?: number;
 };
 
@@ -235,6 +236,7 @@ export class WorkerRegistryService {
 		state.consecutiveCrashes = 0;
 		state.cooldownExpiresAt = undefined;
 		state.lastCrashError = undefined;
+		state.lastHandledCrashError = undefined;
 		state.lastNotificationAt = undefined;
 	}
 
@@ -244,7 +246,13 @@ export class WorkerRegistryService {
 		state: WorkerHealthState,
 		error: StylelintWorkerCrashedError,
 	): Error {
-		state.consecutiveCrashes += 1;
+		// When a worker exits with multiple pending requests, the same error
+		// object is used to reject every promise. Only count the crash once.
+		if (state.lastHandledCrashError !== error) {
+			state.consecutiveCrashes += 1;
+			state.lastHandledCrashError = error;
+		}
+
 		state.lastCrashError = error;
 
 		if (state.consecutiveCrashes < maxConsecutiveCrashes) {
@@ -283,6 +291,7 @@ export class WorkerRegistryService {
 		if (now >= cooldown) {
 			state.cooldownExpiresAt = undefined;
 			state.consecutiveCrashes = 0;
+			state.lastHandledCrashError = undefined;
 			state.lastNotificationAt = undefined;
 
 			return undefined;
@@ -352,6 +361,7 @@ export class WorkerRegistryService {
 
 		state.cooldownExpiresAt = undefined;
 		state.consecutiveCrashes = 0;
+		state.lastHandledCrashError = undefined;
 		state.lastNotificationAt = undefined;
 
 		return true;
