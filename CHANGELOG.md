@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.0 - 2026-03-20
+
+- Added: Status indicator for Stylelint state and a command to open the Stylelint output panel ([#889](https://github.com/stylelint/vscode-stylelint/pull/889)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: Duplicate workers being started due to drive letter case sensitivity on Windows ([#891](https://github.com/stylelint/vscode-stylelint/pull/891)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: Workers not recovering from crashes due to counting the same crash multiple times when multiple requests are pending ([#891](https://github.com/stylelint/vscode-stylelint/pull/891)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+
 ## 2.1.0 - 2026-03-18
 
 - Added: "Fix all \<rule\> problems" quick fix action for rules with multiple auto-fixable diagnostics ([#859](https://github.com/stylelint/vscode-stylelint/pull/859)) ([@adalinesimonian](https://github.com/adalinesimonian)).
