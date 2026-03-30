@@ -13,9 +13,13 @@ import type LSP from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import {
 	Constructable,
+	describeToken,
+	provideTestValue,
 	registerInitializationHook,
 	runtimeService,
+	type FactoryRegistration,
 	type InjectionToken,
+	type Scope,
 } from '../di/index.js';
 import {
 	ClassDecoratorFunction,
@@ -23,9 +27,10 @@ import {
 	MethodDecoratorFunction,
 } from '../di/types.js';
 import { NotificationService } from './services/infrastructure/notification.service.js';
+import type { PublicOnlyIfObject } from '../shared/types.js';
 import { lspConnectionToken } from './tokens.js';
 import { CommandId } from './types.js';
-import { MaybeAsync } from './utils/index.js';
+import { isObject, MaybeAsync } from './utils/index.js';
 
 const lspServiceMetadataKey = '__languageServerServiceMetadata__';
 const lspServiceConstructorMetadataKey = '__isLanguageServerService__';
@@ -409,7 +414,9 @@ export function notification(): CompatibleMethodDecorator<AsyncStarNotificationH
 /**
  *
  */
-export function notification(type?: NotificationRegistrationType): MethodDecoratorFunction<any> {
+export function notification(
+	type?: NotificationRegistrationType,
+): CompatibleMethodDecorator<NotificationMethod> {
 	return (target: Function, { kind, addInitializer }: ClassMethodDecoratorContext) => {
 		if (kind !== 'method') {
 			throw new Error('@notification(...) can only be used on a method.');
@@ -492,4 +499,37 @@ export function shutdown(): MethodDecoratorFunction<ShutdownHandler> {
 			instanceMetadata.shutdownHandlers.push(bound);
 		});
 	};
+}
+
+/**
+ * Create a stub with `cls.prototype` in its chain, so `instance.constructor`
+ * points to `cls`. This satisfies `@lspService()` init hooks that check the
+ * constructor for metadata flags. Plain objects from {@link provideTestValue}
+ * fail that check.
+ *
+ * Only copies own enumerable properties from `overrides` via `Object.assign`.
+ * Prototype methods on a fake class will not be copied. Use
+ * {@link provideTestValue} for non-`@lspService()` stubs.
+ */
+export function createLspServiceStub<T extends object>(
+	cls: abstract new (...args: any[]) => T,
+	overrides: Partial<T>,
+): T {
+	if (!isObject(cls.prototype)) {
+		throw new Error(`Cannot create class stub for non-constructable token ${describeToken(cls)}`);
+	}
+
+	return Object.assign(Object.create(cls.prototype) as T, overrides) as T;
+}
+
+/**
+ * Factory registration wrapper around {@link createLspServiceStub}. Use only
+ * for `@lspService()` tokens. Use {@link provideTestValue} otherwise.
+ */
+export function provideLspServiceStub<T extends object>(
+	token: InjectionToken<T> & (abstract new (...args: any[]) => T),
+	factory: () => Partial<PublicOnlyIfObject<T>>,
+	scope?: Scope,
+): FactoryRegistration<T> {
+	return provideTestValue(token, () => createLspServiceStub(token, factory()), scope);
 }

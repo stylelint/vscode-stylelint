@@ -2,18 +2,28 @@ import { describe, expect, test } from 'vitest';
 import type { Connection } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 
+import { createLoggingServiceStub } from '../../../../../../../test/helpers/stubs/index.js';
+import { createTestLogger } from '../../../../../../../test/helpers/test-logger.js';
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
-import { NormalizeFsPathToken, PathIsInsideToken, UriModuleToken } from '../../../tokens.js';
+import {
+	lspConnectionToken,
+	NormalizeFsPathToken,
+	PathIsInsideToken,
+	UriModuleToken,
+} from '../../../tokens.js';
+import { loggingServiceToken } from '../../infrastructure/logging.service.js';
+import { NotificationService } from '../../infrastructure/notification.service.js';
 import { WorkspaceFolderService } from '../workspace-folder.service.js';
 
 const createMockConnection = (workspaceFolders?: string[]) => {
 	const folders = workspaceFolders && workspaceFolders.map((folder) => ({ uri: folder }));
 
 	return {
+		onNotification: () => {},
 		workspace: {
 			getWorkspaceFolders: async () => folders,
 		},
-	} as Connection;
+	} as unknown as Connection;
 };
 
 const createMockTextDocument = (uri: string) => ({ uri }) as TextDocument;
@@ -34,12 +44,19 @@ const uriModule = FakeURI as unknown as typeof import('vscode-uri').URI;
 const normalizeFsPath = (value: string | undefined) => value ?? undefined;
 
 const createResolver = () => {
+	const logger = createTestLogger();
+	const loggingService = createLoggingServiceStub(logger);
+	const mockConnection = createMockConnection([]);
+
 	const container = createContainer(
 		module({
 			register: [
 				provideTestValue(PathIsInsideToken, () => pathIsInside),
 				provideTestValue(UriModuleToken, () => uriModule),
 				provideTestValue(NormalizeFsPathToken, () => normalizeFsPath),
+				provideTestValue(lspConnectionToken, () => mockConnection),
+				provideTestValue(loggingServiceToken, () => loggingService),
+				NotificationService,
 				WorkspaceFolderService,
 			],
 		}),

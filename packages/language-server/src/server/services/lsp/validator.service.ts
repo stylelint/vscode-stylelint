@@ -23,6 +23,12 @@ import { type LoggingService, loggingServiceToken } from '../infrastructure/logg
 import { StylelintRunnerService } from '../stylelint-runtime/stylelint-runner.service.js';
 import { WorkspaceOptionsService } from '../workspace/workspace-options.service.js';
 
+/**
+ * Default delay, in milliseconds, before a document change triggers validation.
+ * This prevents redundant lint cycles during rapid typing.
+ */
+const validationDebounceDelay = 300;
+
 @lspService()
 @inject({
 	inject: [
@@ -44,6 +50,8 @@ export class ValidatorLspService {
 	#logger?: winston.Logger;
 	#uri: typeof URI;
 	#publishedUris = new Set<string>();
+	#debounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
+	#pendingValidations = new Map<string, Promise<void>>();
 
 	constructor(
 		documents: TextDocuments<TextDocument>,
@@ -86,7 +94,7 @@ export class ValidatorLspService {
 		const options = await this.#options.getOptions(document.uri);
 
 		if (options.run === 'onType') {
-			await this.#validate(document);
+			await this.#validateDebounced(document);
 		}
 	}
 
@@ -101,6 +109,7 @@ export class ValidatorLspService {
 
 	@textDocumentEvent('onDidClose')
 	async handleDocumentClosed({ document }: TextDocumentChangeEvent<TextDocument>): Promise<void> {
+		this.#cancelPendingValidation(document.uri);
 		await this.#clearDiagnostics(document);
 	}
 
@@ -110,7 +119,42 @@ export class ValidatorLspService {
 		return options.validate.includes(document.languageId);
 	}
 
+	/**
+	 * Schedules a debounced validation for the document. If a previous
+	 * debounce timer exists for the same URI it is cancelled first, so only
+	 * the latest edit triggers a lint.
+	 */
+	#validateDebounced(document: TextDocument): Promise<void> {
+		return new Promise<void>((resolve) => {
+			this.#cancelPendingValidation(document.uri);
+
+			const timer = setTimeout(() => {
+				this.#debounceTimers.delete(document.uri);
+
+				const validation = this.#validate(document).finally(() => {
+					this.#pendingValidations.delete(document.uri);
+				});
+
+				this.#pendingValidations.set(document.uri, validation);
+				validation.then(resolve, resolve);
+			}, validationDebounceDelay);
+
+			this.#debounceTimers.set(document.uri, timer);
+		});
+	}
+
+	#cancelPendingValidation(uri: string): void {
+		const timer = this.#debounceTimers.get(uri);
+
+		if (timer) {
+			clearTimeout(timer);
+			this.#debounceTimers.delete(uri);
+		}
+	}
+
 	async #validate(document: TextDocument): Promise<void> {
+		const versionBefore = document.version;
+
 		if (!(await this.#shouldValidate(document))) {
 			if (this.#diagnostics.getDiagnostics(document.uri).length > 0) {
 				this.#logger?.debug('Document should not be validated, clearing diagnostics', {
@@ -132,6 +176,20 @@ export class ValidatorLspService {
 
 		if (!result) {
 			this.#logger?.debug('No lint result, ignoring', { uri: document.uri });
+
+			return;
+		}
+
+		// If the document was edited while the lint was running, discard the
+		// stale result. A new validation will be triggered by the edit.
+		const currentDocument = this.#documents.get(document.uri);
+
+		if (currentDocument && currentDocument.version !== versionBefore) {
+			this.#logger?.debug('Discarding stale lint result', {
+				uri: document.uri,
+				lintedVersion: versionBefore,
+				currentVersion: currentDocument.version,
+			});
 
 			return;
 		}

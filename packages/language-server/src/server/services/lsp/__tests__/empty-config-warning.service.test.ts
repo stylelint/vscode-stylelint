@@ -15,6 +15,7 @@ import {
 	type TestLogger,
 } from '../../../../../../../test/helpers/test-logger.js';
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
+import { provideLspServiceStub } from '../../../decorators.js';
 import { defaultLanguageServerOptions } from '../../../config/default-options.js';
 import { lspConnectionToken } from '../../../tokens.js';
 import { loggingServiceToken, type LoggingService } from '../../infrastructure/logging.service.js';
@@ -121,10 +122,7 @@ describe('EmptyConfigWarningLspService', () => {
 						WorkspaceOptionsService,
 						() => options as unknown as WorkspaceOptionsService,
 					),
-					provideTestValue(
-						WorkspaceFolderService,
-						() => workspaceFolderService as unknown as WorkspaceFolderService,
-					),
+					provideLspServiceStub(WorkspaceFolderService, () => workspaceFolderService),
 					provideTestValue(lspConnectionToken, () => connection.connection),
 					provideTestValue(loggingServiceToken, () => loggingService),
 					EmptyConfigWarningLspService,

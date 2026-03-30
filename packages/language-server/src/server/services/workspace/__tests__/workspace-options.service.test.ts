@@ -63,6 +63,7 @@ describe('WorkspaceOptionsService', () => {
 		const first = await service.getOptions('file:///less.css');
 
 		getConfiguration.mockResolvedValueOnce(undefined);
+		service.clearCache();
 		const second = await service.getOptions('file:///less.css');
 
 		expect(getConfiguration).toHaveBeenCalledTimes(2);

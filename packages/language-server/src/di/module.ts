@@ -33,7 +33,7 @@ export interface ModuleMetadata {
 /**
  * Describes an injection token for error messages.
  */
-function describeToken(token: InjectionToken<unknown>): string {
+export function describeToken(token: InjectionToken<unknown>): string {
 	if (typeof token === 'function') {
 		return token.name || '<anonymous class>';
 	}

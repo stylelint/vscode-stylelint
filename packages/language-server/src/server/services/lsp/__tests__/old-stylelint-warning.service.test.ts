@@ -13,6 +13,7 @@ import {
 	type TestLogger,
 } from '../../../../../../../test/helpers/test-logger.js';
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
+import { provideLspServiceStub } from '../../../decorators.js';
 import { defaultLanguageServerOptions } from '../../../config/default-options.js';
 import type { StylelintResolutionResult } from '../../../stylelint/index.js';
 import { NormalizeFsPathToken, PathIsInsideToken, lspConnectionToken } from '../../../tokens.js';
@@ -179,10 +180,7 @@ describe('OldStylelintWarningLspModule', () => {
 						StylelintRunnerService,
 						() => runner as unknown as StylelintRunnerService,
 					),
-					provideTestValue(
-						WorkspaceFolderService,
-						() => workspaceResolver.service as unknown as WorkspaceFolderService,
-					),
+					provideLspServiceStub(WorkspaceFolderService, () => workspaceResolver.service),
 					provideTestValue(NormalizeFsPathToken, () => normalizeFsPath),
 					provideTestValue(PathIsInsideToken, () => pathIsInside),
 					provideTestValue(lspConnectionToken, () => connection.connection),

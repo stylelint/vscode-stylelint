@@ -22,6 +22,17 @@ function extractStylelintSettings(settings: unknown): unknown {
 	return settings;
 }
 
+/**
+ * How long, in milliseconds, a resolved scoped option is kept in cache before
+ * the next call triggers a fresh `workspace/configuration` RPC.
+ */
+const optionsCacheTtl = 2000;
+
+type CachedOptions = {
+	options: LanguageServerOptions;
+	expiresAt: number;
+};
+
 @inject({
 	inject: [lspConnectionToken, loggingServiceToken],
 })
@@ -34,6 +45,7 @@ export class WorkspaceOptionsService {
 		defaultLanguageServerOptions,
 	);
 	#inFlightRequests = new Map<string, Promise<LanguageServerOptions>>();
+	#cachedOptions = new Map<string, CachedOptions>();
 
 	constructor(connection: Connection, loggingService: LoggingService) {
 		this.#connection = connection;
@@ -65,10 +77,12 @@ export class WorkspaceOptionsService {
 
 	clearCache(): void {
 		this.#inFlightRequests.clear();
+		this.#cachedOptions.clear();
 	}
 
 	delete(resource: string): void {
 		this.#inFlightRequests.delete(resource);
+		this.#cachedOptions.delete(resource);
 	}
 
 	async getOptions(resource: string): Promise<LanguageServerOptions> {
@@ -76,6 +90,14 @@ export class WorkspaceOptionsService {
 			return this.#globalOptions;
 		}
 
+		// Return from TTL cache if still fresh.
+		const cached = this.#cachedOptions.get(resource);
+
+		if (cached && Date.now() < cached.expiresAt) {
+			return cached.options;
+		}
+
+		// Deduplicate concurrent in-flight requests for the same resource.
 		let request = this.#inFlightRequests.get(resource);
 
 		if (!request) {
@@ -83,6 +105,12 @@ export class WorkspaceOptionsService {
 			this.#inFlightRequests.set(resource, request);
 
 			request
+				.then((options) => {
+					this.#cachedOptions.set(resource, {
+						options,
+						expiresAt: Date.now() + optionsCacheTtl,
+					});
+				})
 				.catch(() => undefined)
 				.finally(() => {
 					this.#inFlightRequests.delete(resource);
