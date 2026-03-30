@@ -70,7 +70,8 @@ describe('CompletionService', () => {
 		return document;
 	};
 
-	const requestCompletions = (params: LSP.CompletionParams) => service.handleCompletion(params);
+	const requestCompletions = (params: LSP.CompletionParams) =>
+		service.handleCompletion(params, LSP.CancellationToken.None);
 
 	beforeEach(() => {
 		documents = createTextDocumentsStore();

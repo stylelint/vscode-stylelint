@@ -4,7 +4,7 @@ import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type winston from 'winston';
 
 import { inject } from '../../../../di/index.js';
-import { getEditInfo, RuleCodeActionsCollection } from '../../../utils/index.js';
+import { getEditInfo, RuleCodeActionsCollection, throwIfCancelled } from '../../../utils/index.js';
 import { codeActionRequest, command, initialize, lspService } from '../../../decorators.js';
 import { isDisableReportRule } from '../../../stylelint/index.js';
 import { lspConnectionToken, textDocumentsToken } from '../../../tokens.js';
@@ -105,11 +105,14 @@ export class CodeActionService {
 	@codeActionRequest()
 	async handleCodeAction(
 		params: LSP.CodeActionParams,
+		token: LSP.CancellationToken,
 	): Promise<(LSP.Command | LSP.CodeAction)[] | undefined | null> {
 		const { textDocument, context } = params;
 		const { uri } = textDocument;
 
 		this.#logger?.debug('Received onCodeAction', { uri, context });
+
+		throwIfCancelled(token);
 
 		const document = this.#documents.get(uri);
 
@@ -128,7 +131,9 @@ export class CodeActionService {
 			return [];
 		}
 
-		const actions = await this.#getCodeActions(document, context);
+		throwIfCancelled(token);
+
+		const actions = await this.#getCodeActions(document, context, token);
 
 		this.#logger?.debug('Returning code actions', { uri, count: actions.length });
 
@@ -144,6 +149,7 @@ export class CodeActionService {
 	async #getCodeActions(
 		document: TextDocument,
 		context: LSP.CodeActionContext,
+		token: LSP.CancellationToken,
 	): Promise<LSP.CodeAction[]> {
 		const only = context.only && new Set(context.only);
 		const fixAllActions: LSP.CodeAction[] = [];
@@ -152,6 +158,8 @@ export class CodeActionService {
 			only?.has(LSP.CodeActionKind.SourceFixAll) ||
 			only?.has(StylelintCodeActionKind.StylelintSourceFixAll)
 		) {
+			throwIfCancelled(token);
+
 			this.#logger?.debug('Creating "source-fix-all" code action');
 
 			const action = await this.#getAutoFixAllAction(document);
