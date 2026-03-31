@@ -4,7 +4,11 @@ import type { TextDocuments } from 'vscode-languageserver';
 import type winston from 'winston';
 
 import { inject } from '../../../di/index.js';
-import { getDisableType, createDisableCompletionItem } from '../../utils/index.js';
+import {
+	getDisableType,
+	createDisableCompletionItem,
+	throwIfCancelled,
+} from '../../utils/index.js';
 import { completionRequest, initialize, lspService } from '../../decorators.js';
 import { DisableMetadataLookupTable, DisableReportRuleNames } from '../../stylelint/index.js';
 import { textDocumentsToken } from '../../tokens.js';
@@ -60,6 +64,7 @@ export class CompletionService {
 	@completionRequest()
 	async handleCompletion(
 		params: LSP.CompletionParams,
+		token: LSP.CancellationToken,
 	): Promise<LSP.CompletionItem[] | LSP.CompletionList | undefined | null> {
 		const { textDocument, position } = params;
 		const { uri } = textDocument;
@@ -82,6 +87,8 @@ export class CompletionService {
 
 			return [];
 		}
+
+		throwIfCancelled(token);
 
 		const diagnostics = this.#diagnostics.getDiagnostics(uri);
 

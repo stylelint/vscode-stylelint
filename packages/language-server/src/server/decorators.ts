@@ -8,7 +8,13 @@
 /* eslint-disable func-names */
 /* eslint-disable @typescript-eslint/unbound-method */
 
-import type { Connection, HandlerResult, TextDocumentChangeEvent } from 'vscode-languageserver';
+import type {
+	Connection,
+	HandlerResult,
+	ResultProgressReporter,
+	TextDocumentChangeEvent,
+	WorkDoneProgressReporter,
+} from 'vscode-languageserver';
 import type LSP from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import {
@@ -91,14 +97,23 @@ export type ConnectionHandlerMetadata = {
 
 type CompletionRequestHandler = (
 	params: LSP.CompletionParams,
+	token: LSP.CancellationToken,
+	workDone: WorkDoneProgressReporter,
+	resultProgress?: ResultProgressReporter<LSP.CompletionItem[]>,
 ) => Promise<LSP.CompletionItem[] | LSP.CompletionList | undefined | null>;
 
 type CodeActionRequestHandler = (
 	params: LSP.CodeActionParams,
+	token: LSP.CancellationToken,
+	workDone: WorkDoneProgressReporter,
+	resultProgress?: ResultProgressReporter<(LSP.Command | LSP.CodeAction)[]>,
 ) => Promise<(LSP.Command | LSP.CodeAction)[] | undefined | null>;
 
 type DocumentFormattingRequestHandler = (
 	params: LSP.DocumentFormattingParams,
+	token: LSP.CancellationToken,
+	workDone: WorkDoneProgressReporter,
+	resultProgress?: ResultProgressReporter<never>,
 ) => Promise<LSP.TextEdit[] | undefined | null>;
 
 type AsyncNotificationHandler0 = MaybeAsync<() => void>;
@@ -241,16 +256,16 @@ function registerConnectionHandler(
 ): LSP.Disposable {
 	switch (descriptor.kind) {
 		case 'completion':
-			return connection.onCompletion((params, _token, _workDone, _resultProgress) =>
-				descriptor.handler(params),
+			return connection.onCompletion((params, token, workDone, resultProgress) =>
+				descriptor.handler(params, token, workDone, resultProgress),
 			);
 		case 'codeAction':
-			return connection.onCodeAction((params, _token, _workDone, _resultProgress) =>
-				descriptor.handler(params),
+			return connection.onCodeAction((params, token, workDone, resultProgress) =>
+				descriptor.handler(params, token, workDone, resultProgress),
 			);
 		case 'documentFormatting':
-			return connection.onDocumentFormatting((params, _token, _workDone, _resultProgress) =>
-				descriptor.handler(params),
+			return connection.onDocumentFormatting((params, token, workDone, resultProgress) =>
+				descriptor.handler(params, token, workDone, resultProgress),
 			);
 		default: {
 			const neverDescriptor: never = descriptor;
@@ -433,7 +448,7 @@ export function notification(type?: NotificationRegistrationType): MethodDecorat
 function createConnectionHandlerDecorator<K extends ConnectionHandlerKind>(
 	kind: K,
 	decoratorName: string,
-): MethodDecoratorFunction<ConnectionHandlerMap[K]> {
+): CompatibleMethodDecorator<ConnectionHandlerMap[K]> {
 	return (
 		target: Function,
 		{ kind: decoratorKind, addInitializer }: ClassMethodDecoratorContext,
@@ -458,28 +473,28 @@ function createConnectionHandlerDecorator<K extends ConnectionHandlerKind>(
 /**
  * Marks a method as a handler for a specific completion request.
  */
-export function completionRequest(): MethodDecoratorFunction<CompletionRequestHandler> {
+export function completionRequest(): CompatibleMethodDecorator<CompletionRequestHandler> {
 	return createConnectionHandlerDecorator('completion', '@completionRequest()');
 }
 
 /**
  * Marks a method as a handler for a specific code action request.
  */
-export function codeActionRequest(): MethodDecoratorFunction<CodeActionRequestHandler> {
+export function codeActionRequest(): CompatibleMethodDecorator<CodeActionRequestHandler> {
 	return createConnectionHandlerDecorator('codeAction', '@codeActionRequest()');
 }
 
 /**
  * Marks a method as a handler for a specific document formatting request.
  */
-export function documentFormattingRequest(): MethodDecoratorFunction<DocumentFormattingRequestHandler> {
+export function documentFormattingRequest(): CompatibleMethodDecorator<DocumentFormattingRequestHandler> {
 	return createConnectionHandlerDecorator('documentFormatting', '@documentFormattingRequest()');
 }
 
 /**
  * Marks a method as a shutdown handler.
  */
-export function shutdown(): MethodDecoratorFunction<ShutdownHandler> {
+export function shutdown(): CompatibleMethodDecorator<ShutdownHandler> {
 	return (target: Function, { kind, addInitializer }: ClassMethodDecoratorContext) => {
 		if (kind !== 'method') {
 			throw new Error('@shutdown() can only be used on a method.');

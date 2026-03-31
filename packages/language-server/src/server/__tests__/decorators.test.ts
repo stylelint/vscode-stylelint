@@ -53,27 +53,23 @@ describe('server decorators', () => {
 			}
 
 			@completionRequest()
-			async provideCompletion(
-				_: LSP.CompletionParams,
-			): Promise<LSP.CompletionItem[] | LSP.CompletionList | null | undefined> {
+			async provideCompletion(): Promise<
+				LSP.CompletionItem[] | LSP.CompletionList | null | undefined
+			> {
 				this.value += 2;
 
 				return [];
 			}
 
 			@codeActionRequest()
-			async provideCodeAction(
-				_: LSP.CodeActionParams,
-			): Promise<(LSP.Command | LSP.CodeAction)[] | null | undefined> {
+			async provideCodeAction(): Promise<(LSP.Command | LSP.CodeAction)[] | null | undefined> {
 				this.value += 3;
 
 				return null;
 			}
 
 			@documentFormattingRequest()
-			async formatDocument(
-				_: LSP.DocumentFormattingParams,
-			): Promise<LSP.TextEdit[] | null | undefined> {
+			async formatDocument(): Promise<LSP.TextEdit[] | null | undefined> {
 				this.value += 4;
 
 				return undefined;
@@ -134,7 +130,7 @@ describe('server decorators', () => {
 		]);
 
 		for (const descriptor of metadata?.connectionHandlers ?? []) {
-			await descriptor.handler({} as never);
+			await descriptor.handler({} as never, {} as never, {} as never);
 		}
 
 		expect(instance.value).toBe(11124);

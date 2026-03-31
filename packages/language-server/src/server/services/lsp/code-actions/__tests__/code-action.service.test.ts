@@ -85,6 +85,15 @@ function createParams(overrides: Partial<LSP.CodeActionParams> = {}): LSP.CodeAc
 	};
 }
 
+function createMockToken(cancelled = false): LSP.CancellationToken {
+	return {
+		get isCancellationRequested() {
+			return cancelled;
+		},
+		onCancellationRequested: () => ({ dispose() {} }),
+	};
+}
+
 describe('CodeActionService', () => {
 	let service: CodeActionService;
 	let documents: TextDocumentsStore;
@@ -107,7 +116,10 @@ describe('CodeActionService', () => {
 		return document;
 	};
 
-	const requestCodeActions = (params: LSP.CodeActionParams) => service.handleCodeAction(params);
+	const requestCodeActions = (
+		params: LSP.CodeActionParams,
+		token: LSP.CancellationToken = createMockToken(),
+	) => service.handleCodeAction(params, token);
 
 	/**
 	 * Sets up fixable warnings and diagnostics, then requests code actions.
@@ -504,6 +516,50 @@ describe('CodeActionService', () => {
 			expect(logger.warn).toHaveBeenLastCalledWith('Failed to open rule documentation', {
 				uri: 'https://stylelint.io/user-guide/rules/foo',
 			});
+		});
+	});
+
+	describe('cancellation', () => {
+		it('should throw RequestCancelled when token is already cancelled', async () => {
+			const document = setDocument();
+
+			options.setValidateLanguages([document.languageId]);
+
+			await expect(
+				requestCodeActions(
+					createParams({
+						context: { diagnostics: [] },
+						textDocument: { uri: document.uri },
+					}),
+					createMockToken(true),
+				),
+			).rejects.toThrow(
+				expect.objectContaining({
+					code: LSP.LSPErrorCodes.RequestCancelled,
+				}),
+			);
+		});
+
+		it('should throw RequestCancelled when token is cancelled before autofix', async () => {
+			const document = setDocument();
+
+			options.setValidateLanguages([document.languageId]);
+			fixes.setFixes(document.uri, [LSP.TextEdit.insert(LSP.Position.create(0, 0), 'text')]);
+
+			await expect(
+				requestCodeActions(
+					createParams({
+						context: { only: [LSP.CodeActionKind.SourceFixAll], diagnostics: [] },
+						textDocument: { uri: document.uri },
+					}),
+					createMockToken(true),
+				),
+			).rejects.toThrow(
+				expect.objectContaining({
+					code: LSP.LSPErrorCodes.RequestCancelled,
+				}),
+			);
+			expect(fixes.calls).toHaveLength(0);
 		});
 	});
 });
