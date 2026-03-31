@@ -1,12 +1,15 @@
 import { URI } from 'vscode-uri';
-import type { Connection } from 'vscode-languageserver';
+import type { Connection, WorkspaceFolder } from 'vscode-languageserver';
+import { DidChangeWorkspaceFoldersNotification } from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { normalizeFsPath } from '../../utils/index.js';
 import { inject } from '../../../di/index.js';
+import { lspService, notification } from '../../decorators.js';
 import { NormalizeFsPathToken, PathIsInsideToken, UriModuleToken } from '../../tokens.js';
 
 type PathIsInside = (path: string, potentialParent: string) => boolean;
 
+@lspService()
 @inject({
 	inject: [PathIsInsideToken, UriModuleToken, NormalizeFsPathToken],
 })
@@ -14,6 +17,7 @@ export class WorkspaceFolderService {
 	readonly #pathIsInside: PathIsInside;
 	readonly #uri: typeof URI;
 	readonly #normalizeFsPath: typeof normalizeFsPath;
+	#cachedFolders: WorkspaceFolder[] | undefined;
 
 	constructor(
 		pathIsInsideFn: PathIsInside,
@@ -23,6 +27,15 @@ export class WorkspaceFolderService {
 		this.#pathIsInside = pathIsInsideFn;
 		this.#uri = uriModule;
 		this.#normalizeFsPath = normalizeFsPathFn;
+	}
+
+	/**
+	 * Clears the cached workspace folders when the set of workspace folders
+	 * changes.
+	 */
+	@notification(DidChangeWorkspaceFoldersNotification.type)
+	clearCache(): void {
+		this.#cachedFolders = undefined;
 	}
 
 	/**
@@ -39,7 +52,8 @@ export class WorkspaceFolderService {
 		const { scheme, fsPath } = this.#uri.parse(document.uri);
 
 		if (scheme === 'untitled') {
-			const uri = (await connection.workspace.getWorkspaceFolders())?.[0]?.uri;
+			const folders = await this.#getWorkspaceFolders(connection);
+			const uri = folders?.[0]?.uri;
 
 			return uri ? this.#uri.parse(uri).fsPath : undefined;
 		}
@@ -54,7 +68,7 @@ export class WorkspaceFolderService {
 			return undefined;
 		}
 
-		const workspaceFolders = await connection.workspace.getWorkspaceFolders();
+		const workspaceFolders = await this.#getWorkspaceFolders(connection);
 
 		if (!workspaceFolders) {
 			return undefined;
@@ -74,5 +88,17 @@ export class WorkspaceFolderService {
 		}
 
 		return undefined;
+	}
+
+	async #getWorkspaceFolders(connection: Connection): Promise<WorkspaceFolder[] | null> {
+		if (this.#cachedFolders !== undefined) {
+			return this.#cachedFolders;
+		}
+
+		const folders = await connection.workspace.getWorkspaceFolders();
+
+		this.#cachedFolders = folders ?? [];
+
+		return this.#cachedFolders;
 	}
 }

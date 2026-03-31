@@ -18,6 +18,7 @@ import type {
 import { platformModule } from '../../../packages/language-server/src/server/modules/platform.module.js';
 import { stylelintRuntimeModule } from '../../../packages/language-server/src/server/modules/stylelint-runtime.module.js';
 import { workspaceModule } from '../../../packages/language-server/src/server/modules/workspace.module.js';
+import { infrastructureModule } from '../../../packages/language-server/src/server/modules/infrastructure.module.js';
 import { lspConnectionToken } from '../../../packages/language-server/src/server/tokens.js';
 import { loggingServiceToken } from '../../../packages/language-server/src/server/services/infrastructure/logging.service.js';
 import {
@@ -44,6 +45,7 @@ const getFixedText = (result: LintDiagnostics): string | undefined =>
 type StylelintDiagnostic = LintDiagnostics['diagnostics'][number];
 
 const testConnection = {
+	onNotification: () => {},
 	workspace: {
 		async getWorkspaceFolders() {
 			return null;
@@ -52,7 +54,7 @@ const testConnection = {
 } as unknown as Connection;
 
 const createTestContainerInstance = () =>
-	createContainer([platformModule, stylelintRuntimeModule, workspaceModule], {
+	createContainer([platformModule, stylelintRuntimeModule, workspaceModule, infrastructureModule], {
 		overrides: [
 			[lspConnectionToken, testConnection],
 			[loggingServiceToken, createLoggingServiceStub()],
