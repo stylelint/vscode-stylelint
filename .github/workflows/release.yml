@@ -141,9 +141,15 @@ jobs:
       - name: Build
         run: node --run build
 
-      - name: Publish to npm
+      - name: Pack npm tarball
+        id: tarball
         working-directory: packages/language-server
-        run: npm publish --provenance --access public
+        run: |
+          TARBALL_NAME=$(npm pack --json --pack-destination "${RUNNER_TEMP}" | jq -r '.[0].filename')
+          echo "tarball-path=${RUNNER_TEMP}/${TARBALL_NAME}" >> "${GITHUB_OUTPUT}"
+
+      - name: Publish to npm
+        run: npm publish "${{ steps.tarball.outputs.tarball-path }}" --provenance --access public
 
       - name: Extract changelog
         id: changelog
@@ -163,4 +169,5 @@ jobs:
           tag_name: '@stylelint/language-server@${{ needs.detect.outputs.server-version }}'
           name: '@stylelint/language-server ${{ needs.detect.outputs.server-version }}'
           body: ${{ steps.changelog.outputs.body }}
+          files: ${{ steps.tarball.outputs.tarball-path }}
           make_latest: false
