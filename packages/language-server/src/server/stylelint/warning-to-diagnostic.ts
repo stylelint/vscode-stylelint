@@ -5,6 +5,50 @@ import type { Logger } from 'winston';
 import type { Warning } from './types.js';
 
 /**
+ * A rule customization with its pattern pre-compiled for efficient matching.
+ */
+export type CompiledRuleCustomization = {
+	severity: SeverityOverride;
+	negated: boolean;
+	exactMatch?: string;
+	pattern?: RegExp;
+};
+
+/**
+ * Compiles an array of rule customizations into a form that can be matched
+ * efficiently against many warnings without rebuilding regexes.
+ */
+export function compileRuleCustomizations(
+	customizations: RuleCustomization[],
+): CompiledRuleCustomization[] {
+	return customizations.map((custom) => {
+		// Check for negation pattern.
+		const isNegated = custom.rule.startsWith('!');
+		const actualPattern = isNegated ? custom.rule.slice(1) : custom.rule;
+
+		// If no wildcard, just use the string for equality checks.
+		if (!actualPattern.includes('*')) {
+			return {
+				severity: custom.severity,
+				negated: isNegated,
+				exactMatch: actualPattern,
+			};
+		}
+
+		// Basic wildcard support for patterns like "color-*" or "*-block-*".
+		const regexSource = actualPattern
+			.replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape special regex chars, except for *.
+			.replace(/\*/g, '.*'); // Convert wildcard * to .*
+
+		return {
+			severity: custom.severity,
+			negated: isNegated,
+			pattern: new RegExp(`^${regexSource}$`),
+		};
+	});
+}
+
+/**
  * Converts a severity override value to LSP DiagnosticSeverity. Internal method
  * that only handles direct overrides, not 'upgrade' or 'downgrade'.
  */
@@ -28,45 +72,29 @@ function severityOverrideToLSPSeverity(
  */
 function applySeverityCustomization(
 	warning: Warning,
-	ruleCustomizations: RuleCustomization[] | undefined,
+	compiledCustomizations: CompiledRuleCustomization[] | undefined,
 	logger: Logger,
 ): DiagnosticSeverity | null {
-	if (!ruleCustomizations || ruleCustomizations.length === 0) {
+	if (!compiledCustomizations || compiledCustomizations.length === 0) {
 		// No customizations, use original severity.
 		return DiagnosticSeverity[warning.severity === 'warning' ? 'Warning' : 'Error'];
 	}
 
 	// Find matching customization. Process rules in reverse order so that
 	// subsequent rules have priority over previous ones.
-	let customization: RuleCustomization | undefined;
+	let customization: CompiledRuleCustomization | undefined;
 
-	for (let i = ruleCustomizations.length - 1; i >= 0; i--) {
-		const custom = ruleCustomizations[i];
-		const pattern = custom.rule;
+	for (let i = compiledCustomizations.length - 1; i >= 0; i--) {
+		const compiled = compiledCustomizations[i];
 
-		// Check for negation pattern.
-		const isNegated = pattern.startsWith('!');
-		const actualPattern = isNegated ? pattern.slice(1) : pattern;
-
-		let matches = false;
-
-		// Simple pattern matching, exact match or glob-like matching.
-		if (actualPattern === warning.rule) {
-			matches = true;
-		}
-		// Basic wildcard support for patterns like "color-*" or "*-block-*".
-		else if (actualPattern.includes('*')) {
-			const regexPattern = actualPattern
-				.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // Escape special regex chars.
-				.replace(/\\\*/g, '.*'); // Replace escaped \* with .*
-			const regex = new RegExp(`^${regexPattern}$`);
-
-			matches = regex.test(warning.rule);
-		}
+		const matches =
+			compiled.exactMatch !== undefined
+				? compiled.exactMatch === warning.rule
+				: compiled.pattern!.test(warning.rule);
 
 		// For negated patterns, invert the match result.
-		if (isNegated ? !matches : matches) {
-			customization = custom;
+		if (compiled.negated ? !matches : matches) {
+			customization = compiled;
 			break;
 		}
 	}
@@ -151,9 +179,9 @@ export function warningToDiagnostic(
 	warning: Warning,
 	logger: Logger,
 	ruleMetadata?: stylelint.LinterResult['ruleMetadata'],
-	ruleCustomizations?: RuleCustomization[],
+	compiledCustomizations?: CompiledRuleCustomization[],
 ): Diagnostic | null {
-	const severity = applySeverityCustomization(warning, ruleCustomizations, logger);
+	const severity = applySeverityCustomization(warning, compiledCustomizations, logger);
 
 	// If severity is null, the diagnostic should be suppressed.
 	if (severity === null) {
