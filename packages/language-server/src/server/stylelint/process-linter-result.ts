@@ -1,4 +1,3 @@
-import * as crypto from 'crypto';
 import type LSP from 'vscode-languageserver-protocol';
 import type { Logger } from 'winston';
 import type { RuleCustomization } from '../types.js';
@@ -17,18 +16,8 @@ import { warningToDiagnostic } from './warning-to-diagnostic.js';
  * Returns a unique key for a diagnostic.
  * @param diagnostic The diagnostic to get a key for.
  */
-function getDiagnosticKey(diagnostic: LSP.Diagnostic): string {
-	const range = diagnostic.range;
-	let message = '';
-
-	if (diagnostic.message) {
-		const hash = crypto.createHash('sha256');
-
-		hash.update(diagnostic.message);
-		message = hash.digest('base64');
-	}
-
-	return `[${range.start.line},${range.start.character},${range.end.line},${range.end.character}]-${diagnostic.code}-${message}`;
+function getDiagnosticKey({ range: { start, end }, code, message }: LSP.Diagnostic): string {
+	return `[${start.line},${start.character},${end.line},${end.character}]-${code}-${message}`;
 }
 
 /**
