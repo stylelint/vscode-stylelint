@@ -10,7 +10,7 @@ import {
 	type RuleMetadataSource,
 	type Warning,
 } from './types.js';
-import { warningToDiagnostic } from './warning-to-diagnostic.js';
+import { compileRuleCustomizations, warningToDiagnostic } from './warning-to-diagnostic.js';
 
 /**
  * Returns a unique key for a diagnostic.
@@ -62,11 +62,14 @@ function processSingleLintResult(
 		throw new InvalidOptionError(result.invalidOptionWarnings);
 	}
 
+	const compiledCustomizations = ruleCustomizations?.length
+		? compileRuleCustomizations(ruleCustomizations)
+		: undefined;
 	const diagnostics: LSP.Diagnostic[] = [];
 	const warningsMap = new Map<string, Warning>();
 
 	for (const warning of result.warnings) {
-		const diagnostic = warningToDiagnostic(warning, logger, ruleMetadata, ruleCustomizations);
+		const diagnostic = warningToDiagnostic(warning, logger, ruleMetadata, compiledCustomizations);
 
 		// Only add diagnostic if it wasn't suppressed.
 		if (diagnostic !== null) {

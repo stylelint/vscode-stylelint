@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 import { DiagnosticSeverity } from 'vscode-languageserver-types';
 import type { Logger } from 'winston';
 import { RuleCustomization } from '../../types.js';
-import { warningToDiagnostic } from '../warning-to-diagnostic.js';
+import { compileRuleCustomizations, warningToDiagnostic } from '../warning-to-diagnostic.js';
 import { createTestLogger } from '../../../../../../test/helpers/test-logger.js';
 import type { Warning } from '../types.js';
 
@@ -117,7 +117,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'error');
 			const customizations: RuleCustomization[] = [{ rule: 'color-named', severity: 'warn' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Warning);
@@ -127,7 +132,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'error');
 			const customizations: RuleCustomization[] = [{ rule: 'color-*', severity: 'info' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Information);
@@ -137,7 +147,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'error');
 			const customizations: RuleCustomization[] = [{ rule: 'color-named', severity: 'off' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).toBeNull();
 		});
@@ -146,7 +161,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'error');
 			const customizations: RuleCustomization[] = [{ rule: 'color-named', severity: 'downgrade' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Warning);
@@ -156,7 +176,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'warning');
 			const customizations: RuleCustomization[] = [{ rule: 'color-named', severity: 'upgrade' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Error);
@@ -166,7 +191,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'warning');
 			const customizations: RuleCustomization[] = [{ rule: 'color-named', severity: 'downgrade' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Information);
@@ -176,7 +206,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'error');
 			const customizations: RuleCustomization[] = [{ rule: 'color-named', severity: 'upgrade' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Error);
@@ -190,7 +225,12 @@ describe('warningToDiagnostic', () => {
 				{ rule: 'color-named', severity: 'warn' },
 			];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Warning);
@@ -200,7 +240,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'error');
 			const customizations: RuleCustomization[] = [{ rule: 'font-family-*', severity: 'warn' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Error);
@@ -210,7 +255,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('color-named', 'warning');
 			const customizations: RuleCustomization[] = [{ rule: 'font-family-*', severity: 'error' }];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Warning);
@@ -220,8 +270,18 @@ describe('warningToDiagnostic', () => {
 			const warningError = createWarning('color-named', 'error');
 			const warningWarn = createWarning('color-named', 'warning');
 
-			const diagnosticError = warningToDiagnostic(warningError, logger, undefined, []);
-			const diagnosticWarn = warningToDiagnostic(warningWarn, logger, undefined, []);
+			const diagnosticError = warningToDiagnostic(
+				warningError,
+				logger,
+				undefined,
+				compileRuleCustomizations([]),
+			);
+			const diagnosticWarn = warningToDiagnostic(
+				warningWarn,
+				logger,
+				undefined,
+				compileRuleCustomizations([]),
+			);
 
 			expect(diagnosticError).not.toBeNull();
 			expect(diagnosticError!.severity).toBe(DiagnosticSeverity.Error);
@@ -240,9 +300,24 @@ describe('warningToDiagnostic', () => {
 				{ rule: 'color-*', severity: 'warn' },
 			];
 
-			const diagnostic1 = warningToDiagnostic(warning1, logger, undefined, customizations);
-			const diagnostic2 = warningToDiagnostic(warning2, logger, undefined, customizations);
-			const diagnostic3 = warningToDiagnostic(warning3, logger, undefined, customizations);
+			const diagnostic1 = warningToDiagnostic(
+				warning1,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic2 = warningToDiagnostic(
+				warning2,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic3 = warningToDiagnostic(
+				warning3,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic1).not.toBeNull();
 			expect(diagnostic1!.severity).toBe(DiagnosticSeverity.Warning);
@@ -260,8 +335,18 @@ describe('warningToDiagnostic', () => {
 
 			const customizations: RuleCustomization[] = [{ rule: '!color-named', severity: 'warn' }];
 
-			const diagnostic1 = warningToDiagnostic(warning1, logger, undefined, customizations);
-			const diagnostic2 = warningToDiagnostic(warning2, logger, undefined, customizations);
+			const diagnostic1 = warningToDiagnostic(
+				warning1,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic2 = warningToDiagnostic(
+				warning2,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			// color-named should NOT match.
 			expect(diagnostic1).not.toBeNull();
@@ -279,9 +364,24 @@ describe('warningToDiagnostic', () => {
 
 			const customizations: RuleCustomization[] = [{ rule: '!color-*', severity: 'info' }];
 
-			const diagnostic1 = warningToDiagnostic(warning1, logger, undefined, customizations);
-			const diagnostic2 = warningToDiagnostic(warning2, logger, undefined, customizations);
-			const diagnostic3 = warningToDiagnostic(warning3, logger, undefined, customizations);
+			const diagnostic1 = warningToDiagnostic(
+				warning1,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic2 = warningToDiagnostic(
+				warning2,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic3 = warningToDiagnostic(
+				warning3,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			// color-* rules should NOT match, keeping their original severity.
 			expect(diagnostic1).not.toBeNull();
@@ -300,8 +400,18 @@ describe('warningToDiagnostic', () => {
 
 			const customizations: RuleCustomization[] = [{ rule: '!color-*', severity: 'off' }];
 
-			const diagnostic1 = warningToDiagnostic(warning1, logger, undefined, customizations);
-			const diagnostic2 = warningToDiagnostic(warning2, logger, undefined, customizations);
+			const diagnostic1 = warningToDiagnostic(
+				warning1,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic2 = warningToDiagnostic(
+				warning2,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			// color-* rules should NOT match.
 			expect(diagnostic1).not.toBeNull();
@@ -319,7 +429,12 @@ describe('warningToDiagnostic', () => {
 				{ rule: 'font-*', severity: 'warn' },
 			];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnostic).not.toBeNull();
 			expect(diagnostic!.severity).toBe(DiagnosticSeverity.Warning);
@@ -332,9 +447,24 @@ describe('warningToDiagnostic', () => {
 
 			const customizations: RuleCustomization[] = [{ rule: '!*-block-*', severity: 'info' }];
 
-			const diagnostic1 = warningToDiagnostic(warning1, logger, undefined, customizations);
-			const diagnostic2 = warningToDiagnostic(warning2, logger, undefined, customizations);
-			const diagnostic3 = warningToDiagnostic(warning3, logger, undefined, customizations);
+			const diagnostic1 = warningToDiagnostic(
+				warning1,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic2 = warningToDiagnostic(
+				warning2,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnostic3 = warningToDiagnostic(
+				warning3,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			// declaration-block-no-duplicate-properties matches *-block-*, so should NOT
 			// match !*-block-*.
@@ -362,7 +492,12 @@ describe('warningToDiagnostic', () => {
 				},
 			];
 
-			const diagnostic = warningToDiagnostic(warning, logger, undefined, customizations);
+			const diagnostic = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(logger.warn).toHaveBeenCalledWith('Unknown severity override: unknown-severity');
 			expect(diagnostic).not.toBeNull();
@@ -373,7 +508,12 @@ describe('warningToDiagnostic', () => {
 			const warning = createWarning('test-rule', 'warning');
 			const customizations: RuleCustomization[] = [{ rule: 'test-rule', severity: 'error' }];
 
-			const result = warningToDiagnostic(warning, logger, undefined, customizations);
+			const result = warningToDiagnostic(
+				warning,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(result).not.toBeNull();
 			expect(result!.severity).toBe(DiagnosticSeverity.Error);
@@ -388,8 +528,18 @@ describe('warningToDiagnostic', () => {
 				{ rule: 'color-named', severity: 'default' },
 			];
 
-			const diagnosticError = warningToDiagnostic(warningError, logger, undefined, customizations);
-			const diagnosticWarn = warningToDiagnostic(warningWarn, logger, undefined, customizations);
+			const diagnosticError = warningToDiagnostic(
+				warningError,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
+			const diagnosticWarn = warningToDiagnostic(
+				warningWarn,
+				logger,
+				undefined,
+				compileRuleCustomizations(customizations),
+			);
 
 			expect(diagnosticError).not.toBeNull();
 			expect(diagnosticError!.severity).toBe(DiagnosticSeverity.Error);
