@@ -24,6 +24,7 @@ export class WorkerEnvironmentService {
 	readonly #fs: FsModule;
 	readonly #path: PathModule;
 	readonly #packageRootService: PackageRootService;
+	readonly #inFlightRequests = new Map<string, Promise<string>>();
 
 	constructor(fsModule: FsModule, pathModule: PathModule, packageRootService: PackageRootService) {
 		this.#fs = fsModule;
@@ -32,6 +33,25 @@ export class WorkerEnvironmentService {
 	}
 
 	async createKey(input: EnvironmentKeyInput): Promise<string> {
+		const requestKey = this.#buildRequestKey(input);
+
+		let request = this.#inFlightRequests.get(requestKey);
+
+		if (!request) {
+			request = this.#computeKey(input);
+			this.#inFlightRequests.set(requestKey, request);
+		}
+
+		try {
+			return await request;
+		} finally {
+			if (this.#inFlightRequests.get(requestKey) === request) {
+				this.#inFlightRequests.delete(requestKey);
+			}
+		}
+	}
+
+	async #computeKey(input: EnvironmentKeyInput): Promise<string> {
 		const normalizedRoot = this.#normalizePath(input.workerRoot);
 		const resolvedStylelintPath = this.#resolveMaybeRelative(input.stylelintPath, normalizedRoot);
 		const stylelintManifest = await this.#resolveStylelintManifest(resolvedStylelintPath);
@@ -72,6 +92,14 @@ export class WorkerEnvironmentService {
 			`stylelintEntry:${stylelintEntry ?? '-'}`,
 			`stylelintPkg:${stylelintPackage ?? '-'}`,
 		].join('|');
+	}
+
+	#buildRequestKey(input: EnvironmentKeyInput): string {
+		const normalizedRoot = this.#normalizePath(input.workerRoot);
+		const resolvedStylelintPath = this.#resolveMaybeRelative(input.stylelintPath, normalizedRoot);
+		const pnpKey = resolvePnPConfigKey(input.pnpConfig);
+
+		return `${normalizedRoot}|${resolvedStylelintPath ?? '-'}|${pnpKey}`;
 	}
 
 	async #resolveStylelintManifest(stylelintPath: string | undefined): Promise<string | undefined> {

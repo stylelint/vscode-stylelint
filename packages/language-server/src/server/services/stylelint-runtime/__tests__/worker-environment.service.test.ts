@@ -104,4 +104,25 @@ describe('WorkerEnvironmentService', () => {
 
 		expect(initialKey).not.toBe(updatedKey);
 	});
+
+	test('deduplicates concurrent requests for the same inputs', async () => {
+		const workspaceRoot = path.resolve('/workspace');
+		const stylelintRoot = path.join(workspaceRoot, 'node_modules/stylelint');
+		const stylelintPath = path.join(stylelintRoot, 'index.js');
+		const { service, stat } = createService(
+			{
+				[path.join(workspaceRoot, 'package.json')]: 100,
+				[stylelintPath]: 300,
+				[path.join(stylelintRoot, 'package.json')]: 400,
+			},
+			stylelintRoot,
+		);
+
+		const input = { workerRoot: workspaceRoot, stylelintPath };
+
+		const [first, second] = await Promise.all([service.createKey(input), service.createKey(input)]);
+
+		expect(first).toBe(second);
+		expect(stat).toHaveBeenCalledTimes(7);
+	});
 });
