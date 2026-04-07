@@ -168,19 +168,27 @@ async function snapshotRuleMetadata(
 		return undefined;
 	}
 
+	const entries = Object.entries(resolvedRules);
 	const metadata: RuleMetadataSnapshot = {};
+	const asyncEntries: Promise<readonly [string, stylelint.RuleMeta | undefined]>[] = [];
 
-	for (const [name, ruleOrPromise] of Object.entries(resolvedRules)) {
-		const rulePromise: PromiseLike<{ meta?: stylelint.RuleMeta } | undefined> = isPromiseLike<{
-			meta?: stylelint.RuleMeta;
-		}>(ruleOrPromise)
-			? ruleOrPromise
-			: Promise.resolve(ruleOrPromise as { meta?: stylelint.RuleMeta } | undefined);
-		const rule = await rulePromise;
-		const meta = rule?.meta;
+	for (const [name, ruleOrPromise] of entries) {
+		if (isPromiseLike<{ meta?: stylelint.RuleMeta }>(ruleOrPromise)) {
+			asyncEntries.push(ruleOrPromise.then((rule) => [name, rule?.meta] as const));
+		} else {
+			const meta = (ruleOrPromise as { meta?: stylelint.RuleMeta } | undefined)?.meta;
 
-		if (meta) {
-			metadata[name] = meta;
+			if (meta) {
+				metadata[name] = meta;
+			}
+		}
+	}
+
+	if (asyncEntries.length > 0) {
+		for (const [name, meta] of await Promise.all(asyncEntries)) {
+			if (meta) {
+				metadata[name] = meta;
+			}
 		}
 	}
 
