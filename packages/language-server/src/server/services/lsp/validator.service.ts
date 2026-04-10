@@ -18,6 +18,7 @@ import {
 import type { LintDiagnostics } from '../../stylelint/index.js';
 import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../tokens.js';
 import { CommandId, Status, StatusNotification } from '../../types.js';
+import { StylelintRequestCancelledError } from '../../worker/worker-process.js';
 import { DocumentDiagnosticsService } from '../documents/document-diagnostics.service.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
 import { StylelintRunnerService } from '../stylelint-runtime/stylelint-runner.service.js';
@@ -52,6 +53,7 @@ export class ValidatorLspService {
 	#publishedUris = new Set<string>();
 	#debounceTimers = new Map<string, ReturnType<typeof setTimeout>>();
 	#pendingValidations = new Map<string, Promise<void>>();
+	#abortControllers = new Map<string, AbortController>();
 
 	constructor(
 		documents: TextDocuments<TextDocument>,
@@ -150,83 +152,115 @@ export class ValidatorLspService {
 			clearTimeout(timer);
 			this.#debounceTimers.delete(uri);
 		}
+
+		this.#abortValidation(uri);
+	}
+
+	#abortValidation(uri: string): void {
+		const controller = this.#abortControllers.get(uri);
+
+		if (controller) {
+			controller.abort();
+			this.#abortControllers.delete(uri);
+		}
 	}
 
 	async #validate(document: TextDocument): Promise<void> {
+		this.#abortValidation(document.uri);
+
+		const controller = new AbortController();
+
+		this.#abortControllers.set(document.uri, controller);
+
 		const versionBefore = document.version;
 
-		if (!(await this.#shouldValidate(document))) {
-			if (this.#diagnostics.getDiagnostics(document.uri).length > 0) {
-				this.#logger?.debug('Document should not be validated, clearing diagnostics', {
-					uri: document.uri,
-					language: document.languageId,
-				});
-				await this.#clearDiagnostics(document);
-			} else {
-				this.#logger?.debug('Document should not be validated, ignoring', {
-					uri: document.uri,
-					language: document.languageId,
-				});
+		try {
+			if (!(await this.#shouldValidate(document))) {
+				if (this.#diagnostics.getDiagnostics(document.uri).length > 0) {
+					this.#logger?.debug('Document should not be validated, clearing diagnostics', {
+						uri: document.uri,
+						language: document.languageId,
+					});
+					await this.#clearDiagnostics(document);
+				} else {
+					this.#logger?.debug('Document should not be validated, ignoring', {
+						uri: document.uri,
+						language: document.languageId,
+					});
+				}
+
+				return;
 			}
 
-			return;
-		}
+			const result = await this.#lintDocument(document, controller.signal);
 
-		const result = await this.#lintDocument(document);
+			if (!result) {
+				this.#logger?.debug('No lint result, ignoring', { uri: document.uri });
 
-		if (!result) {
-			this.#logger?.debug('No lint result, ignoring', { uri: document.uri });
+				return;
+			}
 
-			return;
-		}
+			// If the document was edited while the lint was running, discard the
+			// stale result. A new validation will be triggered by the edit.
+			const currentDocument = this.#documents.get(document.uri);
 
-		// If the document was edited while the lint was running, discard the
-		// stale result. A new validation will be triggered by the edit.
-		const currentDocument = this.#documents.get(document.uri);
+			if (currentDocument && currentDocument.version !== versionBefore) {
+				this.#logger?.debug('Discarding stale lint result', {
+					uri: document.uri,
+					lintedVersion: versionBefore,
+					currentVersion: currentDocument.version,
+				});
 
-		if (currentDocument && currentDocument.version !== versionBefore) {
-			this.#logger?.debug('Discarding stale lint result', {
-				uri: document.uri,
-				lintedVersion: versionBefore,
-				currentVersion: currentDocument.version,
-			});
+				return;
+			}
 
-			return;
-		}
-
-		this.#logger?.debug('Sending diagnostics', {
-			uri: document.uri,
-			diagnostics: result.diagnostics,
-		});
-
-		try {
-			await this.#connection.sendDiagnostics({
+			this.#logger?.debug('Sending diagnostics', {
 				uri: document.uri,
 				diagnostics: result.diagnostics,
 			});
-			this.#diagnostics.set(document, result.diagnostics, result);
-			this.#publishedUris.add(document.uri);
-			this.#logger?.debug('Diagnostics sent', { uri: document.uri });
-			this.#sendStatusNotification(document.uri, Status.ok);
-		} catch (error) {
-			displayError(this.#connection, error);
-			this.#logger?.error('Failed to send diagnostics', {
-				uri: document.uri,
-				error,
-			});
-			this.#sendStatusNotification(document.uri, Status.error);
+
+			try {
+				await this.#connection.sendDiagnostics({
+					uri: document.uri,
+					diagnostics: result.diagnostics,
+				});
+				this.#diagnostics.set(document, result.diagnostics, result);
+				this.#publishedUris.add(document.uri);
+				this.#logger?.debug('Diagnostics sent', { uri: document.uri });
+				this.#sendStatusNotification(document.uri, Status.ok);
+			} catch (error) {
+				displayError(this.#connection, error);
+				this.#logger?.error('Failed to send diagnostics', {
+					uri: document.uri,
+					error,
+				});
+				this.#sendStatusNotification(document.uri, Status.error);
+			}
+		} finally {
+			if (this.#abortControllers.get(document.uri) === controller) {
+				this.#abortControllers.delete(document.uri);
+			}
 		}
 	}
 
-	async #lintDocument(document: TextDocument): Promise<LintDiagnostics | undefined> {
+	async #lintDocument(
+		document: TextDocument,
+		signal?: AbortSignal,
+	): Promise<LintDiagnostics | undefined> {
 		this.#logger?.debug('Linting document', { uri: document.uri });
 
 		try {
 			const options = await this.#options.getOptions(document.uri);
-			const results = await this.#runner.lintDocument(document, {}, options);
+			const results = await this.#runner.lintDocument(document, {}, options, signal);
 
 			return results;
 		} catch (error) {
+			if (error instanceof StylelintRequestCancelledError) {
+				this.#logger?.debug('Lint cancelled', { uri: document.uri });
+
+				return undefined;
+			}
+
 			displayError(this.#connection, error);
 			this.#logger?.error('Error running lint', { uri: document.uri, error });
 			this.#sendStatusNotification(document.uri, Status.error);
@@ -249,6 +283,18 @@ export class ValidatorLspService {
 
 	@command(CommandId.ClearAllProblems)
 	async clearAllProblems(): Promise<void> {
+		for (const timer of this.#debounceTimers.values()) {
+			clearTimeout(timer);
+		}
+
+		this.#debounceTimers.clear();
+
+		for (const controller of this.#abortControllers.values()) {
+			controller.abort();
+		}
+
+		this.#abortControllers.clear();
+
 		for (const uri of this.#publishedUris) {
 			this.#diagnostics.clear(uri);
 			await this.#connection.sendDiagnostics({ uri, diagnostics: [] });

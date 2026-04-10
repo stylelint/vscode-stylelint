@@ -66,7 +66,10 @@ export class WorkspaceStylelintService {
 		this.#workerRegistry = workerRegistry;
 	}
 
-	async lint(request: WorkspaceLintRequest): Promise<WorkerLintResult | undefined> {
+	async lint(
+		request: WorkspaceLintRequest,
+		signal?: AbortSignal,
+	): Promise<WorkerLintResult | undefined> {
 		const pnpConfig = await this.#pnpConfigurationCache.findConfiguration(
 			request.options.codeFilename,
 		);
@@ -90,11 +93,14 @@ export class WorkspaceStylelintService {
 					environmentKey,
 				},
 				async (worker) =>
-					await worker.lint({
-						options: request.options,
-						stylelintPath: request.stylelintPath,
-						runnerOptions: request.runnerOptions,
-					}),
+					await worker.lint(
+						{
+							options: request.options,
+							stylelintPath: request.stylelintPath,
+							runnerOptions: request.runnerOptions,
+						},
+						signal,
+					),
 			);
 		} catch (error) {
 			if (error instanceof StylelintNotFoundError) {
@@ -107,7 +113,10 @@ export class WorkspaceStylelintService {
 		}
 	}
 
-	async resolve(request: WorkspaceResolveRequest): Promise<WorkerResolveResult | undefined> {
+	async resolve(
+		request: WorkspaceResolveRequest,
+		signal?: AbortSignal,
+	): Promise<WorkerResolveResult | undefined> {
 		const pnpConfig = await this.#pnpConfigurationCache.findConfiguration(request.codeFilename);
 		const workerRoot = await this.#packageRootCache.determineWorkerRoot(
 			request.workspaceFolder,
@@ -129,11 +138,14 @@ export class WorkspaceStylelintService {
 					environmentKey,
 				},
 				async (worker) =>
-					await worker.resolve({
-						stylelintPath: request.stylelintPath,
-						codeFilename: request.codeFilename,
-						runnerOptions: request.runnerOptions,
-					}),
+					await worker.resolve(
+						{
+							stylelintPath: request.stylelintPath,
+							codeFilename: request.codeFilename,
+							runnerOptions: request.runnerOptions,
+						},
+						signal,
+					),
 			);
 		} catch (error) {
 			if (error instanceof StylelintNotFoundError) {
@@ -148,6 +160,7 @@ export class WorkspaceStylelintService {
 
 	async resolveConfig(
 		request: WorkspaceResolveConfigRequest,
+		signal?: AbortSignal,
 	): Promise<WorkerResolveConfigResult | undefined> {
 		const pnpConfig = await this.#pnpConfigurationCache.findConfiguration(request.filePath);
 		const workerRoot = await this.#packageRootCache.determineWorkerRoot(
@@ -170,11 +183,14 @@ export class WorkspaceStylelintService {
 					environmentKey,
 				},
 				async (worker) =>
-					await worker.resolveConfig({
-						filePath: request.filePath,
-						stylelintPath: request.stylelintPath,
-						runnerOptions: request.runnerOptions,
-					}),
+					await worker.resolveConfig(
+						{
+							filePath: request.filePath,
+							stylelintPath: request.stylelintPath,
+							runnerOptions: request.runnerOptions,
+						},
+						signal,
+					),
 			);
 		} catch (error) {
 			if (error instanceof StylelintNotFoundError) {

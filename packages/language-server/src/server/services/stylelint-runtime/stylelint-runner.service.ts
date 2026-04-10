@@ -117,6 +117,7 @@ export class StylelintRunnerService {
 		document: TextDocument,
 		linterOptions: stylelint.LinterOptions = {},
 		runnerOptions: RunnerOptions = {},
+		signal?: AbortSignal,
 	): Promise<LintDiagnostics> {
 		const workspaceFolder = await this.#workspaceFolderService.getWorkspaceFolder(
 			this.#connection,
@@ -139,6 +140,7 @@ export class StylelintRunnerService {
 			options,
 			runnerOptions,
 			resolvedStylelintPath,
+			signal,
 		);
 
 		if (diagnostics) {
@@ -546,6 +548,7 @@ export class StylelintRunnerService {
 		options: stylelint.LinterOptions,
 		runnerOptions: RunnerOptions,
 		stylelintPath?: string,
+		signal?: AbortSignal,
 	): Promise<LintDiagnostics | undefined> {
 		if (!this.#workspaceService) {
 			return undefined;
@@ -582,12 +585,15 @@ export class StylelintRunnerService {
 			const result =
 				lintOptions === options && cachedResult
 					? cachedResult
-					: await this.#workspaceService.lint({
-							workspaceFolder: lintWorkspaceFolder,
-							options: lintOptions,
-							stylelintPath,
-							runnerOptions,
-						});
+					: await this.#workspaceService.lint(
+							{
+								workspaceFolder: lintWorkspaceFolder,
+								options: lintOptions,
+								stylelintPath,
+								runnerOptions,
+							},
+							signal,
+						);
 
 			if (!result) {
 				throw new StylelintNotFoundError();

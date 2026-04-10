@@ -131,6 +131,13 @@ export class StylelintWorkerUnavailableError extends Error {
 	}
 }
 
+export class StylelintRequestCancelledError extends Error {
+	constructor(message?: string) {
+		super(message ?? 'The lint request was cancelled.');
+		this.name = 'StylelintRequestCancelledError';
+	}
+}
+
 type WorkerSuccessResponse = Extract<WorkerResponse, { success: true }>;
 type PendingRequest = {
 	resolve: (value: WorkerSuccessResponse['result']) => void;
@@ -166,20 +173,27 @@ export class StylelintWorkerProcess {
 		return this.#disposed;
 	}
 
-	async lint(payload: WorkerLintPayload): Promise<WorkerLintResult> {
-		const result = (await this.#sendRequest('lint', payload)) as WorkerLintResult;
+	async lint(payload: WorkerLintPayload, signal?: AbortSignal): Promise<WorkerLintResult> {
+		const result = (await this.#sendRequest('lint', payload, signal)) as WorkerLintResult;
 
 		return result;
 	}
 
-	async resolve(payload: WorkerResolvePayload): Promise<WorkerResolveResult> {
-		const result = (await this.#sendRequest('resolve', payload)) as WorkerResolveResult;
+	async resolve(payload: WorkerResolvePayload, signal?: AbortSignal): Promise<WorkerResolveResult> {
+		const result = (await this.#sendRequest('resolve', payload, signal)) as WorkerResolveResult;
 
 		return result;
 	}
 
-	async resolveConfig(payload: WorkerResolveConfigPayload): Promise<WorkerResolveConfigResult> {
-		const result = (await this.#sendRequest('resolveConfig', payload)) as WorkerResolveConfigResult;
+	async resolveConfig(
+		payload: WorkerResolveConfigPayload,
+		signal?: AbortSignal,
+	): Promise<WorkerResolveConfigResult> {
+		const result = (await this.#sendRequest(
+			'resolveConfig',
+			payload,
+			signal,
+		)) as WorkerResolveConfigResult;
 
 		return result;
 	}
@@ -217,8 +231,13 @@ export class StylelintWorkerProcess {
 
 	async #sendRequest(
 		type: WorkerRequest['type'],
-		payload?: WorkerLintPayload | WorkerResolvePayload,
+		payload?: WorkerLintPayload | WorkerResolvePayload | WorkerResolveConfigPayload,
+		signal?: AbortSignal,
 	): Promise<WorkerSuccessResponse['result']> {
+		if (signal?.aborted) {
+			throw new StylelintRequestCancelledError();
+		}
+
 		this.#ensureChild();
 
 		const id = createRequestId();
@@ -230,13 +249,27 @@ export class StylelintWorkerProcess {
 				return;
 			}
 
+			const onAbort = (): void => {
+				const pending = this.#pending.get(id);
+
+				if (pending) {
+					this.#pending.delete(id);
+					this.#sendCancelMessage(id);
+					pending.reject(new StylelintRequestCancelledError());
+				}
+			};
+
+			signal?.addEventListener('abort', onAbort, { once: true });
+
 			this.#pending.set(id, {
 				resolve: (value) => {
+					signal?.removeEventListener('abort', onAbort);
 					this.#pending.delete(id);
 					this.#resetIdleTimer();
 					resolve(value);
 				},
 				reject: (error) => {
+					signal?.removeEventListener('abort', onAbort);
 					this.#pending.delete(id);
 					reject(error);
 				},
@@ -253,6 +286,16 @@ export class StylelintWorkerProcess {
 
 			this.#child.send(request);
 		});
+	}
+
+	#sendCancelMessage(id: string): void {
+		if (this.#child && !this.#disposed) {
+			try {
+				this.#child.send({ id, type: 'cancel' } as WorkerRequest);
+			} catch {
+				// Worker may have already exited.
+			}
+		}
 	}
 
 	#ensureChild(): void {

@@ -15,6 +15,7 @@ export type StylelintRunnerStub = Pick<
 		document: TextDocument;
 		linterOptions?: unknown;
 		runnerOptions?: RunnerOptions;
+		signal?: AbortSignal;
 	}>;
 	resolveCalls: string[];
 	lintWorkspaceFolderCalls: Array<{
@@ -26,11 +27,18 @@ export type StylelintRunnerStub = Pick<
 	setResolution(uri: string, result: StylelintResolutionResult | undefined): void;
 	setLintWorkspaceFolderResult(result: MultiFileLintDiagnostics): void;
 	setLintWorkspaceFolderError(error: unknown): void;
+	/**
+	 * Makes lintDocument return a promise that won't resolve until the returned
+	 * callback is invoked.
+	 */
+	setDeferredLintResult(uri: string, result: LintDiagnostics | undefined): () => void;
 };
 
 export function createStylelintRunnerStub(): StylelintRunnerStub {
 	const lintResults = new Map<string, LintDiagnostics | undefined>();
 	const lintErrors = new Map<string, unknown>();
+	const deferredResolvers = new Map<string, () => void>();
+	const deferredResults = new Map<string, LintDiagnostics | undefined>();
 	const resolutions = new Map<string, StylelintResolutionResult | undefined>();
 	const lintCalls: StylelintRunnerStub['lintCalls'] = [];
 	const resolveCalls: string[] = [];
@@ -57,12 +65,28 @@ export function createStylelintRunnerStub(): StylelintRunnerStub {
 		setLintWorkspaceFolderError: (error: unknown) => {
 			workspaceFolderError = error;
 		},
+		setDeferredLintResult: (uri: string, result: LintDiagnostics | undefined): (() => void) => {
+			deferredResolvers.set(uri, () => {});
+			deferredResults.set(uri, result);
+
+			// Return callback that releases the lint.
+			return () => {
+				const r = deferredResolvers.get(uri);
+
+				if (r) {
+					deferredResolvers.delete(uri);
+					deferredResults.delete(uri);
+					r();
+				}
+			};
+		},
 		async lintDocument(
 			document: TextDocument,
 			linterOptions?: unknown,
 			runnerOptions?: RunnerOptions,
+			signal?: AbortSignal,
 		) {
-			lintCalls.push({ document, linterOptions, runnerOptions });
+			lintCalls.push({ document, linterOptions, runnerOptions, signal });
 
 			if (lintErrors.has(document.uri)) {
 				const error = lintErrors.get(document.uri);
@@ -72,6 +96,20 @@ export function createStylelintRunnerStub(): StylelintRunnerStub {
 				}
 
 				throw new Error(String(error));
+			}
+
+			// If a deferred result is registered, wait for it to be released.
+			if (deferredResolvers.has(document.uri)) {
+				await new Promise<void>((resolve) => {
+					const existingResolve = deferredResolvers.get(document.uri)!;
+
+					deferredResolvers.set(document.uri, () => {
+						existingResolve();
+						resolve();
+					});
+				});
+
+				return deferredResults.get(document.uri) as unknown as LintDiagnostics;
 			}
 
 			return lintResults.get(document.uri) as unknown as LintDiagnostics;

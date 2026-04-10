@@ -58,6 +58,13 @@ const state: {
 	version?: string;
 } = {};
 
+/**
+ * Tracks IDs of requests that were cancelled by the parent process. When a
+ * handler finishes for a cancelled request, it should skip sending the result
+ * back over the process channel.
+ */
+const cancelledRequests = new Set<string>();
+
 const createLinterResultSubset = (linterResult: stylelint.LinterResult): LinterResult => {
 	const subset: LinterResult = {
 		results: (Array.isArray(linterResult.results) ? linterResult.results : []).map(
@@ -357,6 +364,10 @@ async function handleResolve(
 		request.payload.runnerOptions,
 	);
 
+	if (cancelledRequests.delete(request.id)) {
+		return;
+	}
+
 	if (!state.resolvedPath || !state.entryPath) {
 		throw createNotFoundError();
 	}
@@ -384,11 +395,20 @@ async function handleLint(
 		request.payload.runnerOptions,
 	);
 
+	if (cancelledRequests.delete(request.id)) {
+		return;
+	}
+
 	if (!state.stylelint || !state.resolvedPath) {
 		throw createNotFoundError();
 	}
 
 	const linterResult = await state.stylelint.lint(request.payload.options);
+
+	if (cancelledRequests.delete(request.id)) {
+		return;
+	}
+
 	const subsetResult = createLinterResultSubset(linterResult);
 
 	sendMessage({
@@ -414,6 +434,10 @@ async function handleResolveConfig(
 		request.payload.runnerOptions,
 	);
 
+	if (cancelledRequests.delete(request.id)) {
+		return;
+	}
+
 	if (!state.stylelint || !state.resolvedPath) {
 		throw createNotFoundError();
 	}
@@ -427,6 +451,10 @@ async function handleResolveConfig(
 
 	if (typeof resolveConfigFn === 'function') {
 		config = await resolveConfigFn(request.payload.filePath);
+	}
+
+	if (cancelledRequests.delete(request.id)) {
+		return;
 	}
 
 	sendMessage({
@@ -470,6 +498,11 @@ const handleMessage = async (request?: WorkerRequest): Promise<void> => {
 				process.exitCode = 0;
 
 				return;
+			}
+
+			case 'cancel': {
+				cancelledRequests.add(request.id);
+				break;
 			}
 
 			default:
