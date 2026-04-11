@@ -58,6 +58,10 @@ export type WorkerRequest =
 	| {
 			id: string;
 			type: 'shutdown';
+	  }
+	| {
+			id: string;
+			type: 'cancel';
 	  };
 
 export type SerializedWorkerError = {

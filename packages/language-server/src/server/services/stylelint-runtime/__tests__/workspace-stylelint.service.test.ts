@@ -142,11 +142,14 @@ describe('WorkspaceStylelintService', () => {
 			},
 			expect.any(Function),
 		);
-		expect(worker.lint).toHaveBeenCalledWith({
-			options: request.options,
-			stylelintPath: undefined,
-			runnerOptions: request.runnerOptions,
-		});
+		expect(worker.lint).toHaveBeenCalledWith(
+			{
+				options: request.options,
+				stylelintPath: undefined,
+				runnerOptions: request.runnerOptions,
+			},
+			undefined,
+		);
 	});
 
 	test('logs debug information when Stylelint is not found during lint', async () => {
@@ -187,11 +190,14 @@ describe('WorkspaceStylelintService', () => {
 			}),
 		).resolves.toBe(resolveResult);
 
-		expect(worker.resolve).toHaveBeenCalledWith({
-			stylelintPath: 'stylelint',
-			codeFilename: undefined,
-			runnerOptions: {} as RunnerOptions,
-		});
+		expect(worker.resolve).toHaveBeenCalledWith(
+			{
+				stylelintPath: 'stylelint',
+				codeFilename: undefined,
+				runnerOptions: {} as RunnerOptions,
+			},
+			undefined,
+		);
 	});
 
 	test('disposes caches and workers for a workspace', () => {

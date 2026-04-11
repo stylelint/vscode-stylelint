@@ -24,6 +24,7 @@ import { getLanguageServerServiceMetadata } from '../../../decorators.js';
 import type { LintDiagnostics } from '../../../stylelint/index.js';
 import { lspConnectionToken, textDocumentsToken, UriModuleToken } from '../../../tokens.js';
 import { CommandId } from '../../../types.js';
+import { StylelintRequestCancelledError } from '../../../worker/worker-process.js';
 import { DocumentDiagnosticsService } from '../../documents/document-diagnostics.service.js';
 import { type LoggingService, loggingServiceToken } from '../../infrastructure/logging.service.js';
 import { NotificationService } from '../../infrastructure/notification.service.js';
@@ -541,6 +542,98 @@ describe('ValidatorLspModule', () => {
 			await service.clearAllProblems();
 
 			expect(connection.sendDiagnosticsCalls).toHaveLength(0);
+		});
+	});
+
+	describe('cancellation', () => {
+		it('should pass an AbortSignal to the runner', async () => {
+			const document = setDocument();
+			const lintDiagnostics = [createDiagnostic('lint')];
+
+			options.setValidateLanguages(['css']);
+			runner.setLintResult(document.uri, createDiagnosticsResult(lintDiagnostics));
+
+			await service.handleDocumentOpened(createChangeEvent(document));
+
+			expect(runner.lintCalls).toHaveLength(1);
+			expect(runner.lintCalls[0].signal).toBeInstanceOf(AbortSignal);
+			expect(runner.lintCalls[0].signal?.aborted).toBe(false);
+		});
+
+		it('should abort the previous validation when the same document is re-validated', async () => {
+			const document = setDocument();
+			const lintDiagnostics = [createDiagnostic('lint')];
+
+			options.setValidateLanguages(['css']);
+
+			const releaseLint = runner.setDeferredLintResult(
+				document.uri,
+				createDiagnosticsResult(lintDiagnostics),
+			);
+
+			const firstValidation = service.handleDocumentOpened(createChangeEvent(document));
+
+			await flushPromises();
+
+			expect(runner.lintCalls).toHaveLength(1);
+
+			const firstSignal = runner.lintCalls[0].signal;
+
+			expect(firstSignal?.aborted).toBe(false);
+
+			runner.setLintResult(document.uri, createDiagnosticsResult(lintDiagnostics));
+
+			const secondValidation = service.handleDocumentOpened(createChangeEvent(document));
+
+			await flushPromises();
+
+			expect(firstSignal?.aborted).toBe(true);
+
+			releaseLint();
+			await firstValidation;
+			await secondValidation;
+		});
+
+		it('should not send diagnostics when a lint is cancelled', async () => {
+			const document = setDocument();
+
+			options.setValidateLanguages(['css']);
+			runner.setLintError(document.uri, new StylelintRequestCancelledError());
+
+			await service.handleDocumentOpened(createChangeEvent(document));
+
+			expect(connection.sendDiagnosticsCalls).toHaveLength(0);
+			expect(connection.windowMessages).toHaveLength(0);
+			expect(logger.debug).toHaveBeenCalledWith('Lint cancelled', {
+				uri: document.uri,
+			});
+		});
+
+		it('clearAllProblems should abort in-flight validations', async () => {
+			const document = setDocument();
+			const lintDiagnostics = [createDiagnostic('lint')];
+
+			options.setValidateLanguages(['css']);
+
+			const releaseLint = runner.setDeferredLintResult(
+				document.uri,
+				createDiagnosticsResult(lintDiagnostics),
+			);
+
+			const validation = service.handleDocumentOpened(createChangeEvent(document));
+
+			await flushPromises();
+
+			const signal = runner.lintCalls[0].signal;
+
+			expect(signal?.aborted).toBe(false);
+
+			await service.clearAllProblems();
+
+			expect(signal?.aborted).toBe(true);
+
+			releaseLint();
+			await validation;
 		});
 	});
 });
