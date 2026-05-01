@@ -364,7 +364,7 @@
     "vscode-languageserver": "^9.0.1"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.8",
+    "@changesets/cli": "^2.31.0",
     "@changesets/get-github-info": "^0.8.0",
     "@stylelint/prettier-config": "^4.0.0",
     "@types/node": "22.17.2",
