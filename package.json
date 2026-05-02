@@ -388,7 +388,7 @@
     "postcss-sass": "^0.5.0",
     "postcss-scss": "^4.0.9",
     "postcss-styled-syntax": "^0.7.1",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.3",
     "semver": "^7.7.4",
     "stylelint": "^17.6.0",
     "stylelint-scss": "^7.0.0",
