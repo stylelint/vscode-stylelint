@@ -128,7 +128,10 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 	},
 	{
 		code: 'declaration-block-single-line-max-declarations',
-		message: 'Expected no more than 1 declaration',
+		message: matchVersion({
+			'<17.7': 'Expected no more than 1 declaration',
+			default: 'Too many declarations, maximum 1',
+		}),
 		range: [57, 2, 57, 2],
 		severity: 'error',
 	},
@@ -185,13 +188,19 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 	},
 	{
 		code: 'max-nesting-depth',
-		message: 'Expected nesting depth to be no more than 2',
+		message: matchVersion({
+			'<17.7': 'Expected nesting depth to be no more than 2',
+			default: 'Too deep nesting, maximum 2',
+		}),
 		range: [90, 6, 90, 6],
 		severity: 'error',
 	},
 	{
 		code: 'selector-max-id',
-		message: 'Expected "#myid" to have no more than 0 ID selectors', // cspell:disable-line
+		message: matchVersion({
+			'<17.7': 'Expected "#myid" to have no more than 0 ID selectors', // cspell:disable-line
+			default: 'Too many ID selectors in "#myid", maximum 0', // cspell:disable-line
+		}),
 		range: [98, 0, 98, 0],
 		severity: 'error',
 	},
