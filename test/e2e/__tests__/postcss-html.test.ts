@@ -1,6 +1,12 @@
 import * as assert from 'node:assert/strict';
 
-import { assertDiagnostic, closeAllEditors, openDocument, waitForDiagnostics } from '../helpers.js';
+import {
+	assertDiagnostic,
+	closeAllEditors,
+	matchVersion,
+	openDocument,
+	waitForDiagnostics,
+} from '../helpers.js';
 
 describe('postcss-html', () => {
 	afterEach(async () => {
@@ -14,7 +20,10 @@ describe('postcss-html', () => {
 		assert.equal(diagnostics.length, 1);
 		assertDiagnostic(diagnostics[0], {
 			code: 'color-no-hex',
-			message: 'Unexpected hex color "#000" (color-no-hex)',
+			message: matchVersion({
+				'<17.7': 'Unexpected hex color "#000" (color-no-hex)',
+				default: 'Disallowed hex color "#000" (color-no-hex)',
+			}),
 			range: [6, 9, 6, 13],
 			severity: 'error',
 		});

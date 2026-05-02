@@ -33,7 +33,10 @@ describe('Severity Override', () => {
 			},
 			{
 				code: 'color-named',
-				message: 'Unexpected named color "red" (color-named)',
+				message: matchVersion({
+					'<17.7': 'Unexpected named color "red" (color-named)',
+					default: 'Disallowed named color "red" (color-named)',
+				}),
 				range: [4, 9, 4, 12],
 				severity: 'warning', // Overridden from error to warning.
 			},
@@ -46,14 +49,20 @@ describe('Severity Override', () => {
 			},
 			{
 				code: 'custom-property-no-missing-var-function',
-				message:
-					'Unexpected missing var function for "--my-var" (custom-property-no-missing-var-function)',
+				message: matchVersion({
+					'<17.7':
+						'Unexpected missing var function for "--my-var" (custom-property-no-missing-var-function)',
+					default: 'Missing var function for "--my-var" (custom-property-no-missing-var-function)',
+				}),
 				range: [15, 9, 15, 17],
 				severity: 'warning', // Downgraded from error.
 			},
 			{
 				code: 'declaration-block-no-duplicate-properties',
-				message: 'Unexpected duplicate "color" (declaration-block-no-duplicate-properties)',
+				message: matchVersion({
+					'<17.7': 'Unexpected duplicate "color" (declaration-block-no-duplicate-properties)',
+					default: 'Duplicate property "color" (declaration-block-no-duplicate-properties)',
+				}),
 				range: matchVersion({
 					'<16': [20, 2, 20, 7],
 					default: [19, 2, 19, 7],
@@ -62,14 +71,20 @@ describe('Severity Override', () => {
 			},
 			{
 				code: 'font-family-no-missing-generic-family-keyword',
-				message:
-					'Unexpected missing generic font family (font-family-no-missing-generic-family-keyword)',
+				message: matchVersion({
+					'<17.7':
+						'Unexpected missing generic font family (font-family-no-missing-generic-family-keyword)',
+					default: 'Missing generic font family (font-family-no-missing-generic-family-keyword)',
+				}),
 				range: [24, 15, 24, 20],
 				severity: 'error', // Not affected by !font-* negation (font rules excluded).
 			},
 			{
 				code: 'length-zero-no-unit',
-				message: 'Unexpected unit (length-zero-no-unit)',
+				message: matchVersion({
+					'<17.7': 'Unexpected unit (length-zero-no-unit)',
+					default: 'Disallowed unit (length-zero-no-unit)',
+				}),
 				range: [29, 10, 29, 12],
 				severity: 'error', // Uses default severity, i.e. the original one from Stylelint.
 			},
