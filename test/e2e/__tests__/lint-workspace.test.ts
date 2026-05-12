@@ -4,6 +4,7 @@ import {
 	assertDiagnostics,
 	closeAllEditors,
 	getStylelintDiagnostics,
+	matchVersion,
 	waitFor,
 } from '../helpers.js';
 
@@ -137,7 +138,10 @@ describe('Lint Commands', () => {
 			assertDiagnostics(styleBDiagnostics, [
 				{
 					code: 'color-named',
-					message: 'Unexpected named color "red" (color-named)',
+					message: matchVersion({
+						'<17.7': 'Unexpected named color "red" (color-named)',
+						default: 'Disallowed named color "red" (color-named)',
+					}),
 					range: [2, 9, 2, 12],
 					severity: 'error',
 				},
@@ -221,7 +225,10 @@ describe('Lint Commands', () => {
 			assertDiagnostics(styleBDiagnostics, [
 				{
 					code: 'color-named',
-					message: 'Unexpected named color "red" (color-named)',
+					message: matchVersion({
+						'<17.7': 'Unexpected named color "red" (color-named)',
+						default: 'Disallowed named color "red" (color-named)',
+					}),
 					range: [2, 9, 2, 12],
 					severity: 'error',
 				},
