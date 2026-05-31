@@ -73,7 +73,7 @@ afterAll(() => {
 });
 
 describe('StylelintRunner', () => {
-	test('should be resolved with diagnostics when it lints CSS successfully', async () => {
+	const lintCssSuccessTest = async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(createDocument(null, 'css', '  foo { color: #y3 }'), {
@@ -86,7 +86,18 @@ describe('StylelintRunner', () => {
 		});
 
 		expect(result.diagnostics).toMatchSnapshot();
-	});
+	};
+
+	testOnVersion(
+		'<17.7',
+		'should be resolved with diagnostics when it lints CSS successfully',
+		lintCssSuccessTest,
+	);
+	testOnVersion(
+		'>=17.7',
+		'should be resolved with diagnostics when it lints CSS successfully',
+		lintCssSuccessTest,
+	);
 
 	test('should be resolved with an empty array when no errors and warnings are reported', async () => {
 		expect.assertions(1);
@@ -405,7 +416,7 @@ a { color: #000 }
 		},
 	);
 
-	test('should work normally when rules are defined', async () => {
+	const workNormallyTest = (expectedMessage: string) => async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(createDocument('with-rules.css', 'css', 'a{}'), {
@@ -422,7 +433,7 @@ a { color: #000 }
 				codeDescription: {
 					href: 'https://stylelint.io/user-guide/rules/block-no-empty',
 				},
-				message: 'Unexpected empty block (block-no-empty)',
+				message: expectedMessage,
 				range: {
 					end: {
 						character: 3,
@@ -437,7 +448,18 @@ a { color: #000 }
 				source: 'Stylelint',
 			},
 		]);
-	});
+	};
+
+	testOnVersion(
+		'<17.7',
+		'should work normally when rules are defined',
+		workNormallyTest('Unexpected empty block (block-no-empty)'),
+	);
+	testOnVersion(
+		'>=17.7',
+		'should work normally when rules are defined',
+		workNormallyTest('Empty block (block-no-empty)'),
+	);
 
 	test('should reject with a reason when it takes incorrect options', async () => {
 		expect.assertions(1);
@@ -550,7 +572,7 @@ a { color: #000 }
 });
 
 describe('StylelintRunner with a configuration file', () => {
-	test('should adhere to configuration file settings', async () => {
+	const adhereToConfigFileTest = async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(
@@ -559,7 +581,10 @@ describe('StylelintRunner with a configuration file', () => {
 		);
 
 		expect(result.diagnostics).toMatchSnapshot();
-	});
+	};
+
+	testOnVersion('<17.7', 'should adhere to configuration file settings', adhereToConfigFileTest);
+	testOnVersion('>=17.7', 'should adhere to configuration file settings', adhereToConfigFileTest);
 });
 
 describe('WorkspaceStylelintService worker crash handling', () => {
@@ -828,7 +853,7 @@ describe('StylelintRunner with auto-fix', () => {
 		expect(getFixedText(result)).toBeUndefined();
 	});
 
-	test('auto-fix should work if there are errors that cannot be auto-fixed', async () => {
+	const autoFixUnfixableErrorsTest = async () => {
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(
 			createDocument(
@@ -854,7 +879,18 @@ unknown {
 
 		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 		expect(getFixedText(result)).toMatchSnapshot();
-	});
+	};
+
+	testOnVersion(
+		'<17.7',
+		'auto-fix should work if there are errors that cannot be auto-fixed',
+		autoFixUnfixableErrorsTest,
+	);
+	testOnVersion(
+		'>=17.7',
+		'auto-fix should work if there are errors that cannot be auto-fixed',
+		autoFixUnfixableErrorsTest,
+	);
 });
 
 describe('StylelintRunner with customSyntax', () => {
@@ -941,7 +977,7 @@ describe('StylelintRunner with reportDescriptionlessDisables', () => {
 });
 
 describe('StylelintRunner with reportNeedlessDisables', () => {
-	test('should work properly if reportNeedlessDisables is true', async () => {
+	const reportNeedlessDisablesTest = async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(
@@ -977,7 +1013,18 @@ describe('StylelintRunner with reportNeedlessDisables', () => {
 		);
 
 		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
-	});
+	};
+
+	testOnVersion(
+		'<17.7',
+		'should work properly if reportNeedlessDisables is true',
+		reportNeedlessDisablesTest,
+	);
+	testOnVersion(
+		'>=17.7',
+		'should work properly if reportNeedlessDisables is true',
+		reportNeedlessDisablesTest,
+	);
 });
 
 describe('StylelintRunner with reportInvalidScopeDisables', () => {
@@ -1015,7 +1062,7 @@ describe('StylelintRunner with reportInvalidScopeDisables', () => {
 });
 
 describe('StylelintRunner with stylelintPath', () => {
-	test('should work properly if stylelintPath is defined', async () => {
+	const stylelintPathTest = async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(
@@ -1029,7 +1076,10 @@ describe('StylelintRunner with stylelintPath', () => {
 		);
 
 		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
-	});
+	};
+
+	testOnVersion('<17.7', 'should work properly if stylelintPath is defined', stylelintPathTest);
+	testOnVersion('>=17.7', 'should work properly if stylelintPath is defined', stylelintPathTest);
 
 	test('should work properly if custom path is defined in stylelintPath', async () => {
 		expect.assertions(1);

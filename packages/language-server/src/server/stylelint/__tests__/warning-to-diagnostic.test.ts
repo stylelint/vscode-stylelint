@@ -5,6 +5,7 @@ import type { Logger } from 'winston';
 import { RuleCustomization } from '../../types.js';
 import { compileRuleCustomizations, warningToDiagnostic } from '../warning-to-diagnostic.js';
 import { createTestLogger } from '../../../../../../test/helpers/test-logger.js';
+import { testOnVersion } from '../../../../../../test/helpers/versions.js';
 import type { Warning } from '../types.js';
 
 const { lint } = stylelint;
@@ -16,7 +17,7 @@ beforeEach(() => {
 });
 
 describe('warningToDiagnostic', () => {
-	test('should convert a Stylelint warning to an LSP diagnostic', async () => {
+	const convertWarningTest = async () => {
 		expect.assertions(2);
 		const {
 			results: [{ warnings }],
@@ -35,9 +36,20 @@ describe('warningToDiagnostic', () => {
 
 		expect(warningToDiagnostic(warnings[0], logger)).toMatchSnapshot();
 		expect(warningToDiagnostic(warnings[1], logger)).toMatchSnapshot();
-	});
+	};
 
-	test('should add a rule documentation URL if a matching rule exists', async () => {
+	testOnVersion(
+		'<17.7',
+		'should convert a Stylelint warning to an LSP diagnostic',
+		convertWarningTest,
+	);
+	testOnVersion(
+		'>=17.7',
+		'should convert a Stylelint warning to an LSP diagnostic',
+		convertWarningTest,
+	);
+
+	const ruleUrlTest = async () => {
 		expect.assertions(1);
 		const {
 			results: [{ warnings }],
@@ -62,7 +74,18 @@ describe('warningToDiagnostic', () => {
 		};
 
 		expect(warningToDiagnostic(warnings[0], logger, rules)).toMatchSnapshot();
-	});
+	};
+
+	testOnVersion(
+		'<17.7',
+		'should add a rule documentation URL if a matching rule exists',
+		ruleUrlTest,
+	);
+	testOnVersion(
+		'>=17.7',
+		'should add a rule documentation URL if a matching rule exists',
+		ruleUrlTest,
+	);
 
 	test('should use URL from warning when provided', () => {
 		const warning: Warning = {

@@ -3,6 +3,7 @@ import {
 	waitForDiagnostics,
 	assertDiagnostics,
 	closeAllEditors,
+	matchVersion,
 } from '../helpers.js';
 
 describe('Linting', () => {
@@ -46,7 +47,10 @@ describe('Linting', () => {
 			{
 				code: 'color-no-invalid-hex',
 				codeDescription: 'https://stylelint.io/user-guide/rules/color-no-invalid-hex',
-				message: 'Unexpected invalid hex color "#y3" (color-no-invalid-hex)',
+				message: matchVersion({
+					'<17.7': 'Unexpected invalid hex color "#y3" (color-no-invalid-hex)',
+					default: 'Invalid hex color "#y3" (color-no-invalid-hex)',
+				}),
 				range: [6, 11, 6, 14],
 				severity: 'error',
 			},

@@ -3,6 +3,7 @@ import {
 	waitForDiagnostics,
 	assertDiagnostics,
 	closeAllEditors,
+	matchVersion,
 } from '../helpers.js';
 
 describe('"stylelint.configFile" setting', () => {
@@ -18,7 +19,10 @@ describe('"stylelint.configFile" setting', () => {
 			{
 				code: 'block-no-empty',
 				codeDescription: 'https://stylelint.io/user-guide/rules/block-no-empty',
-				message: 'Unexpected empty block (block-no-empty)',
+				message: matchVersion({
+					'<17.7': 'Unexpected empty block (block-no-empty)',
+					default: 'Empty block (block-no-empty)',
+				}),
 				range: [0, 2, 0, 4],
 				severity: 'error',
 			},
