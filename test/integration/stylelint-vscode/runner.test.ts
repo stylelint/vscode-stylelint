@@ -27,6 +27,7 @@ import {
 } from '../../../packages/language-server/src/server/worker/worker-process.js';
 import {
 	createLoggingServiceStub,
+	matchVersion,
 	snapshotLintDiagnostics,
 	testOnVersion,
 } from '../../helpers/index.js';
@@ -416,7 +417,7 @@ a { color: #000 }
 		},
 	);
 
-	const workNormallyTest = (expectedMessage: string) => async () => {
+	test('should work normally when rules are defined', async () => {
 		expect.assertions(1);
 		const runner = resolveStylelintRunner();
 		const result = await runner.lintDocument(createDocument('with-rules.css', 'css', 'a{}'), {
@@ -433,7 +434,10 @@ a { color: #000 }
 				codeDescription: {
 					href: 'https://stylelint.io/user-guide/rules/block-no-empty',
 				},
-				message: expectedMessage,
+				message: matchVersion({
+					'<17.7': 'Unexpected empty block (block-no-empty)',
+					default: 'Empty block (block-no-empty)',
+				}),
 				range: {
 					end: {
 						character: 3,
@@ -448,18 +452,7 @@ a { color: #000 }
 				source: 'Stylelint',
 			},
 		]);
-	};
-
-	testOnVersion(
-		'<17.7',
-		'should work normally when rules are defined',
-		workNormallyTest('Unexpected empty block (block-no-empty)'),
-	);
-	testOnVersion(
-		'>=17.7',
-		'should work normally when rules are defined',
-		workNormallyTest('Empty block (block-no-empty)'),
-	);
+	});
 
 	test('should reject with a reason when it takes incorrect options', async () => {
 		expect.assertions(1);
