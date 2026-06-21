@@ -2,10 +2,12 @@ import semver from 'semver';
 import { version as stylelintVersion } from 'stylelint/package.json';
 import { describe, SuiteFactory, test, TestFunction } from 'vitest';
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+type TestName = string | Function;
+
 export function testOnVersion(
 	versionRange: string,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-	name: string | Function,
+	name: TestName,
 	fn: TestFunction<object>,
 	options?: number,
 ): void {
@@ -20,12 +22,37 @@ export function testOnVersion(
 	}
 }
 
+function assertDisjoint(ranges: string[]): void {
+	for (let i = 0; i < ranges.length; i++) {
+		for (let j = i + 1; j < ranges.length; j++) {
+			if (semver.intersects(ranges[i], ranges[j], { includePrerelease: true })) {
+				throw new Error(
+					`Ranges "${ranges[i]}" and "${ranges[j]}" overlap. ` +
+						'testOnVersions requires mutually exclusive ranges.',
+				);
+			}
+		}
+	}
+}
+
+export function testOnVersions(
+	versionRanges: string[],
+	name: TestName,
+	fn: TestFunction<object>,
+	options?: number,
+): void {
+	assertDisjoint(versionRanges);
+
+	for (const versionRange of versionRanges) {
+		testOnVersion(versionRange, name, fn, options);
+	}
+}
+
 export const itOnVersion = testOnVersion;
 
 export function describeOnVersion(
 	versionRange: string,
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-	name: string | Function,
+	name: TestName,
 	fn: SuiteFactory<object>,
 ): void {
 	const describeName = `(Stylelint ${versionRange}) ${name.toString()}`;

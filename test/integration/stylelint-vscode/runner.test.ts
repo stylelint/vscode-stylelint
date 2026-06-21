@@ -30,6 +30,7 @@ import {
 	matchVersion,
 	snapshotLintDiagnostics,
 	testOnVersion,
+	testOnVersions,
 } from '../../helpers/index.js';
 
 const createDocument = (uri: string | null, languageId: string, contents: string): TextDocument =>
@@ -89,13 +90,8 @@ describe('StylelintRunner', () => {
 		expect(result.diagnostics).toMatchSnapshot();
 	};
 
-	testOnVersion(
-		'<17.7',
-		'should be resolved with diagnostics when it lints CSS successfully',
-		lintCssSuccessTest,
-	);
-	testOnVersion(
-		'>=17.7',
+	testOnVersions(
+		['<17.7', '>=17.7'],
 		'should be resolved with diagnostics when it lints CSS successfully',
 		lintCssSuccessTest,
 	);
@@ -576,8 +572,11 @@ describe('StylelintRunner with a configuration file', () => {
 		expect(result.diagnostics).toMatchSnapshot();
 	};
 
-	testOnVersion('<17.7', 'should adhere to configuration file settings', adhereToConfigFileTest);
-	testOnVersion('>=17.7', 'should adhere to configuration file settings', adhereToConfigFileTest);
+	testOnVersions(
+		['<17.7', '>=17.7'],
+		'should adhere to configuration file settings',
+		adhereToConfigFileTest,
+	);
 });
 
 describe('WorkspaceStylelintService worker crash handling', () => {
@@ -874,13 +873,8 @@ unknown {
 		expect(getFixedText(result)).toMatchSnapshot();
 	};
 
-	testOnVersion(
-		'<17.7',
-		'auto-fix should work if there are errors that cannot be auto-fixed',
-		autoFixUnfixableErrorsTest,
-	);
-	testOnVersion(
-		'>=17.7',
+	testOnVersions(
+		['<17.7', '>=17.7'],
 		'auto-fix should work if there are errors that cannot be auto-fixed',
 		autoFixUnfixableErrorsTest,
 	);
@@ -1008,13 +1002,8 @@ describe('StylelintRunner with reportNeedlessDisables', () => {
 		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	};
 
-	testOnVersion(
-		'<17.7',
-		'should work properly if reportNeedlessDisables is true',
-		reportNeedlessDisablesTest,
-	);
-	testOnVersion(
-		'>=17.7',
+	testOnVersions(
+		['<17.7', '>=17.7'],
 		'should work properly if reportNeedlessDisables is true',
 		reportNeedlessDisablesTest,
 	);
@@ -1071,8 +1060,11 @@ describe('StylelintRunner with stylelintPath', () => {
 		expect(snapshotLintDiagnostics(result)).toMatchSnapshot();
 	};
 
-	testOnVersion('<17.7', 'should work properly if stylelintPath is defined', stylelintPathTest);
-	testOnVersion('>=17.7', 'should work properly if stylelintPath is defined', stylelintPathTest);
+	testOnVersions(
+		['<17.7', '>=17.7'],
+		'should work properly if stylelintPath is defined',
+		stylelintPathTest,
+	);
 
 	test('should work properly if custom path is defined in stylelintPath', async () => {
 		expect.assertions(1);

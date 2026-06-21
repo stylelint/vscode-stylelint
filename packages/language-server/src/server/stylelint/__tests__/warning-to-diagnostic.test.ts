@@ -5,7 +5,7 @@ import type { Logger } from 'winston';
 import { RuleCustomization } from '../../types.js';
 import { compileRuleCustomizations, warningToDiagnostic } from '../warning-to-diagnostic.js';
 import { createTestLogger } from '../../../../../../test/helpers/test-logger.js';
-import { testOnVersion } from '../../../../../../test/helpers/versions.js';
+import { testOnVersions } from '../../../../../../test/helpers/versions.js';
 import type { Warning } from '../types.js';
 
 const { lint } = stylelint;
@@ -38,13 +38,8 @@ describe('warningToDiagnostic', () => {
 		expect(warningToDiagnostic(warnings[1], logger)).toMatchSnapshot();
 	};
 
-	testOnVersion(
-		'<17.7',
-		'should convert a Stylelint warning to an LSP diagnostic',
-		convertWarningTest,
-	);
-	testOnVersion(
-		'>=17.7',
+	testOnVersions(
+		['<17.7', '>=17.7'],
 		'should convert a Stylelint warning to an LSP diagnostic',
 		convertWarningTest,
 	);
@@ -76,13 +71,8 @@ describe('warningToDiagnostic', () => {
 		expect(warningToDiagnostic(warnings[0], logger, rules)).toMatchSnapshot();
 	};
 
-	testOnVersion(
-		'<17.7',
-		'should add a rule documentation URL if a matching rule exists',
-		ruleUrlTest,
-	);
-	testOnVersion(
-		'>=17.7',
+	testOnVersions(
+		['<17.7', '>=17.7'],
 		'should add a rule documentation URL if a matching rule exists',
 		ruleUrlTest,
 	);
