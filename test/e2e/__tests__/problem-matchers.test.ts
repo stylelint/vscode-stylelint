@@ -52,7 +52,10 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 	},
 	{
 		code: 'color-no-invalid-hex',
-		message: 'Unexpected invalid hex color "#abcxyz"', // cspell:disable-line
+		message: matchVersion({
+			'<17.7': 'Unexpected invalid hex color "#abcxyz"', // cspell:disable-line
+			default: 'Invalid hex color "#abcxyz"', // cspell:disable-line
+		}),
 		range: [14, 9, 14, 9],
 		severity: 'error',
 	},
@@ -60,14 +63,18 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 		code: 'font-family-no-duplicate-names',
 		message: matchVersion({
 			'<16': 'Unexpected duplicate name serif',
-			default: 'Unexpected duplicate font-family name serif',
+			'<17.7': 'Unexpected duplicate font-family name serif',
+			default: 'Duplicate font-family name "serif"',
 		}),
 		range: [19, 22, 19, 22],
 		severity: 'error',
 	},
 	{
 		code: 'declaration-block-no-duplicate-properties',
-		message: 'Unexpected duplicate "color"',
+		message: matchVersion({
+			'<17.7': 'Unexpected duplicate "color"',
+			default: 'Duplicate property "color"',
+		}),
 		range: matchVersion({
 			'<16': [25, 2, 25, 2],
 			default: [24, 2, 24, 2],
@@ -76,7 +83,10 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 	},
 	{
 		code: 'block-no-empty',
-		message: 'Unexpected empty block',
+		message: matchVersion({
+			'<17.7': 'Unexpected empty block',
+			default: 'Empty block',
+		}),
 		range: [29, 2, 29, 2],
 		severity: 'error',
 	},
@@ -88,7 +98,10 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 	},
 	{
 		code: 'selector-pseudo-class-no-unknown',
-		message: 'Unexpected unknown pseudo-class selector ":hoverr"', // cspell:disable-line
+		message: matchVersion({
+			'<17.7': 'Unexpected unknown pseudo-class selector ":hoverr"', // cspell:disable-line
+			default: 'Unknown pseudo-class selector ":hoverr"', // cspell:disable-line
+		}),
 		range: [37, 1, 37, 1],
 		severity: 'error',
 	},
@@ -115,19 +128,28 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 	},
 	{
 		code: 'declaration-block-single-line-max-declarations',
-		message: 'Expected no more than 1 declaration',
+		message: matchVersion({
+			'<17.7': 'Expected no more than 1 declaration',
+			default: 'Too many declarations, maximum 1',
+		}),
 		range: [57, 2, 57, 2],
 		severity: 'error',
 	},
 	{
 		code: 'no-duplicate-selectors',
-		message: 'Unexpected duplicate selector ".dup", first used at line 61',
+		message: matchVersion({
+			'<17.7': 'Unexpected duplicate selector ".dup", first used at line 61',
+			default: 'Duplicate selector ".dup", first used at line 61',
+		}),
 		range: [61, 0, 61, 0],
 		severity: 'error',
 	},
 	{
 		code: 'comment-no-empty',
-		message: 'Unexpected empty comment',
+		message: matchVersion({
+			'<17.7': 'Unexpected empty comment',
+			default: 'Empty comment',
+		}),
 		range: [64, 0, 64, 0],
 		severity: 'error',
 	},
@@ -139,31 +161,46 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 	},
 	{
 		code: 'declaration-no-important',
-		message: 'Unexpected !important',
+		message: matchVersion({
+			'<17.7': 'Unexpected !important',
+			default: 'Disallowed !important',
+		}),
 		range: [73, 13, 73, 13],
 		severity: 'error',
 	},
 	{
 		code: 'unit-no-unknown',
-		message: 'Unexpected unknown unit "pxx"',
+		message: matchVersion({
+			'<17.7': 'Unexpected unknown unit "pxx"',
+			default: 'Unknown unit "pxx"',
+		}),
 		range: [78, 12, 78, 12],
 		severity: 'error',
 	},
 	{
 		code: 'property-no-unknown',
-		message: 'Unexpected unknown property "colr"', // cspell:disable-line
+		message: matchVersion({
+			'<17.7': 'Unexpected unknown property "colr"', // cspell:disable-line
+			default: 'Unknown property "colr"', // cspell:disable-line
+		}),
 		range: [83, 2, 83, 2],
 		severity: 'error',
 	},
 	{
 		code: 'max-nesting-depth',
-		message: 'Expected nesting depth to be no more than 2',
+		message: matchVersion({
+			'<17.7': 'Expected nesting depth to be no more than 2',
+			default: 'Too deep nesting, maximum 2',
+		}),
 		range: [90, 6, 90, 6],
 		severity: 'error',
 	},
 	{
 		code: 'selector-max-id',
-		message: 'Expected "#myid" to have no more than 0 ID selectors', // cspell:disable-line
+		message: matchVersion({
+			'<17.7': 'Expected "#myid" to have no more than 0 ID selectors', // cspell:disable-line
+			default: 'Too many ID selectors in "#myid", maximum 0', // cspell:disable-line
+		}),
 		range: [98, 0, 98, 0],
 		severity: 'error',
 	},

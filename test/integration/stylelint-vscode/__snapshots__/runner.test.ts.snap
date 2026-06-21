@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`StylelintRunner > should be resolved with diagnostics when it lints CSS successfully 1`] = `
+exports[`StylelintRunner > (Stylelint <17.7) should be resolved with diagnostics when it lints CSS successfully 1`] = `
 [
   {
     "code": "color-no-invalid-hex",
@@ -27,6 +27,49 @@ exports[`StylelintRunner > should be resolved with diagnostics when it lints CSS
       "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
     },
     "message": "Unexpected unknown type selector "foo" (selector-type-no-unknown)",
+    "range": {
+      "end": {
+        "character": 5,
+        "line": 0,
+      },
+      "start": {
+        "character": 2,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner > (Stylelint >=17.7) should be resolved with diagnostics when it lints CSS successfully 1`] = `
+[
+  {
+    "code": "color-no-invalid-hex",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
+    },
+    "message": "Invalid hex color "#y3" (color-no-invalid-hex)",
+    "range": {
+      "end": {
+        "character": 18,
+        "line": 0,
+      },
+      "start": {
+        "character": 15,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+  {
+    "code": "selector-type-no-unknown",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
+    },
+    "message": "Unknown type selector "foo" (selector-type-no-unknown)",
     "range": {
       "end": {
         "character": 5,
@@ -172,7 +215,7 @@ exports[`StylelintRunner > should support CSS-in-JS with customSyntax 1`] = `
 ]
 `;
 
-exports[`StylelintRunner with a configuration file > should adhere to configuration file settings 1`] = `
+exports[`StylelintRunner with a configuration file > (Stylelint <17.7) should adhere to configuration file settings 1`] = `
 [
   {
     "code": "length-zero-no-unit",
@@ -180,6 +223,30 @@ exports[`StylelintRunner with a configuration file > should adhere to configurat
       "href": "https://stylelint.io/user-guide/rules/length-zero-no-unit",
     },
     "message": "Unexpected unit (length-zero-no-unit)",
+    "range": {
+      "end": {
+        "character": 20,
+        "line": 0,
+      },
+      "start": {
+        "character": 18,
+        "line": 0,
+      },
+    },
+    "severity": 1,
+    "source": "Stylelint",
+  },
+]
+`;
+
+exports[`StylelintRunner with a configuration file > (Stylelint >=17.7) should adhere to configuration file settings 1`] = `
+[
+  {
+    "code": "length-zero-no-unit",
+    "codeDescription": {
+      "href": "https://stylelint.io/user-guide/rules/length-zero-no-unit",
+    },
+    "message": "Disallowed unit (length-zero-no-unit)",
     "range": {
       "end": {
         "character": 20,
@@ -205,16 +272,7 @@ exports[`StylelintRunner with auto-fix > (Stylelint <17) auto-fix should work if
 "
 `;
 
-exports[`StylelintRunner with auto-fix > (Stylelint >=17) auto-fix should fix syntax errors if there are syntax errors in css and fix mode is "lax" 1`] = `
-"
-.a {
-    color: #ffffff;
-    background-color: #ffffffaa
-}
-"
-`;
-
-exports[`StylelintRunner with auto-fix > auto-fix should work if there are errors that cannot be auto-fixed 1`] = `
+exports[`StylelintRunner with auto-fix > (Stylelint <17.7) auto-fix should work if there are errors that cannot be auto-fixed 1`] = `
 {
   "diagnostics": [
     {
@@ -241,7 +299,52 @@ exports[`StylelintRunner with auto-fix > auto-fix should work if there are error
 }
 `;
 
-exports[`StylelintRunner with auto-fix > auto-fix should work if there are errors that cannot be auto-fixed 2`] = `
+exports[`StylelintRunner with auto-fix > (Stylelint <17.7) auto-fix should work if there are errors that cannot be auto-fixed 2`] = `
+"
+unknown {
+    color: #fff;
+    background-color: #fffa;
+}
+"
+`;
+
+exports[`StylelintRunner with auto-fix > (Stylelint >=17) auto-fix should fix syntax errors if there are syntax errors in css and fix mode is "lax" 1`] = `
+"
+.a {
+    color: #ffffff;
+    background-color: #ffffffaa
+}
+"
+`;
+
+exports[`StylelintRunner with auto-fix > (Stylelint >=17.7) auto-fix should work if there are errors that cannot be auto-fixed 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "selector-type-no-unknown",
+      "codeDescription": {
+        "href": "https://stylelint.io/user-guide/rules/selector-type-no-unknown",
+      },
+      "message": "Unknown type selector "unknown" (selector-type-no-unknown)",
+      "range": {
+        "end": {
+          "character": 7,
+          "line": 1,
+        },
+        "start": {
+          "character": 0,
+          "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;
+
+exports[`StylelintRunner with auto-fix > (Stylelint >=17.7) auto-fix should work if there are errors that cannot be auto-fixed 2`] = `
 "
 unknown {
     color: #fff;
@@ -417,7 +520,7 @@ exports[`StylelintRunner with reportInvalidScopeDisables > should work properly 
 }
 `;
 
-exports[`StylelintRunner with reportNeedlessDisables > should work properly if reportNeedlessDisables is true 1`] = `
+exports[`StylelintRunner with reportNeedlessDisables > (Stylelint <17.7) should work properly if reportNeedlessDisables is true 1`] = `
 {
   "diagnostics": [
     {
@@ -508,20 +611,87 @@ exports[`StylelintRunner with reportNeedlessDisables > should work properly if r
 }
 `;
 
-exports[`StylelintRunner with stylelintPath > should work properly if custom path is defined in stylelintPath 1`] = `
+exports[`StylelintRunner with reportNeedlessDisables > (Stylelint >=17.7) should work properly if reportNeedlessDisables is true 1`] = `
 {
   "diagnostics": [
     {
-      "code": "fake",
-      "message": "Fake result",
+      "code": "color-no-invalid-hex",
+      "codeDescription": {
+        "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
+      },
+      "message": "Invalid hex color "#y3" (color-no-invalid-hex)",
       "range": {
         "end": {
-          "character": 1,
-          "line": 0,
+          "character": 25,
+          "line": 2,
+        },
+        "start": {
+          "character": 22,
+          "line": 2,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for "color-no-invalid-hex"",
+      "range": {
+        "end": {
+          "character": 80,
+          "line": 2,
+        },
+        "start": {
+          "character": 27,
+          "line": 2,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for "color-no-invalid-hex"",
+      "range": {
+        "end": {
+          "character": 43,
+          "line": 6,
         },
         "start": {
           "character": 0,
-          "line": 0,
+          "line": 6,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for "color-no-invalid-hex"",
+      "range": {
+        "end": {
+          "character": 64,
+          "line": 13,
+        },
+        "start": {
+          "character": 16,
+          "line": 13,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+    {
+      "code": "--report-needless-disables",
+      "message": "Needless disable for "color-no-invalid-hex"",
+      "range": {
+        "end": {
+          "character": 43,
+          "line": 16,
+        },
+        "start": {
+          "character": 0,
+          "line": 16,
         },
       },
       "severity": 1,
@@ -532,7 +702,7 @@ exports[`StylelintRunner with stylelintPath > should work properly if custom pat
 }
 `;
 
-exports[`StylelintRunner with stylelintPath > should work properly if stylelintPath is defined 1`] = `
+exports[`StylelintRunner with stylelintPath > (Stylelint <17.7) should work properly if stylelintPath is defined 1`] = `
 {
   "diagnostics": [
     {
@@ -549,6 +719,57 @@ exports[`StylelintRunner with stylelintPath > should work properly if stylelintP
         "start": {
           "character": 8,
           "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;
+
+exports[`StylelintRunner with stylelintPath > (Stylelint >=17.7) should work properly if stylelintPath is defined 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "color-no-invalid-hex",
+      "codeDescription": {
+        "href": "https://stylelint.io/user-guide/rules/color-no-invalid-hex",
+      },
+      "message": "Invalid hex color "#y3" (color-no-invalid-hex)",
+      "range": {
+        "end": {
+          "character": 11,
+          "line": 1,
+        },
+        "start": {
+          "character": 8,
+          "line": 1,
+        },
+      },
+      "severity": 1,
+      "source": "Stylelint",
+    },
+  ],
+  "getWarning": [Function],
+}
+`;
+
+exports[`StylelintRunner with stylelintPath > should work properly if custom path is defined in stylelintPath 1`] = `
+{
+  "diagnostics": [
+    {
+      "code": "fake",
+      "message": "Fake result",
+      "range": {
+        "end": {
+          "character": 1,
+          "line": 0,
+        },
+        "start": {
+          "character": 0,
+          "line": 0,
         },
       },
       "severity": 1,
