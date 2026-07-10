@@ -360,8 +360,8 @@
   },
   "dependencies": {
     "@stylelint/language-server": "workspace:*",
-    "vscode-languageclient": "^9.0.1",
-    "vscode-languageserver": "^9.0.1"
+    "vscode-languageclient": "^10.1.0",
+    "vscode-languageserver": "^10.1.0"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
@@ -371,9 +371,9 @@
     "@types/vscode": "1.103.0",
     "@vitest/coverage-v8": "^4.1.9",
     "@vitest/eslint-plugin": "^1.6.20",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2",
-    "@vscode/vsce": "^3.9.1",
+    "@vscode/test-cli": "^0.0.15",
+    "@vscode/test-electron": "^3.0.0",
+    "@vscode/vsce": "^3.9.2",
     "cspell": "^10.0.1",
     "esbuild": "^0.28.1",
     "eslint": "^10.1.0",
@@ -396,7 +396,7 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.58.0",
     "vitest": "^4.1.2",
-    "vscode-jsonrpc": "^8.2.1",
+    "vscode-jsonrpc": "^9.0.1",
     "vscode-languageserver-protocol": "^3.17.5",
     "vscode-languageserver-textdocument": "^1.0.12",
     "winston": "^3.19.0",
