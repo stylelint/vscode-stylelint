@@ -71,7 +71,7 @@ describe('DisableRuleFileCodeActionFactory', () => {
 		const win32Factory = new DisableRuleFileCodeActionService({ EOL: '\r\n' });
 		const win32CodeAction = win32Factory.create(win32Document, win32Diagnostic);
 		const win32Edit = (win32CodeAction.edit?.documentChanges?.[0] as LSP.TextDocumentEdit)
-			?.edits?.[0];
+			?.edits?.[0] as LSP.TextEdit | undefined;
 
 		const linuxDocument = TextDocument.create(
 			'file:///home/user/src/file.css',
@@ -89,7 +89,7 @@ describe('DisableRuleFileCodeActionFactory', () => {
 		const linuxFactory = new DisableRuleFileCodeActionService({ EOL: '\n' });
 		const linuxCodeAction = linuxFactory.create(linuxDocument, linuxDiagnostic);
 		const linuxEdit = (linuxCodeAction.edit?.documentChanges?.[0] as LSP.TextDocumentEdit)
-			?.edits?.[0];
+			?.edits?.[0] as LSP.TextEdit | undefined;
 
 		expect(win32Edit?.newText).toMatch(/\r\n$/);
 		expect(linuxEdit?.newText).toMatch(/(?<!\r)\n$/);

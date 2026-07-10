@@ -21,7 +21,7 @@ export function createClientOptions(
 	return {
 		documentSelector: [{ scheme: 'file' }, { scheme: 'untitled' }],
 		diagnosticCollectionName: 'Stylelint',
-		outputChannel: window.createOutputChannel('Stylelint'),
+		outputChannel: window.createOutputChannel('Stylelint', { log: true }),
 		synchronize: {
 			fileEvents: watchedFiles.map((pattern) => workspace.createFileSystemWatcher(pattern)),
 		},

@@ -30,7 +30,7 @@ const flushPromises = () => new Promise((resolve) => setTimeout(resolve, 0));
 type FormattingConnectionStub = {
 	connection: Connection;
 	clientRegisterCalls: Array<{
-		type: typeof LSP.DocumentFormattingRequest;
+		type: typeof LSP.DocumentFormattingRequest.type;
 		options: LSP.DocumentFormattingRegistrationOptions;
 		disposable: Disposable & { disposed: boolean };
 	}>;
@@ -42,7 +42,7 @@ function createFormattingConnectionStub(): FormattingConnectionStub {
 	const connection = {
 		client: {
 			register: async (
-				type: typeof LSP.DocumentFormattingRequest,
+				type: typeof LSP.DocumentFormattingRequest.type,
 				options: LSP.DocumentFormattingRegistrationOptions,
 			) => {
 				const disposable: Disposable & { disposed: boolean } = {
@@ -348,7 +348,12 @@ describe('FormatterLspModule', () => {
 		await service.handleDocumentRegistration(createChangeEvent(schemeDocument));
 		await flushPromises();
 
-		expect(connection.clientRegisterCalls).toMatchSnapshot();
+		expect(
+			connection.clientRegisterCalls.every(
+				({ type }) => type === LSP.DocumentFormattingRequest.type,
+			),
+		).toBe(true);
+		expect(connection.clientRegisterCalls.map((call) => call.options)).toMatchSnapshot();
 	});
 
 	it('handleDocumentClosed should dispose existing registrations', async () => {
