@@ -153,7 +153,6 @@ export class NotificationService implements Disposable {
 		this.#notifications.set(key, new Set([func]));
 
 		if (isStar) {
-			// eslint-disable-next-line @typescript-eslint/no-misused-promises
 			this.#connection.onNotification((...params) => this.#handleNotification(undefined, params));
 
 			return disposable;
@@ -161,7 +160,6 @@ export class NotificationService implements Disposable {
 
 		this.#connection.onNotification<P, R0>(
 			type as LSP.ProtocolNotificationType<P, R0>,
-			// eslint-disable-next-line @typescript-eslint/no-misused-promises
 			(...params) => this.#handleNotification(type, params),
 		);
 

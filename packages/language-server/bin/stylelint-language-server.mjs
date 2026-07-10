@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import process from 'process';
-import { createConnection, ProposedFeatures } from 'vscode-languageserver';
+import { createConnection, ProposedFeatures } from 'vscode-languageserver/node';
 import { StylelintLanguageServer } from '../build/server/index.js';
 
 const connection = createConnection(ProposedFeatures.all);

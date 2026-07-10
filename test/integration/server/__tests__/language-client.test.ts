@@ -119,14 +119,14 @@ const waitForRequest = <T, R>(
 		// eslint-disable-next-line prefer-const -- Assigned after handler is defined.
 		let timeoutId: NodeJS.Timeout;
 
-		connection.onRequest(method, (params: T) => {
+		connection.onRequest(method, ((params: T) => {
 			if (!predicate || predicate(params)) {
 				clearTimeout(timeoutId);
 				resolve(params);
 			}
 
 			return response;
-		});
+		}) as LSP.GenericRequestHandler<R, void>);
 
 		timeoutId = setTimeout(() => {
 			reject(new Error(`Timed out waiting for request: ${method}`));
@@ -343,7 +343,7 @@ describe('Language server', () => {
 		const quickFixedText = quickFixEdit
 			? TextDocument.applyEdits(
 					TextDocument.create(documentUri, 'css', version, documentText),
-					quickFixEdit.edits,
+					quickFixEdit.edits as LSP.TextEdit[],
 				)
 			: undefined;
 
@@ -377,7 +377,7 @@ describe('Language server', () => {
 		const fixAllText = fixAllEdit
 			? TextDocument.applyEdits(
 					TextDocument.create(documentUri, 'css', version, documentText),
-					fixAllEdit.edits,
+					fixAllEdit.edits as LSP.TextEdit[],
 				)
 			: undefined;
 
@@ -439,7 +439,7 @@ describe('Language server', () => {
 			const fixedText = fixAllEdit
 				? TextDocument.applyEdits(
 						TextDocument.create(documentUri, 'css', version, documentText),
-						fixAllEdit.edits,
+						fixAllEdit.edits as LSP.TextEdit[],
 					)
 				: undefined;
 
@@ -484,7 +484,7 @@ describe('Language server', () => {
 
 				updatedText = TextDocument.applyEdits(
 					TextDocument.create(documentUri, 'css', version, updatedText),
-					change.edits,
+					change.edits as LSP.TextEdit[],
 				);
 
 				return { applied: true };
