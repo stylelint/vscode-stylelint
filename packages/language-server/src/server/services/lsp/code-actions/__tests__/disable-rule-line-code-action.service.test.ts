@@ -46,7 +46,9 @@ describe('DisableRuleLineCodeActionFactory', () => {
 		};
 		const codeAction = lineFactory.create(document, diagnostic, 'separateLine');
 
-		const edit = (codeAction.edit?.documentChanges?.[0] as LSP.TextDocumentEdit)?.edits?.[0];
+		const edit = (codeAction.edit?.documentChanges?.[0] as LSP.TextDocumentEdit)?.edits?.[0] as
+			| LSP.TextEdit
+			| undefined;
 
 		expect(edit?.newText).toMatch(/^\t {4}\S/);
 	});
@@ -95,7 +97,7 @@ describe('DisableRuleLineCodeActionFactory', () => {
 		const win32Factory = new DisableRuleLineCodeActionService({ EOL: '\r\n' });
 		const win32CodeAction = win32Factory.create(win32Document, win32Diagnostic, 'separateLine');
 		const win32Edit = (win32CodeAction.edit?.documentChanges?.[0] as LSP.TextDocumentEdit)
-			?.edits?.[0];
+			?.edits?.[0] as LSP.TextEdit | undefined;
 
 		const linuxDocument = TextDocument.create(
 			'file:///home/user/src/file.css',
@@ -113,7 +115,7 @@ describe('DisableRuleLineCodeActionFactory', () => {
 		const linuxFactory = new DisableRuleLineCodeActionService({ EOL: '\n' });
 		const linuxCodeAction = linuxFactory.create(linuxDocument, linuxDiagnostic, 'separateLine');
 		const linuxEdit = (linuxCodeAction.edit?.documentChanges?.[0] as LSP.TextDocumentEdit)
-			?.edits?.[0];
+			?.edits?.[0] as LSP.TextEdit | undefined;
 
 		expect(win32Edit?.newText).toMatch(/\r\n$/);
 		expect(linuxEdit?.newText).toMatch(/(?<!\r)\n$/);

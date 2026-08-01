@@ -65,7 +65,7 @@
     "semver": "^7.8.5",
     "serialize-error": "^13.0.1",
     "triple-beam": "^1.4.1",
-    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver": "^10.1.0",
     "vscode-languageserver-protocol": "^3.17.5",
     "vscode-languageserver-textdocument": "^1.0.12",
     "vscode-languageserver-types": "^3.17.5",
