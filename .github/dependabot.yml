@@ -18,8 +18,6 @@ updates:
     ignore:
       - dependency-name: '@types/vscode'
         update-types: [version-update:semver-minor]
-    cooldown:
-      default-days: 7
 
   - package-ecosystem: 'github-actions'
     directory: '/'
@@ -31,5 +29,4 @@ updates:
       stylelint-actions:
         patterns: ['stylelint/.github/*']
     cooldown:
-      default-days: 7
       exclude: ['stylelint/.github/*']
