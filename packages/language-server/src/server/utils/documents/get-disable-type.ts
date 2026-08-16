@@ -5,9 +5,7 @@ import type { TextDocument } from 'vscode-languageserver-textdocument';
  * Disable directive comment types.
  */
 export type DisableType =
-	| 'stylelint-disable'
-	| 'stylelint-disable-line'
-	| 'stylelint-disable-next-line';
+	'stylelint-disable' | 'stylelint-disable-line' | 'stylelint-disable-next-line';
 
 /**
  * If the given position is inside a `stylelint-disable` after the comment'

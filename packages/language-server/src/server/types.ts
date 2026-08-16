@@ -24,13 +24,7 @@ export const CodeActionKind = {
  * Severity override types.
  */
 export type SeverityOverride =
-	| 'downgrade'
-	| 'upgrade'
-	| 'error'
-	| 'warn'
-	| 'info'
-	| 'off'
-	| 'default';
+	'downgrade' | 'upgrade' | 'error' | 'warn' | 'info' | 'off' | 'default';
 
 /**
  * Rule customization for severity overrides.

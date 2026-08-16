@@ -444,8 +444,7 @@ async function handleResolveConfig(
 
 	// resolveConfig was added in Stylelint 14.2.0.
 	const resolveConfigFn = state.stylelint.resolveConfig as
-		| typeof state.stylelint.resolveConfig
-		| undefined;
+		typeof state.stylelint.resolveConfig | undefined;
 
 	let config: stylelint.Config | undefined;
 
