@@ -80,6 +80,15 @@ interface InstalledPackage {
 	from?: string;
 }
 
+interface ListedDependency extends InstalledPackage {
+	dependencies?: Record<string, ListedDependency>;
+}
+
+interface InstalledCopies {
+	root: InstalledPackage | null;
+	workspaces: Map<string, InstalledPackage>;
+}
+
 const packageMap = createPackageMap({
 	default: {
 		stylelint: packageConfig.devDependencies.stylelint,
@@ -111,8 +120,12 @@ const packageArgs = Object.entries(selectedPackages).map(([pkg, ver]) => `${pkg}
 
 stderr.write(`>>> Installing packages: ${packageArgs.join(' ')}\n`);
 
+const workspaceArgs = ['--workspaces', '--include-workspace-root'];
+
 const install = () =>
-	execa('npm', ['install', '--force', '--no-save', ...packageArgs], { stdio: 'inherit' });
+	execa('npm', ['install', '--force', '--no-save', ...workspaceArgs, ...packageArgs], {
+		stdio: 'inherit',
+	});
 
 const gitSpecPattern = /^(?:git\+)?(?:https?|ssh):\/\/|^(?:git|github):|\.git(?:#|$)/i;
 
@@ -152,15 +165,33 @@ const normalizeGitSpec = (spec: string): string => {
 
 const isGitSpec = (spec: string): boolean => gitSpecPattern.test(spec);
 
-const readInstalled = async (pkg: string): Promise<InstalledPackage | null> => {
+const isWorkspaceEntry = (dependency: ListedDependency): boolean =>
+	dependency.resolved?.startsWith('file:') ?? false;
+
+const collectInstalledCopies = (listOutput: string, pkg: string): InstalledCopies => {
+	const parsed: ListedDependency = JSON.parse(listOutput);
+	const dependencies = parsed.dependencies ?? {};
+
+	return {
+		root: dependencies[pkg] ?? null,
+		workspaces: new Map(
+			Object.entries(dependencies).flatMap(([name, dependency]) => {
+				const copy = dependency.dependencies?.[pkg];
+
+				return isWorkspaceEntry(dependency) && copy ? [[name, copy] as const] : [];
+			}),
+		),
+	};
+};
+
+const readInstalled = async (pkg: string): Promise<InstalledCopies> => {
 	try {
-		const result = await execa('npm', ['list', pkg, '--depth=0', '--json'], {
+		const result = await execa('npm', ['list', pkg, '--depth=0', '--json', ...workspaceArgs], {
 			stderr: 'pipe',
 			stdout: 'pipe',
 		});
-		const parsed = JSON.parse(result.stdout);
 
-		return parsed.dependencies?.[pkg] ?? null;
+		return collectInstalledCopies(result.stdout, pkg);
 	} catch (error) {
 		if (
 			typeof error === 'object' &&
@@ -169,15 +200,14 @@ const readInstalled = async (pkg: string): Promise<InstalledPackage | null> => {
 			typeof error.stdout === 'string'
 		) {
 			try {
-				const parsed = JSON.parse(error.stdout);
-				return parsed.dependencies?.[pkg] ?? null;
+				return collectInstalledCopies(error.stdout, pkg);
 			} catch {
 				// Ignore, fall through to throwing the original error.
 			}
 		}
 
 		if (typeof error === 'object' && error !== null && 'exitCode' in error) {
-			return null;
+			return { root: null, workspaces: new Map() };
 		}
 
 		throw error;
@@ -266,7 +296,21 @@ const describeInstalled = (installed: InstalledPackage | null): string => {
 	return installed.version ?? 'unknown version';
 };
 
-const installedPackages: Array<[string, string, string | null, InstalledPackage | null]> =
+const matchesSpecEverywhere = (
+	desiredSpec: string,
+	installed: InstalledCopies,
+	desiredGitSha: string | null = null,
+): boolean =>
+	matchesSpec(desiredSpec, installed.root, desiredGitSha) &&
+	[...installed.workspaces.values()].every((copy) => matchesSpec(desiredSpec, copy, desiredGitSha));
+
+const describeInstalledCopies = (installed: InstalledCopies): string =>
+	[
+		`${describeInstalled(installed.root)} (root)`,
+		...[...installed.workspaces].map(([name, copy]) => `${describeInstalled(copy)} (${name})`),
+	].join(', ');
+
+const installedPackages: Array<[string, string, string | null, InstalledCopies]> =
 	await Promise.all(
 		Object.entries(selectedPackages).map(async ([pkg, spec]) => [
 			pkg,
@@ -276,8 +320,8 @@ const installedPackages: Array<[string, string, string | null, InstalledPackage 
 		]),
 	);
 
-const allMatch = installedPackages.every(([, spec, desiredGitSha, meta]) =>
-	matchesSpec(spec, meta, desiredGitSha),
+const allMatch = installedPackages.every(([, spec, desiredGitSha, installed]) =>
+	matchesSpecEverywhere(spec, installed, desiredGitSha),
 );
 
 const isDefaultVersion = Object.entries(selectedPackages).every(
@@ -310,9 +354,11 @@ if (allMatch) {
 }
 
 installedPackages
-	.filter(([, spec, desiredGitSha, meta]) => !matchesSpec(spec, meta, desiredGitSha))
-	.forEach(([pkg, spec, _desiredGitSha, meta]) => {
-		stderr.write(`>>> ${pkg}: desired ${spec}, currently ${describeInstalled(meta)}\n`);
+	.filter(
+		([, spec, desiredGitSha, installed]) => !matchesSpecEverywhere(spec, installed, desiredGitSha),
+	)
+	.forEach(([pkg, spec, _desiredGitSha, installed]) => {
+		stderr.write(`>>> ${pkg}: desired ${spec}, currently ${describeInstalledCopies(installed)}\n`);
 	});
 
 await install();
