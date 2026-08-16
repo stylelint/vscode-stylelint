@@ -6,7 +6,7 @@ import { satisfies, validRange } from 'semver';
 import packageConfig from '../package.json' with { type: 'json' };
 
 function usage() {
-	stderr.write(`Usage: node --run switch-stylelint [version] [-- OPTIONS]
+	stderr.write(`Usage: node --run switch-stylelint [-- [version] [OPTIONS]]
 
 Switches the installed Stylelint version used for testing. Does not modify
 package.json or package-lock.json.
@@ -22,7 +22,7 @@ Options:
 
 Examples:
   node --run switch-stylelint            # Installs Stylelint from package.json
-  node --run switch-stylelint 16         # Installs Stylelint 16
+  node --run switch-stylelint -- 16      # Installs Stylelint 16
   node --run switch-stylelint -- --show  # Shows installed Stylelint version
 `);
 }

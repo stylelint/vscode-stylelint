@@ -82,8 +82,8 @@ To answer the question "does this extension behave correctly when VS Code loads 
 
 Since the extension supports older versions of Stylelint, you should also test that the extension and server behave correctly with those older versions.
 
-- `node --run switch-stylelint [version]` changes the Stylelint version used by both the extension and the tests.  
-  For example, `node --run switch-stylelint 16` makes the extension use Stylelint 16.x. You can then run any of the test commands above to verify behaviour with that version.  
+- `node --run switch-stylelint -- [version]` changes the Stylelint version used by both the extension and the tests.  
+  For example, `node --run switch-stylelint -- 16` makes the extension use Stylelint 16.x. You can then run any of the test commands above to verify behaviour with that version.  
   `node --run switch-stylelint` without arguments switches back to the default version defined in `package.json`.  
   Run `node --run switch-stylelint -- --help` for details.
 
