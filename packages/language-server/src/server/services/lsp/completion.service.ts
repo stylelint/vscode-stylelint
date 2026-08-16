@@ -167,14 +167,14 @@ export class CompletionService {
 			results.push(
 				createDisableCompletionItem(
 					'stylelint-disable-line',
-					thisLineRules.size === 1 ? (thisLineRules.values().next().value as string) : undefined,
+					thisLineRules.size === 1 ? thisLineRules.values().next().value : undefined,
 				),
 			);
 
 			results.push(
 				createDisableCompletionItem(
 					'stylelint-disable-next-line',
-					nextLineRules.size === 1 ? (nextLineRules.values().next().value as string) : undefined,
+					nextLineRules.size === 1 ? nextLineRules.values().next().value : undefined,
 				),
 			);
 

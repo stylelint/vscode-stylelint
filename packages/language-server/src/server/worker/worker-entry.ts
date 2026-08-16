@@ -474,21 +474,17 @@ const handleMessage = async (request?: WorkerRequest): Promise<void> => {
 	try {
 		switch (request.type) {
 			case 'resolve': {
-				await handleResolve(
-					request as WorkerRequest & { type: 'resolve'; payload: WorkerResolvePayload },
-				);
+				await handleResolve(request);
 				break;
 			}
 
 			case 'resolveConfig': {
-				await handleResolveConfig(
-					request as WorkerRequest & { type: 'resolveConfig'; payload: WorkerResolveConfigPayload },
-				);
+				await handleResolveConfig(request);
 				break;
 			}
 
 			case 'lint': {
-				await handleLint(request as WorkerRequest & { type: 'lint'; payload: WorkerLintPayload });
+				await handleLint(request);
 				break;
 			}
 

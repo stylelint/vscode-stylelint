@@ -269,7 +269,7 @@ describe('createLanguageServerFeature', () => {
 			capabilities: { workspace: { configuration: true } },
 		} as LSP.InitializeParams);
 
-		await runtimeDeps.connection.handlers.initialized?.({} as LSP.InitializedParams);
+		await runtimeDeps.connection.handlers.initialized?.({});
 
 		expect(runtimeDeps.connection.client.register).toHaveBeenCalledWith(
 			DidChangeConfigurationNotification.type,
@@ -278,7 +278,7 @@ describe('createLanguageServerFeature', () => {
 
 		runtimeDeps.connection.handlers.didChangeConfiguration?.({
 			settings: { foo: 'bar' },
-		} as LSP.DidChangeConfigurationParams);
+		});
 
 		expect(runtimeDeps.optionsService.clearCache).toHaveBeenCalledTimes(1);
 		expect(runtimeDeps.optionsService.updateGlobalOptions).toHaveBeenCalledWith({ foo: 'bar' });

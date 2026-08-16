@@ -67,7 +67,7 @@ function createDiagnosticsConnectionStub(): DiagnosticsConnectionStub {
 		workspace: {
 			getWorkspaceFolders: async () => workspaceFolders,
 		},
-		onNotification: () => ({ dispose() {} }) as LSP.Disposable,
+		onNotification: () => ({ dispose() {} }),
 	} as unknown as Connection;
 
 	return {

@@ -36,7 +36,7 @@ describe('DocumentFixesService', () => {
 			getOptions: vi.fn().mockResolvedValue({ use: 'defaults' }),
 		} as unknown as WorkspaceOptionsService;
 		logger = createTestLogger();
-		getFixesFn = vi.fn<GetFixesFn>() as MockedFunction<GetFixesFn>;
+		getFixesFn = vi.fn<GetFixesFn>();
 		loggingService = createLoggingServiceStub(logger);
 
 		const container = createContainer(

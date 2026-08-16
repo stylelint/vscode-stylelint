@@ -11,7 +11,7 @@ export const getLogFunction = (
 	remoteConsole: RemoteConsole,
 	level: string,
 ): RemoteConsoleLogFunctions | undefined => {
-	const logFunction = remoteConsole[level as RemoteConsoleLogLevels];
+	const logFunction = remoteConsole[level as RemoteConsoleLogLevels]?.bind(remoteConsole);
 
 	if (typeof logFunction === 'function') {
 		return logFunction;

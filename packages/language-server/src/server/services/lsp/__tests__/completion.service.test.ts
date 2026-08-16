@@ -58,8 +58,8 @@ describe('CompletionService', () => {
 
 	const createConnection = (): Connection =>
 		({
-			onCompletion: () => ({ dispose() {} }) as LSP.Disposable,
-			onNotification: () => ({ dispose() {} }) as LSP.Disposable,
+			onCompletion: () => ({ dispose() {} }),
+			onNotification: () => ({ dispose() {} }),
 		}) as unknown as Connection;
 
 	const setDocument = (content = 'a {}', languageId = 'css', uri = 'foo'): TextDocument => {
@@ -192,7 +192,7 @@ describe('CompletionService', () => {
 				range: Range.create(3, 4, 3, 4),
 			},
 			{
-				code: 5 as unknown as string,
+				code: 5,
 				message: 'Not a Stylelint diagnostic',
 				range: Range.create(1, 2, 1, 4),
 			},

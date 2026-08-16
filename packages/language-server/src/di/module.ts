@@ -138,9 +138,7 @@ export function provideValue<T>(
 	factory: () => PublicOnlyIfObject<T>,
 	scope?: Scope,
 ): FactoryRegistration<T> {
-	return (
-		scope ? { token, useFactory: factory, scope } : { token, useFactory: factory }
-	) as FactoryRegistration<T>;
+	return scope ? { token, useFactory: factory, scope } : { token, useFactory: factory };
 }
 
 /**
