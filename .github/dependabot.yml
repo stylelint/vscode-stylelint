@@ -9,10 +9,12 @@ updates:
     labels:
       - 'pr: dependencies'
     groups:
-      vitest:
-        patterns: ['vitest', '@vitest/*']
+      changesets:
+        patterns: ['@changesets/*']
       eslint:
         patterns: ['eslint', 'eslint-*', 'typescript-eslint']
+      vitest:
+        patterns: ['vitest', '@vitest/*']
       vscode:
         patterns: ['vscode-*', '@vscode/*']
     ignore:
