@@ -47,8 +47,7 @@ describe('createLanguageServerApplication', () => {
 			},
 		});
 		const runtimeOptions = createRuntimeApplicationMock.mock.calls[0]?.[0] as
-			| RuntimeApplicationOptions
-			| undefined;
+			RuntimeApplicationOptions | undefined;
 		const { overrides: resolvedOverrides, features } = runtimeOptions ?? {};
 
 		expect(result).toBe(runtimeApplication);

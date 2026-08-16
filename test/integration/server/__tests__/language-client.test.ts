@@ -431,8 +431,7 @@ describe('Language server', () => {
 			expect(fixAllRuleAction?.kind).toBe(LSP.CodeActionKind.QuickFix);
 
 			const fixAllEdit = fixAllRuleAction?.edit?.documentChanges?.[0] as
-				| LSP.TextDocumentEdit
-				| undefined;
+				LSP.TextDocumentEdit | undefined;
 
 			expect(fixAllEdit).toBeDefined();
 

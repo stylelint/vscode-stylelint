@@ -137,8 +137,7 @@ export function createRuleMetadataSourceFromStylelint(
 	return {
 		get: (ruleName: string) => {
 			const rules = stylelintInstance.rules as
-				| Record<string, { meta?: stylelint.RuleMeta }>
-				| undefined;
+				Record<string, { meta?: stylelint.RuleMeta }> | undefined;
 
 			return rules?.[ruleName]?.meta;
 		},
