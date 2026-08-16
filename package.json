@@ -469,7 +469,7 @@
       "clean": "if-file-deleted"
     },
     "bundle": {
-      "command": "node --experimental-transform-types scripts/bundle.mts --sourcemap",
+      "command": "node scripts/bundle.mts --sourcemap",
       "dependencies": [
         "build"
       ],
@@ -481,7 +481,7 @@
       ]
     },
     "bundle:minify": {
-      "command": "node --experimental-transform-types scripts/bundle.mts --minify",
+      "command": "node scripts/bundle.mts --minify",
       "dependencies": [
         "build"
       ],
@@ -564,7 +564,7 @@
       "clean": "if-file-deleted"
     },
     "lint:unit-tests": {
-      "command": "node --experimental-transform-types scripts/enforce-unit-tests-per-file.mts",
+      "command": "node scripts/enforce-unit-tests-per-file.mts",
       "dependencies": [
         "env"
       ],
