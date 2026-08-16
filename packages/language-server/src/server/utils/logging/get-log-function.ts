@@ -11,7 +11,8 @@ export const getLogFunction = (
 	remoteConsole: RemoteConsole,
 	level: string,
 ): RemoteConsoleLogFunctions | undefined => {
-	const logFunction = remoteConsole[level as RemoteConsoleLogLevels]?.bind(remoteConsole);
+	// eslint-disable-next-line @typescript-eslint/unbound-method -- callers re-bind `this` via .call() before invoking
+	const logFunction = remoteConsole[level as RemoteConsoleLogLevels];
 
 	if (typeof logFunction === 'function') {
 		return logFunction;
