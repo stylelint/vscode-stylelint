@@ -93,7 +93,7 @@ exports[`StylelintRunner > should be resolved with diagnostics when the rules in
     "message": "Unknown rule this-rule-does-not-exist.",
     "range": {
       "end": {
-        "character": 4,
+        "character": 1,
         "line": 0,
       },
       "start": {
@@ -109,7 +109,7 @@ exports[`StylelintRunner > should be resolved with diagnostics when the rules in
     "message": "Unknown rule this-rule-also-does-not-exist.",
     "range": {
       "end": {
-        "character": 4,
+        "character": 1,
         "line": 0,
       },
       "start": {
