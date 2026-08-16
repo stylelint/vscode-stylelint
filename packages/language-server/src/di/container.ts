@@ -88,7 +88,7 @@ export function createContainer(
 				for (const hook of hooks) {
 					hook({
 						instance,
-						token: token as Constructable<unknown>,
+						token,
 						dependencies,
 						resolve,
 					});

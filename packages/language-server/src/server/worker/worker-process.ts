@@ -291,7 +291,7 @@ export class StylelintWorkerProcess {
 	#sendCancelMessage(id: string): void {
 		if (this.#child && !this.#disposed) {
 			try {
-				this.#child.send({ id, type: 'cancel' } as WorkerRequest);
+				this.#child.send({ id, type: 'cancel' });
 			} catch {
 				// Worker may have already exited.
 			}

@@ -174,9 +174,7 @@ function ensureLanguageServerServiceMetadata(instance: unknown): LspServiceInsta
 	}
 
 	if (isLanguageServerServiceInstance(instance)) {
-		return (instance as { [lspServiceMetadataKey]: LspServiceInstanceMetadata })[
-			lspServiceMetadataKey
-		];
+		return instance[lspServiceMetadataKey];
 	}
 
 	const metadata: LspServiceInstanceMetadata = {
@@ -209,9 +207,7 @@ export function getLanguageServerServiceMetadata(
 		return undefined;
 	}
 
-	return (instance as { [lspServiceMetadataKey]: LspServiceInstanceMetadata })[
-		lspServiceMetadataKey
-	];
+	return instance[lspServiceMetadataKey];
 }
 
 /**
@@ -534,7 +530,7 @@ export function createLspServiceStub<T extends object>(
 		throw new Error(`Cannot create class stub for non-constructable token ${describeToken(cls)}`);
 	}
 
-	return Object.assign(Object.create(cls.prototype) as T, overrides) as T;
+	return Object.assign(Object.create(cls.prototype) as T, overrides);
 }
 
 /**

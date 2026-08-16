@@ -4,7 +4,6 @@ import type stylelint from 'stylelint';
 import { version as stylelintVersion } from 'stylelint/package.json';
 import { beforeEach, describe, expect, it, test, vi } from 'vitest';
 import type { Connection } from 'vscode-languageserver';
-import type { FileEvent } from 'vscode-languageserver-protocol';
 import * as LSP from 'vscode-languageserver-protocol';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
 import { URI } from 'vscode-uri';
@@ -108,14 +107,13 @@ const createRunner = (
 
 	return new StylelintRunnerService(
 		dependencyOverrides.os ?? createOsMock(),
-		dependencyOverrides.path ?? (path.posix as unknown as typeof path),
+		dependencyOverrides.path ?? path.posix,
 		dependencyOverrides.uri ?? createUriMock(),
-		dependencyOverrides.fs ??
-			({
-				async *glob() {
-					/* empty */
-				},
-			} as Pick<typeof import('node:fs/promises'), 'glob'>),
+		dependencyOverrides.fs ?? {
+			async *glob() {
+				/* empty */
+			},
+		},
 		dependencyOverrides.connection ?? mockConnection,
 		loggingService,
 		workspaceService,
@@ -226,7 +224,7 @@ describe('StylelintRunner', () => {
 
 		await createRunner(undefined, winWorkspace, {
 			os: createOsMock('win32'),
-			path: path.win32 as unknown as typeof path,
+			path: path.win32,
 		}).lintDocument(createMockDocument('', 'c:\\path\\to\\file.css'));
 
 		const posixWorkspace = {
@@ -826,7 +824,7 @@ describe('StylelintRunner', () => {
 			const notifyFileActivity = vi.fn();
 			const runner = createRunner(undefined, { notifyFileActivity });
 
-			runner.handleWatchedFilesChanged([{ uri: '/workspace/changed.css', type: 1 } as FileEvent]);
+			runner.handleWatchedFilesChanged([{ uri: '/workspace/changed.css', type: 1 }]);
 
 			expect(notifyFileActivity).toHaveBeenCalledWith('/workspace/changed.css');
 		});

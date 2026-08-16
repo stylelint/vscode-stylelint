@@ -103,7 +103,7 @@ function createWorkspaceResolver(): WorkspaceResolver {
 			async getWorkspaceFolder(_connection: Connection, document: TextDocument) {
 				return folders.get(document.uri);
 			},
-		} as WorkspaceFolderServiceStub,
+		},
 		setWorkspaceFolder: (uri: string, folder: string | undefined) => {
 			folders.set(uri, folder);
 		},
@@ -328,7 +328,7 @@ describe('OldStylelintWarningLspModule', () => {
 		setWorkspaceFolder(document, '/workspace');
 		setStylelintResolution(document, createResolution({ version: '13.0.0' }));
 		setShowWarningMessageResponder(async (_message, ...items) => {
-			return items[0] as LSP.MessageActionItem;
+			return items[0];
 		});
 
 		await handleDocumentOpened(document);

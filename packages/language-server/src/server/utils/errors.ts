@@ -23,8 +23,8 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 			return obj as unknown as RInner;
 		}
 
-		if (visited.has(obj as unknown as object)) {
-			return visited.get(obj as unknown as object) as RInner;
+		if (visited.has(obj)) {
+			return visited.get(obj) as RInner;
 		}
 
 		if (obj instanceof Error) {
@@ -82,7 +82,7 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 		if (isIterable(obj)) {
 			const result: unknown[] = [];
 
-			visited.set(obj as unknown as object, result);
+			visited.set(obj, result);
 
 			for (const value of obj) {
 				result.push(serializeInner(value, visited));
@@ -91,7 +91,7 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 			return result as unknown as RInner;
 		}
 
-		visited.set(obj as unknown as object, '[Circular]');
+		visited.set(obj, '[Circular]');
 
 		const serializedObj = Object.fromEntries(
 			Object.entries(obj).map(([key, value]) => {
@@ -119,7 +119,7 @@ export function serializeErrors<T, R extends { [K in keyof T]: T[K] }>(object: T
 			}),
 		) as RInner;
 
-		visited.set(obj as unknown as RInner, serializedObj);
+		visited.set(obj, serializedObj);
 
 		return serializedObj;
 	};

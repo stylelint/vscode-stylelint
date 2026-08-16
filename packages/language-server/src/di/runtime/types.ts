@@ -14,12 +14,12 @@ export interface RuntimeContext {
 }
 
 export interface RuntimeLifecycleParticipant {
-	onStart?(context: RuntimeContext): MaybePromise<void>;
-	onShutdown?(context: RuntimeContext): MaybePromise<void>;
+	onStart?: (context: RuntimeContext) => MaybePromise<void>;
+	onShutdown?: (context: RuntimeContext) => MaybePromise<void>;
 }
 
 export interface RuntimeFeature {
-	start?(context: RuntimeContext): MaybePromise<void>;
-	shutdown?(context: RuntimeContext): MaybePromise<void>;
-	dispose?(): void;
+	start?: (context: RuntimeContext) => MaybePromise<void>;
+	shutdown?: (context: RuntimeContext) => MaybePromise<void>;
+	dispose?: () => void;
 }

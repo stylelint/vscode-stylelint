@@ -6,5 +6,5 @@ export type TokenType<T extends Token<unknown>> = T extends Token<infer R> ? R :
  * Creates a unique token for dependency injection.
  */
 export function createToken<T>(description: string): Token<T> {
-	return Symbol(description) as Token<T>;
+	return Symbol(description);
 }

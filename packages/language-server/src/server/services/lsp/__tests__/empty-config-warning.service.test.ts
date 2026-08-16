@@ -278,7 +278,7 @@ describe('EmptyConfigWarningLspService', () => {
 		setWorkspaceFolder(document, '/workspace');
 		setOptions(document, {});
 		setShowWarningMessageResponder(async (_message, ...items) => {
-			return items[0] as LSP.MessageActionItem;
+			return items[0];
 		});
 
 		await handleDocumentOpened(document);
