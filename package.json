@@ -444,6 +444,7 @@
     "env": {
       "files": [
         "package.json",
+        "package-lock.json",
         ".nvmrc",
         ".stylelint-version"
       ]

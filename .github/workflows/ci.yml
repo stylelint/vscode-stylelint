@@ -98,7 +98,7 @@ jobs:
         env:
           NPM_CONFIG_CACHE: ${{ steps.workspace.outputs.path }}/.npm-cache
           NPM_CONFIG_PREFER_OFFLINE: true
-        run: node --run switch-stylelint ${{ matrix.stylelint }}
+        run: node --run switch-stylelint -- ${{ matrix.stylelint }}
 
       - uses: google/wireit@9d7c2e5346f8ef1b1ab6014c4e96c74e234f7ed5 # setup-github-actions-caching/v2.0.4
 
