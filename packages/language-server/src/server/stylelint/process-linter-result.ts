@@ -17,7 +17,9 @@ import { compileRuleCustomizations, warningToDiagnostic } from './warning-to-dia
  * @param diagnostic The diagnostic to get a key for.
  */
 function getDiagnosticKey({ range: { start, end }, code, message }: LSP.Diagnostic): string {
-	return `[${start.line},${start.character},${end.line},${end.character}]-${code}-${message}`;
+	const messageText = typeof message === 'string' ? message : message.value;
+
+	return `[${start.line},${start.character},${end.line},${end.character}]-${code}-${messageText}`;
 }
 
 /**

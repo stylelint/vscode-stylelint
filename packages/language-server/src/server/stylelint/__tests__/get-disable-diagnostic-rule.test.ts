@@ -1,4 +1,4 @@
-import { Range } from 'vscode-languageserver-types';
+import { MarkupKind, Range } from 'vscode-languageserver-types';
 import { DisableReportRuleNames } from '../types.js';
 import { getDisableDiagnosticRule } from '../get-disable-diagnostic-rule.js';
 import { describe, expect, test } from 'vitest';
@@ -44,6 +44,16 @@ describe('getDisableDiagnosticRule', () => {
 				code: DisableReportRuleNames.Illegal,
 			}),
 		).toBe('block-no-empty');
+	});
+
+	test('should return rules for diagnostics with markup content messages', () => {
+		expect(
+			getDisableDiagnosticRule({
+				message: { kind: MarkupKind.PlainText, value: 'Needless disable for "color-named"' },
+				range,
+				code: DisableReportRuleNames.Needless,
+			}),
+		).toBe('color-named');
 	});
 
 	test('should return undefined for non-disable diagnostics', () => {
