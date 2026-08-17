@@ -47,8 +47,7 @@ describe('DisableRuleLineCodeActionFactory', () => {
 		const codeAction = lineFactory.create(document, diagnostic, 'separateLine');
 
 		const edit = (codeAction.edit?.documentChanges?.[0] as LSP.TextDocumentEdit)?.edits?.[0] as
-			| LSP.TextEdit
-			| undefined;
+			LSP.TextEdit | undefined;
 
 		expect(edit?.newText).toMatch(/^\t {4}\S/);
 	});
