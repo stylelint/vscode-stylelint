@@ -11,8 +11,7 @@ export interface FactoryRegistration<T = unknown, Deps extends readonly unknown[
 // Any type is used since otherwise there will be conflicts with dependency types.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ModuleRegistryEntry<T = unknown, D extends readonly unknown[] = any[]> =
-	| Constructable<T>
-	| FactoryRegistration<T, D>;
+	Constructable<T> | FactoryRegistration<T, D>;
 
 export interface ModuleOptions {
 	imports?: ModuleMetadata[];
@@ -139,9 +138,7 @@ export function provideValue<T>(
 	factory: () => PublicOnlyIfObject<T>,
 	scope?: Scope,
 ): FactoryRegistration<T> {
-	return (
-		scope ? { token, useFactory: factory, scope } : { token, useFactory: factory }
-	) as FactoryRegistration<T>;
+	return scope ? { token, useFactory: factory, scope } : { token, useFactory: factory };
 }
 
 /**

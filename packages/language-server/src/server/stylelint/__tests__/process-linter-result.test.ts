@@ -1,11 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { LinterResult, type default as stylelint } from 'stylelint';
 import { processLinterResult, processMultiFileLinterResult } from '../process-linter-result.js';
-import {
-	Stylelint,
-	createRuleMetadataSourceFromStylelint,
-	type LinterResult as InternalLinterResult,
-} from '../types.js';
+import { Stylelint, createRuleMetadataSourceFromStylelint } from '../types.js';
 import { createTestLogger } from '../../../../../../test/helpers/test-logger.js';
 
 /** For compatibility with Stylelint versions prior to 17.x */
@@ -209,7 +205,7 @@ describe('processMultiFileLinterResult', () => {
 						ignored: false,
 					},
 				],
-			} as InternalLinterResult,
+			},
 			logger,
 		);
 
@@ -237,7 +233,7 @@ describe('processMultiFileLinterResult', () => {
 						ignored: false,
 					},
 				],
-			} as InternalLinterResult,
+			},
 			logger,
 		);
 
@@ -257,7 +253,7 @@ describe('processMultiFileLinterResult', () => {
 						ignored: true,
 					},
 				],
-			} as InternalLinterResult,
+			},
 			logger,
 		);
 
@@ -265,11 +261,7 @@ describe('processMultiFileLinterResult', () => {
 	});
 
 	test('should return empty map when no results', () => {
-		const result = processMultiFileLinterResult(
-			metadataSource,
-			{ results: [] } as InternalLinterResult,
-			logger,
-		);
+		const result = processMultiFileLinterResult(metadataSource, { results: [] }, logger);
 
 		expect(result.size).toBe(0);
 	});
@@ -287,7 +279,7 @@ describe('processMultiFileLinterResult', () => {
 							ignored: false,
 						},
 					],
-				} as InternalLinterResult,
+				},
 				logger,
 			),
 		).toThrow('Invalid option');
@@ -308,7 +300,7 @@ describe('processMultiFileLinterResult', () => {
 						ignored: false,
 					},
 				],
-			} as InternalLinterResult,
+			},
 			logger,
 		);
 

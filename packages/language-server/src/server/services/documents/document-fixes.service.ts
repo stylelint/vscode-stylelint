@@ -3,7 +3,6 @@ import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { TextEdit } from 'vscode-languageserver-types';
 import type winston from 'winston';
 import { createToken, inject } from '../../../di/index.js';
-import type { RunnerOptions } from '../../stylelint/types.js';
 import { getFixes } from '../../utils/index.js';
 import { type LoggingService, loggingServiceToken } from '../infrastructure/logging.service.js';
 import { StylelintRunnerService } from '../stylelint-runtime/stylelint-runner.service.js';
@@ -53,7 +52,7 @@ export class DocumentFixesService {
 	async resolveConfig(document: TextDocument): Promise<stylelint.Config | undefined> {
 		try {
 			const runnerOptions = await this.#options.getOptions(document.uri);
-			const config = await this.#runner.resolveConfig(document, runnerOptions as RunnerOptions);
+			const config = await this.#runner.resolveConfig(document, runnerOptions);
 
 			this.#logger?.debug('Config resolved', { uri: document.uri, hasConfig: Boolean(config) });
 

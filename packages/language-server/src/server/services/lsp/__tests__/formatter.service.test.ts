@@ -57,8 +57,8 @@ function createFormattingConnectionStub(): FormattingConnectionStub {
 				return disposable;
 			},
 		},
-		onDocumentFormatting: () => ({ dispose() {} }) as LSP.Disposable,
-		onNotification: () => ({ dispose() {} }) as LSP.Disposable,
+		onDocumentFormatting: () => ({ dispose() {} }),
+		onNotification: () => ({ dispose() {} }),
 	} as unknown as Connection;
 
 	return {

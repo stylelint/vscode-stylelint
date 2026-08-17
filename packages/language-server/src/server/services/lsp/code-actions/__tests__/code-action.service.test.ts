@@ -64,8 +64,8 @@ function createCodeActionConnectionStub(): CodeActionConnectionStub {
 				return showDocumentResponder(params);
 			},
 		},
-		onCodeAction: () => ({ dispose() {} }) as LSP.Disposable,
-		onNotification: () => ({ dispose() {} }) as LSP.Disposable,
+		onCodeAction: () => ({ dispose() {} }),
+		onNotification: () => ({ dispose() {} }),
 	} as unknown as Connection;
 
 	return {

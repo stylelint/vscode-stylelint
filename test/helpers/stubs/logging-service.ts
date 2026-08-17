@@ -9,8 +9,6 @@ export type LoggingServiceStub = LoggingService & {
 
 export function createLoggingServiceStub(logger?: TestLogger): LoggingServiceStub {
 	return {
-		createLogger: logger
-			? (vi.fn(() => logger) as LoggingServiceStub['createLogger'])
-			: vi.fn(() => createTestLogger()),
+		createLogger: logger ? vi.fn(() => logger) : vi.fn(() => createTestLogger()),
 	};
 }

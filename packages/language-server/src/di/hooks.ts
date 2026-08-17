@@ -44,6 +44,5 @@ export function registerInitializationHook<T>(
 export function getInitializationHooks<T>(
 	target: Constructable<T>,
 ): readonly InitializationHook<T>[] {
-	return ((target as HookableConstructable<T>)[initializationHooksKey] ??
-		[]) as readonly InitializationHook<T>[];
+	return (target as HookableConstructable<T>)[initializationHooksKey] ?? [];
 }

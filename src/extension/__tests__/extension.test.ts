@@ -8,7 +8,6 @@ type VSCodeWorkspace = (typeof import('vscode'))['workspace'];
 type VSCodeCommands = (typeof import('vscode'))['commands'];
 type VSCodeWindow = (typeof import('vscode'))['window'];
 type VSCodeLanguages = (typeof import('vscode'))['languages'];
-type VSCodeLanguageStatusSeverity = (typeof import('vscode'))['LanguageStatusSeverity'];
 type LanguageClientModule = typeof import('vscode-languageclient/node');
 type ExtensionToken = (typeof extensionTokens)[keyof typeof extensionTokens];
 type ExtensionOverrideEntry = [ExtensionToken, unknown];
@@ -150,16 +149,13 @@ describe('Extension entry point', () => {
 			[extensionTokens.commands, mockCommands],
 			[extensionTokens.window, mockWindow],
 			[extensionTokens.languages, mockLanguages],
-			[
-				extensionTokens.languageStatusSeverity,
-				{ Information: 0, Warning: 1, Error: 2 } as unknown as VSCodeLanguageStatusSeverity,
-			],
+			[extensionTokens.languageStatusSeverity, { Information: 0, Warning: 1, Error: 2 }],
 			[
 				extensionTokens.languageClientModule,
 				{
 					LanguageClient: mockLanguageClient as unknown as LanguageClientModule['LanguageClient'],
 					State: { Stopped: 1, Running: 2, Starting: 3 },
-				} as unknown as LanguageClientModule,
+				},
 			],
 		];
 

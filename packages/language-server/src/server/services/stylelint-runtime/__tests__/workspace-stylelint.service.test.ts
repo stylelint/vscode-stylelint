@@ -1,13 +1,12 @@
 import { describe, expect, test, vi } from 'vitest';
 import type winston from 'winston';
-import type * as stylelint from 'stylelint';
 
 import {
 	createLoggingServiceStub,
 	createTestLogger,
 } from '../../../../../../../test/helpers/index.js';
 import { createContainer, module, provideTestValue } from '../../../../di/index.js';
-import type { LinterResult, RunnerOptions } from '../../../stylelint/types.js';
+import type { LinterResult } from '../../../stylelint/types.js';
 import type { WorkerLintResult, WorkerResolveResult } from '../../../worker/types.js';
 import { StylelintNotFoundError } from '../../../worker/worker-process.js';
 import { loggingServiceToken } from '../../infrastructure/logging.service.js';
@@ -121,8 +120,8 @@ describe('WorkspaceStylelintService', () => {
 
 		const request: WorkspaceLintRequest = {
 			workspaceFolder: '/workspace',
-			options: { codeFilename: '/workspace/file.css' } as stylelint.LinterOptions,
-			runnerOptions: {} as RunnerOptions,
+			options: { codeFilename: '/workspace/file.css' },
+			runnerOptions: {},
 		};
 
 		await expect(service.lint(request)).resolves.toBe(lintResult);
@@ -156,15 +155,13 @@ describe('WorkspaceStylelintService', () => {
 		const { service, workerRegistry, logger } = createService();
 		const error = new StylelintNotFoundError();
 
-		(workerRegistry.runWithWorker as unknown as ReturnType<typeof vi.fn>).mockRejectedValueOnce(
-			error,
-		);
+		workerRegistry.runWithWorker.mockRejectedValueOnce(error);
 
 		await expect(
 			service.lint({
 				workspaceFolder: '/workspace',
-				options: {} as stylelint.LinterOptions,
-				runnerOptions: {} as RunnerOptions,
+				options: {},
+				runnerOptions: {},
 			}),
 		).rejects.toBe(error);
 
@@ -186,7 +183,7 @@ describe('WorkspaceStylelintService', () => {
 			service.resolve({
 				workspaceFolder: '/workspace',
 				stylelintPath: 'stylelint',
-				runnerOptions: {} as RunnerOptions,
+				runnerOptions: {},
 			}),
 		).resolves.toBe(resolveResult);
 
@@ -194,7 +191,7 @@ describe('WorkspaceStylelintService', () => {
 			{
 				stylelintPath: 'stylelint',
 				codeFilename: undefined,
-				runnerOptions: {} as RunnerOptions,
+				runnerOptions: {},
 			},
 			undefined,
 		);

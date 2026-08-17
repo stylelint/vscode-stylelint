@@ -50,7 +50,7 @@ function createCommandService() {
 	let lastHandler: ((params: LSP.ExecuteCommandParams) => unknown) | undefined;
 	const service = {
 		on: vi.fn((_commandId: string, handler: (...args: unknown[]) => unknown) => {
-			lastHandler = handler as (params: LSP.ExecuteCommandParams) => unknown;
+			lastHandler = handler;
 
 			return disposable;
 		}),

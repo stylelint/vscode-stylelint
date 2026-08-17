@@ -26,7 +26,7 @@ describe('WorkspaceActivityLspService', () => {
 		const service = container.resolve(WorkspaceActivityLspService);
 		const document = { uri: 'file:///workspace/style.css' } as never;
 
-		await service.handleDocumentOpened({ document } as never);
+		await service.handleDocumentOpened({ document });
 		service.handleWatchedFilesChanged({
 			changes: [{ uri: 'file:///workspace/package.json', type: 1 }],
 		});
