@@ -550,6 +550,7 @@
         "src/**/*.ts",
         "test/**/*.ts",
         "scripts/**",
+        ".changeset/**",
         "packages/language-server/src/**/*.ts",
         "packages/language-server/tsconfig.json",
         "*.{js,mjs,mts}",
