@@ -364,8 +364,8 @@
     "vscode-languageserver": "^10.1.0"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.1",
-    "@changesets/get-github-info": "^0.8.0",
+    "@changesets/cli": "^3.0.0",
+    "@changesets/get-github-info": "^1.0.0",
     "@stylelint/prettier-config": "^4.0.0",
     "@types/node": "22.17.2",
     "@types/vscode": "1.103.0",
@@ -550,6 +550,7 @@
         "src/**/*.ts",
         "test/**/*.ts",
         "scripts/**",
+        ".changeset/**",
         "packages/language-server/src/**/*.ts",
         "packages/language-server/tsconfig.json",
         "*.{js,mjs,mts}",

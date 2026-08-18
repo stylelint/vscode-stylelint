@@ -6,11 +6,11 @@
 //   --seed: Copy root CHANGELOG.md to proxy before "changeset version".
 //   --sync: Copy proxy CHANGELOG.md to root and sync version afterwards.
 
-/* eslint-disable no-console */
-
 import { copyFileSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
+
+type PackageJson = { version: string };
 
 const rootDir = path.resolve(import.meta.dirname, '..');
 
@@ -29,8 +29,8 @@ if (mode === '--seed') {
 	}
 } else if (mode === '--sync') {
 	// Sync version.
-	const proxyPkg = JSON.parse(readFileSync(proxyPkgPath, 'utf-8'));
-	const rootPkg = JSON.parse(readFileSync(rootPkgPath, 'utf-8'));
+	const proxyPkg = JSON.parse(readFileSync(proxyPkgPath, 'utf-8')) as PackageJson;
+	const rootPkg = JSON.parse(readFileSync(rootPkgPath, 'utf-8')) as PackageJson;
 
 	if (proxyPkg.version !== rootPkg.version) {
 		rootPkg.version = proxyPkg.version;

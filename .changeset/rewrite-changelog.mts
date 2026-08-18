@@ -32,7 +32,7 @@ if (!path) {
 }
 
 if (!existsSync(path)) {
-	console.log(`"${path}" does not exist, skipping.`); // eslint-disable-line no-console
+	console.log(`"${path}" does not exist, skipping.`);
 	process.exit(0);
 }
 
@@ -102,7 +102,7 @@ const newContent = newLines.join('\n');
 // If the rewrite didn't change anything, skip writing so the release pipeline
 // does not see a spurious diff.
 if (newContent === content) {
-	console.log(`"${path}" is unchanged, skipping.`); // eslint-disable-line no-console
+	console.log(`"${path}" is unchanged, skipping.`);
 	process.exit(0);
 }
 
@@ -112,4 +112,4 @@ writeFileSync(
 	newContent.replace(`## ${latestVersion} - ${originalDate}`, `## ${latestVersion} - ${today}`),
 	'utf8',
 );
-console.log(`"${path}" rewritten.`); // eslint-disable-line no-console
+console.log(`"${path}" rewritten.`);

@@ -1,7 +1,7 @@
 {
 	"$schema": "https://unpkg.com/@changesets/config/schema.json",
 	"changelog": [
-		"./changelog-stylelint.cjs",
+		"./changelog-stylelint.mjs",
 		{
 			"repo": "stylelint/vscode-stylelint"
 		}
@@ -9,7 +9,10 @@
 	"commit": false,
 	"linked": [],
 	"access": "public",
-	"baseBranch": "main",
+	"privatePackages": {
+		"version": true,
+		"tag": false
+	},
 	"updateInternalDependencies": "patch",
 	"ignore": []
 }

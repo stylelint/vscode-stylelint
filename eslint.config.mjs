@@ -95,7 +95,7 @@ export default defineConfig([
 	},
 
 	{
-		files: ['**/*.ts'],
+		files: ['**/*.ts', '.changeset/**/*.mts'],
 		extends: [tsEslint.configs.recommendedTypeChecked],
 		languageOptions: {
 			parserOptions: {
@@ -175,6 +175,14 @@ export default defineConfig([
 		rules: {
 			'no-console': 'off',
 			'no-process-exit': 'off',
+		},
+	},
+
+	{
+		files: ['.changeset/**/*'],
+		rules: {
+			'no-console': 'off',
+			'n/no-process-exit': 'off',
 		},
 	},
 ]);
