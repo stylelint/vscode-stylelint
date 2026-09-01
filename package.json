@@ -369,7 +369,7 @@
     "@stylelint/prettier-config": "^4.0.0",
     "@types/node": "22.17.2",
     "@types/vscode": "1.103.0",
-    "@vitest/coverage-v8": "^4.1.10",
+    "@vitest/coverage-v8": "^4.1.11",
     "@vitest/eslint-plugin": "^1.6.27",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.0.0",
