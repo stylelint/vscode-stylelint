@@ -361,7 +361,7 @@
   "dependencies": {
     "@stylelint/language-server": "workspace:*",
     "vscode-languageclient": "^10.1.0",
-    "vscode-languageserver": "^10.1.0"
+    "vscode-languageserver": "^10.1.1"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.0",
@@ -396,9 +396,9 @@
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.67.0",
     "vitest": "^4.1.2",
-    "vscode-jsonrpc": "^9.0.1",
-    "vscode-languageserver-protocol": "^3.17.5",
-    "vscode-languageserver-textdocument": "^1.0.12",
+    "vscode-jsonrpc": "^9.0.2",
+    "vscode-languageserver-protocol": "^3.18.3",
+    "vscode-languageserver-textdocument": "^1.0.14",
     "winston": "^3.19.0",
     "wireit": "^0.14.13"
   },
