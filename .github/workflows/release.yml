@@ -102,7 +102,7 @@ jobs:
           echo "CHANGELOG_EOF" >> "${GITHUB_OUTPUT}"
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           tag_name: ${{ needs.detect.outputs.extension-version }}
           name: 'vscode-stylelint ${{ needs.detect.outputs.extension-version }}'
@@ -164,7 +164,7 @@ jobs:
           echo "CHANGELOG_EOF" >> "${GITHUB_OUTPUT}"
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           tag_name: '@stylelint/language-server@${{ needs.detect.outputs.server-version }}'
           name: '@stylelint/language-server ${{ needs.detect.outputs.server-version }}'
