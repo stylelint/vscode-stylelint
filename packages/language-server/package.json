@@ -63,7 +63,7 @@
     "path-is-inside": "^1.0.2",
     "rfdc": "^1.4.1",
     "semver": "^7.8.5",
-    "serialize-error": "^13.0.1",
+    "serialize-error": "^13.0.2",
     "triple-beam": "^1.4.1",
     "vscode-languageserver": "^10.1.1",
     "vscode-languageserver-protocol": "^3.17.5",
