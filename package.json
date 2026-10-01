@@ -390,7 +390,7 @@
     "postcss-styled-syntax": "^0.7.2",
     "prettier": "^3.9.9",
     "semver": "^7.8.5",
-    "stylelint": "^17.14.1",
+    "stylelint": "^17.15.0",
     "stylelint-scss": "^7.2.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
