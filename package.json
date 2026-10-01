@@ -360,8 +360,8 @@
   },
   "dependencies": {
     "@stylelint/language-server": "workspace:*",
-    "vscode-languageclient": "^10.1.1",
-    "vscode-languageserver": "^10.1.1"
+    "vscode-languageclient": "^10.1.2",
+    "vscode-languageserver": "^10.1.2"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
@@ -373,7 +373,7 @@
     "@vitest/eslint-plugin": "^1.6.27",
     "@vscode/test-cli": "^0.0.15",
     "@vscode/test-electron": "^3.0.0",
-    "@vscode/vsce": "^3.9.2",
+    "@vscode/vsce": "^4.0.0",
     "cspell": "^10.1.1",
     "esbuild": "^0.28.2",
     "eslint": "^10.11.0",
