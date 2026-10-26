@@ -426,7 +426,7 @@
     "build-watch": "tsc -b tsconfig.src.json --watch",
     "bundle": "wireit",
     "bundle:minify": "wireit",
-    "bundle-watch": "node --experimental-strip-types scripts/bundle.mts --sourcemap --watch",
+    "bundle-watch": "node scripts/bundle.mts --sourcemap --watch",
     "build-bundle": "wireit",
     "format": "prettier . --write",
     "lint": "wireit",
@@ -436,14 +436,14 @@
     "lint:types": "wireit",
     "lint:unit-tests": "wireit",
     "test": "wireit",
-    "test:e2e": "node --experimental-strip-types scripts/run-e2e.mts",
+    "test:e2e": "node scripts/run-e2e.mts",
     "test:integration": "wireit",
     "test:unit": "wireit",
-    "changeset": "node --experimental-strip-types .changeset/sync-extension-version.mts --seed && changeset version && node --experimental-strip-types .changeset/rewrite-changelog.mts packages/vscode-stylelint/CHANGELOG.md && node --experimental-strip-types .changeset/rewrite-changelog.mts packages/language-server/CHANGELOG.md && node --experimental-strip-types .changeset/sync-extension-version.mts --sync && npm install --ignore-scripts",
+    "changeset": "node .changeset/sync-extension-version.mts --seed && changeset version && node .changeset/rewrite-changelog.mts packages/vscode-stylelint/CHANGELOG.md && node .changeset/rewrite-changelog.mts packages/language-server/CHANGELOG.md && node .changeset/sync-extension-version.mts --sync && npm install --ignore-scripts",
     "vscode:prepublish": "wireit",
-    "vscode:launch": "node --experimental-strip-types scripts/launch-vscode.mts",
+    "vscode:launch": "node scripts/launch-vscode.mts",
     "publish": "vsce publish --no-git-tag-version --no-update-package-json",
-    "switch-stylelint": "node --experimental-strip-types scripts/switch-stylelint.mts"
+    "switch-stylelint": "node scripts/switch-stylelint.mts"
   },
   "wireit": {
     "env": {
