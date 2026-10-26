@@ -13,7 +13,9 @@ describe('Document formatting', () => {
 	});
 
 	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	const isStylelint16 = semver.satisfies(require('stylelint/package.json').version, '>=16');
+	const isStylelint16 = semver.satisfies(require('stylelint/package.json').version, '>=16', {
+		includePrerelease: true,
+	});
 
 	// Only Stylelint before 16 had formatting related rules
 	const pre16It = isStylelint16 ? it.skip : it;

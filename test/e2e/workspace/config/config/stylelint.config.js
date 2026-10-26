@@ -2,7 +2,7 @@
 
 /** @type {import('stylelint').Config} */
 const config = {
-	extends: ['./stylelint-config1', './stylelint-config2'],
+	extends: ['./stylelint-config1.js', './stylelint-config2.js'],
 	rules: {
 		'block-no-empty': true,
 	},
