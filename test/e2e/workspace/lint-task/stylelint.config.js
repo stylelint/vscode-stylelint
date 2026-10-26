@@ -14,7 +14,6 @@ const config = {
 		'selector-pseudo-element-colon-notation': 'double',
 		'selector-type-case': 'lower',
 		'shorthand-property-no-redundant-values': true,
-		'declaration-block-single-line-max-declarations': 1,
 		'no-duplicate-selectors': true,
 		'comment-no-empty': true,
 		'font-family-name-quotes': 'always-where-recommended',

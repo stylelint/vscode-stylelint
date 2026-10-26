@@ -57,7 +57,9 @@ describe('Code actions', () => {
 	});
 
 	// eslint-disable-next-line @typescript-eslint/no-require-imports
-	const hasEditInfo = semver.satisfies(require('stylelint/package.json').version, '>=16.15');
+	const hasEditInfo = semver.satisfies(require('stylelint/package.json').version, '>=16.15', {
+		includePrerelease: true,
+	});
 
 	// Rules with EditInfo are only available in Stylelint 16.15 and later.
 	const ifItHaveProblemEditsIt = hasEditInfo ? it : it.skip;

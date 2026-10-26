@@ -548,7 +548,7 @@ describe('StylelintRunner', () => {
 		);
 	});
 
-	if (semver.satisfies(stylelintVersion, '>=16.15')) {
+	if (semver.satisfies(stylelintVersion, '>=16.15', { includePrerelease: true })) {
 		it('should be possible to get the original warning via getWarning', async () => {
 			expect.assertions(1);
 

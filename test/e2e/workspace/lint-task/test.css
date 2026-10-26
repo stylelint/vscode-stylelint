@@ -54,9 +54,6 @@ k {
   margin: 1px 1px 1px 1px;
 }
 
-/* declaration-block-single-line-max-declarations: 1 - too many */
-l { color: red; display: block; }
-
 /* no-duplicate-selectors - .dup appears twice */
 .dup { color: red; }
 .dup { color: blue; }
