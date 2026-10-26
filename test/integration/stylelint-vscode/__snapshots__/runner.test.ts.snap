@@ -353,15 +353,6 @@ unknown {
 "
 `;
 
-exports[`StylelintRunner with auto-fix > auto-fix should work if there is syntax errors in css 1`] = `
-"
-.a {
-    color: #ffffff;
-    background-color: #ffffffaa
-}
-"
-`;
-
 exports[`StylelintRunner with auto-fix > auto-fix should work properly if configs are defined 1`] = `
 "a
 {
