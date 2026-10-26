@@ -21,7 +21,13 @@
   },
   "icon": "media/stylelint.png",
   "engines": {
-    "vscode": ">=1.103.0"
+    "vscode": ">=1.110.0"
+  },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "22.22.3"
+    }
   },
   "galleryBanner": {
     "color": "#000000",
@@ -367,8 +373,8 @@
     "@changesets/cli": "^3.0.3",
     "@changesets/get-github-info": "^1.0.1",
     "@stylelint/prettier-config": "^4.1.0",
-    "@types/node": "22.17.2",
-    "@types/vscode": "1.103.0",
+    "@types/node": "<=22.22.3",
+    "@types/vscode": "1.110.0",
     "@vitest/coverage-v8": "^5.0.5",
     "@vitest/eslint-plugin": "^1.6.28",
     "@vscode/test-cli": "^0.0.15",
@@ -444,7 +450,6 @@
       "files": [
         "package.json",
         "package-lock.json",
-        ".nvmrc",
         ".stylelint-version"
       ]
     },
