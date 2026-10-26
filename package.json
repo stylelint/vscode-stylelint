@@ -406,12 +406,6 @@
     "mocha": {
       "diff": "^8.0.3",
       "serialize-javascript": "^7.0.3"
-    },
-    "postcss-styled-syntax": {
-      "typescript": "$typescript"
-    },
-    "vitest": {
-      "vite": "^7.3.1"
     }
   },
   "scripts": {
