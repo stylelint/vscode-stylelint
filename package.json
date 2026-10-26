@@ -366,7 +366,7 @@
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
     "@changesets/get-github-info": "^1.0.1",
-    "@stylelint/prettier-config": "^4.0.0",
+    "@stylelint/prettier-config": "^4.1.0",
     "@types/node": "22.17.2",
     "@types/vscode": "1.103.0",
     "@vitest/coverage-v8": "^4.1.11",
