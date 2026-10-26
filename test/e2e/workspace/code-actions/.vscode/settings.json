@@ -8,5 +8,6 @@
 	"stylelint.validate": [
 		"css",
 		"javascript"
-	]
+	],
+	"css.validate": false
 }
