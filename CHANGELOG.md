@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.2 - 2026-10-26
+
+- Fixed: reduced redundant regex compilation when processing severity customizations ([#912](https://github.com/stylelint/vscode-stylelint/pull/912)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: redundant filesystem stat calls when linting multiple open documents simultaneously ([#910](https://github.com/stylelint/vscode-stylelint/pull/910)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: slower initial diagnostics due to sequential rule metadata loading on worker startup ([#913](https://github.com/stylelint/vscode-stylelint/pull/913)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: sped up building diagnostic lookup keys ([#911](https://github.com/stylelint/vscode-stylelint/pull/911)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: stale worker requests continuing to run after becoming obsolete ([#914](https://github.com/stylelint/vscode-stylelint/pull/914)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+
 ## 2.2.1 - 2026-03-31
 
 - Fixed: code action and completion requests still processing when VS Code cancels the request ([#897](https://github.com/stylelint/vscode-stylelint/pull/897)) ([@adalinesimonian](https://github.com/adalinesimonian)).
