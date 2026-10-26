@@ -32,7 +32,7 @@ export function itOnVersion(
 ): Mocha.Test {
 	const testName = `(Stylelint ${versionRange}) ${name}`;
 
-	if (semver.satisfies(stylelintVersion, versionRange)) {
+	if (semver.satisfies(stylelintVersion, versionRange, { includePrerelease: true })) {
 		return it(testName, fn);
 	}
 
@@ -46,7 +46,7 @@ export function describeOnVersion(
 ): Mocha.Suite | void {
 	const describeName = `(Stylelint ${versionRange}) ${name}`;
 
-	if (semver.satisfies(stylelintVersion, versionRange)) {
+	if (semver.satisfies(stylelintVersion, versionRange, { includePrerelease: true })) {
 		return describe(describeName, fn);
 	}
 

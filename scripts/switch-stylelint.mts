@@ -14,7 +14,7 @@ package.json or package-lock.json.
 Arguments:
   version     The Stylelint version to switch to. Defaults to the same as
               specified in package.json.
-              Supported versions: default, 17 (same as default), 16, 15, 14
+              Supported versions: default, 18 (prerelease), 17 (same as default), 16, 15, 14
 
 Options:
   --show       Show the currently installed Stylelint version.
@@ -27,11 +27,12 @@ Examples:
 `);
 }
 
-type StylelintVersion = 'default' | '17' | '16' | '15' | '14';
+type StylelintVersion = 'default' | '18' | '17' | '16' | '15' | '14';
 
 function isStylelintVersion(version: unknown): version is StylelintVersion {
 	return (
 		version === 'default' ||
+		version === '18' ||
 		version === '17' ||
 		version === '16' ||
 		version === '15' ||
@@ -93,6 +94,10 @@ const packageMap = createPackageMap({
 	default: {
 		stylelint: packageConfig.devDependencies.stylelint,
 		'stylelint-scss': packageConfig.devDependencies['stylelint-scss'],
+	},
+	18: {
+		stylelint: '^18.0.0-0',
+		'stylelint-scss': '^7', // No release supports 18 yet
 	},
 	17: {
 		stylelint: packageConfig.devDependencies.stylelint,

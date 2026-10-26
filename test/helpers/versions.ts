@@ -13,7 +13,7 @@ export function testOnVersion(
 ): void {
 	const testName = `(Stylelint ${versionRange}) ${name.toString()}`;
 
-	if (semver.satisfies(stylelintVersion, versionRange)) {
+	if (semver.satisfies(stylelintVersion, versionRange, { includePrerelease: true })) {
 		// eslint-disable-next-line vitest/expect-expect, vitest/valid-title
 		test(testName, fn, options);
 	} else {
@@ -57,7 +57,7 @@ export function describeOnVersion(
 ): void {
 	const describeName = `(Stylelint ${versionRange}) ${name.toString()}`;
 
-	if (semver.satisfies(stylelintVersion, versionRange)) {
+	if (semver.satisfies(stylelintVersion, versionRange, { includePrerelease: true })) {
 		// eslint-disable-next-line vitest/valid-title, vitest/valid-describe-callback
 		describe(describeName, fn);
 	} else {

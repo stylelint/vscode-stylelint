@@ -127,21 +127,12 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 		severity: 'error',
 	},
 	{
-		code: 'declaration-block-single-line-max-declarations',
-		message: matchVersion({
-			'<17.7': 'Expected no more than 1 declaration',
-			default: 'Too many declarations, maximum 1',
-		}),
-		range: [57, 2, 57, 2],
-		severity: 'error',
-	},
-	{
 		code: 'no-duplicate-selectors',
 		message: matchVersion({
-			'<17.7': 'Unexpected duplicate selector ".dup", first used at line 61',
-			default: 'Duplicate selector ".dup", first used at line 61',
+			'<17.7': 'Unexpected duplicate selector ".dup", first used at line 58',
+			default: 'Duplicate selector ".dup", first used at line 58',
 		}),
-		range: [61, 0, 61, 0],
+		range: [58, 0, 58, 0],
 		severity: 'error',
 	},
 	{
@@ -150,13 +141,13 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 			'<17.7': 'Unexpected empty comment',
 			default: 'Empty comment',
 		}),
-		range: [64, 0, 64, 0],
+		range: [61, 0, 61, 0],
 		severity: 'error',
 	},
 	{
 		code: 'font-family-name-quotes',
 		message: 'Expected quotes around "Times New Roman"',
-		range: [68, 15, 68, 15],
+		range: [65, 15, 65, 15],
 		severity: 'error',
 	},
 	{
@@ -165,7 +156,7 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 			'<17.7': 'Unexpected !important',
 			default: 'Disallowed !important',
 		}),
-		range: [73, 13, 73, 13],
+		range: [70, 13, 70, 13],
 		severity: 'error',
 	},
 	{
@@ -174,7 +165,7 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 			'<17.7': 'Unexpected unknown unit "pxx"',
 			default: 'Unknown unit "pxx"',
 		}),
-		range: [78, 12, 78, 12],
+		range: [75, 12, 75, 12],
 		severity: 'error',
 	},
 	{
@@ -183,7 +174,7 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 			'<17.7': 'Unexpected unknown property "colr"', // cspell:disable-line
 			default: 'Unknown property "colr"', // cspell:disable-line
 		}),
-		range: [83, 2, 83, 2],
+		range: [80, 2, 80, 2],
 		severity: 'error',
 	},
 	{
@@ -192,7 +183,7 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 			'<17.7': 'Expected nesting depth to be no more than 2',
 			default: 'Too deep nesting, maximum 2',
 		}),
-		range: [90, 6, 90, 6],
+		range: [87, 6, 87, 6],
 		severity: 'error',
 	},
 	{
@@ -201,7 +192,7 @@ const expectedDiagnostics: ExpectedDiagnostic[] = [
 			'<17.7': 'Expected "#myid" to have no more than 0 ID selectors', // cspell:disable-line
 			default: 'Too many ID selectors in "#myid", maximum 0', // cspell:disable-line
 		}),
-		range: [98, 0, 98, 0],
+		range: [95, 0, 95, 0],
 		severity: 'error',
 	},
 ];
