@@ -209,6 +209,8 @@ describe('Language server', () => {
 		const initParams: LSP.InitializeParams = {
 			processId: null,
 			clientInfo: { name: 'Visual Studio Code', version: '1.109.5' },
+			// TODO: Fix the following warning.
+			// eslint-disable-next-line @typescript-eslint/no-deprecated -- `rootUri` is deprecated. in favour of workspaceFolders
 			rootUri: pathToFileURL(workspaceRoot).toString(),
 			capabilities: {
 				workspace: { configuration: true },

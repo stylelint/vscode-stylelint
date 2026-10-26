@@ -25,6 +25,8 @@ describe('Initialization', () => {
 
 	it('should respond to InitializeRequest with an InitializeResult', async () => {
 		const init: LSP.InitializeParams = {
+			// TODO: Fix the following warning.
+			// eslint-disable-next-line @typescript-eslint/no-deprecated -- `rootUri` is deprecated. in favour of workspaceFolders
 			rootUri: 'file:///home/test/test.css',
 			processId: 1,
 			capabilities: {},
