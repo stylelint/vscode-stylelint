@@ -348,11 +348,13 @@ export async function getCodeActions(
 
 	await sleep(1000); // HACK: Wait the UI for being shown.
 
-	return (
+	const actions: CodeAction[] =
 		(await commands.executeCommand(
 			'vscode.executeCodeActionProvider',
 			editor.document.uri,
 			selection,
-		)) ?? []
-	);
+		)) ?? [];
+
+	// Filter out other problems than Stylelint.
+	return actions.filter(({ kind }) => kind?.value === 'quickfix');
 }

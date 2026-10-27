@@ -79,7 +79,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: 'lts/*' # TODO: Switch to node-version-file because npm v12.0.0 requires Node.js v22.22.2 or later.
+          node-version-file: package.json
           cache: npm
 
       - name: Install dependencies
@@ -112,7 +112,7 @@ jobs:
     uses: stylelint/.github/.github/workflows/call-release.yml@c7bd02a469ce20d1f3a35b7561b99262cba9a683 # 2.0.0
     with:
       workspace: '@stylelint/language-server'
-      node-version: 'lts/*' # TODO: Switch to node-version-file because npm v12.0.0 requires Node.js v22.22.2 or later.
+      node-version-file: package.json
       publish-npm-staged: true
     permissions:
       contents: write

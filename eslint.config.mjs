@@ -1,13 +1,9 @@
-import fs from 'node:fs';
-
 import { defineConfig, globalIgnores } from 'eslint/config';
 import jsdoc from 'eslint-plugin-jsdoc';
 import stylelint from 'eslint-config-stylelint';
 import vitest from '@vitest/eslint-plugin';
 import tsEslint from 'typescript-eslint';
 import tsEslintParser from '@typescript-eslint/parser'; // eslint-disable-line n/no-extraneous-import
-
-const nodeVersion = fs.readFileSync(new URL('.nvmrc', import.meta.url), 'utf8');
 
 export default defineConfig([
 	globalIgnores([
@@ -34,11 +30,6 @@ export default defineConfig([
 
 	{
 		plugins: { jsdoc },
-		settings: {
-			node: {
-				version: nodeVersion,
-			},
-		},
 		rules: {
 			'no-warning-comments': [
 				'warn',

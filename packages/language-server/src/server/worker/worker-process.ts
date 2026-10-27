@@ -22,6 +22,7 @@ import {
 } from './types.js';
 
 // Support both ESM and CJS.
+// eslint-disable-next-line n/no-unsupported-features/node-builtins -- The 'import.meta.dirname' is still an experimental feature...
 const currentDir = typeof __dirname === 'string' ? __dirname : import.meta.dirname;
 
 const getWorkerEntryPath = (): string => {
