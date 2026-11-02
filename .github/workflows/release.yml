@@ -91,7 +91,7 @@ jobs:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
       - name: Create draft GitHub release
-        uses: stylelint/changelog-to-github-release-action@fa1228a5ad2a0089273852a32261ca1b3efda395 # 0.6.0
+        uses: stylelint/changelog-to-github-release-action@67d028be65191cf17eba83ad9895362b1b9c9cbf # 0.6.1
         with:
           tag: ${{ needs.detect.outputs.extension-version }}
           name: 'vscode-stylelint ${{ needs.detect.outputs.extension-version }}'
