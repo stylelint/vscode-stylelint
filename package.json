@@ -400,7 +400,7 @@
     "stylelint-scss": "^7.4.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.72.0",
+    "typescript-eslint": "^8.72.1",
     "vitest": "^5.0.5",
     "vscode-jsonrpc": "^10.0.0",
     "vscode-languageserver-protocol": "^3.17.5",
