@@ -2,6 +2,8 @@
 
 ## 3.0.0 - 2026-11-03
 
+This release requires VS Code 1.110.0 or later and adds support for Stylelint 18.
+
 - Removed: support for VS Code less than 1.110.0 ([#1050](https://github.com/stylelint/vscode-stylelint/pull/1050)) ([@ybiquitous](https://github.com/ybiquitous)).
 - Added: support for Stylelint 18 ([#1059](https://github.com/stylelint/vscode-stylelint/pull/1059)) ([@jeddy3](https://github.com/jeddy3)).
 - Fixed: reduced redundant regex compilation when processing severity customizations ([#912](https://github.com/stylelint/vscode-stylelint/pull/912)) ([@adalinesimonian](https://github.com/adalinesimonian)).
