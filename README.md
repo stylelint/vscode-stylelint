@@ -6,7 +6,7 @@ The official [Visual Studio Code](https://code.visualstudio.com/) extension for 
 
 <img width="449" alt="Screenshot of Stylelint errors displayed in VS Code" src="https://raw.githubusercontent.com/stylelint/vscode-stylelint/main/media/screenshot.png">
 
-_Currently tested against Stylelint 14-17. Untested versions may still work, but are not guaranteed to do so. See [Stylelint Version Support](#stylelint-version-support) for details._
+_Currently tested against Stylelint 14-18. Untested versions may still work, but are not guaranteed to do so. See [Stylelint Version Support](#stylelint-version-support) for details._
 
 <!-- cspell:disable-next-line -->
 

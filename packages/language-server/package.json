@@ -78,7 +78,7 @@
     "@types/path-is-inside": "^1.0.3",
     "@types/semver": "^7.8.0",
     "@types/triple-beam": "^1.3.5",
-    "stylelint": "^17.16.0",
+    "stylelint": "^18.0.0",
     "vitest": "^5.0.5"
   },
   "engines": {
