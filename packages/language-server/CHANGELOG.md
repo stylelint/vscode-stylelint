@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.2.0 - 2026-11-03
+
+- Added: support for Stylelint 18 ([#1059](https://github.com/stylelint/vscode-stylelint/pull/1059)) ([@jeddy3](https://github.com/jeddy3)).
+- Fixed: reduced redundant regex compilation when processing severity customizations ([#912](https://github.com/stylelint/vscode-stylelint/pull/912)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: redundant filesystem stat calls when linting multiple open documents simultaneously ([#910](https://github.com/stylelint/vscode-stylelint/pull/910)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: slower initial diagnostics due to sequential rule metadata loading on worker startup ([#913](https://github.com/stylelint/vscode-stylelint/pull/913)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: sped up building diagnostic lookup keys ([#911](https://github.com/stylelint/vscode-stylelint/pull/911)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+- Fixed: stale worker requests continuing to run after becoming obsolete ([#914](https://github.com/stylelint/vscode-stylelint/pull/914)) ([@adalinesimonian](https://github.com/adalinesimonian)).
+
 ## 1.1.1 - 2026-03-31
 
 - Fixed: code action and completion requests now respect LSP cancellation tokens, responding with RequestCancelled per the LSP specification ([#897](https://github.com/stylelint/vscode-stylelint/pull/897)) ([@adalinesimonian](https://github.com/adalinesimonian)).

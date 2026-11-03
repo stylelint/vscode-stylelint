@@ -1,5 +1,11 @@
 # Migration Guide
 
+## From vscode-stylelint 2.x to 3.x
+
+vscode-stylelint 3.x adds official support for Stylelint 18.x. It's also backwards compatible with older versions of Stylelint, down to 14.x.
+
+It requires VS Code version 1.110.0 or later.
+
 ## From vscode-stylelint 1.x to 2.x
 
 vscode-stylelint 2.x is the first version of the extension to support Stylelint 17.x. It's also backwards compatible with older version of Stylelint, down to 14.x.
